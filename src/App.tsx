@@ -21,6 +21,9 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/mp3-volume-booster" element={<Mp3VolumeBooster />} />
+          <Route path="/image-to-webp" element={<ImageToWebp />} />
+          <Route path="/text-case-formatter" element={<TextCaseFormatter />} />
+          <Route path="/image-color-extractor" element={<ImageColorExtractor />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
