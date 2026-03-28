@@ -5,6 +5,9 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Index from "./pages/Index.tsx";
 import Mp3VolumeBooster from "./pages/Mp3VolumeBooster.tsx";
+import ImageToWebp from "./pages/ImageToWebp.tsx";
+import TextCaseFormatter from "./pages/TextCaseFormatter.tsx";
+import ImageColorExtractor from "./pages/ImageColorExtractor.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
