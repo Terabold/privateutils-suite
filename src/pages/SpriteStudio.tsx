@@ -1,0 +1,664 @@
+import { useState, useCallback, useRef, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { ArrowLeft, Upload, Download, Scissors, Grid3X3, Trash2, Layers, Move, Square, Plus, Settings2, FolderArchive, ZoomIn, ZoomOut, MousePointer2 } from "lucide-react";
+import { motion, Reorder, AnimatePresence } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import AdPlaceholder from "@/components/AdPlaceholder";
+import JSZip from "jszip";
+
+interface Slice {
+  id: string;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  name: string;
+}
+
+const SpriteStudio = () => {
+  const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
+  const [image, setImage] = useState<string | null>(null);
+  const [imgSize, setImgSize] = useState({ w: 0, h: 0 });
+  const [slices, setSlices] = useState<Slice[]>([]);
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const [isDrawing, setIsDrawing] = useState(false);
+  const [dragType, setDragType] = useState<"create" | "move" | "resize" | null>(null);
+  const [startPos, setStartPos] = useState({ x: 0, y: 0 });
+  const [handleDir, setHandleDir] = useState<string | null>(null);
+  const [scale, setScale] = useState(1);
+  const [zoom, setZoom] = useState(1);
+  const [pan, setPan] = useState({ x: 0, y: 0 });
+  const [mode, setMode] = useState<"manual" | "grid">("manual");
+  const [gridConfig, setGridConfig] = useState({ rows: 4, cols: 4, gapX: 0, gapY: 0 });
+  const [isPanning, setIsPanning] = useState(false);
+  const [processing, setProcessing] = useState(false);
+  
+  const containerRef = useRef<HTMLDivElement>(null);
+  const imgRef = useRef<HTMLImageElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const toggleDark = useCallback(() => {
+    const next = !darkMode;
+    setDarkMode(next);
+    document.documentElement.classList.toggle("dark", next);
+    localStorage.setItem("theme", next ? "dark" : "light");
+  }, [darkMode]);
+
+  const handleFile = (f: File | undefined) => {
+    if (!f) return;
+    setSlices([]);
+    const reader = new FileReader();
+    reader.onload = (e) => setImage(e.target?.result as string);
+    reader.readAsDataURL(f);
+  };
+
+  const onImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    const { naturalWidth, naturalHeight } = e.currentTarget;
+    setImgSize({ w: naturalWidth, h: naturalHeight });
+    
+    // Auto-scale to fit common viewports
+    const viewportW = containerRef.current?.clientWidth || 800;
+    const viewportH = containerRef.current?.clientHeight || 800;
+    const maxView = Math.min(viewportW - 80, viewportH - 80);
+    
+    let newScale = 1;
+    if (naturalWidth > maxView || naturalHeight > maxView) {
+      newScale = Math.min(maxView / naturalWidth, maxView / naturalHeight);
+    }
+    setScale(newScale);
+
+    // Initial Centering
+    const initialCenterX = (viewportW - (naturalWidth * newScale)) / 2;
+    const initialCenterY = (viewportH - (naturalHeight * newScale)) / 2;
+    setPan({ x: initialCenterX, y: initialCenterY });
+    setZoom(1);
+  };
+
+  // NATIVE Scroll listener to block webpage scrolling
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const handleWheelNative = (e: WheelEvent) => {
+      e.preventDefault(); // Block website scroll
+      
+      const rect = el.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+
+      const delta = -e.deltaY;
+      const factor = delta > 0 ? 1.1 : 0.9;
+      // Use ref-based zoom if we want high performance, or use setZoom correctly
+      setZoom(prev => {
+        const nextZoom = Math.max(0.2, Math.min(prev * factor, 25));
+        const dx = (mouseX - pan.x) * (nextZoom / prev - 1);
+        const dy = (mouseY - pan.y) * (nextZoom / prev - 1);
+        setPan(p => ({ x: p.x - dx, y: p.y - dy }));
+        return nextZoom;
+      });
+    };
+
+    el.addEventListener("wheel", handleWheelNative, { passive: false });
+    return () => el.removeEventListener("wheel", handleWheelNative);
+  }, [pan, image]); 
+
+  const getCanvasPos = (e: React.MouseEvent | React.TouchEvent) => {
+    if (!containerRef.current) return { x: 0, y: 0 };
+    const rect = containerRef.current.getBoundingClientRect();
+    const clientX = 'touches' in e ? (e as any).touches[0].clientX : (e as any).clientX;
+    const clientY = 'touches' in e ? (e as any).touches[0].clientY : (e as any).clientY;
+    
+    // Screen coordinates to Viewport coordinates
+    const viewX = clientX - rect.left;
+    const viewY = clientY - rect.top;
+
+    // Viewport coordinates to Canvas coordinates (accounting for PAN and SCALE+ZOOM)
+    const rawX = (viewX - pan.x) / (scale * zoom);
+    const rawY = (viewY - pan.y) / (scale * zoom);
+
+    // CRITICAL: Clamp to image boundaries for perfect edge snapping
+    return {
+      x: Math.max(0, Math.min(rawX, imgSize.w)),
+      y: Math.max(0, Math.min(rawY, imgSize.h)),
+    };
+  };
+
+  const handleWheel = (e: React.WheelEvent) => {
+     // Replaced by native useEffect listener to handle preventDefault() correctly
+  };
+
+  const addSlice = (x: number, y: number, w: number, h: number) => {
+    const id = Math.random().toString(36).substr(2, 9);
+    const newSlice: Slice = { id, x, y, w, h, name: `slice_${slices.length + 1}` };
+    setSlices(prev => [...prev, newSlice]);
+    setActiveId(id);
+    return id;
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (!image) return;
+
+    // Check for Right-Click (2) or Middle-Click (1) for Panning
+    if (e.button === 2 || e.button === 1) {
+       setIsPanning(true);
+       setStartPos({ x: e.clientX, y: e.clientY });
+       return;
+    }
+
+    const { x, y } = getCanvasPos(e);
+    
+    // Check if clicking a handle of the active slice
+    if (activeId) {
+      const active = slices.find(s => s.id === activeId);
+      if (active) {
+        // Simple handle detection (Size stays clickable even when zoomed)
+        const hSize = 12 / (scale * zoom);
+        const hitHandle = (hx: number, hy: number) => Math.abs(x - hx) < hSize && Math.abs(y - hy) < hSize;
+        
+        if (hitHandle(active.x, active.y)) { setDragType("resize"); setHandleDir("tl"); }
+        else if (hitHandle(active.x + active.w, active.y)) { setDragType("resize"); setHandleDir("tr"); }
+        else if (hitHandle(active.x, active.y + active.h)) { setDragType("resize"); setHandleDir("bl"); }
+        else if (hitHandle(active.x + active.w, active.y + active.h)) { setDragType("resize"); setHandleDir("br"); }
+        else if (x >= active.x && x <= active.x + active.w && y >= active.y && y <= active.y + active.h) {
+          setDragType("move");
+        } else {
+          startNewSelection(x, y);
+        }
+      }
+    } else {
+      startNewSelection(x, y);
+    }
+    
+    setStartPos({ x, y });
+  };
+
+  const startNewSelection = (x: number, y: number) => {
+    const clickedSlice = [...slices].reverse().find(s => x >= s.x && x <= s.x + s.w && y >= s.y && y <= s.y + s.h);
+    if (clickedSlice) {
+      setActiveId(clickedSlice.id);
+      setDragType("move");
+    } else {
+      setDragType("create");
+      const id = addSlice(x, y, 1, 1);
+      setActiveId(id);
+    }
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (isPanning) {
+      const dx = e.clientX - startPos.x;
+      const dy = e.clientY - startPos.y;
+      setPan(prev => ({ x: prev.x + dx, y: prev.y + dy }));
+      setStartPos({ x: e.clientX, y: e.clientY });
+      return;
+    }
+
+    if (!dragType || !activeId) return;
+    const { x, y } = getCanvasPos(e);
+    const dx = x - startPos.x;
+    const dy = y - startPos.y;
+
+    setSlices(prev => prev.map(s => {
+      if (s.id !== activeId) return s;
+      
+      if (dragType === "create") {
+        return { ...s, w: x - s.x, h: y - s.y };
+      }
+      
+      if (dragType === "move") {
+        return { ...s, x: s.x + dx, y: s.y + dy };
+      }
+
+      if (dragType === "resize") {
+        let { x: nx, y: ny, w: nw, h: nh } = s;
+        if (handleDir === "tl") { nx = x; ny = y; nw = s.w - dx; nh = s.h - dy; }
+        if (handleDir === "tr") { ny = y; nw = x - s.x; nh = s.h - dy; }
+        if (handleDir === "bl") { nx = x; nw = s.w - dx; nh = y - s.y; }
+        if (handleDir === "br") { nw = x - s.x; nh = y - s.y; }
+        return { ...s, x: nx, y: ny, w: nw, h: nh };
+      }
+
+      return s;
+    }));
+
+    setStartPos({ x, y });
+  };
+
+  const handleMouseUp = () => {
+    setIsPanning(false);
+    setDragType(null);
+    setHandleDir(null);
+    setSlices(prev => prev.map(s => ({
+      ...s,
+      x: s.w < 0 ? s.x + s.w : s.x,
+      y: s.h < 0 ? s.y + s.h : s.y,
+      w: Math.abs(s.w),
+      h: Math.abs(s.h)
+    })).filter(s => s.w > 3 && s.h > 3));
+  };
+
+  const generateGrid = (rows: number, cols: number, gapX = 0, gapY = 0) => {
+    if (!image) return;
+    
+    // Available usable pixels (Image size - total gaps)
+    const usableW = imgSize.w - (cols - 1) * gapX;
+    const usableH = imgSize.h - (rows - 1) * gapY;
+    
+    const cellW = usableW / cols;
+    const cellH = usableH / rows;
+    
+    const newSlices: Slice[] = [];
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        newSlices.push({
+          id: Math.random().toString(36).substr(2, 9),
+          x: c * (cellW + gapX),
+          y: r * (cellH + gapY),
+          w: cellW,
+          h: cellH,
+          name: `tile_${r}_${c}`
+        });
+      }
+    }
+    setSlices(newSlices);
+    toast.success(`Generated ${rows * cols} tiles with ${gapX}px gap`);
+  };
+
+  const deleteSlice = (id: string) => {
+    setSlices(slices.filter(s => s.id !== id));
+    if (activeId === id) setActiveId(null);
+  };
+
+  const downloadZip = async () => {
+    if (slices.length === 0 || !image) return;
+    setProcessing(true);
+    const zip = new JSZip();
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d")!;
+    const img = new Image();
+    img.src = image;
+    
+    await new Promise(resolve => img.onload = resolve);
+
+    for (const slice of slices) {
+      canvas.width = slice.w;
+      canvas.height = slice.h;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, slice.x, slice.y, slice.w, slice.h, 0, 0, slice.w, slice.h);
+      
+      const blob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, "image/png"));
+      if (blob) {
+        zip.file(`${slice.name}.png`, blob);
+      }
+    }
+
+    const content = await zip.generateAsync({ type: "blob" });
+    const url = URL.createObjectURL(content);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `studio_slices_${Date.now()}.zip`;
+    link.click();
+    setProcessing(false);
+    toast.success("Baking complete! ZIP downloaded.");
+  };
+
+  return (
+    <div className="min-h-screen bg-background text-foreground transition-colors duration-500">
+      <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
+      
+      <main className="container mx-auto max-w-[1600px] px-4 py-12">
+        <div className="flex flex-col gap-8">
+          <header className="flex items-center justify-between flex-wrap gap-6 border-b border-primary/5 pb-8">
+            <div className="flex items-center gap-6">
+              <Link to="/">
+                <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl hover:bg-primary hover:text-primary-foreground transition-all shadow-xl group/back">
+                  <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
+                </Button>
+              </Link>
+              <div>
+                <h1 className="text-3xl md:text-5xl font-black tracking-tighter font-display uppercase italic">
+                  Sprite <span className="text-primary">Studio</span>
+                </h1>
+                <p className="text-muted-foreground text-xs font-black uppercase tracking-[0.2em] opacity-60">Professional Pixel Partitioning Engine</p>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-4">
+               {image && (
+                 <Button onClick={() => { setImage(null); setSlices([]); }} variant="ghost" size="sm" className="gap-2 h-10 px-4 text-[10px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 transition-colors">
+                    Wipe Stage
+                 </Button>
+               )}
+            </div>
+          </header>
+
+          <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_380px] gap-8 items-start">
+            {/* Drafting Canvas (75%) */}
+            <div className="space-y-6">
+              <Card 
+                className="glass-morphism border-primary/10 overflow-hidden h-[600px] lg:h-[800px] flex items-center justify-center relative bg-muted/10 rounded-3xl select-none shadow-2xl group/canvas"
+                style={{
+                  backgroundImage: `linear-gradient(45deg, rgba(255,255,255,0.02) 25%, transparent 25%), 
+                                   linear-gradient(-45deg, rgba(255,255,255,0.02) 25%, transparent 25%), 
+                                   linear-gradient(45deg, transparent 75%, rgba(255,255,255,0.02) 75%), 
+                                   linear-gradient(-45deg, transparent 75%, rgba(255,255,255,0.02) 75%)`,
+                  backgroundSize: '20px 20px',
+                  backgroundPosition: '0 0, 0 10px, 10px -10px, -10px 0px'
+                }}
+                onContextMenu={(e) => e.preventDefault()}
+                ref={containerRef}
+              >
+                {!image && (
+                  <div 
+                    onClick={() => inputRef.current?.click()}
+                    className="cursor-pointer group flex flex-col items-center justify-center p-20 w-[90%] border-4 border-dashed border-primary/20 rounded-[2.5rem] bg-background/50 hover:bg-primary/5 transition-all shadow-inner"
+                  >
+                    <div className="h-24 w-24 bg-primary/10 rounded-[2rem] flex items-center justify-center mb-8 group-hover:scale-110 transition-transform shadow-inner">
+                       <Scissors className="h-12 w-12 text-primary" />
+                    </div>
+                    <p className="text-2xl font-bold font-display text-center">Drop sprite sheet or image</p>
+                    <p className="text-muted-foreground text-sm mt-2 font-medium opacity-60 uppercase tracking-widest leading-loose">High-resolution drafting engine active</p>
+                  </div>
+                )}
+
+                {image && (
+                  <div 
+                    onMouseDown={handleMouseDown}
+                    onMouseMove={handleMouseMove}
+                    onMouseUp={handleMouseUp}
+                    onMouseLeave={handleMouseUp}
+                    className={`absolute shadow-2xl ring-1 ring-primary/20 ${isPanning ? "cursor-grabbing" : "cursor-crosshair"}`}
+                    style={{ 
+                      width: imgSize.w * scale * zoom, 
+                      height: imgSize.h * scale * zoom,
+                      left: pan.x,
+                      top: pan.y,
+                    }}
+                  >
+                    <img 
+                      ref={imgRef}
+                      src={image} 
+                      alt="Canvas" 
+                      onLoad={onImageLoad}
+                      className="w-full h-full object-contain pointer-events-none"
+                      style={{ 
+                        imageRendering: zoom > 2 ? "pixelated" : "auto",
+                      }}
+                    />
+                    
+                    {/* SVG UI Overlay */}
+                    <svg 
+                      className="absolute inset-0 w-full h-full pointer-events-none"
+                      viewBox={`0 0 ${imgSize.w} ${imgSize.h}`}
+                    >
+                      {slices.map((slice) => (
+                        <g key={slice.id} className="pointer-events-none">
+                          <rect 
+                            x={slice.x} 
+                            y={slice.y} 
+                            width={slice.w} 
+                            height={slice.h}
+                            fill={activeId === slice.id ? "rgba(59, 130, 246, 0.15)" : "rgba(255, 255, 255, 0.05)"}
+                            stroke={activeId === slice.id ? "#3b82f6" : "rgba(255,255,255,0.4)"}
+                            strokeWidth={2 / (scale * zoom)}
+                            strokeDasharray={activeId === slice.id ? "0" : `${4 / (scale * zoom)},${4 / (scale * zoom)}`}
+                          />
+                          <text 
+                            x={slice.x + 5 / (scale * zoom)} 
+                            y={slice.y + 18 / (scale * zoom)} 
+                            fontSize={14 / (scale * zoom)} 
+                            fill={activeId === slice.id ? "#3b82f6" : "white"}
+                            className="font-mono font-black tracking-tighter drop-shadow-lg"
+                          >
+                            {slice.name} ({Math.round(slice.w)}x{Math.round(slice.h)})
+                          </text>
+                          
+                          {activeId === slice.id && (
+                            <>
+                              <circle cx={slice.x} cy={slice.y} r={6 / (scale * zoom)} fill="white" stroke="#3b82f6" strokeWidth={2 / (scale * zoom)} />
+                              <circle cx={slice.x + slice.w} cy={slice.y} r={6 / (scale * zoom)} fill="white" stroke="#3b82f6" strokeWidth={2 / (scale * zoom)} />
+                              <circle cx={slice.x} cy={slice.y + slice.h} r={6 / (scale * zoom)} fill="white" stroke="#3b82f6" strokeWidth={2 / (scale * zoom)} />
+                              <circle cx={slice.x + slice.w} cy={slice.y + slice.h} r={6 / (scale * zoom)} fill="white" stroke="#3b82f6" strokeWidth={2 / (scale * zoom)} />
+                            </>
+                          )}
+                        </g>
+                      ))}
+                    </svg>
+                  </div>
+                )}
+                
+                <input ref={inputRef} type="file" className="hidden" accept="image/*" onChange={(e) => handleFile(e.target.files?.[0])} />
+              </Card>
+
+              <div className="flex justify-between items-center px-4">
+                 <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/40 italic">
+                    Drafting Engine v1.0 • Low Latency Precision
+                 </p>
+                 <div className="flex gap-4">
+                    <Button variant="ghost" size="sm" onClick={() => setSlices([])} className="h-8 text-[10px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10">
+                       Wipe Stage
+                    </Button>
+                 </div>
+              </div>
+            </div>
+
+            {/* Studio Sidebar (25%) */}
+            <aside className="space-y-6 lg:sticky lg:top-24">
+              {/* Export Panel */}
+              <Card className="glass-morphism border-primary/20 rounded-[2rem] shadow-2xl overflow-hidden bg-primary/5">
+                 <CardContent className="p-8 space-y-6">
+                    <div className="flex items-center gap-3 mb-2">
+                       <FolderArchive className="h-5 w-5 text-primary" />
+                       <h3 className="text-xs font-black uppercase tracking-[0.2em] text-primary">Master Export</h3>
+                    </div>
+                    <Button onClick={downloadZip} disabled={!image || slices.length === 0 || processing} className="w-full gap-3 h-16 text-lg font-bold rounded-2xl shadow-xl shadow-primary/30 transition-all hover:scale-[1.02] active:scale-[0.98]">
+                       {processing ? "Baking ZIP..." : <><Download className="h-6 w-6" /> Download ZIP</>}
+                    </Button>
+                    <p className="text-[10px] text-center text-muted-foreground font-semibold opacity-50 uppercase tracking-tighter">
+                       {slices.length} Assets ready for partitioning
+                    </p>
+                 </CardContent>
+              </Card>               {/* Grid Wizard */}
+              <Card className="glass-morphism border-primary/10 rounded-[2rem] shadow-xl overflow-hidden">
+                 <div className="bg-primary/5 p-5 border-b border-primary/10 flex items-center justify-between">
+                    <h3 className="text-xs font-black uppercase tracking-[0.2em] text-primary flex items-center gap-3">
+                       <Grid3X3 className="h-4 w-4" /> Drafting Mode
+                    </h3>
+                    <div className="flex bg-muted/20 p-1 rounded-lg">
+                       <button 
+                         onClick={() => setMode("manual")}
+                         className={`px-3 py-1 text-[9px] font-black uppercase tracking-widest rounded-md transition-all ${mode === "manual" ? "bg-primary text-primary-foreground shadow-lg" : "text-muted-foreground hover:text-foreground"}`}
+                       >
+                         Manual
+                       </button>
+                       <button 
+                         onClick={() => setMode("grid")}
+                         className={`px-3 py-1 text-[9px] font-black uppercase tracking-widest rounded-md transition-all ${mode === "grid" ? "bg-primary text-primary-foreground shadow-lg" : "text-muted-foreground hover:text-foreground"}`}
+                       >
+                         Grid
+                       </button>
+                    </div>
+                 </div>
+                   <CardContent className="p-8 space-y-6">
+                    <div className="space-y-4">
+                       <div className="flex items-center justify-between">
+                          <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Stage Zoom</Label>
+                          <span className="text-[10px] font-black text-primary bg-primary/10 px-2 py-0.5 rounded">{Math.round(zoom * 100)}%</span>
+                       </div>
+                       <input 
+                         type="range" 
+                         min="0.2" 
+                         max="25" 
+                         step="0.1" 
+                         value={zoom} 
+                         onChange={(e) => setZoom(parseFloat(e.target.value))}
+                         className="w-full h-1.5 bg-primary/20 rounded-lg appearance-none cursor-pointer accent-primary"
+                       />
+                    </div>
+
+                    {mode === "grid" && (
+                      <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} className="space-y-6 pt-4 border-t border-primary/5 overflow-hidden">
+                        <div className="grid grid-cols-2 gap-4">
+                           <div className="space-y-2">
+                              <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Rows</Label>
+                              <Input 
+                                type="number" 
+                                value={gridConfig.rows} 
+                                onChange={(e) => setGridConfig({...gridConfig, rows: parseInt(e.target.value) || 1})}
+                                className="h-10 text-xs font-bold bg-muted/20 border-primary/10" 
+                              />
+                           </div>
+                           <div className="space-y-2">
+                              <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Cols</Label>
+                              <Input 
+                                type="number" 
+                                value={gridConfig.cols} 
+                                onChange={(e) => setGridConfig({...gridConfig, cols: parseInt(e.target.value) || 1})}
+                                className="h-10 text-xs font-bold bg-muted/20 border-primary/10" 
+                              />
+                           </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                           <div className="space-y-2">
+                              <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Gap X (px)</Label>
+                              <Input 
+                                type="number" 
+                                value={gridConfig.gapX} 
+                                onChange={(e) => setGridConfig({...gridConfig, gapX: parseInt(e.target.value) || 0})}
+                                className="h-10 text-xs font-bold bg-muted/20 border-primary/10" 
+                              />
+                           </div>
+                           <div className="space-y-2">
+                              <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Gap Y (px)</Label>
+                              <Input 
+                                type="number" 
+                                value={gridConfig.gapY} 
+                                onChange={(e) => setGridConfig({...gridConfig, gapY: parseInt(e.target.value) || 0})}
+                                className="h-10 text-xs font-bold bg-muted/20 border-primary/10" 
+                              />
+                           </div>
+                        </div>
+                        <Button 
+                          variant="secondary" 
+                          className="w-full h-12 rounded-xl font-bold gap-2 text-xs uppercase transition-all hover:bg-primary hover:text-primary-foreground"
+                          onClick={() => generateGrid(gridConfig.rows, gridConfig.cols, gridConfig.gapX, gridConfig.gapY)}
+                        >
+                           Overwrite Stage Grid
+                        </Button>
+                      </motion.div>
+                    )}
+
+                    <div className="pt-2">
+                       <Button size="sm" variant="outline" onClick={() => { 
+                         // Reset viewport to centered position
+                         const viewportW = containerRef.current?.clientWidth || 800;
+                         const viewportH = containerRef.current?.clientHeight || 800;
+                         setZoom(1); 
+                         setPan({
+                           x: (viewportW - (imgSize.w * scale)) / 2,
+                           y: (viewportH - (imgSize.h * scale)) / 2,
+                         }); 
+                       }} className="w-full text-[10px] font-black uppercase tracking-widest h-8 rounded-lg gap-2">
+                          <MousePointer2 className="h-3 w-3" /> Center Viewport
+                       </Button>
+                    </div>
+                 </CardContent>
+              </Card>
+
+              {/* Slice Collection */}
+              {slices.length > 0 && (
+                <Card className="glass-morphism border-primary/10 rounded-[2rem] shadow-xl overflow-hidden">
+                   <div className="bg-primary/5 p-5 border-b border-primary/10">
+                      <h3 className="text-xs font-black uppercase tracking-[0.2em] text-primary flex items-center gap-3">
+                         <Layers className="h-4 w-4" /> Catalog ({slices.length})
+                      </h3>
+                   </div>
+                   <CardContent className="p-0">
+                      <Reorder.Group axis="y" values={slices} onReorder={setSlices} className="divide-y divide-primary/5">
+                        <AnimatePresence>
+                          {slices.map((slice, idx) => (
+                            <Reorder.Item 
+                              key={slice.id} 
+                              value={slice}
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              exit={{ opacity: 0 }}
+                              onClick={() => setActiveId(slice.id)}
+                              className={`p-5 flex items-center gap-4 cursor-grab active:cursor-grabbing transition-colors ${activeId === slice.id ? "bg-primary/10" : "hover:bg-primary/5"}`}
+                            >
+                              <div className="h-9 w-9 shrink-0 bg-primary/5 border border-primary/10 rounded flex items-center justify-center text-[10px] font-black text-primary italic">
+                                 #{idx + 1}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                 <Input 
+                                   value={slice.name} 
+                                   onChange={(e) => setSlices(slices.map(s => s.id === slice.id ? {...s, name: e.target.value} : s))}
+                                   className="h-6 text-xs font-bold bg-transparent border-none p-0 focus-visible:ring-0 text-foreground" 
+                                 />
+                                 <div className="flex gap-2 mt-1">
+                                    <div className="flex items-center gap-1">
+                                       <span className="text-[8px] font-black text-muted-foreground opacity-40">X</span>
+                                       <input 
+                                         type="number" 
+                                         value={Math.round(slice.x)} 
+                                         onChange={(e) => setSlices(slices.map(s => s.id === slice.id ? {...s, x: parseInt(e.target.value) || 0} : s))}
+                                         className="w-10 bg-transparent text-[9px] font-mono font-bold text-muted-foreground focus:outline-none"
+                                       />
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                       <span className="text-[8px] font-black text-muted-foreground opacity-40">Y</span>
+                                       <input 
+                                         type="number" 
+                                         value={Math.round(slice.y)} 
+                                         onChange={(e) => setSlices(slices.map(s => s.id === slice.id ? {...s, y: parseInt(e.target.value) || 0} : s))}
+                                         className="w-10 bg-transparent text-[9px] font-mono font-bold text-muted-foreground focus:outline-none"
+                                       />
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                       <span className="text-[8px] font-black text-muted-foreground opacity-40">W</span>
+                                       <input 
+                                         type="number" 
+                                         value={Math.round(slice.w)} 
+                                         onChange={(e) => setSlices(slices.map(s => s.id === slice.id ? {...s, w: parseInt(e.target.value) || 1} : s))}
+                                         className="w-10 bg-transparent text-[9px] font-mono font-bold text-muted-foreground focus:outline-none"
+                                       />
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                       <span className="text-[8px] font-black text-muted-foreground opacity-40">H</span>
+                                       <input 
+                                         type="number" 
+                                         value={Math.round(slice.h)} 
+                                         onChange={(e) => setSlices(slices.map(s => s.id === slice.id ? {...s, h: parseInt(e.target.value) || 1} : s))}
+                                         className="w-10 bg-transparent text-[9px] font-mono font-bold text-muted-foreground focus:outline-none"
+                                       />
+                                    </div>
+                                 </div>
+                              </div>
+                              <Button size="icon" variant="ghost" onClick={(e) => { e.stopPropagation(); deleteSlice(slice.id); }} className="h-8 w-8 text-destructive opacity-30 hover:opacity-100 transition-opacity">
+                                 <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </Reorder.Item>
+                          ))}
+                        </AnimatePresence>
+                      </Reorder.Group>
+                   </CardContent>
+                </Card>
+              )}
+
+              <AdPlaceholder format="rectangle" />
+            </aside>
+          </div>
+        </div>
+      </main>
+      <Footer />
+    </div>
+  );
+};
+
+export default SpriteStudio;
