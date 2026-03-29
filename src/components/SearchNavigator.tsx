@@ -56,7 +56,7 @@ const SearchNavigator = ({
             <Button
               variant={selectedCategory === null ? "default" : "outline"}
               onClick={() => setSelectedCategory(null)}
-              className={`h-11 px-6 rounded-xl font-black uppercase tracking-widest text-[10px] transition-all duration-300 ${
+              className={`h-11 px-6 rounded-2xl font-black uppercase tracking-widest text-[10px] transition-all duration-300 ${
                 selectedCategory === null ? "shadow-lg shadow-primary/20" : "border-primary/10 hover:bg-primary/5"
               }`}
             >
@@ -71,7 +71,7 @@ const SearchNavigator = ({
                   key={category}
                   variant={isActive ? "default" : "outline"}
                   onClick={() => setSelectedCategory(category)}
-                  className={`h-11 px-6 rounded-xl font-black uppercase tracking-widest text-[10px] transition-all duration-300 ${
+                  className={`h-11 px-6 rounded-2xl font-black uppercase tracking-widest text-[10px] transition-all duration-300 ${
                     isActive ? "shadow-lg shadow-primary/20" : "border-primary/10 hover:bg-primary/5"
                   }`}
                 >
@@ -88,3 +88,4 @@ const SearchNavigator = ({
 };
 
 export default SearchNavigator;
+

@@ -8,6 +8,8 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AdPlaceholder from "@/components/AdPlaceholder";
 import { toast } from "sonner";
+// @ts-ignore
+import { optimize } from "svgo/browser";
 
 const SvgOptimizer = () => {
   const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
@@ -26,23 +28,37 @@ const SvgOptimizer = () => {
     try {
       if (!input.trim()) return;
       
-      // Basic optimization logic: strips comments, metadata, and whitespace
-      let result = input
-        .replace(/<!--[\s\S]*?-->/g, "") // Remove comments
-        .replace(/<\?xml[\s\S]*?\?>/g, "") // Remove XML declaration
-        .replace(/<!DOCTYPE[\s\S]*?>/g, "") // Remove DOCTYPE
-        .replace(/xmlns:[\s\S]*?="[\s\S]*?"/g, "") // Remove namespaced attributes (careful)
-        .replace(/>\s+</g, "><") // Remove whitespace between tags
-        .trim();
+      let result;
+      try {
+        result = optimize(input, {
+          multipass: true,
+          floatPrecision: 2,
+          plugins: [
+            {
+              name: "preset-default",
+              params: {
+                overrides: {
+                  removeViewBox: false, 
+                },
+              },
+            } as any,
+            "removeDimensions",
+            "prefixIds"
+          ] as any
+        });
+      } catch (innerErr: any) {
+        toast.error(`Invalid SVG Code: ${innerErr.message || "Parse Error"}`);
+        return;
+      }
 
-      setOptimized(result);
+      setOptimized(result.data);
       setStats({
         original: new Blob([input]).size,
-        optimized: new Blob([result]).size
+        optimized: new Blob([result.data]).size
       });
       toast.success("SVG Optimization Mastered");
-    } catch (e) {
-      toast.error("SVG Parsing Error");
+    } catch (e: any) {
+      toast.error(`Optimization Failed: ${e.message || "Invalid XML/SVG"}`);
     }
   };
 
@@ -71,7 +87,7 @@ const SvgOptimizer = () => {
           <header className="flex items-center justify-between flex-wrap gap-8">
             <div className="flex items-center gap-6">
               <Link to="/">
-                <Button variant="outline" size="icon" className="h-12 w-12 rounded-xl border border-border/50 hover:bg-primary/5 transition-all group/back">
+                <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-border/50 hover:bg-primary/5 transition-all group/back">
                   <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
                 </Button>
               </Link>
@@ -83,7 +99,7 @@ const SvgOptimizer = () => {
               </div>
             </div>
             {input && (
-               <Button onClick={() => { setInput(""); setOptimized(""); setStats(null); }} variant="ghost" size="sm" className="gap-2 h-10 px-5 text-[10px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-xl transition-all">
+               <Button onClick={() => { setInput(""); setOptimized(""); setStats(null); }} variant="ghost" size="sm" className="gap-2 h-10 px-5 text-[10px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-2xl transition-all">
                   Wipe Stage
                </Button>
             )}
@@ -115,9 +131,9 @@ const SvgOptimizer = () => {
                          <Sparkles className="h-4 w-4 text-emerald-500" />
                          <span className="text-[10px] font-black uppercase tracking-widest text-foreground opacity-60">Optimized Artifact</span>
                       </div>
-                      <span className="text-[10px] font-black uppercase tracking-widest text-emerald-500">{(stats?.optimized || 0 / 1024).toFixed(2)} KB</span>
+                      <span className="text-[10px] font-black uppercase tracking-widest text-emerald-500">{((stats?.optimized || 0) / 1024).toFixed(2)} KB</span>
                    </div>
-                   <div className="p-10 font-mono text-sm text-emerald-500/90 h-[200px] overflow-auto select-all custom-scrollbar bg-black/50">
+                   <div className="p-10 font-mono text-sm text-emerald-500/90 h-[200px] overflow-auto select-all custom-scrollbar bg-black/50 overflow-x-auto text-left whitespace-pre-wrap break-all focus:outline-none focus:ring-2 focus:ring-emerald-500/20" suppressContentEditableWarning>
                       {optimized}
                    </div>
                 </Card>
@@ -151,12 +167,12 @@ const SvgOptimizer = () => {
                       </div>
                     )}
 
-                    <div className="p-6 rounded-xl bg-zinc-950/50 border border-border/50 space-y-4">
+                    <div className="p-6 rounded-2xl bg-zinc-950/50 border border-border/50 space-y-4">
                        <h4 className="text-[10px] font-black uppercase tracking-widest text-primary flex items-center gap-2">
                           <Layout className="h-3.5 w-3.5" /> Bit-Stream Scrubbing
                        </h4>
                        <p className="text-[11px] text-muted-foreground leading-relaxed italic opacity-80 font-medium font-sans">
-                         This tool removes redundant **Inkscape**, **Illustrator**, and **Sodipodi** namespaces that bloat vector files without affecting visual rendering.
+                         This tool removes redundant <strong className="font-bold">Inkscape</strong>, <strong className="font-bold">Illustrator</strong>, and <strong className="font-bold">Sodipodi</strong> namespaces that bloat vector files without affecting visual rendering.
                        </p>
                     </div>
 
@@ -171,7 +187,7 @@ const SvgOptimizer = () => {
                        </div>
                     </div>
 
-                    <Button variant="ghost" onClick={copyToClipboard} className="w-full gap-2 h-14 border border-border/50 rounded-xl font-black uppercase tracking-widest text-[10px]">
+                    <Button variant="ghost" onClick={copyToClipboard} className="w-full gap-2 h-14 border border-border/50 rounded-2xl font-black uppercase tracking-widest text-[10px]">
                        <Copy className="h-4 w-4" /> Copy Master Code
                     </Button>
                  </CardContent>
@@ -190,3 +206,4 @@ const SvgOptimizer = () => {
 };
 
 export default SvgOptimizer;
+

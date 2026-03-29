@@ -16,6 +16,7 @@ const QrForge = () => {
   const [input, setInput] = useState("");
   const [qrUrl, setQrUrl] = useState<string | null>(null);
   const [fgColor, setFgColor] = useState("#000000");
+  const [bgColor, setBgColor] = useState("#ffffff");
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const toggleDark = useCallback(() => {
@@ -31,13 +32,19 @@ const QrForge = () => {
       return;
     }
 
+    if (fgColor.toLowerCase() === bgColor.toLowerCase()) {
+      toast.error("Invalid Matrix: Colors must contrast for scanner compatibility.");
+      setQrUrl(null);
+      return;
+    }
+
     try {
       const url = await QRCode.toDataURL(input, {
         width: 1024,
         margin: 2,
         color: {
           dark: fgColor,
-          light: "#ffffff",
+          light: bgColor,
         },
       });
       setQrUrl(url);
@@ -45,7 +52,7 @@ const QrForge = () => {
       console.error(err);
       toast.error("Failed to generate QR Code");
     }
-  }, [input, fgColor]);
+  }, [input, fgColor, bgColor]);
 
   useEffect(() => {
     generateQr();
@@ -69,7 +76,7 @@ const QrForge = () => {
           <header className="flex items-center justify-between flex-wrap gap-8">
             <div className="flex items-center gap-6">
               <Link to="/">
-                <Button variant="outline" size="icon" className="h-12 w-12 rounded-xl border border-border/50 hover:bg-primary/5 transition-all group/back">
+                <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-border/50 hover:bg-primary/5 transition-all group/back">
                   <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
                 </Button>
               </Link>
@@ -81,7 +88,7 @@ const QrForge = () => {
               </div>
             </div>
             {input && (
-               <Button onClick={() => setInput("")} variant="ghost" size="sm" className="gap-2 h-10 px-5 text-[10px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-xl transition-all">
+               <Button onClick={() => setInput("")} variant="ghost" size="sm" className="gap-2 h-10 px-5 text-[10px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-2xl transition-all">
                   Wipe Stage
                </Button>
             )}
@@ -96,7 +103,7 @@ const QrForge = () => {
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     placeholder="Enter link or text to encode..."
-                    className="h-16 bg-background/50 border-primary/10 text-xl font-black italic tracking-tight rounded-xl placeholder:text-muted-foreground/30"
+                    className="h-16 bg-background/50 border-primary/10 text-xl font-black italic tracking-tight rounded-2xl placeholder:text-muted-foreground/30"
                   />
                   <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.2em] opacity-30 text-foreground">
                     <ShieldCheck className="h-3 w-3" /> Zero-Leak Encoding Enabled
@@ -128,38 +135,61 @@ const QrForge = () => {
                    <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Styling Matrix</h3>
                  </div>
                  <CardContent className="p-8 space-y-10">
-                    <div className="space-y-6">
-                       <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 leading-none block">Foreground Flux</label>
-                       <div className="flex flex-wrap gap-3">
-                          {["#000000", "#0a0a0b", "#7c3aed", "#ec4899", "#ef4444", "#fbbf24"].map(color => (
-                             <button
-                               key={color}
-                               onClick={() => setFgColor(color)}
-                               className={`h-10 w-10 rounded-lg border-2 transition-all ${fgColor === color ? "border-primary scale-110 shadow-lg shadow-primary/20" : "border-transparent opacity-60 hover:opacity-100"}`}
-                               style={{ backgroundColor: color }}
-                             />
-                          ))}
-                       </div>
-                    </div>
+                     <div className="space-y-6">
+                        <div className="space-y-4">
+                           <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 leading-none block">Foreground Artifact</label>
+                           <div className="flex gap-2">
+                              <Input 
+                                type="color" 
+                                value={fgColor} 
+                                onChange={(e) => setFgColor(e.target.value)} 
+                                className="w-12 h-10 p-1 rounded-2xl cursor-pointer bg-background border-border/50" 
+                              />
+                              <Input 
+                                type="text" 
+                                value={fgColor.toUpperCase()} 
+                                onChange={(e) => setFgColor(e.target.value)} 
+                                className="font-mono text-xs uppercase bg-muted/20 border-border/50 h-10"
+                              />
+                           </div>
+                        </div>
+                        <div className="space-y-4">
+                           <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 leading-none block">Stage Matrix (Background)</label>
+                           <div className="flex gap-2">
+                              <Input 
+                                type="color" 
+                                value={bgColor} 
+                                onChange={(e) => setBgColor(e.target.value)} 
+                                className="w-12 h-10 p-1 rounded-2xl cursor-pointer bg-background border-border/50" 
+                              />
+                              <Input 
+                                type="text" 
+                                value={bgColor.toUpperCase()} 
+                                onChange={(e) => setBgColor(e.target.value)} 
+                                className="font-mono text-xs uppercase bg-muted/20 border-border/50 h-10"
+                              />
+                           </div>
+                        </div>
+                     </div>
 
-                    <div className="p-6 rounded-xl bg-zinc-950/50 border border-border/50 space-y-4">
+                    <div className="p-6 rounded-2xl bg-zinc-950/50 border border-border/50 space-y-4">
                        <h4 className="text-[10px] font-black uppercase tracking-widest text-primary flex items-center gap-2">
                           <Smartphone className="h-3.5 w-3.5" /> Direct Scan Logic
                        </h4>
                        <p className="text-[11px] text-muted-foreground leading-relaxed italic opacity-80 font-medium font-sans">
-                         Codes are generated using the **ISO/IEC 18004** standard, ensuring compatibility with all mobile artifacts and forensic scanners.
+                         Codes are generated using the <strong className="font-bold">ISO/IEC 18004</strong> standard, ensuring compatibility with all mobile artifacts and forensic scanners.
                        </p>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4 pt-4">
                        <div className="flex flex-col items-center text-center gap-3">
-                          <div className="h-10 w-10 bg-primary/10 rounded-lg flex items-center justify-center text-primary">
+                          <div className="h-10 w-10 bg-primary/10 rounded-2xl flex items-center justify-center text-primary">
                              <ShieldCheck className="h-5 w-5" />
                           </div>
                           <span className="text-[8px] font-black uppercase tracking-tighter opacity-40">Air-Gapped</span>
                        </div>
                        <div className="flex flex-col items-center text-center gap-3">
-                          <div className="h-10 w-10 bg-primary/10 rounded-lg flex items-center justify-center text-primary">
+                          <div className="h-10 w-10 bg-primary/10 rounded-2xl flex items-center justify-center text-primary">
                              <Zap className="h-5 w-5" />
                           </div>
                           <span className="text-[8px] font-black uppercase tracking-tighter opacity-40">Static</span>
@@ -181,3 +211,4 @@ const QrForge = () => {
 };
 
 export default QrForge;
+

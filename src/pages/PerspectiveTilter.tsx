@@ -8,21 +8,24 @@ import { Input } from "@/components/ui/input";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AdPlaceholder from "@/components/AdPlaceholder";
+import { toast } from "sonner";
 
 const PerspectiveTilter = () => {
   const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
   const [image, setImage] = useState<string | null>(null);
-  const [rotateY, setRotateY] = useState(0);
-  const [rotateX, setRotateX] = useState(0);
+  const [rotateY, setRotateY] = useState(-15);
+  const [rotateX, setRotateX] = useState(20);
   const [perspective, setPerspective] = useState(1000);
   const [scale, setScale] = useState(1);
-  const [posX, setPosX] = useState(0);
-  const [posY, setPosY] = useState(0);
+  const [percentX, setPercentX] = useState(50); // Midpoint
+  const [percentY, setPercentY] = useState(50); // Midpoint
+  const [canvasPadding, setCanvasPadding] = useState(20);
   const [rounding, setRounding] = useState(12);
   const [borderWidth, setBorderWidth] = useState(2);
   const [borderColor, setBorderColor] = useState("#ffffff");
+  const [stageColor, setStageColor] = useState("#00000000"); // Default transparent
+  const [shadowIntensity, setShadowIntensity] = useState(0.4);
   const [isDragging, setIsDragging] = useState(false);
-  const [startPos, setStartPos] = useState({ x: 0, y: 0 });
   const [processing, setProcessing] = useState(false);
   
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -36,16 +39,18 @@ const PerspectiveTilter = () => {
     localStorage.setItem("theme", next ? "dark" : "light");
   }, [darkMode]);
 
-  const handleMouseDown = (e: React.MouseEvent) => {
+  const handleMouseDown = () => {
     if (!image) return;
     setIsDragging(true);
-    setStartPos({ x: e.clientX - posX, y: e.clientY - posY });
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging) return;
-    setPosX(e.clientX - startPos.x);
-    setPosY(e.clientY - startPos.y);
+    if (!isDragging || !stageRef.current) return;
+    const rect = stageRef.current.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    setPercentX(Math.max(0, Math.min(x, 100)));
+    setPercentY(Math.max(0, Math.min(y, 100)));
   };
 
   const handleMouseUp = () => setIsDragging(false);
@@ -65,13 +70,15 @@ const PerspectiveTilter = () => {
     setRotateX(0);
     setPerspective(1000);
     setScale(1);
-    setPosX(0);
-    setPosY(0);
+    setPercentX(50);
+    setPercentY(50);
     setBorderWidth(2);
     setRounding(12);
+    setCanvasPadding(20);
+    setShadowIntensity(0.4);
   };
 
-  // Robust High-Fidelity 1:1 Rendering Engine
+  // High-Fidelity Professional Rendering Engine (1:1 WYSIWYG)
   const download = async () => {
     if (!image || !stageRef.current || !canvasRef.current) return;
     setProcessing(true);
@@ -83,19 +90,17 @@ const PerspectiveTilter = () => {
         const w = img.naturalWidth;
         const h = img.naturalHeight;
         
-        // Use a high-DPI canvas for the render
+        // Use a resolution-independent export buffer
+        const exportWidth = Math.max(2500, w * (1 + canvasPadding / 50));
+        const exportHeight = Math.max(2500, h * (1 + canvasPadding / 50));
+        
         const canvas = canvasRef.current!;
         const ctx = canvas.getContext("2d");
         if (!ctx) return;
-
-        // Force a large export canvas to prevent ANY clipping
-        // We use a 2X buffer to ensure transforms stay within bounds
-        const exportWidth = Math.max(2000, w * 2);
-        const exportHeight = Math.max(2000, h * 2);
         canvas.width = exportWidth;
         canvas.height = exportHeight;
 
-        // Accurate SVG Serialization for WYSIWYG
+        // Perfect Mirror of the DOM Layout
         const svgMarkup = `
           <svg xmlns="http://www.w3.org/2000/svg" width="${exportWidth}" height="${exportHeight}">
             <foreignObject width="100%" height="100%">
@@ -106,17 +111,24 @@ const PerspectiveTilter = () => {
                 align-items: center;
                 justify-content: center;
                 perspective: ${perspective}px;
-                background: transparent;
+                background: ${stageColor};
               ">
-                <img src="${image}" style="
-                  width: ${w * scale}px;
-                  height: auto;
-                  transform: translate3d(${posX}px, ${posY}px, 0) rotateY(${rotateY}deg) rotateX(${rotateX}deg);
-                  border-radius: ${rounding}px;
-                  border: ${borderWidth}px solid ${borderColor};
-                  box-shadow: 0 40px 100px rgba(0,0,0,0.5);
-                  box-sizing: border-box;
-                " />
+                <div style="
+                  position: absolute;
+                  left: ${percentX}%;
+                  top: ${percentY}%;
+                  transform: translate(-50%, -50%);
+                ">
+                  <img src="${image}" style="
+                    width: ${w * scale}px;
+                    height: auto;
+                    transform: rotateY(${rotateY}deg) rotateX(${rotateX}deg);
+                    border-radius: ${rounding}px;
+                    border: ${borderWidth}px solid ${borderColor};
+                    box-shadow: 0 ${40 * shadowIntensity}px ${100 * shadowIntensity}px rgba(0,0,0,${shadowIntensity});
+                    box-sizing: border-box;
+                  " />
+                </div>
               </div>
             </foreignObject>
           </svg>
@@ -130,15 +142,13 @@ const PerspectiveTilter = () => {
         tempImg.onload = () => {
           ctx.clearRect(0, 0, canvas.width, canvas.height);
           ctx.drawImage(tempImg, 0, 0);
-          
-          // Final trim to remove transparent edges
-          // (Simulated; in production we often keep the transparency)
           const dataUrl = canvas.toDataURL("image/png");
           const link = document.createElement("a");
           link.download = `localtools-3d-render-${Date.now()}.png`;
           link.href = dataUrl;
           link.click();
           setProcessing(false);
+          toast.success("Artifact Dispatched Successfully");
         };
     };
   };
@@ -152,7 +162,7 @@ const PerspectiveTilter = () => {
           <header className="flex items-center justify-between flex-wrap gap-8">
             <div className="flex items-center gap-6">
               <Link to="/">
-                <Button variant="outline" size="icon" className="h-12 w-12 rounded-xl border border-border/50 hover:bg-primary/5 group/back transition-all">
+                <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-border/50 hover:bg-primary/5 group/back transition-all">
                   <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
                 </Button>
               </Link>
@@ -166,8 +176,8 @@ const PerspectiveTilter = () => {
             
             <div className="flex items-center gap-4">
                {image && (
-                 <Button onClick={reset} variant="ghost" size="sm" className="gap-2 h-10 px-5 text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:bg-primary/5 hover:text-primary border border-border/50 rounded-xl transition-all">
-                    <RotateCcw className="h-3.5 w-3.5" /> Re-Center
+                 <Button onClick={reset} variant="ghost" size="sm" className="gap-2 h-10 px-5 text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:bg-primary/5 hover:text-primary border border-border/50 rounded-2xl transition-all">
+                    <RotateCcw className="h-3.5 w-3.5" /> Flatten Tilt
                  </Button>
                )}
             </div>
@@ -183,32 +193,43 @@ const PerspectiveTilter = () => {
                 className="glass-morphism border-primary/5 overflow-hidden min-h-[700px] flex items-center justify-center relative bg-muted/5 rounded-2xl shadow-inner select-none cursor-grab active:cursor-grabbing transition-all hover:bg-muted/10"
               >
                 <div className="absolute top-6 left-6 z-10 flex gap-2 pointer-events-none">
-                   <span className="text-[10px] font-black bg-primary text-primary-foreground px-3 py-1.5 rounded-lg uppercase tracking-[0.2em] shadow-xl">Live Render</span>
-                   {image && <span className="text-[10px] font-black bg-background/80 backdrop-blur-md text-foreground px-3 py-1.5 rounded-lg uppercase tracking-[0.2em] shadow-sm border border-border/50">WYSIWYG Mode</span>}
+                   <span className="text-[10px] font-black bg-primary text-primary-foreground px-3 py-1.5 rounded-2xl uppercase tracking-[0.2em] shadow-xl">Live Render</span>
+                   {image && <span className="text-[10px] font-black bg-background/80 backdrop-blur-md text-foreground px-3 py-1.5 rounded-2xl uppercase tracking-[0.2em] shadow-sm border border-border/50">WYSIWYG Mode</span>}
                 </div>
                 
                 {image ? (
                   <div 
                     ref={stageRef}
-                    className="w-full h-full flex items-center justify-center p-12 transition-[perspective] duration-500"
+                    className="w-full h-full flex items-center justify-center p-12 transition-[perspective] duration-500 overflow-hidden relative"
                     style={{ perspective: `${perspective}px` }}
                   >
-                    <img 
-                      src={image} 
-                      alt="3D Perspective" 
-                      className="max-w-[85%] max-h-[600px] object-contain transition-transform duration-75 ease-out shadow-[0_50px_100px_rgba(0,0,0,0.5)]"
+                    <div 
+                      className="absolute transition-transform duration-75 ease-out"
                       style={{
-                        transform: `translate3d(${posX}px, ${posY}px, 0) rotateY(${rotateY}deg) rotateX(${rotateX}deg) scale(${scale})`,
-                        borderRadius: `${rounding}px`,
-                        border: borderWidth > 0 ? `${borderWidth}px solid ${borderColor}` : "none",
-                        boxSizing: "border-box",
+                        left: `${percentX}%`,
+                        top: `${percentY}%`,
+                        transform: `translate(-50%, -50%)`,
                       }}
-                    />
+                    >
+                      <img 
+                        draggable={false}
+                        src={image} 
+                        alt="3D Perspective" 
+                        className="max-w-[70vw] max-h-[60vh] object-contain shadow-2xl transition-all"
+                        style={{
+                          transform: `rotateY(${rotateY}deg) rotateX(${rotateX}deg) scale(${scale})`,
+                          borderRadius: `${rounding}px`,
+                          border: borderWidth > 0 ? `${borderWidth}px solid ${borderColor}` : "none",
+                          boxShadow: `0 ${40 * shadowIntensity}px ${100 * shadowIntensity}px rgba(0,0,0,${shadowIntensity})`,
+                          boxSizing: "border-box",
+                        }}
+                      />
+                    </div>
                   </div>
                 ) : (
                   <div 
                     onClick={() => inputRef.current?.click()}
-                    className="cursor-pointer group flex flex-col items-center justify-center p-20 w-[90%] border-2 border-dashed border-primary/20 rounded-[1.5rem] bg-background/50 hover:bg-primary/5 transition-all shadow-inner"
+                    className="cursor-pointer group flex flex-col items-center justify-center p-20 w-[90%] border-2 border-dashed border-primary/20 rounded-2xl bg-background/50 hover:bg-primary/5 transition-all shadow-inner"
                   >
                     <div className="h-20 w-20 bg-primary/10 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
                        <Upload className="h-10 w-10 text-primary" />
@@ -222,18 +243,18 @@ const PerspectiveTilter = () => {
               </Card>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-muted/40 p-10 rounded-xl border border-border/50 studio-gradient">
+                <div className="bg-muted/40 p-10 rounded-2xl border border-border/50 studio-gradient">
                    <h4 className="text-[10px] font-black uppercase tracking-[0.2em] mb-4 flex items-center gap-2 text-primary">
                       <Box className="h-4 w-4" /> Drafting Logic
                    </h4>
                    <p className="text-[11px] text-muted-foreground leading-relaxed italic font-medium opacity-80">
-                     Our **1:1 Export Engine** uses high-DPI canvas serialization to ensure that your tilts, scale, and positioning match the preview perfectly.
+                     Our <strong className="font-bold">1:1 Export Engine</strong> uses high-DPI canvas serialization to ensure that your tilts, scale, and positioning match the preview perfectly.
                    </p>
                 </div>
-                <div className="bg-primary/5 p-10 rounded-xl border border-primary/10">
+                <div className="bg-primary/5 p-10 rounded-2xl border border-primary/10">
                    <h4 className="text-[10px] font-black uppercase tracking-[0.2em] mb-4 text-primary">Quick Control</h4>
                    <p className="text-[11px] text-muted-foreground leading-relaxed italic font-medium opacity-80 flex items-center gap-2">
-                     <MousePointer2 className="h-3 w-3" /> **Click and Drag** on the canvas above to manually reposition your render in 3D space.
+                     <MousePointer2 className="h-3 w-3" /> <strong className="font-bold">Click and Drag</strong> on the canvas above to manually reposition your render in 3D space.
                    </p>
                 </div>
               </div>
@@ -266,7 +287,30 @@ const PerspectiveTilter = () => {
                         <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Zoom</label>
                         <span className="text-[11px] font-black text-primary bg-primary/10 px-2 py-0.5 rounded">{scale.toFixed(1)}x</span>
                      </div>
-                     <Slider value={[scale]} min={0.5} max={1.5} step={0.1} onValueChange={([v]) => setScale(v)} disabled={!image} />
+                      <Slider 
+                        defaultValue={[1]}
+                        value={[scale]} 
+                        min={0.1} 
+                        max={5} 
+                        step={0.01} 
+                        onValueChange={([v]) => setScale(v)} 
+                        disabled={!image} 
+                      />
+                  </div>
+
+                  <div className="space-y-5">
+                     <div className="flex justify-between items-center">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Stage Expansion</label>
+                        <span className="text-[11px] font-black text-primary bg-primary/10 px-2 py-0.5 rounded">{canvasPadding}%</span>
+                     </div>
+                      <Slider 
+                        value={[canvasPadding]} 
+                        min={0} 
+                        max={100} 
+                        step={1} 
+                        onValueChange={([v]) => setCanvasPadding(v)} 
+                        disabled={!image} 
+                      />
                   </div>
 
                   <hr className="border-primary/5" />
@@ -277,7 +321,28 @@ const PerspectiveTilter = () => {
                            <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Frame Weight</label>
                            <span className="text-[11px] font-black text-primary bg-primary/10 px-2 py-0.5 rounded">{borderWidth}px</span>
                         </div>
-                        <Slider value={[borderWidth]} min={0} max={20} step={1} onValueChange={([v]) => setBorderWidth(v)} disabled={!image} />
+                        <Slider value={[borderWidth]} min={0} max={400} step={1} onValueChange={([v]) => setBorderWidth(v)} disabled={!image} />
+                     </div>
+
+                     <div className="space-y-4">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Stage Background</label>
+                        <div className="flex gap-2">
+                           <Input 
+                             type="color" 
+                             value={stageColor === "#00000000" ? "#000000" : stageColor} 
+                             onChange={(e) => setStageColor(e.target.value)} 
+                             className="w-12 h-10 p-1 rounded-2xl cursor-pointer bg-background border-border/50" 
+                             disabled={!image}
+                           />
+                           <Button 
+                             disabled={!image}
+                             variant="outline" 
+                             onClick={() => setStageColor("#00000000")} 
+                             className={`h-10 text-[10px] uppercase font-black px-4 ${stageColor === "#00000000" ? "bg-primary text-primary-foreground" : ""}`}
+                           >
+                             Transparent
+                           </Button>
+                        </div>
                      </div>
 
                      <div className="space-y-4">
@@ -287,7 +352,7 @@ const PerspectiveTilter = () => {
                              type="color" 
                              value={borderColor} 
                              onChange={(e) => setBorderColor(e.target.value)} 
-                             className="w-12 h-10 p-1 rounded-lg cursor-pointer bg-background border-border/50" 
+                             className="w-12 h-10 p-1 rounded-2xl cursor-pointer bg-background border-border/50" 
                              disabled={!image}
                            />
                            <Input 
@@ -305,7 +370,15 @@ const PerspectiveTilter = () => {
                            <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Edge Fillet</label>
                            <span className="text-[11px] font-black text-primary bg-primary/10 px-2 py-0.5 rounded">{rounding}px</span>
                         </div>
-                        <Slider value={[rounding]} min={0} max={60} step={1} onValueChange={([v]) => setRounding(v)} disabled={!image} />
+                        <Slider value={[rounding]} min={0} max={200} step={1} onValueChange={([v]) => setRounding(v)} disabled={!image} />
+                     </div>
+
+                     <div className="space-y-5">
+                        <div className="flex justify-between items-center">
+                           <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Shadow Depth</label>
+                           <span className="text-[11px] font-black text-primary bg-primary/10 px-2 py-0.5 rounded">{Math.round(shadowIntensity * 100)}%</span>
+                        </div>
+                        <Slider value={[shadowIntensity]} min={0} max={1} step={0.01} onValueChange={([v]) => setShadowIntensity(v)} disabled={!image} />
                      </div>
                   </div>
 
@@ -313,7 +386,7 @@ const PerspectiveTilter = () => {
                      <Button 
                        onClick={download} 
                        disabled={!image || processing} 
-                       className="w-full gap-3 h-16 text-lg font-black rounded-xl shadow-2xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all uppercase italic"
+                       className="w-full gap-3 h-16 text-lg font-black rounded-2xl shadow-2xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all uppercase italic"
                      >
                         <Download className="h-6 w-6" />
                         {processing ? "Simulating 3D..." : "Render Final"}
@@ -338,3 +411,4 @@ const PerspectiveTilter = () => {
 };
 
 export default PerspectiveTilter;
+

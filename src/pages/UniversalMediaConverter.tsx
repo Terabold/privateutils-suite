@@ -83,7 +83,7 @@ const UniversalMediaConverter = () => {
   const isAudio = file?.type.startsWith("audio/");
 
   const availableFormats = isVideo 
-    ? ["mp4", "webm", "gif", "mp3", "wav"] 
+    ? ["mp4", "webm", "gif", "avi"] 
     : isImage 
     ? ["webp", "png", "jpg", "bmp"] 
     : isAudio
@@ -157,7 +157,7 @@ const UniversalMediaConverter = () => {
           <header className="flex items-center justify-between flex-wrap gap-8">
             <div className="flex items-center gap-6">
               <Link to="/">
-                <Button variant="outline" size="icon" className="h-12 w-12 rounded-xl border border-border/50 hover:bg-primary/5 transition-all group/back">
+                <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-border/50 hover:bg-primary/5 transition-all group/back">
                   <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
                 </Button>
               </Link>
@@ -170,7 +170,7 @@ const UniversalMediaConverter = () => {
             </div>
             
             {file && (
-               <Button onClick={() => { setFile(null); setResultUrl(null); setLogs([]); }} variant="ghost" size="sm" className="gap-2 h-10 px-5 text-[10px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-xl transition-all">
+               <Button onClick={() => { setFile(null); setResultUrl(null); setLogs([]); }} variant="ghost" size="sm" className="gap-2 h-10 px-5 text-[10px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-2xl transition-all">
                   Wipe Stage
                </Button>
             )}
@@ -179,7 +179,7 @@ const UniversalMediaConverter = () => {
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-12 items-start">
             <div className="space-y-8">
               {isDownloadingModel && (
-                <Card className="border-primary/20 bg-primary/5 backdrop-blur-sm overflow-hidden animate-in fade-in slide-in-from-top-4 rounded-xl">
+                <Card className="border-primary/20 bg-primary/5 backdrop-blur-sm overflow-hidden animate-in fade-in slide-in-from-top-4 rounded-2xl">
                   <CardContent className="p-8">
                     <div className="flex items-center justify-between mb-4">
                       <h3 className="text-[10px] font-black uppercase tracking-widest text-foreground">Downloading WASM Engine...</h3>
@@ -195,7 +195,7 @@ const UniversalMediaConverter = () => {
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={(e) => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); }}
                     onClick={() => !processing && inputRef.current?.click()}
-                    className={`relative w-full flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-primary/20 text-center transition-all ${!processing ? "cursor-pointer py-32 bg-background/50 hover:bg-primary/5 shadow-inner" : "py-32 opacity-50"}`}
+                    className={`relative w-full flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/20 text-center transition-all ${!processing ? "cursor-pointer py-32 bg-background/50 hover:bg-primary/5 shadow-inner" : "py-32 opacity-50"}`}
                   >
                     <div className="h-20 w-20 bg-primary/10 rounded-2xl flex items-center justify-center mb-8 shadow-inner group-hover:scale-110 transition-transform">
                        <Upload className="h-10 w-10 text-primary" />
@@ -228,7 +228,7 @@ const UniversalMediaConverter = () => {
                      </div>
                      <Progress value={progress} className="h-4 w-full bg-primary/10" />
                      
-                     <div className="bg-zinc-950 rounded-xl p-6 font-mono text-[11px] text-primary/80 overflow-hidden shadow-inner border border-white/5 min-h-[120px] flex flex-col justify-end">
+                     <div className="bg-zinc-950 rounded-2xl p-6 font-mono text-[11px] text-primary/80 overflow-hidden shadow-inner border border-white/5 min-h-[120px] flex flex-col justify-end">
                         {logs.map((log, i) => (
                           <div key={i} className="leading-relaxed truncate border-l-2 border-primary/20 pl-4 mb-1">{`> ${log}`}</div>
                         ))}
@@ -247,10 +247,10 @@ const UniversalMediaConverter = () => {
                     <p className="text-sm font-medium text-muted-foreground text-center mb-10 opacity-60">Your {targetFormat.toUpperCase()} asset has been successfully re-rendered in the local sandbox.</p>
                     
                     <div className="flex flex-col sm:flex-row gap-6 w-full justify-center">
-                      <Button className="gap-3 h-16 px-12 text-lg font-black rounded-xl shadow-2xl shadow-primary/20 uppercase italic" onClick={download}>
+                      <Button className="gap-3 h-16 px-12 text-lg font-black rounded-2xl shadow-2xl shadow-primary/20 uppercase italic" onClick={download}>
                         <Download className="h-6 w-6" /> Download
                       </Button>
-                      <Button variant="outline" className="h-16 px-12 rounded-xl bg-background border-border/50 uppercase font-black text-xs tracking-widest" onClick={() => { setResultUrl(null); setFile(null); setLogs([]); }}>
+                      <Button variant="outline" className="h-16 px-12 rounded-2xl bg-background border-border/50 uppercase font-black text-xs tracking-widest" onClick={() => { setResultUrl(null); setFile(null); setLogs([]); }}>
                         Convert Another
                       </Button>
                     </div>
@@ -262,14 +262,14 @@ const UniversalMediaConverter = () => {
             <aside className="space-y-6 lg:sticky lg:top-24 h-fit">
               <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl">
                  <div className="bg-primary/5 p-5 border-b border-primary/10">
-                   <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Codec Parameters</h3>
+                   <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Conversion Settings</h3>
                  </div>
                  <CardContent className="p-8 space-y-10">
                     <div className="space-y-4">
-                       <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 leading-none px-1">Output Format</label>
+                       <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 leading-none px-1">Convert To</label>
                        <Select value={targetFormat} onValueChange={setTargetFormat} disabled={processing || !file}>
-                         <SelectTrigger className="w-full h-14 bg-background border-primary/10 rounded-xl font-black uppercase tracking-tighter text-lg">
-                           <SelectValue placeholder="CODEC" />
+                         <SelectTrigger className="w-full h-14 bg-background border-primary/10 rounded-2xl font-black uppercase tracking-tighter text-lg">
+                           <SelectValue placeholder="FORMAT" />
                          </SelectTrigger>
                          <SelectContent>
                            {availableFormats.map(fmt => (
@@ -279,25 +279,27 @@ const UniversalMediaConverter = () => {
                        </Select>
                     </div>
 
-                    <div className="space-y-4">
-                       <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 leading-none px-1">Playback Speed</label>
-                       <Select value={videoSpeed} onValueChange={setVideoSpeed} disabled={processing || !file}>
-                         <SelectTrigger className="w-full h-14 bg-background border-primary/10 rounded-xl font-black uppercase tracking-tighter text-lg">
-                           <SelectValue placeholder="SPEED" />
-                         </SelectTrigger>
-                         <SelectContent>
-                           {["0.5", "0.75", "1.0", "1.25", "1.5", "2.0"].map(s => (
-                             <SelectItem key={s} value={s} className="font-black py-3">{s}x</SelectItem>
-                           ))}
-                         </SelectContent>
-                       </Select>
-                    </div>
+                    {isVideo && (
+                      <div className="space-y-4">
+                         <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 leading-none px-1">Playback Speed</label>
+                         <Select value={videoSpeed} onValueChange={setVideoSpeed} disabled={processing || !file}>
+                           <SelectTrigger className="w-full h-14 bg-background border-primary/10 rounded-2xl font-black uppercase tracking-tighter text-lg">
+                             <SelectValue placeholder="SPEED" />
+                           </SelectTrigger>
+                           <SelectContent>
+                             {["0.5", "0.75", "1.0", "1.25", "1.5", "2.0"].map(s => (
+                               <SelectItem key={s} value={s} className="font-black py-3">{s}x</SelectItem>
+                             ))}
+                           </SelectContent>
+                         </Select>
+                      </div>
+                    )}
 
                     <div className="pt-4">
                       <Button 
                         onClick={convertFile} 
                         disabled={!targetFormat || processing || !file} 
-                        className="w-full gap-3 h-16 text-lg font-black rounded-xl shadow-2xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all uppercase italic"
+                        className="w-full gap-3 h-16 text-lg font-black rounded-2xl shadow-2xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all uppercase italic"
                       >
                         <RefreshCw className={`h-6 w-6 ${processing ? "animate-spin" : ""}`} />
                         {processing ? "Baking Media..." : "Execute Conversion"}
@@ -314,7 +316,7 @@ const UniversalMediaConverter = () => {
               <div className="p-10 rounded-2xl border-2 border-dashed border-primary/10 text-center studio-gradient">
                  <h4 className="text-[10px] font-black uppercase tracking-[0.2em] mb-4 text-primary">Hardware Acceleration</h4>
                  <p className="text-[11px] text-muted-foreground leading-relaxed italic opacity-80 font-medium">
-                    This tool utilizes **SharedArrayBuffer** and **Multi-Threaded WASM** to reach conversion speeds comparable to native software.
+                    This tool utilizes <strong className="font-bold">SharedArrayBuffer</strong> and <strong className="font-bold">Multi-Threaded WASM</strong> to reach conversion speeds comparable to native software.
                  </p>
               </div>
             </aside>
@@ -327,3 +329,4 @@ const UniversalMediaConverter = () => {
 };
 
 export default UniversalMediaConverter;
+

@@ -148,7 +148,7 @@ const BatchImageStudio = () => {
           <header className="flex items-center justify-between flex-wrap gap-8">
             <div className="flex items-center gap-6">
               <Link to="/">
-                <Button variant="outline" size="icon" className="h-12 w-12 rounded-xl border border-border/50 hover:bg-primary/5 group/back transition-all">
+                <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-border/50 hover:bg-primary/5 group/back transition-all">
                   <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
                 </Button>
               </Link>
@@ -162,7 +162,7 @@ const BatchImageStudio = () => {
             
             <div className="flex items-center gap-4">
                {images.length > 0 && (
-                 <Button onClick={() => setImages([])} variant="ghost" size="sm" className="gap-2 h-10 px-5 text-[10px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-xl transition-all">
+                 <Button onClick={() => setImages([])} variant="ghost" size="sm" className="gap-2 h-10 px-5 text-[10px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-2xl transition-all">
                     <Trash2 className="h-3.5 w-3.5" /> Wipe Queue
                  </Button>
                )}
@@ -188,7 +188,7 @@ const BatchImageStudio = () => {
               {images.length > 0 && (
                 <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
                   {images.map((img) => (
-                    <div key={img.id} className="group relative aspect-square bg-muted/20 rounded-xl overflow-hidden border border-border/50">
+                    <div key={img.id} className="group relative aspect-square bg-muted/20 rounded-2xl overflow-hidden border border-border/50">
                        <img 
                          src={img.url} 
                          alt={img.name} 
@@ -234,7 +234,7 @@ const BatchImageStudio = () => {
                          placeholder="Enter overlay text..." 
                          value={watermark} 
                          onChange={(e) => setWatermark(e.target.value)} 
-                         className="bg-muted/30 border-border/50 rounded-lg h-10 text-xs font-bold"
+                         className="bg-muted/30 border-border/50 rounded-2xl h-10 text-xs font-bold"
                        />
                     </div>
 
@@ -260,7 +260,7 @@ const BatchImageStudio = () => {
                        <Button 
                          onClick={downloadAll} 
                          disabled={images.length === 0 || processing} 
-                         className="w-full gap-3 h-16 text-lg font-black rounded-xl shadow-2xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all uppercase italic"
+                         className="w-full gap-3 h-16 text-lg font-black rounded-2xl shadow-2xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all uppercase italic"
                        >
                           <Download className="h-6 w-6" />
                           {processing ? "Simulating Batch..." : "Export Pack"}
@@ -283,3 +283,4 @@ const BatchImageStudio = () => {
 };
 
 export default BatchImageStudio;
+

@@ -170,7 +170,7 @@ const FrameGifStudio = () => {
           <header className="flex items-center justify-between flex-wrap gap-8">
             <div className="flex items-center gap-6">
               <Link to="/">
-                <Button variant="outline" size="icon" className="h-12 w-12 rounded-xl border border-border/50 hover:bg-primary/5 transition-all group/back">
+                <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-border/50 hover:bg-primary/5 transition-all group/back">
                   <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
                 </Button>
               </Link>
@@ -182,7 +182,7 @@ const FrameGifStudio = () => {
               </div>
             </div>
             {file && (
-               <Button onClick={() => { setFile(null); setVideoUrl(null); setFrames([]); }} variant="ghost" size="sm" className="gap-2 h-10 px-5 text-[10px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-xl transition-all">
+               <Button onClick={() => { setFile(null); setVideoUrl(null); setFrames([]); }} variant="ghost" size="sm" className="gap-2 h-10 px-5 text-[10px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-2xl transition-all">
                   Wipe Stage
                </Button>
             )}
@@ -196,7 +196,7 @@ const FrameGifStudio = () => {
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={(e) => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); }}
                     onClick={() => inputRef.current?.click()}
-                    className="relative w-full flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-primary/20 text-center transition-all cursor-pointer py-40 bg-background/50 hover:border-primary/40 hover:bg-primary/5 shadow-inner group"
+                    className="relative w-full flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/20 text-center transition-all cursor-pointer py-40 bg-background/50 hover:border-primary/40 hover:bg-primary/5 shadow-inner group"
                   >
                     <div className="h-24 w-24 bg-primary/10 rounded-2xl flex items-center justify-center mb-10 shadow-inner group-hover:scale-110 transition-transform">
                        <Upload className="h-12 w-12 text-primary" />
@@ -279,7 +279,7 @@ const FrameGifStudio = () => {
                   
                   <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-6">
                     {frames.map((frame) => (
-                      <div key={frame.id} className="group relative rounded-xl overflow-hidden border border-border/50 bg-muted/5 shadow-lg">
+                      <div key={frame.id} className="group relative rounded-2xl overflow-hidden border border-border/50 bg-muted/5 shadow-lg">
                         <img src={frame.url} className="w-full aspect-video object-cover" />
                         <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                            <Button size="icon" variant="ghost" className="h-10 w-10 text-white hover:bg-white/10" onClick={() => {
@@ -318,23 +318,23 @@ const FrameGifStudio = () => {
                          className="py-4"
                        />
                        <div className="grid grid-cols-2 gap-4">
-                          <div className="bg-muted/5 p-4 rounded-xl border border-border/50 text-center">
+                          <div className="bg-muted/5 p-4 rounded-2xl border border-border/50 text-center">
                              <p className="text-[9px] font-black uppercase opacity-40 mb-1">Start</p>
                              <p className="text-xl font-black italic tracking-tighter text-foreground">{range[0].toFixed(1)}s</p>
                           </div>
-                          <div className="bg-muted/5 p-4 rounded-xl border border-border/50 text-center">
+                          <div className="bg-muted/5 p-4 rounded-2xl border border-border/50 text-center">
                              <p className="text-[9px] font-black uppercase opacity-40 mb-1">End</p>
                              <p className="text-xl font-black italic tracking-tighter text-foreground">{range[1].toFixed(1)}s</p>
                           </div>
                        </div>
                     </div>
 
-                    <div className="p-6 rounded-xl bg-primary/5 border border-primary/10 space-y-4">
+                    <div className="p-6 rounded-2xl bg-primary/5 border border-primary/10 space-y-4">
                        <h4 className="text-[10px] font-black uppercase tracking-widest text-primary flex items-center gap-2">
                           <Layers className="h-3.5 w-3.5" /> High-DPI Encoding
                        </h4>
                        <p className="text-[11px] text-muted-foreground leading-relaxed italic opacity-80 font-medium">
-                         Our **Lanczos Scaling** algorithm ensures zero color-banding on complex gradients while maintaining small file sizes.
+                         Our <strong className="font-bold">Lanczos Scaling</strong> algorithm ensures zero color-banding on complex gradients while maintaining small file sizes.
                        </p>
                     </div>
 
@@ -368,3 +368,4 @@ const FrameGifStudio = () => {
 };
 
 export default FrameGifStudio;
+

@@ -69,39 +69,37 @@ const TextCaseFormatter = () => {
       
       <main className="container mx-auto max-w-6xl px-4 py-12">
         <div className="flex flex-col gap-10">
-          <header className="space-y-4">
-            <Link to="/">
-              <Button variant="ghost" size="sm" className="gap-2 text-muted-foreground hover:text-foreground rounded-full hover:bg-muted/50">
-                <ArrowLeft className="h-4 w-4" /> Back to Tools
-              </Button>
-            </Link>
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-              <div className="space-y-2">
-                <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display">
-                  Text Case <span className="text-primary">Formatter</span>
+          <header className="flex items-center justify-between flex-wrap gap-8">
+            <div className="flex items-center gap-6">
+              <Link to="/">
+                <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-border/50 hover:bg-primary/5 transition-all group/back">
+                  <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
+                </Button>
+              </Link>
+              <div>
+                <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic">
+                   Text Case <span className="text-primary italic">Formatter</span>
                 </h1>
-                <p className="text-muted-foreground text-lg max-w-2xl font-medium opacity-80">
-                  Professional string transformations for creators, editors, and developers.
-                </p>
+                <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">Professional String Transformation Lab</p>
               </div>
-              
-              <div className="flex gap-4 p-4 rounded-2xl bg-muted/30 border border-border/50 shadow-inner">
-                 <div className="text-center px-4">
-                    <p className="text-[10px] uppercase font-black tracking-widest text-muted-foreground/60">Words</p>
-                    <p className="text-xl font-bold font-mono">{stats.words}</p>
-                 </div>
-                 <div className="w-[1px] bg-border/50" />
-                 <div className="text-center px-4">
-                    <p className="text-[10px] uppercase font-black tracking-widest text-muted-foreground/60">Characters</p>
-                    <p className="text-xl font-bold font-mono">{stats.chars}</p>
-                 </div>
-              </div>
+            </div>
+            
+            <div className="flex gap-4 p-4 rounded-2xl bg-muted/30 border border-border/50 shadow-inner">
+               <div className="text-center px-4">
+                  <p className="text-[10px] uppercase font-black tracking-widest text-muted-foreground/60">Words</p>
+                  <p className="text-xl font-bold font-mono">{stats.words}</p>
+               </div>
+               <div className="w-[1px] bg-border/50" />
+               <div className="text-center px-4">
+                  <p className="text-[10px] uppercase font-black tracking-widest text-muted-foreground/60">Characters</p>
+                  <p className="text-xl font-bold font-mono">{stats.chars}</p>
+               </div>
             </div>
           </header>
 
           <div className="grid grid-cols-1 lg:grid-cols-[1fr,320px] gap-8 items-start">
             <div className="space-y-6">
-              <Card className="glass-morphism border-primary/10 rounded-[2.5rem] shadow-2xl overflow-hidden bg-muted/5">
+              <Card className="glass-morphism border-primary/10 rounded-2xl shadow-2xl overflow-hidden bg-muted/5">
                 <CardContent className="p-8">
                   <textarea
                     value={text}
@@ -111,28 +109,28 @@ const TextCaseFormatter = () => {
                   />
                   
                   <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-3">
-                    <Button variant="secondary" className="font-bold rounded-xl h-12 hover:bg-primary/10 hover:text-primary transition-all border border-transparent hover:border-primary/20" onClick={() => setText(text.toUpperCase())}>
+                    <Button variant="secondary" className="font-bold rounded-2xl h-12 hover:bg-primary/10 hover:text-primary transition-all border border-transparent hover:border-primary/20" onClick={() => setText(text.toUpperCase())}>
                       UPPERCASE
                     </Button>
-                    <Button variant="secondary" className="font-bold rounded-xl h-12 hover:bg-primary/10 hover:text-primary transition-all border border-transparent hover:border-primary/20" onClick={() => setText(text.toLowerCase())}>
+                    <Button variant="secondary" className="font-bold rounded-2xl h-12 hover:bg-primary/10 hover:text-primary transition-all border border-transparent hover:border-primary/20" onClick={() => setText(text.toLowerCase())}>
                       lowercase
                     </Button>
-                    <Button variant="secondary" className="font-bold rounded-xl h-12 hover:bg-primary/10 hover:text-primary transition-all border border-transparent hover:border-primary/20" onClick={() => setText(toTitleCase(text))}>
+                    <Button variant="secondary" className="font-bold rounded-2xl h-12 hover:bg-primary/10 hover:text-primary transition-all border border-transparent hover:border-primary/20" onClick={() => setText(toTitleCase(text))}>
                       Title Case
                     </Button>
-                    <Button variant="secondary" className="font-bold rounded-xl h-12 hover:bg-primary/10 hover:text-primary transition-all border border-transparent hover:border-primary/20" onClick={() => setText(toSentenceCase(text))}>
+                    <Button variant="secondary" className="font-bold rounded-2xl h-12 hover:bg-primary/10 hover:text-primary transition-all border border-transparent hover:border-primary/20" onClick={() => setText(toSentenceCase(text))}>
                       Sentence
                     </Button>
                   </div>
 
                   <div className="mt-4 pt-4 border-t border-border/50 grid grid-cols-1 md:grid-cols-3 gap-3">
-                    <Button variant="outline" className="gap-2 font-mono text-xs rounded-xl h-10 border-primary/10 bg-primary/5 text-primary hover:bg-primary/20" onClick={() => setText(toSnakeCase(text))}>
+                    <Button variant="outline" className="gap-2 font-mono text-xs rounded-2xl h-10 border-primary/10 bg-primary/5 text-primary hover:bg-primary/20" onClick={() => setText(toSnakeCase(text))}>
                       <Terminal className="h-3.5 w-3.5" /> snake_case
                     </Button>
-                    <Button variant="outline" className="gap-2 font-mono text-xs rounded-xl h-10 border-primary/10 bg-primary/5 text-primary hover:bg-primary/20" onClick={() => setText(toKebabCase(text))}>
+                    <Button variant="outline" className="gap-2 font-mono text-xs rounded-2xl h-10 border-primary/10 bg-primary/5 text-primary hover:bg-primary/20" onClick={() => setText(toKebabCase(text))}>
                       <Hash className="h-3.5 w-3.5" /> kebab-case
                     </Button>
-                    <Button variant="outline" className="gap-2 font-mono text-xs rounded-xl h-10 border-primary/10 bg-primary/5 text-primary hover:bg-primary/20" onClick={() => setText(toConstantCase(text))}>
+                    <Button variant="outline" className="gap-2 font-mono text-xs rounded-2xl h-10 border-primary/10 bg-primary/5 text-primary hover:bg-primary/20" onClick={() => setText(toConstantCase(text))}>
                       <Terminal className="h-3.5 w-3.5" /> CONSTANT_CASE
                     </Button>
                   </div>
@@ -154,20 +152,20 @@ const TextCaseFormatter = () => {
             </div>
 
             <aside className="space-y-6">
-              <div className="p-8 rounded-[2rem] bg-gradient-to-br from-primary/10 to-transparent border border-primary/10 space-y-4">
+              <div className="p-8 rounded-2xl bg-gradient-to-br from-primary/10 to-transparent border border-primary/10 space-y-4">
                  <h4 className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-primary">
                     <Type className="h-4 w-4" /> Quick Tip
                  </h4>
-                 <p className="text-sm text-muted-foreground leading-relaxed">
-                    Use **CONSTANT_CASE** for environment variables and **kebab-case** for URL slugs. 
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    Use <strong className="font-bold">CONSTANT_CASE</strong> for environment variables and <strong className="font-bold">kebab-case</strong> for URL slugs. 
                     <br/><br/>
                     Our algorithm preserves numbers and special characters correctly across all conversions.
-                 </p>
+                  </p>
               </div>
               
               <AdPlaceholder format="rectangle" />
               
-              <div className="p-8 rounded-[2rem] bg-muted/20 border border-border/50 text-xs text-muted-foreground leading-relaxed italic opacity-70">
+              <div className="p-8 rounded-2xl bg-muted/20 border border-border/50 text-xs text-muted-foreground leading-relaxed italic opacity-70">
                 Privacy First: All text processing is done 100% locally in your browser. Nothing is sent to any server.
               </div>
             </aside>
@@ -180,4 +178,5 @@ const TextCaseFormatter = () => {
 };
 
 export default TextCaseFormatter;
+
 

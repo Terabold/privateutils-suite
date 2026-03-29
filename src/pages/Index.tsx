@@ -129,7 +129,7 @@ const Index = () => {
           {/* Benefits Grid */}
           <section className="grid grid-cols-1 md:grid-cols-3 gap-12 py-12 mb-16">
             <div className="flex flex-col items-center text-center p-6 studio-gradient rounded-[1rem]">
-              <div className="h-16 w-16 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-8 border border-primary/20">
+              <div className="h-16 w-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mb-8 border border-primary/20">
                 <ShieldCheck className="h-8 w-8" />
               </div>
               <h3 className="text-xl font-bold mb-4 tracking-tight uppercase">Air-Gapped Privacy</h3>
@@ -137,7 +137,7 @@ const Index = () => {
             </div>
             
             <div className="flex flex-col items-center text-center p-6 studio-gradient rounded-[1rem]">
-              <div className="h-16 w-16 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-8 border border-primary/20">
+              <div className="h-16 w-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mb-8 border border-primary/20">
                 <Zap className="h-8 w-8" />
               </div>
               <h3 className="text-xl font-bold mb-4 tracking-tight uppercase">GPU Accelerated</h3>
@@ -145,7 +145,7 @@ const Index = () => {
             </div>
             
             <div className="flex flex-col items-center text-center p-6 studio-gradient rounded-[1rem]">
-              <div className="h-16 w-16 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-8 border border-primary/20">
+              <div className="h-16 w-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mb-8 border border-primary/20">
                 <Lock className="h-8 w-8" />
               </div>
               <h3 className="text-xl font-bold mb-4 tracking-tight uppercase">Encrypted Exit</h3>
@@ -171,3 +171,4 @@ const Index = () => {
 };
 
 export default Index;
+

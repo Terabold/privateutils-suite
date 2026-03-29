@@ -157,7 +157,7 @@ const ToolsGrid = ({ searchQuery = "", selectedCategory = null, onClearFilters }
   if (filteredTools.length === 0) {
     return (
       <div className="py-32 text-center animate-in fade-in zoom-in-95 duration-700">
-        <div className="h-24 w-24 bg-primary/10 rounded-3xl flex items-center justify-center mx-auto mb-10 border border-primary/20 shadow-2xl">
+        <div className="h-24 w-24 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-10 border border-primary/20 shadow-2xl">
            <Zap className="h-10 w-10 text-primary animate-pulse" />
         </div>
         <h3 className="text-4xl font-black uppercase italic tracking-tighter mb-4">No artifacts found</h3>
@@ -188,11 +188,11 @@ const ToolsGrid = ({ searchQuery = "", selectedCategory = null, onClearFilters }
           <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
             {filteredTools.map((tool) => (
               <div key={tool.to} className="relative group/card-wrapper w-full h-full animate-in zoom-in-95 duration-500">
-                <div className="absolute -inset-1 bg-gradient-to-tr from-primary/20 to-accent/10 rounded-[1.5rem] opacity-0 group-hover/card-wrapper:opacity-100 blur-2xl transition-all duration-700 -z-10 group-hover/card-wrapper:scale-110" />
+                <div className="absolute -inset-1 bg-gradient-to-tr from-primary/20 to-accent/10 rounded-2xl opacity-0 group-hover/card-wrapper:opacity-100 blur-2xl transition-all duration-700 -z-10 group-hover/card-wrapper:scale-110" />
                 <ToolCard {...tool} />
                 <div className="absolute top-4 right-4 flex gap-1.5 pointer-events-none z-50">
                   {tool.tags.map(tag => (
-                     <span key={tag} className="text-[10px] bg-primary/20 text-primary font-black px-2 py-0.5 rounded-lg border border-primary/20 shadow-xl opacity-0 translate-y-2 group-hover/card-wrapper:opacity-100 group-hover/card-wrapper:translate-y-0 transition-all duration-500 uppercase tracking-widest whitespace-nowrap backdrop-blur-md">
+                     <span key={tag} className="text-[10px] bg-primary/20 text-primary font-black px-2 py-0.5 rounded-2xl border border-primary/20 shadow-xl opacity-0 translate-y-2 group-hover/card-wrapper:opacity-100 group-hover/card-wrapper:translate-y-0 transition-all duration-500 uppercase tracking-widest whitespace-nowrap backdrop-blur-md">
                        {tag}
                      </span>
                   ))}
@@ -226,11 +226,11 @@ const ToolsGrid = ({ searchQuery = "", selectedCategory = null, onClearFilters }
                   .filter(t => t.category === category)
                   .map((tool) => (
                     <div key={tool.to} className="relative group/card-wrapper w-full h-full">
-                      <div className="absolute -inset-1 bg-gradient-to-tr from-primary/20 to-accent/10 rounded-[1.5rem] opacity-0 group-hover/card-wrapper:opacity-100 blur-2xl transition-all duration-700 -z-10 group-hover/card-wrapper:scale-110" />
+                      <div className="absolute -inset-1 bg-gradient-to-tr from-primary/20 to-accent/10 rounded-2xl opacity-0 group-hover/card-wrapper:opacity-100 blur-2xl transition-all duration-700 -z-10 group-hover/card-wrapper:scale-110" />
                       <ToolCard {...tool} />
                       <div className="absolute top-4 right-4 flex gap-1.5 pointer-events-none z-50">
                         {tool.tags.map(tag => (
-                           <span key={tag} className="text-[10px] bg-primary/20 text-primary font-black px-2 py-0.5 rounded-lg border border-primary/20 shadow-xl opacity-0 translate-y-2 group-hover/card-wrapper:opacity-100 group-hover/card-wrapper:translate-y-0 transition-all duration-500 uppercase tracking-widest whitespace-nowrap backdrop-blur-md">
+                           <span key={tag} className="text-[10px] bg-primary/20 text-primary font-black px-2 py-0.5 rounded-2xl border border-primary/20 shadow-xl opacity-0 translate-y-2 group-hover/card-wrapper:opacity-100 group-hover/card-wrapper:translate-y-0 transition-all duration-500 uppercase tracking-widest whitespace-nowrap backdrop-blur-md">
                              {tag}
                            </span>
                         ))}

@@ -34,7 +34,7 @@ const SpriteStudio = () => {
   const [scale, setScale] = useState(1);
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
-  const [mode, setMode] = useState<"manual" | "grid">("manual");
+  const [mode, setMode] = useState<"manual" | "grid">("grid");
   const [gridConfig, setGridConfig] = useState({ rows: 4, cols: 4, gapX: 0, gapY: 0 });
   const [isPanning, setIsPanning] = useState(false);
   const [processing, setProcessing] = useState(false);
@@ -65,49 +65,56 @@ const SpriteStudio = () => {
     // Auto-scale to fit common viewports
     const viewportW = containerRef.current?.clientWidth || 800;
     const viewportH = containerRef.current?.clientHeight || 800;
-    const maxView = Math.min(viewportW - 80, viewportH - 80);
+    const maxViewW = viewportW - 80;
+    const maxViewH = viewportH - 80;
     
     let newScale = 1;
-    if (naturalWidth > maxView || naturalHeight > maxView) {
-      newScale = Math.min(maxView / naturalWidth, maxView / naturalHeight);
+    if (naturalWidth > maxViewW || naturalHeight > maxViewH) {
+      newScale = Math.min(maxViewW / naturalWidth, maxViewH / naturalHeight);
     }
     setScale(newScale);
 
-    // Initial Centering
+    // Initial Centering (Top-Left point that centers a scaled image)
     const initialCenterX = (viewportW - (naturalWidth * newScale)) / 2;
     const initialCenterY = (viewportH - (naturalHeight * newScale)) / 2;
     setPan({ x: initialCenterX, y: initialCenterY });
     setZoom(1);
   };
 
-  // NATIVE Scroll listener to block webpage scrolling
+  // Precision Zoom-to-Cursor Engine
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
 
     const handleWheelNative = (e: WheelEvent) => {
-      e.preventDefault(); // Block website scroll
+      if (!image) return;
+      e.preventDefault();
       
       const rect = el.getBoundingClientRect();
-      const mouseX = e.clientX - rect.left;
-      const mouseY = e.clientY - rect.top;
+      const mouseX = e.clientX - (rect.left + el.clientLeft);
+      const mouseY = e.clientY - (rect.top + el.clientTop);
 
       const delta = -e.deltaY;
-      const factor = delta > 0 ? 1.1 : 0.9;
-      // Use ref-based zoom if we want high performance, or use setZoom correctly
+      const factor = delta > 0 ? 1.05 : 0.95; // More gradual zoom for higher precision
+      
       setZoom(prev => {
-        const nextZoom = Math.max(0.2, Math.min(prev * factor, 25));
-        const dx = (mouseX - pan.x) * (nextZoom / prev - 1);
-        const dy = (mouseY - pan.y) * (nextZoom / prev - 1);
-        setPan(p => ({ x: p.x - dx, y: p.y - dy }));
+        const nextZoom = Math.max(0.2, Math.min(prev * factor, 40)); // Max 4000% zoom
+        
+        setPan(p => {
+          // Mathematical center sync:
+          // new_pan = mouse - (mouse - old_pan) * (new_zoom / old_zoom)
+          const dx = (mouseX - p.x) * (nextZoom / prev - 1);
+          const dy = (mouseY - p.y) * (nextZoom / prev - 1);
+          return { x: p.x - dx, y: p.y - dy };
+        });
+        
         return nextZoom;
       });
     };
 
     el.addEventListener("wheel", handleWheelNative, { passive: false });
     return () => el.removeEventListener("wheel", handleWheelNative);
-  }, [pan, image]); 
-
+  }, [image]); // Simplified dependency as nested setters are safe
   const getCanvasPos = (e: React.MouseEvent | React.TouchEvent) => {
     if (!containerRef.current) return { x: 0, y: 0 };
     const rect = containerRef.current.getBoundingClientRect();
@@ -115,18 +122,18 @@ const SpriteStudio = () => {
     const clientY = 'touches' in e ? (e as any).touches[0].clientY : (e as any).clientY;
     
     // Screen coordinates to Viewport coordinates
-    const viewX = clientX - rect.left;
-    const viewY = clientY - rect.top;
+    const viewX = clientX - (rect.left + containerRef.current.clientLeft);
+    const viewY = clientY - (rect.top + containerRef.current.clientTop);
 
     // Viewport coordinates to Canvas coordinates (accounting for PAN and SCALE+ZOOM)
-    const rawX = (viewX - pan.x) / (scale * zoom);
-    const rawY = (viewY - pan.y) / (scale * zoom);
+    const currentScale = scale * zoom;
+    if (currentScale === 0) return { x: 0, y: 0 };
+    
+    const rawX = (viewX - pan.x) / currentScale;
+    const rawY = (viewY - pan.y) / currentScale;
 
-    // CRITICAL: Clamp to image boundaries for perfect edge snapping
-    return {
-      x: Math.max(0, Math.min(rawX, imgSize.w)),
-      y: Math.max(0, Math.min(rawY, imgSize.h)),
-    };
+    // Precise Float Coordinate (Rounding happens on modification/save)
+    return { x: rawX, y: rawY };
   };
 
   const handleWheel = (e: React.WheelEvent) => {
@@ -135,7 +142,14 @@ const SpriteStudio = () => {
 
   const addSlice = (x: number, y: number, w: number, h: number) => {
     const id = Math.random().toString(36).substr(2, 9);
-    const newSlice: Slice = { id, x, y, w, h, name: `slice_${slices.length + 1}` };
+    const newSlice: Slice = { 
+      id, 
+      x: Math.round(x), 
+      y: Math.round(y), 
+      w: Math.round(w), 
+      h: Math.round(h), 
+      name: `slice_${slices.length + 1}` 
+    };
     setSlices(prev => [...prev, newSlice]);
     setActiveId(id);
     return id;
@@ -152,6 +166,8 @@ const SpriteStudio = () => {
     }
 
     const { x, y } = getCanvasPos(e);
+    const rx = Math.round(x);
+    const ry = Math.round(y);
     
     // Check if clicking a handle of the active slice
     if (activeId) {
@@ -168,14 +184,14 @@ const SpriteStudio = () => {
         else if (x >= active.x && x <= active.x + active.w && y >= active.y && y <= active.y + active.h) {
           setDragType("move");
         } else {
-          startNewSelection(x, y);
+          startNewSelection(rx, ry);
         }
       }
     } else {
-      startNewSelection(x, y);
+      startNewSelection(rx, ry);
     }
     
-    setStartPos({ x, y });
+    setStartPos({ x: rx, y: ry });
   };
 
   const startNewSelection = (x: number, y: number) => {
@@ -201,8 +217,11 @@ const SpriteStudio = () => {
 
     if (!dragType || !activeId) return;
     const { x, y } = getCanvasPos(e);
+    
     const dx = x - startPos.x;
     const dy = y - startPos.y;
+
+    if (dx === 0 && dy === 0 && dragType !== "create") return;
 
     setSlices(prev => prev.map(s => {
       if (s.id !== activeId) return s;
@@ -234,13 +253,26 @@ const SpriteStudio = () => {
     setIsPanning(false);
     setDragType(null);
     setHandleDir(null);
-    setSlices(prev => prev.map(s => ({
-      ...s,
-      x: s.w < 0 ? s.x + s.w : s.x,
-      y: s.h < 0 ? s.y + s.h : s.y,
-      w: Math.abs(s.w),
-      h: Math.abs(s.h)
-    })).filter(s => s.w > 3 && s.h > 3));
+    setSlices(prev => prev.map(s => {
+      let nx = Math.round(s.w < 0 ? s.x + s.w : s.x);
+      let ny = Math.round(s.h < 0 ? s.y + s.h : s.y);
+      let nw = Math.round(Math.abs(s.w));
+      let nh = Math.round(Math.abs(s.h));
+
+      // Final clamping safety check to prevent export overflow
+      if (nx < 0) { nw += nx; nx = 0; }
+      if (ny < 0) { nh += ny; ny = 0; }
+      if (nx + nw > imgSize.w) { nw = imgSize.w - nx; }
+      if (ny + nh > imgSize.h) { nh = imgSize.h - ny; }
+
+      return {
+        ...s,
+        x: nx,
+        y: ny,
+        w: nw,
+        h: nh
+      };
+    }).filter(s => s.w > 2 && s.h > 2));
   };
 
   const generateGrid = (rows: number, cols: number, gapX = 0, gapY = 0) => {
@@ -256,12 +288,17 @@ const SpriteStudio = () => {
     const newSlices: Slice[] = [];
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < cols; c++) {
+        const sx = Math.round(c * (cellW + gapX));
+        const sy = Math.round(r * (cellH + gapY));
+        const sw = Math.round(cellW);
+        const sh = Math.round(cellH);
+        
         newSlices.push({
           id: Math.random().toString(36).substr(2, 9),
-          x: c * (cellW + gapX),
-          y: r * (cellH + gapY),
-          w: cellW,
-          h: cellH,
+          x: sx,
+          y: sy,
+          w: sw,
+          h: sh,
           name: `tile_${r}_${c}`
         });
       }
@@ -342,7 +379,11 @@ const SpriteStudio = () => {
             {/* Drafting Canvas (75%) */}
             <div className="space-y-6">
               <Card 
-                className="glass-morphism border-primary/10 overflow-hidden h-[600px] lg:h-[800px] flex items-center justify-center relative bg-muted/10 rounded-3xl select-none shadow-2xl group/canvas"
+                onMouseDown={handleMouseDown}
+                onMouseMove={handleMouseMove}
+                onMouseUp={handleMouseUp}
+                onMouseLeave={handleMouseUp}
+                className="glass-morphism border-primary/10 overflow-hidden h-[600px] lg:h-[800px] flex items-center justify-center relative bg-muted/10 rounded-2xl select-none shadow-2xl group/canvas"
                 style={{
                   backgroundImage: `linear-gradient(45deg, rgba(255,255,255,0.02) 25%, transparent 25%), 
                                    linear-gradient(-45deg, rgba(255,255,255,0.02) 25%, transparent 25%), 
@@ -357,7 +398,7 @@ const SpriteStudio = () => {
                 {!image && (
                   <div 
                     onClick={() => inputRef.current?.click()}
-                    className="cursor-pointer group flex flex-col items-center justify-center p-20 w-[90%] border-4 border-dashed border-primary/20 rounded-[2.5rem] bg-background/50 hover:bg-primary/5 transition-all shadow-inner"
+                    className="cursor-pointer group flex flex-col items-center justify-center p-20 w-[90%] border-4 border-dashed border-primary/20 rounded-2xl bg-background/50 hover:bg-primary/5 transition-all shadow-inner"
                   >
                     <div className="h-24 w-24 bg-primary/10 rounded-[2rem] flex items-center justify-center mb-8 group-hover:scale-110 transition-transform shadow-inner">
                        <Scissors className="h-12 w-12 text-primary" />
@@ -369,66 +410,82 @@ const SpriteStudio = () => {
 
                 {image && (
                   <div 
-                    onMouseDown={handleMouseDown}
-                    onMouseMove={handleMouseMove}
-                    onMouseUp={handleMouseUp}
-                    onMouseLeave={handleMouseUp}
-                    className={`absolute shadow-2xl ring-1 ring-primary/20 ${isPanning ? "cursor-grabbing" : "cursor-crosshair"}`}
+                    className={`absolute shadow-2xl ring-1 ring-primary/20 pointer-events-none origin-top-left flex items-start justify-start top-0 left-0 ${isPanning || dragType ? "" : "transition-transform duration-200"}`}
                     style={{ 
-                      width: imgSize.w * scale * zoom, 
-                      height: imgSize.h * scale * zoom,
-                      left: pan.x,
-                      top: pan.y,
+                      width: imgSize.w, 
+                      height: imgSize.h,
+                      transform: `translate(${pan.x}px, ${pan.y}px) scale(${scale * zoom})`,
+                      opacity: imgSize.w > 0 ? 1 : 0
                     }}
                   >
                     <img 
-                      ref={imgRef}
-                      src={image} 
-                      alt="Canvas" 
-                      onLoad={onImageLoad}
-                      className="w-full h-full object-contain pointer-events-none"
-                      style={{ 
-                        imageRendering: zoom > 2 ? "pixelated" : "auto",
-                      }}
+                       ref={imgRef}
+                       src={image} 
+                       onLoad={onImageLoad}
+                       className="w-full h-full pointer-events-none select-none" 
+                       style={{ imageRendering: zoom > 2 ? 'pixelated' : 'auto' }}
+                       draggable={false}
+                       alt="Sprite Extraction Base" 
                     />
                     
-                    {/* SVG UI Overlay */}
+                    {/* SVG UI Overlay - Locked to image coordinates */}
                     <svg 
-                      className="absolute inset-0 w-full h-full pointer-events-none"
-                      viewBox={`0 0 ${imgSize.w} ${imgSize.h}`}
+                      className="absolute inset-0 w-full h-full pointer-events-none overflow-visible"
+                      viewBox={`0 0 ${imgSize.w || 1} ${imgSize.h || 1}`}
                     >
-                      {slices.map((slice) => (
-                        <g key={slice.id} className="pointer-events-none">
-                          <rect 
-                            x={slice.x} 
-                            y={slice.y} 
-                            width={slice.w} 
-                            height={slice.h}
-                            fill={activeId === slice.id ? "rgba(59, 130, 246, 0.15)" : "rgba(255, 255, 255, 0.05)"}
-                            stroke={activeId === slice.id ? "#3b82f6" : "rgba(255,255,255,0.4)"}
-                            strokeWidth={2 / (scale * zoom)}
-                            strokeDasharray={activeId === slice.id ? "0" : `${4 / (scale * zoom)},${4 / (scale * zoom)}`}
-                          />
-                          <text 
-                            x={slice.x + 5 / (scale * zoom)} 
-                            y={slice.y + 18 / (scale * zoom)} 
-                            fontSize={14 / (scale * zoom)} 
-                            fill={activeId === slice.id ? "#3b82f6" : "white"}
-                            className="font-mono font-black tracking-tighter drop-shadow-lg"
-                          >
-                            {slice.name} ({Math.round(slice.w)}x{Math.round(slice.h)})
-                          </text>
+                      {/* Pixel Grid for Drafting Accuracy */}
+                      {zoom > 8 && (
+                        <defs>
+                          <pattern id="pixel-grid" width="1" height="1" patternUnits="userSpaceOnUse">
+                             <path d="M 1 0 L 0 0 0 1" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="0.1" />
+                          </pattern>
+                        </defs>
+                      )}
+                      
+                      {zoom > 8 && (
+                        <rect width="100%" height="100%" fill="url(#pixel-grid)" opacity="0.5" />
+                      )}
+
+                      {slices.map((slice) => {
+                        const nx = slice.w < 0 ? slice.x + slice.w : slice.x;
+                        const ny = slice.h < 0 ? slice.y + slice.h : slice.y;
+                        const nw = Math.abs(slice.w);
+                        const nh = Math.abs(slice.h);
+                        
+                        return (
+                          <g key={slice.id} className="pointer-events-none">
+                            <rect 
+                              x={nx} 
+                              y={ny} 
+                              width={nw} 
+                              height={nh}
+                              fill={activeId === slice.id ? "rgba(59, 130, 246, 0.15)" : "rgba(255, 255, 255, 0.05)"}
+                              stroke={activeId === slice.id ? "#3b82f6" : "rgba(255,255,255,0.4)"}
+                              strokeWidth={1 / zoom} // Adjust stroke weight slightly to keep it sharp but visible
+                              strokeDasharray={activeId === slice.id ? "0" : `${2/zoom},${2/zoom}`}
+                            />
+                            <text 
+                              x={nx + 2} 
+                              y={ny + 10} 
+                              fontSize={Math.max(8, 12 / zoom)} 
+                              fill={activeId === slice.id ? "#3b82f6" : "white"}
+                              className="font-mono font-black tracking-tighter select-none"
+                              style={{ paintOrder: 'stroke', stroke: 'black', strokeWidth: `${0.5/zoom}px` }}
+                            >
+                              {slice.name} ({Math.round(nw)}x{Math.round(nh)})
+                            </text>
                           
                           {activeId === slice.id && (
                             <>
-                              <circle cx={slice.x} cy={slice.y} r={6 / (scale * zoom)} fill="white" stroke="#3b82f6" strokeWidth={2 / (scale * zoom)} />
-                              <circle cx={slice.x + slice.w} cy={slice.y} r={6 / (scale * zoom)} fill="white" stroke="#3b82f6" strokeWidth={2 / (scale * zoom)} />
-                              <circle cx={slice.x} cy={slice.y + slice.h} r={6 / (scale * zoom)} fill="white" stroke="#3b82f6" strokeWidth={2 / (scale * zoom)} />
-                              <circle cx={slice.x + slice.w} cy={slice.y + slice.h} r={6 / (scale * zoom)} fill="white" stroke="#3b82f6" strokeWidth={2 / (scale * zoom)} />
+                              <circle cx={nx} cy={ny} r={3 / zoom} fill="white" stroke="#3b82f6" strokeWidth={0.5 / zoom} />
+                              <circle cx={nx + nw} cy={ny} r={3 / zoom} fill="white" stroke="#3b82f6" strokeWidth={0.5 / zoom} />
+                              <circle cx={nx} cy={ny + nh} r={3 / zoom} fill="white" stroke="#3b82f6" strokeWidth={0.5 / zoom} />
+                              <circle cx={nx + nw} cy={ny + nh} r={3 / zoom} fill="white" stroke="#3b82f6" strokeWidth={0.5 / zoom} />
                             </>
                           )}
                         </g>
-                      ))}
+                        );
+                      })}
                     </svg>
                   </div>
                 )}
@@ -470,7 +527,7 @@ const SpriteStudio = () => {
                     <h3 className="text-xs font-black uppercase tracking-[0.2em] text-primary flex items-center gap-3">
                        <Grid3X3 className="h-4 w-4" /> Drafting Mode
                     </h3>
-                    <div className="flex bg-muted/20 p-1 rounded-lg">
+                    <div className="flex bg-muted/20 p-1 rounded-2xl">
                        <button 
                          onClick={() => setMode("manual")}
                          className={`px-3 py-1 text-[9px] font-black uppercase tracking-widest rounded-md transition-all ${mode === "manual" ? "bg-primary text-primary-foreground shadow-lg" : "text-muted-foreground hover:text-foreground"}`}
@@ -498,7 +555,7 @@ const SpriteStudio = () => {
                          step="0.1" 
                          value={zoom} 
                          onChange={(e) => setZoom(parseFloat(e.target.value))}
-                         className="w-full h-1.5 bg-primary/20 rounded-lg appearance-none cursor-pointer accent-primary"
+                         className="w-full h-1.5 bg-primary/20 rounded-2xl appearance-none cursor-pointer accent-primary"
                        />
                     </div>
 
@@ -546,7 +603,7 @@ const SpriteStudio = () => {
                         </div>
                         <Button 
                           variant="secondary" 
-                          className="w-full h-12 rounded-xl font-bold gap-2 text-xs uppercase transition-all hover:bg-primary hover:text-primary-foreground"
+                          className="w-full h-12 rounded-2xl font-bold gap-2 text-xs uppercase transition-all hover:bg-primary hover:text-primary-foreground"
                           onClick={() => generateGrid(gridConfig.rows, gridConfig.cols, gridConfig.gapX, gridConfig.gapY)}
                         >
                            Overwrite Stage Grid
@@ -564,7 +621,7 @@ const SpriteStudio = () => {
                            x: (viewportW - (imgSize.w * scale)) / 2,
                            y: (viewportH - (imgSize.h * scale)) / 2,
                          }); 
-                       }} className="w-full text-[10px] font-black uppercase tracking-widest h-8 rounded-lg gap-2">
+                       }} className="w-full text-[10px] font-black uppercase tracking-widest h-8 rounded-2xl gap-2">
                           <MousePointer2 className="h-3 w-3" /> Center Viewport
                        </Button>
                     </div>
@@ -607,7 +664,7 @@ const SpriteStudio = () => {
                                        <input 
                                          type="number" 
                                          value={Math.round(slice.x)} 
-                                         onChange={(e) => setSlices(slices.map(s => s.id === slice.id ? {...s, x: parseInt(e.target.value) || 0} : s))}
+                                         onChange={(e) => setSlices(slices.map(s => s.id === slice.id ? {...s, x: Math.max(0, Math.min(parseInt(e.target.value) || 0, imgSize.w - s.w))} : s))}
                                          className="w-10 bg-transparent text-[9px] font-mono font-bold text-muted-foreground focus:outline-none"
                                        />
                                     </div>
@@ -616,7 +673,7 @@ const SpriteStudio = () => {
                                        <input 
                                          type="number" 
                                          value={Math.round(slice.y)} 
-                                         onChange={(e) => setSlices(slices.map(s => s.id === slice.id ? {...s, y: parseInt(e.target.value) || 0} : s))}
+                                         onChange={(e) => setSlices(slices.map(s => s.id === slice.id ? {...s, y: Math.max(0, Math.min(parseInt(e.target.value) || 0, imgSize.h - s.h))} : s))}
                                          className="w-10 bg-transparent text-[9px] font-mono font-bold text-muted-foreground focus:outline-none"
                                        />
                                     </div>
@@ -625,7 +682,7 @@ const SpriteStudio = () => {
                                        <input 
                                          type="number" 
                                          value={Math.round(slice.w)} 
-                                         onChange={(e) => setSlices(slices.map(s => s.id === slice.id ? {...s, w: parseInt(e.target.value) || 1} : s))}
+                                         onChange={(e) => setSlices(slices.map(s => s.id === slice.id ? {...s, w: Math.max(1, Math.min(parseInt(e.target.value) || 1, imgSize.w - s.x))} : s))}
                                          className="w-10 bg-transparent text-[9px] font-mono font-bold text-muted-foreground focus:outline-none"
                                        />
                                     </div>
@@ -634,7 +691,7 @@ const SpriteStudio = () => {
                                        <input 
                                          type="number" 
                                          value={Math.round(slice.h)} 
-                                         onChange={(e) => setSlices(slices.map(s => s.id === slice.id ? {...s, h: parseInt(e.target.value) || 1} : s))}
+                                         onChange={(e) => setSlices(slices.map(s => s.id === slice.id ? {...s, h: Math.max(1, Math.min(parseInt(e.target.value) || 1, imgSize.h - s.y))} : s))}
                                          className="w-10 bg-transparent text-[9px] font-mono font-bold text-muted-foreground focus:outline-none"
                                        />
                                     </div>
@@ -662,3 +719,4 @@ const SpriteStudio = () => {
 };
 
 export default SpriteStudio;
+

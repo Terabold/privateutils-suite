@@ -130,7 +130,12 @@ const PiiMasker = () => {
     const h = Math.abs(startPos.y - currPos.y);
 
     if (w > 5 && h > 5) {
-      setRegions([...regions, { x, y, width: w, height: h, strength: blurStrength }]);
+      // Dynamic blur strength: if selection is very small (<20px), reduce blur.
+      let adjustedStrength = blurStrength;
+      if (Math.max(w, h) < 20) {
+         adjustedStrength = Math.max(2, blurStrength / 4);
+      }
+      setRegions([...regions, { x, y, width: w, height: h, strength: adjustedStrength }]);
       toast.success("Partition Redacted");
     }
   };
@@ -155,7 +160,7 @@ const PiiMasker = () => {
           <header className="flex items-center justify-between flex-wrap gap-8">
             <div className="flex items-center gap-6">
               <Link to="/">
-                <Button variant="outline" size="icon" className="h-12 w-12 rounded-xl border border-border/50 hover:bg-primary/5 transition-all group/back">
+                <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-border/50 hover:bg-primary/5 transition-all group/back">
                   <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
                 </Button>
               </Link>
@@ -167,7 +172,7 @@ const PiiMasker = () => {
               </div>
             </div>
             {image && (
-               <Button onClick={() => setImage(null)} variant="ghost" size="sm" className="gap-2 h-10 px-5 text-[10px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-xl transition-all">
+               <Button onClick={() => setImage(null)} variant="ghost" size="sm" className="gap-2 h-10 px-5 text-[10px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-2xl transition-all">
                   Destroy Artifact
                </Button>
             )}
@@ -181,7 +186,7 @@ const PiiMasker = () => {
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={(e) => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); }}
                     onClick={() => inputRef.current?.click()}
-                    className="relative w-full flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-primary/20 text-center transition-all cursor-pointer py-48 bg-background/50 hover:border-primary/40 hover:bg-primary/5 shadow-inner group"
+                    className="relative w-full flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/20 text-center transition-all cursor-pointer py-48 bg-background/50 hover:border-primary/40 hover:bg-primary/5 shadow-inner group"
                   >
                     <div className="h-24 w-24 bg-primary/10 rounded-2xl flex items-center justify-center mb-10 shadow-inner group-hover:scale-110 transition-transform">
                        <ShieldX className="h-12 w-12 text-primary" />
@@ -201,15 +206,15 @@ const PiiMasker = () => {
                         onMouseMove={handleMouseMove}
                         onMouseUp={handleMouseUp}
                         onMouseLeave={handleMouseUp}
-                        className="mx-auto cursor-crosshair shadow-2xl"
+                        className="mx-auto cursor-crosshair shadow-2xl max-w-full max-h-[60vh] object-contain"
                       />
                     </div>
                     
                     <div className="absolute top-6 right-6 flex gap-2">
-                       <Button size="icon" variant="ghost" onClick={() => setRegions(prev => prev.slice(0, -1))} disabled={regions.length === 0} className="h-12 w-12 rounded-xl bg-black/60 text-white backdrop-blur-md border border-white/10 hover:bg-black/80">
+                       <Button size="icon" variant="ghost" onClick={() => setRegions(prev => prev.slice(0, -1))} disabled={regions.length === 0} className="h-12 w-12 rounded-2xl bg-black/60 text-white backdrop-blur-md border border-white/10 hover:bg-black/80">
                           <Undo2 className="h-5 w-5" />
                        </Button>
-                       <Button size="icon" variant="ghost" onClick={() => setRegions([])} disabled={regions.length === 0} className="h-12 w-12 rounded-xl bg-destructive/60 text-white backdrop-blur-md border border-white/10 hover:bg-destructive/80">
+                       <Button size="icon" variant="ghost" onClick={() => setRegions([])} disabled={regions.length === 0} className="h-12 w-12 rounded-2xl bg-destructive/60 text-white backdrop-blur-md border border-white/10 hover:bg-destructive/80">
                           <Eraser className="h-5 w-5" />
                        </Button>
                     </div>
@@ -240,13 +245,13 @@ const PiiMasker = () => {
                          onValueChange={([v]) => setBlurStrength(v)}
                          className="py-4"
                        />
-                       <div className="bg-muted/5 p-5 rounded-xl border border-border/50 text-center">
+                       <div className="bg-muted/5 p-5 rounded-2xl border border-border/50 text-center">
                           <p className="text-[9px] font-black uppercase tracking-widest opacity-40 mb-1 leading-none">Gaussian Weight</p>
                           <p className="text-2xl font-black italic tracking-tighter text-foreground">{blurStrength}px</p>
                        </div>
                     </div>
 
-                    <div className="p-6 rounded-xl bg-primary/5 border border-primary/10 space-y-4">
+                    <div className="p-6 rounded-2xl bg-primary/5 border border-primary/10 space-y-4">
                        <h4 className="text-[10px] font-black uppercase tracking-widest text-primary flex items-center gap-2">
                           <Layers className="h-3.5 w-3.5" /> Client-Side Redaction
                        </h4>
@@ -281,3 +286,4 @@ const PiiMasker = () => {
 };
 
 export default PiiMasker;
+
