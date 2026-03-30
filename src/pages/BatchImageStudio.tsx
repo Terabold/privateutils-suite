@@ -157,17 +157,12 @@ const BatchImageStudio = () => {
                 </Button>
               </Link>
               <div>
-                <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic">
-                   Batch <span className="text-primary italic">Image Studio</span>
-                </h1>
-                <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">Mass Processing & Overlay Engine</p>
+                 <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic">
+                    Batch <span className="text-primary italic">Studio</span>
+                 </h1>
+                 <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">Mass Processing & Neural Optimization</p>
               </div>
             </div>
-            {images.length > 0 && (
-              <Button onClick={() => setImages([])} variant="ghost" size="sm" className="gap-2 h-10 px-5 text-[10px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-2xl transition-all">
-                Wipe Stage
-              </Button>
-            )}
           </header>
 
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-12 items-start">
@@ -218,8 +213,18 @@ const BatchImageStudio = () => {
 
             <aside className="space-y-6 lg:sticky lg:top-24 h-fit">
               <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl">
-                 <div className="bg-primary/5 p-5 border-b border-primary/10">
+                 <div className="bg-primary/5 p-5 border-b border-primary/10 flex items-center justify-between">
                    <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Global Pipeline</h3>
+                   {images.length > 0 && (
+                     <Button 
+                       onClick={() => setImages([])} 
+                       variant="ghost" 
+                       size="sm" 
+                       className="h-8 px-3 text-[9px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-xl transition-all"
+                     >
+                       Reset Stage
+                     </Button>
+                   )}
                  </div>
                  <CardContent className="p-8 space-y-10">
                     <div className="space-y-5">

@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Upload, Download, RefreshCw, Terminal, CloudUpload } from "lucide-react";
+import { ArrowLeft, Upload, Download, RefreshCw, Terminal, CloudUpload, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -166,18 +166,12 @@ const UniversalMediaConverter = () => {
                 </Button>
               </Link>
               <div>
-                <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow">
-                  Media <span className="text-primary italic">Converter</span>
+                <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic">
+                   Media <span className="text-primary italic">Converter</span>
                 </h1>
                 <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">High-Performance WASM Conversion Engine</p>
               </div>
             </div>
-            
-            {file && (
-              <Button onClick={() => { setFile(null); setResultUrl(null); setLogs([]); }} variant="ghost" size="sm" className="gap-2 h-10 px-5 text-[10px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-2xl transition-all">
-                Wipe Stage
-              </Button>
-            )}
           </header>
 
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-12 items-start">
@@ -194,36 +188,55 @@ const UniversalMediaConverter = () => {
                 </Card>
               )}
 
-              <Card className="glass-morphism border-primary/10 overflow-hidden min-h-[500px] flex flex-col items-center justify-center relative bg-muted/5 rounded-2xl shadow-inner p-10">
-                <div
-                  onDragOver={(e) => e.preventDefault()}
-                  onDrop={(e) => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); }}
-                  onClick={() => !processing && inputRef.current?.click()}
-                  className={`relative w-full flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/20 text-center transition-all ${!processing ? "cursor-pointer py-32 bg-background/50 hover:bg-primary/5 shadow-inner" : "py-32 opacity-50"}`}
-                >
-                   <div className="h-20 w-20 bg-primary/10 rounded-2xl flex items-center justify-center mb-8 shadow-inner group-hover:scale-110 transition-transform">
-                      <CloudUpload className="h-10 w-10 text-primary" />
-                   </div>
-                   
-                   {file ? (
-                     <div className="px-6 text-center">
-                       <p className="text-2xl font-black text-foreground mb-2 italic uppercase tracking-tighter truncate max-w-md">{file.name}</p>
-                       <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest opacity-40">{(file.size / 1024 / 1024).toFixed(2)} MB • READY FOR PARTITIONING</p>
-                     </div>
-                   ) : (
-                     <div className="px-6 text-center space-y-1">
-                       <p className="text-3xl font-black text-foreground uppercase tracking-tighter italic leading-none text-shadow-glow">Drag & Drop</p>
-                       <p className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.2em] opacity-40">or click to browse</p>
-                       <KbdShortcut />
-                       <p className="mt-4 text-[10px] text-muted-foreground font-black uppercase tracking-widest opacity-20">MP4, MOV, PNG, JPG, WEBP, MP3 Supported</p>
-                     </div>
-                   )}
-                  <input ref={inputRef} type="file" className="hidden" onChange={(e) => handleFile(e.target.files?.[0])} disabled={processing} />
+              <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-2xl transition-all duration-700 hover:border-primary/30">
+                <div className="bg-primary/5 p-5 border-b border-primary/10 flex items-center justify-between">
+                  <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary italic">Simulation Stage</h3>
+                  {file && (
+                    <Button 
+                      onClick={() => { setFile(null); setResultUrl(null); setLogs([]); setTargetFormat(""); }} 
+                      variant="ghost" 
+                      size="sm" 
+                      className="h-8 px-3 text-[9px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-2xl transition-all"
+                    >
+                      Reset Stage
+                    </Button>
+                  )}
                 </div>
+                <CardContent className="p-10">
+                  <div
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={(e) => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); }}
+                    onClick={() => !processing && inputRef.current?.click()}
+                    className={`relative w-full flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/20 text-center transition-all ${!processing ? "cursor-pointer py-32 bg-background/50 hover:bg-primary/5 shadow-inner" : "py-32 opacity-50"}`}
+                  >
+                    <div className="h-20 w-20 bg-primary/10 rounded-2xl flex items-center justify-center mb-8 shadow-inner group-hover:scale-110 transition-transform">
+                        <CloudUpload className="h-10 w-10 text-primary" />
+                    </div>
+                    
+                    {file ? (
+                      <div className="px-6 text-center space-y-4">
+                        <div className="h-20 w-20 bg-primary/20 text-primary rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-inner">
+                           <RefreshCw className="h-10 w-10 animate-spin-slow" />
+                        </div>
+                        <p className="text-3xl font-black text-foreground uppercase tracking-tighter italic leading-none text-shadow-glow">Target Ready</p>
+                        <p className="text-xs font-black text-primary truncate max-w-md mx-auto italic uppercase opacity-80">{file.name}</p>
+                        <p className="text-[9px] text-muted-foreground font-black uppercase tracking-[0.2em] opacity-40 italic">{(file.size / 1024 / 1024).toFixed(2)} MB • READY FOR PARTITIONING</p>
+                      </div>
+                    ) : (
+                      <div className="px-6 text-center space-y-1">
+                        <p className="text-3xl font-black text-foreground uppercase tracking-tighter italic leading-none text-shadow-glow">Drag & Drop</p>
+                        <p className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.2em] opacity-40">or click to browse</p>
+                        <KbdShortcut />
+                        <p className="mt-4 text-[10px] text-muted-foreground font-black uppercase tracking-widest opacity-20">MP4, MOV, PNG, JPG, WEBP, MP3 Supported</p>
+                      </div>
+                    )}
+                    <input ref={inputRef} type="file" className="hidden" onChange={(e) => handleFile(e.target.files?.[0])} disabled={processing} />
+                  </div>
+                </CardContent>
               </Card>
 
               {processing && (
-                 <Card className="glass-morphism border-primary/10 p-10 rounded-2xl">
+                 <Card className="glass-morphism border-primary/10 p-10 rounded-2xl shadow-xl">
                    <div className="space-y-6">
                      <div className="flex justify-between items-end">
                        <div className="flex items-center gap-2 text-primary">
@@ -232,7 +245,7 @@ const UniversalMediaConverter = () => {
                        </div>
                        <span className="text-xl font-black tracking-tighter">{progress}%</span>
                      </div>
-                     <Progress value={progress} className="h-4 w-full bg-primary/10" />
+                     <Progress value={progress} className="h-4 w-full bg-primary/10 shadow-inner rounded-full" />
                      
                      <div className="bg-zinc-950 rounded-2xl p-6 font-mono text-[11px] text-primary/80 overflow-hidden shadow-inner border border-white/5 min-h-[120px] flex flex-col justify-end">
                         {logs.map((log, i) => (
@@ -244,13 +257,13 @@ const UniversalMediaConverter = () => {
               )}
 
               {resultUrl && (
-                <Card className="border-primary/20 bg-primary/5 animate-in slide-in-from-bottom-6 rounded-2xl">
+                <Card className="border-primary/20 bg-primary/5 animate-in slide-in-from-bottom-6 rounded-2xl shadow-2xl overflow-hidden">
                   <CardContent className="p-12 flex flex-col items-center">
-                    <div className="h-20 w-20 bg-primary/20 text-primary rounded-2xl flex items-center justify-center mb-8 shadow-2xl">
+                    <div className="h-20 w-20 bg-primary/20 text-primary rounded-2xl flex items-center justify-center mb-8 shadow-inner">
                       <Download className="h-10 w-10" />
                     </div>
                     <h3 className="text-3xl font-black tracking-tighter text-foreground mb-4 text-center uppercase italic">Conversion Set</h3>
-                    <p className="text-sm font-medium text-muted-foreground text-center mb-10 opacity-60">Your {targetFormat.toUpperCase()} asset has been successfully re-rendered in the local sandbox.</p>
+                    <p className="text-sm font-medium text-muted-foreground text-center mb-10 opacity-60 italic">Your {targetFormat.toUpperCase()} asset has been successfully re-rendered in the local sandbox.</p>
                     
                     <div className="flex flex-col sm:flex-row gap-6 w-full justify-center">
                       <Button className="gap-3 h-16 px-12 text-lg font-black rounded-2xl shadow-2xl shadow-primary/20 uppercase italic" onClick={download}>
@@ -263,13 +276,17 @@ const UniversalMediaConverter = () => {
                   </CardContent>
                 </Card>
               )}
+
+              {file && (
+                <p className="text-[9px] text-center text-muted-foreground font-black uppercase tracking-widest opacity-30 italic px-4 animate-in fade-in duration-1000">WASM-accelerated • Zero data loss • Browser-only processing</p>
+              )}
             </div>
 
             <aside className="space-y-6 lg:sticky lg:top-24 h-fit">
               <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl">
-                 <div className="bg-primary/5 p-5 border-b border-primary/10">
-                   <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Conversion Settings</h3>
-                 </div>
+                  <div className="bg-primary/5 p-5 border-b border-primary/10 flex items-center justify-between">
+                    <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Conversion Settings</h3>
+                  </div>
                  <CardContent className="p-8 space-y-10">
                     <div className="space-y-4">
                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 leading-none px-1">Convert To</label>
@@ -319,12 +336,7 @@ const UniversalMediaConverter = () => {
                  <AdPlaceholder format="rectangle" className="opacity-40 grayscale group-hover:grayscale-0 transition-all" />
               </div>
 
-              <div className="p-10 rounded-2xl border-2 border-dashed border-primary/10 text-center studio-gradient">
-                 <h4 className="text-[10px] font-black uppercase tracking-[0.2em] mb-4 text-primary">Hardware Acceleration</h4>
-                 <p className="text-[11px] text-muted-foreground leading-relaxed italic opacity-80 font-medium">
-                    This tool utilizes <strong className="font-bold">SharedArrayBuffer</strong> and <strong className="font-bold">Multi-Threaded WASM</strong> to reach conversion speeds comparable to native software.
-                 </p>
-              </div>
+
             </aside>
           </div>
         </div>
@@ -335,4 +347,3 @@ const UniversalMediaConverter = () => {
 };
 
 export default UniversalMediaConverter;
-

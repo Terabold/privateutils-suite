@@ -11,27 +11,35 @@ import { toast } from "sonner";
 import { usePasteFile } from "@/hooks/usePasteFile";
 import { KbdShortcut } from "@/components/KbdShortcut";
 
-interface BlurRegion {
+interface RedactionRegion {
+  id: string;
   x: number;
   y: number;
   width: number;
   height: number;
   strength: number;
+  style: "blur" | "black";
 }
 
 const PiiMasker = () => {
   const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
   const [image, setImage] = useState<HTMLImageElement | null>(null);
   const [file, setFile] = useState<File | null>(null);
-  const [regions, setRegions] = useState<BlurRegion[]>([]);
+  const [regions, setRegions] = useState<RedactionRegion[]>([]);
+  const [redactionStyle, setRedactionStyle] = useState<"blur" | "black">("blur");
   const [isDrawing, setIsDrawing] = useState(false);
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
   const [currPos, setCurrPos] = useState({ x: 0, y: 0 });
   const [blurStrength, setBlurStrength] = useState(20);
   const [processing, setProcessing] = useState(false);
+  const [zoom, setZoom] = useState(1);
+  const [pan, setPan] = useState({ x: 0, y: 0 });
+  const [isPanning, setIsPanning] = useState(false);
+  const [panStart, setPanStart] = useState({ x: 0, y: 0 });
   
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const toggleDark = useCallback(() => {
     const next = !darkMode;
@@ -49,6 +57,8 @@ const PiiMasker = () => {
         setImage(img);
         setFile(f);
         setRegions([]);
+        setZoom(1);
+        setPan({ x: 0, y: 0 });
         toast.success("Identity Scrubber Initialized");
       };
       img.src = e.target?.result as string;
@@ -72,23 +82,29 @@ const PiiMasker = () => {
     // Filter logic per region
     regions.forEach(r => {
       ctx.save();
-      ctx.beginPath();
-      ctx.rect(r.x, r.y, r.width, r.height);
-      ctx.clip();
-      ctx.filter = `blur(${r.strength}px)`;
-      ctx.drawImage(image, 0, 0);
+      if (r.style === "blur") {
+        ctx.beginPath();
+        ctx.rect(r.x, r.y, r.width, r.height);
+        ctx.clip();
+        ctx.filter = `blur(${r.strength}px)`;
+        ctx.drawImage(image, 0, 0);
+      } else {
+        ctx.fillStyle = "black";
+        ctx.fillRect(r.x, r.y, r.width, r.height);
+      }
       ctx.restore();
       
       // Fine border for active region
-      ctx.strokeStyle = "rgba(124, 58, 237, 0.3)";
-      ctx.lineWidth = 2;
+      ctx.strokeStyle = "rgba(124, 58, 237, 0.4)";
+      ctx.lineWidth = 2 / zoom;
       ctx.strokeRect(r.x, r.y, r.width, r.height);
     });
 
     // Drawing preview
     if (isDrawing) {
       ctx.strokeStyle = "#7c3aed";
-      ctx.setLineDash([5, 5]);
+      ctx.lineWidth = 2 / zoom;
+      ctx.setLineDash([5 / zoom, 5 / zoom]);
       const x = Math.min(startPos.x, currPos.x);
       const y = Math.min(startPos.y, currPos.y);
       const w = Math.abs(startPos.x - currPos.x);
@@ -100,6 +116,19 @@ const PiiMasker = () => {
   useEffect(() => {
     drawCanvas();
   }, [drawCanvas]);
+
+  // Scroll-to-zoom
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el || !image) return;
+    const handleWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      const factor = e.deltaY > 0 ? 0.92 : 1.08;
+      setZoom(prev => Math.max(0.2, Math.min(prev * factor, 20)));
+    };
+    el.addEventListener("wheel", handleWheel, { passive: false });
+    return () => el.removeEventListener("wheel", handleWheel);
+  }, [image]);
 
   const getMousePos = (e: React.MouseEvent) => {
     const canvas = canvasRef.current;
@@ -115,18 +144,38 @@ const PiiMasker = () => {
 
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!image) return;
-    const pos = getMousePos(e);
-    setIsDrawing(true);
-    setStartPos(pos);
-    setCurrPos(pos);
+    // Right-click → pan
+    if (e.button === 2) {
+      setIsPanning(true);
+      setPanStart({ x: e.clientX, y: e.clientY });
+      return;
+    }
+    // Left-click → draw blur
+    if (e.button === 0) {
+      const pos = getMousePos(e);
+      setIsDrawing(true);
+      setStartPos(pos);
+      setCurrPos(pos);
+    }
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
+    if (isPanning) {
+      const dx = e.clientX - panStart.x;
+      const dy = e.clientY - panStart.y;
+      setPan(prev => ({ x: prev.x + dx, y: prev.y + dy }));
+      setPanStart({ x: e.clientX, y: e.clientY });
+      return;
+    }
     if (!isDrawing) return;
     setCurrPos(getMousePos(e));
   };
 
   const handleMouseUp = () => {
+    if (isPanning) {
+      setIsPanning(false);
+      return;
+    }
     if (!isDrawing) return;
     setIsDrawing(false);
     const x = Math.min(startPos.x, currPos.x);
@@ -140,7 +189,12 @@ const PiiMasker = () => {
       if (Math.max(w, h) < 20) {
          adjustedStrength = Math.max(2, blurStrength / 4);
       }
-      setRegions([...regions, { x, y, width: w, height: h, strength: adjustedStrength }]);
+      setRegions([...regions, { 
+        id: Math.random().toString(36).substr(2, 9),
+        x, y, width: w, height: h, 
+        strength: adjustedStrength,
+        style: redactionStyle
+      }]);
       toast.success("Partition Redacted");
     }
   };
@@ -173,17 +227,12 @@ const PiiMasker = () => {
                 <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic">
                    PII <span className="text-primary italic">Masker</span>
                 </h1>
-                <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">Sensitive Information Redaction</p>
+                <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">Neural-Grade Privacy Redaction</p>
               </div>
             </div>
-            {image && (
-               <Button onClick={() => setImage(null)} variant="ghost" size="sm" className="gap-2 h-10 px-5 text-[10px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-2xl transition-all">
-                  Destroy Artifact
-               </Button>
-            )}
           </header>
 
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-12 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-12 items-start animate-in fade-in slide-in-from-bottom-8 duration-700">
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-6 duration-700">
               {!image ? (
                 <Card className="glass-morphism border-primary/10 overflow-hidden min-h-[400px] flex flex-col items-center justify-center relative bg-muted/5 rounded-2xl shadow-inner p-10">
@@ -207,15 +256,26 @@ const PiiMasker = () => {
                 </Card>
               ) : (
                 <div className="space-y-8">
-                  <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-2xl bg-zinc-950 p-2 relative">
-                    <div className="overflow-auto max-h-[80vh] custom-scrollbar">
+                  <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-2xl bg-zinc-950 p-0 relative">
+                    <div 
+                      ref={containerRef}
+                      className="w-full h-[600px] relative overflow-hidden flex items-center justify-center bg-[#0a0a0a]"
+                      onMouseDown={handleMouseDown}
+                      onMouseMove={handleMouseMove}
+                      onMouseUp={handleMouseUp}
+                      onMouseLeave={handleMouseUp}
+                      onContextMenu={(e) => e.preventDefault()}
+                      style={{ cursor: isPanning ? 'grabbing' : 'crosshair' }}
+                    >
                       <canvas
                         ref={canvasRef}
-                        onMouseDown={handleMouseDown}
-                        onMouseMove={handleMouseMove}
-                        onMouseUp={handleMouseUp}
-                        onMouseLeave={handleMouseUp}
-                        className="mx-auto cursor-crosshair shadow-2xl max-w-full max-h-[60vh] object-contain"
+                        className="shadow-2xl origin-center"
+                        style={{ 
+                          transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
+                          transition: isPanning || isDrawing ? 'none' : 'transform 0.15s ease-out',
+                          maxWidth: 'none',
+                          maxHeight: 'none'
+                        }}
                       />
                     </div>
                     
@@ -227,49 +287,64 @@ const PiiMasker = () => {
                           <Eraser className="h-5 w-5" />
                        </Button>
                     </div>
+                    <p className="text-[9px] text-center text-muted-foreground/30 font-black uppercase tracking-widest py-2 italic">Left-click: mask • Right-click: pan • Scroll: zoom</p>
                   </Card>
 
                   <div className="flex flex-col sm:flex-row gap-6">
-                     <Button onClick={exportImage} className="h-20 flex-1 text-lg font-black rounded-2xl gap-3 shadow-2xl shadow-primary/20 italic uppercase tracking-tight">
-                        <Download className="h-6 w-6" /> Export Redacted Artifact
-                     </Button>
+                     {/* Stage controls removed, moved to sidebar */}
                   </div>
                 </div>
               )}
             </div>
 
             <aside className="space-y-8 lg:sticky lg:top-24 h-fit">
-              <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl">
-                 <div className="bg-primary/5 p-5 border-b border-primary/10">
-                   <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Masking Calibration</h3>
-                 </div>
-                 <CardContent className="p-8 space-y-10">
-                    <div className="space-y-6">
-                       <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 leading-none block">Blur Matrix Intensity</label>
+               <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl">
+                  <div className="bg-primary/5 p-5 border-b border-primary/10 flex items-center justify-between">
+                    <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Masking Calibration</h3>
+                    <div className="flex gap-2">
+                       {image && (
+                         <Button 
+                           onClick={() => { setImage(null); setFile(null); setRegions([]); }} 
+                           variant="ghost" 
+                           size="sm" 
+                           className="h-8 px-3 text-[9px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-2xl transition-all"
+                         >
+                           Reset Stage
+                         </Button>
+                       )}
+                    </div>
+                  </div>
+                 <CardContent className="p-5 space-y-6">
+                    <div className="space-y-4">
+                       <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 leading-none block">Redaction Style</label>
+                       <div className="flex bg-muted/20 p-1 rounded-2xl">
+                          <button onClick={() => setRedactionStyle("blur")} className={`flex-1 py-2 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-2 ${redactionStyle === "blur" ? "bg-primary text-primary-foreground shadow-lg" : "text-muted-foreground hover:bg-primary/5"}`}>
+                             <Layers className="h-3 w-3" /> Gaussian Blur
+                          </button>
+                          <button onClick={() => setRedactionStyle("black")} className={`flex-1 py-2 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-2 ${redactionStyle === "black" ? "bg-black text-white shadow-lg" : "text-muted-foreground hover:bg-primary/5"}`}>
+                             <Eraser className="h-3 w-3" /> Solid Black
+                          </button>
+                       </div>
+                    </div>
+
+                    <div className="space-y-4">
+                       <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 leading-none block">Blur Matrix (Intensity)</label>
                        <Slider 
                          min={0}
                          max={100}
                          step={1}
+                         disabled={redactionStyle === "black"}
                          value={[blurStrength]}
                          onValueChange={([v]) => setBlurStrength(v)}
-                         className="py-4"
+                         className="py-2"
                        />
-                       <div className="bg-muted/5 p-5 rounded-2xl border border-border/50 text-center">
-                          <p className="text-[9px] font-black uppercase tracking-widest opacity-40 mb-1 leading-none">Gaussian Weight</p>
-                          <p className="text-2xl font-black italic tracking-tighter text-foreground">{blurStrength}px</p>
+                       <div className={`bg-muted/5 p-3 rounded-2xl border border-border/50 text-center transition-opacity flex justify-between items-center ${redactionStyle === "black" ? "opacity-20" : ""}`}>
+                          <p className="text-[9px] font-black uppercase tracking-widest opacity-40 leading-none">Weight</p>
+                          <p className="text-xl font-black italic tracking-tighter text-foreground">{blurStrength}px</p>
                        </div>
                     </div>
 
-                    <div className="p-6 rounded-2xl bg-primary/5 border border-primary/10 space-y-4">
-                       <h4 className="text-[10px] font-black uppercase tracking-widest text-primary flex items-center gap-2">
-                          <Layers className="h-3.5 w-3.5" /> Client-Side Redaction
-                       </h4>
-                       <p className="text-[11px] text-muted-foreground leading-relaxed italic opacity-80 font-medium font-sans">
-                         Information is physically destroyed within the browser's sandbox. No data is ever sent to a server.
-                       </p>
-                    </div>
-
-                    <div className="space-y-4 pt-4 border-t border-border/20">
+                    <div className="space-y-2 pt-2 border-t border-border/20">
                        <div className="flex items-center gap-4 text-muted-foreground/60">
                           <Square className="h-4 w-4" />
                           <span className="text-[10px] font-black uppercase tracking-widest">Rectangle Tool Active</span>
@@ -278,6 +353,12 @@ const PiiMasker = () => {
                           <Sparkles className="h-4 w-4" />
                           <span className="text-[10px] font-black uppercase tracking-widest">Metadata Scrubbing Active</span>
                        </div>
+                    </div>
+
+                    <div className="pt-4 border-t border-border/20">
+                       <Button onClick={exportImage} disabled={!image} className="w-full h-16 text-md font-black rounded-2xl gap-3 shadow-2xl shadow-primary/20 italic uppercase tracking-tight hover:scale-[1.02] active:scale-[0.98] transition-all">
+                          <Download className="h-5 w-5" /> Export Artifact
+                       </Button>
                     </div>
                  </CardContent>
               </Card>

@@ -217,11 +217,21 @@ const JsonForge = () => {
             </div>
 
             <aside className="space-y-8 lg:sticky lg:top-24 h-fit">
-              <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl">
-                 <div className="bg-primary/5 p-5 border-b border-primary/10 flex items-center justify-between">
-                   <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Status Console</h3>
-                   {!error && input.length > 0 && <span className="flex items-center gap-1.5 text-[9px] font-black text-emerald-500 uppercase tracking-widest"><Check className="h-3 w-3" /> Valid</span>}
-                 </div>
+                  <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl">
+                     <div className="bg-primary/5 p-5 border-b border-primary/10 flex items-center justify-between">
+                       <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Status Console</h3>
+                       {input && (
+                         <Button 
+                           onClick={clearInput} 
+                           variant="ghost" 
+                           size="sm" 
+                           className="h-8 px-3 text-[9px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-2xl transition-all"
+                         >
+                           Reset Stage
+                         </Button>
+                       )}
+                       {!error && input.length > 0 && <span className="flex items-center gap-1.5 text-[9px] font-black text-emerald-500 uppercase tracking-widest"><Check className="h-3 w-3" /> Valid</span>}
+                     </div>
                  <CardContent className="p-8 space-y-10">
                     <div className="grid grid-cols-2 gap-4">
                        <div className="bg-muted/5 p-5 rounded-2xl border border-border/50">
@@ -253,25 +263,7 @@ const JsonForge = () => {
                        </Button>
                     </div>
 
-                    <div className="p-6 rounded-2xl bg-primary/5 border border-primary/10 space-y-4">
-                       <h4 className="text-[10px] font-black uppercase tracking-widest text-primary flex items-center gap-2">
-                          <Zap className="h-3.5 w-3.5" /> High-Density Logic
-                       </h4>
-                       <p className="text-[11px] text-muted-foreground leading-relaxed italic opacity-80 font-medium">
-                         Your code is parsed locally using the browser's native V8 engine for instant validation. No data reaches external servers.
-                       </p>
-                    </div>
-
-                    <div className="space-y-4">
-                       <div className="flex items-center gap-3 text-muted-foreground/60 transition-colors hover:text-foreground">
-                          <Code className="h-4 w-4" />
-                          <span className="text-xs font-medium italic">Standard ECMA-404 Compliant</span>
-                       </div>
-                       <div className="flex items-center gap-3 text-muted-foreground/60 transition-colors hover:text-foreground">
-                          <Brain className="h-4 w-4" />
-                          <span className="text-xs font-medium italic">Recursive Object Deep-Scan</span>
-                       </div>
-                    </div>
+                    <p className="text-[9px] text-center text-muted-foreground font-black uppercase tracking-widest opacity-30 italic">V8 native parsing • ECMA-404 compliant • Recursive deep-scan</p>
                  </CardContent>
               </Card>
 

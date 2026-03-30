@@ -95,14 +95,9 @@ const SvgOptimizer = () => {
                 <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow">
                    SVG <span className="text-primary italic">Optimizer</span>
                 </h1>
-                <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">High-Efficiency Vector Minification Lab</p>
+                <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">Professional-Grade SVG Code Minification</p>
               </div>
             </div>
-            {input && (
-              <Button onClick={() => { setInput(""); setOptimized(""); setStats(null); }} variant="ghost" size="sm" className="gap-2 h-10 px-5 text-[10px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-2xl transition-all">
-                Wipe Stage
-              </Button>
-            )}
           </header>
 
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-12 items-start">
@@ -171,18 +166,28 @@ const SvgOptimizer = () => {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                  <Button onClick={optimizeSvg} className="h-20 text-lg font-black rounded-2xl gap-3 shadow-2xl shadow-primary/20 italic uppercase tracking-tight">
-                    <Zap className="h-6 w-6" /> Purge Metadata
+                    <Zap className="h-6 w-6" /> Minify SVG Code
                  </Button>
                  <Button onClick={downloadSvg} disabled={!optimized} variant="secondary" className="h-20 text-lg font-black rounded-2xl gap-3 italic uppercase border border-border/50">
-                    <Download className="h-6 w-6" /> Export Minified
+                    <Download className="h-6 w-6" /> Download .SVG File
                  </Button>
               </div>
             </div>
 
             <aside className="space-y-8 lg:sticky lg:top-24 h-fit">
               <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl">
-                 <div className="bg-primary/5 p-5 border-b border-primary/10">
-                   <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Efficiency Logic</h3>
+                 <div className="bg-primary/5 p-5 border-b border-primary/10 flex items-center justify-between">
+                   <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Performance Metrics</h3>
+                   {input && (
+                     <Button 
+                       onClick={() => { setInput(""); setOptimized(""); setStats(null); }} 
+                       variant="ghost" 
+                       size="sm" 
+                       className="h-8 px-3 text-[9px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-xl transition-all"
+                     >
+                       Reset Stage
+                     </Button>
+                   )}
                  </div>
                  <CardContent className="p-8 space-y-10">
                     {stats && (
@@ -197,14 +202,7 @@ const SvgOptimizer = () => {
                       </div>
                     )}
 
-                    <div className="p-6 rounded-2xl bg-zinc-950/50 border border-border/50 space-y-4">
-                       <h4 className="text-[10px] font-black uppercase tracking-widest text-primary flex items-center gap-2">
-                          <Layout className="h-3.5 w-3.5" /> Bit-Stream Scrubbing
-                       </h4>
-                       <p className="text-[11px] text-muted-foreground leading-relaxed italic opacity-80 font-medium font-sans">
-                         This tool removes redundant <strong className="font-bold">Inkscape</strong>, <strong className="font-bold">Illustrator</strong>, and <strong className="font-bold">Sodipodi</strong> namespaces that bloat vector files without affecting visual rendering.
-                       </p>
-                    </div>
+                    <p className="text-[9px] text-center text-muted-foreground font-black uppercase tracking-widest opacity-30 italic">Inkscape/Illustrator bloat stripped • W3C compliant output</p>
 
                     <div className="space-y-4 pt-4 border-t border-border/20">
                        <div className="flex items-center gap-4 text-muted-foreground/60 transition-colors hover:text-foreground group cursor-default">
@@ -218,7 +216,7 @@ const SvgOptimizer = () => {
                     </div>
 
                     <Button variant="ghost" onClick={copyToClipboard} className="w-full gap-2 h-14 border border-border/50 rounded-2xl font-black uppercase tracking-widest text-[10px]">
-                       <Copy className="h-4 w-4" /> Copy Master Code
+                       <Copy className="h-4 w-4" /> Copy SVG Code
                     </Button>
                  </CardContent>
               </Card>

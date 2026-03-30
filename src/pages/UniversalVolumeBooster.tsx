@@ -350,21 +350,15 @@ const UniversalVolumeBooster = () => {
               </Link>
               <div>
                 <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic">
-                   Universal <span className="text-primary italic">Volume Booster</span>
+                   Universal                   Volume <span className="text-primary italic">Booster</span>
                 </h1>
-                <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">High-Gain Local Processing Engine</p>
+                <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">High-Performance Bitstream Amplification</p>
               </div>
             </div>
-            
-            {file && (
-               <Button onClick={() => { setFile(null); setObjectUrl(null); }} variant="ghost" size="sm" className="gap-2 h-10 px-5 text-[10px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-2xl transition-all">
-                  Wipe Stage
-               </Button>
-            )}
           </header>
 
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-12 items-start">
-            <div className="space-y-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+            <div className="lg:col-span-8 space-y-8">
               {!file && (
                 <Card className="glass-morphism border-primary/10 overflow-hidden min-h-[400px] flex flex-col items-center justify-center relative bg-muted/5 rounded-2xl shadow-inner p-10">
                     <div
@@ -425,11 +419,31 @@ const UniversalVolumeBooster = () => {
 
                       {/* Professional Player Layout */}
                       <div className="pt-6 border-t border-primary/10 flex flex-col items-center gap-6">
-                        <div className="w-full h-32 bg-background/50 rounded-2xl border border-border/50 shadow-inner flex items-center justify-center overflow-hidden relative group/waveform">
+                        <div 
+                          className="w-full h-32 bg-background/50 rounded-2xl border border-border/50 shadow-inner flex items-center justify-center overflow-hidden relative group/waveform cursor-pointer"
+                          onMouseDown={(e) => {
+                            if (!audioBuffer) return;
+                            const rect = e.currentTarget.getBoundingClientRect();
+                            const seekTo = (ev: { clientX: number }) => {
+                              const x = (ev.clientX - rect.left) / rect.width;
+                              const t = Math.max(0, Math.min(x * audioBuffer.duration, audioBuffer.duration));
+                              setCurrentTime(t);
+                              if (audioRef.current) audioRef.current.currentTime = t;
+                            };
+                            seekTo(e);
+                            const onMove = (ev: MouseEvent) => seekTo(ev);
+                            const onUp = () => {
+                              window.removeEventListener('mousemove', onMove);
+                              window.removeEventListener('mouseup', onUp);
+                            };
+                            window.addEventListener('mousemove', onMove);
+                            window.addEventListener('mouseup', onUp);
+                          }}
+                        >
                            {/* Static Waveform Background */}
-                           <canvas ref={staticCanvasRef} className="absolute inset-0 w-full h-full opacity-60" />
-                           {/* Live Frequency Overly */}
-                           <canvas ref={canvasRef} className="absolute inset-0 w-full h-full z-10" />
+                           <canvas ref={staticCanvasRef} className="absolute inset-0 w-full h-full opacity-60 pointer-events-none" />
+                           {/* Live Frequency Overlay */}
+                           <canvas ref={canvasRef} className="absolute inset-0 w-full h-full z-10 pointer-events-none" />
                            {/* Playhead (Laser Beam) */}
                            {audioBuffer && (
                               <div 
@@ -487,21 +501,22 @@ const UniversalVolumeBooster = () => {
               )}
             </div>
 
-            <aside className="space-y-6 lg:sticky lg:top-24 h-fit">
+            <aside className="lg:col-span-4 space-y-6 lg:sticky lg:top-24 h-fit">
               <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl">
-                 <div className="bg-primary/5 p-5 border-b border-primary/10">
+                 <div className="bg-primary/5 p-5 border-b border-primary/10 flex items-center justify-between">
                    <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Power Profile</h3>
+                   {file && (
+                     <Button 
+                       onClick={() => { setFile(null); setAudioBuffer(null); setObjectUrl(null); }} 
+                       variant="ghost" 
+                       size="sm" 
+                       className="h-8 px-3 text-[9px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-2xl transition-all"
+                     >
+                       Reset Stage
+                     </Button>
+                   )}
                  </div>
                  <CardContent className="p-8 space-y-8">
-                    <div className="p-6 rounded-2xl bg-zinc-950/50 border border-border/50 space-y-4">
-                       <h4 className="text-[10px] font-black uppercase tracking-widest text-primary flex items-center gap-2">
-                          <ShieldCheck className="h-3.5 w-3.5" /> Bit-Stream Guard
-                       </h4>
-                       <p className="text-[11px] text-muted-foreground leading-relaxed italic opacity-80 font-medium">
-                         Our <strong className="font-bold">Gain Normalizer</strong> prevents digital clipping by recalculating samples using 32-bit floating point precision before export.
-                       </p>
-                    </div>
-
                     <Button 
                       onClick={processAndDownload} 
                       disabled={!file || processing} 
@@ -510,7 +525,7 @@ const UniversalVolumeBooster = () => {
                       <Download className="h-6 w-6" />
                       {processing ? "Amplifying Artifact..." : "Export Boosted"}
                     </Button>
-                    <p className="text-[9px] text-center mt-4 text-muted-foreground font-black uppercase tracking-widest opacity-40 italic">Total Client-Side Rendering</p>
+                    <p className="text-[9px] text-center mt-4 text-muted-foreground font-black uppercase tracking-widest opacity-40 italic">Anti-clipping • 32-bit precision • Local only</p>
                  </CardContent>
               </Card>
 

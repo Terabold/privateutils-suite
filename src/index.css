@@ -83,9 +83,9 @@
     --ring: 142.1 76.2% 36.3%;
   }
   .theme-privacy {
-    --primary: 262.1 83.3% 57.8%;
-    --accent: 262.1 83.3% 95%;
-    --ring: 262.1 83.3% 57.8%;
+    --primary: 280 85% 60%; /* Violet/Magenta — distinct from Audio green */
+    --accent: 280 85% 95%;
+    --ring: 280 85% 60%;
   }
   .theme-utility {
     --primary: 47.9 95.8% 53.1%;
@@ -122,4 +122,16 @@
 }
 ::-webkit-scrollbar-thumb {
   @apply bg-primary/10 hover:bg-primary/30 rounded-full transition-colors;
+}
+
+/* Themed Number Input Spinners */
+.themed-spinner::-webkit-inner-spin-button,
+.themed-spinner::-webkit-outer-spin-button {
+  opacity: 1;
+  cursor: pointer;
+  filter: invert(0.5) sepia(1) saturate(5) hue-rotate(230deg);
+}
+.dark .themed-spinner::-webkit-inner-spin-button,
+.dark .themed-spinner::-webkit-outer-spin-button {
+  filter: invert(0.8) sepia(1) saturate(3) hue-rotate(230deg);
 }

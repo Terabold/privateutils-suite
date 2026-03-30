@@ -103,89 +103,87 @@ const YouTubeThumbnailHub = () => {
                 <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic">
                    YouTube <span className="text-primary italic">Verify</span>
                 </h1>
-                <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">Pixel-Perfect YouTube UI Simulation Engine</p>
+                <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">High-Performance YouTube Meta-Suite</p>
               </div>
             </div>
-            
-            {image && (
-               <Button onClick={() => setImage(null)} variant="ghost" size="sm" className="gap-2 h-10 px-5 text-[10px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-2xl transition-all">
-                  Wipe Stage
-               </Button>
-            )}
           </header>
 
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-8">
             <div className="space-y-8">
-                   <Card className="glass-morphism border-primary/10 overflow-hidden min-h-[600px] flex flex-col items-center justify-center relative bg-muted/5 rounded-2xl shadow-inner p-10">
-
-
-                    {image ? (
-                      <div 
-                        ref={stageRef}
-                        className="relative aspect-video w-full shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] rounded-2xl overflow-hidden group select-none"
-                      >
-                        <img src={image} className="w-full h-full object-cover" alt="Hub Preview" />
-                        
-                        {/* 2024 YouTube Precise Overlays */}
-                        <div className="absolute bottom-2 right-2 bg-black/85 text-white text-[11px] font-black px-1.5 py-0.5 rounded-sm select-none border border-white/5 opacity-100 group-hover:opacity-0 transition-opacity">
-                          12:45
+                   <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-2xl transition-all duration-700 hover:border-primary/30">
+                     <div className="bg-primary/5 p-5 border-b border-primary/10">
+                       <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Simulation Stage</h3>
+                     </div>
+                    <CardContent className="p-10">
+                      {image ? (
+                        <div className="p-8 w-full">
+                          <div 
+                            ref={stageRef}
+                            className="relative aspect-video w-full shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] rounded-2xl overflow-hidden group select-none border border-primary/20 bg-zinc-950"
+                          >
+                            <img src={image} className="w-full h-full object-contain" alt="Hub Preview" />
+                            
+                            {/* 2024 YouTube Precise Overlays */}
+                            <div className="absolute bottom-2 right-2 bg-black/85 text-white text-[11px] font-black px-1.5 py-0.5 rounded-sm select-none border border-white/5 opacity-100 group-hover:opacity-0 transition-opacity">
+                              12:45
+                            </div>
+                            
+                            <div className="absolute bottom-0 left-0 w-full h-[3px] bg-white/20">
+                              <div className="h-full bg-red-600 w-[60%]" />
+                            </div>
+                            
+                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-black/50 backdrop-blur-md p-6 rounded-full border border-white/20 shadow-2xl scale-125 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <Play className="h-8 w-8 text-white fill-white" />
+                            </div>
+    
+                             <div className="absolute top-3 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                               <div className="bg-black/90 p-2 rounded-md shadow-lg border border-white/5"><Clock className="h-4 w-4 text-white" /></div>
+                               <div className="bg-black/90 p-2 rounded-md shadow-lg border border-white/5"><Layout className="h-4 w-4 text-white" /></div>
+                             </div>
+                          </div>
                         </div>
-                        
-                        <div className="absolute bottom-0 left-0 w-full h-[3px] bg-white/20">
-                          <div className="h-full bg-red-600 w-[60%]" />
+                      ) : (
+                        <div className="p-8 w-full h-full min-h-[500px]">
+                          <div 
+                            onClick={() => inputRef.current?.click()}
+                            onDragOver={(e) => e.preventDefault()}
+                            onDrop={(e) => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); }}
+                            className="relative w-full h-full aspect-video flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/20 text-center transition-all cursor-pointer bg-background/50 hover:border-primary/40 hover:bg-primary/5 shadow-inner group/dropzone"
+                          >
+                            <div className="h-20 w-20 bg-primary/10 rounded-2xl flex items-center justify-center mb-8 shadow-inner group-hover:scale-110 transition-transform">
+                              <CloudUpload className="h-10 w-10 text-primary" />
+                            </div>
+                            <div className="px-6 space-y-1">
+                              <p className="text-3xl font-black text-foreground uppercase tracking-tighter italic leading-none text-shadow-glow">Drag & Drop</p>
+                              <p className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.2em] opacity-40">or click to browse</p>
+                              <KbdShortcut />
+                              <p className="mt-4 text-[10px] text-muted-foreground font-black uppercase tracking-widest opacity-20">PNG, JPG, SVG, WEBP ARE SUPPORTED</p>
+                            </div>
+                          </div>
                         </div>
-                        
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-black/50 backdrop-blur-md p-6 rounded-full border border-white/20 shadow-2xl scale-125 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <Play className="h-8 w-8 text-white fill-white" />
-                        </div>
-
-                         <div className="absolute top-3 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                           <div className="bg-black/90 p-2 rounded-md shadow-lg border border-white/5"><Clock className="h-4 w-4 text-white" /></div>
-                           <div className="bg-black/90 p-2 rounded-md shadow-lg border border-white/5"><Layout className="h-4 w-4 text-white" /></div>
-                         </div>
-                      </div>
-                    ) : (
-                      <div 
-                        onClick={() => inputRef.current?.click()}
-                        className="relative w-full flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/20 text-center transition-all cursor-pointer py-32 bg-background/50 hover:border-primary/40 hover:bg-primary/5 shadow-inner"
-                      >
-                        <div className="h-20 w-20 bg-primary/10 rounded-2xl flex items-center justify-center mb-8 shadow-inner group-hover:scale-110 transition-transform">
-                          <CloudUpload className="h-10 w-10 text-primary" />
-                        </div>
-                        <div className="px-6 space-y-1">
-                          <p className="text-3xl font-black text-foreground uppercase tracking-tighter italic leading-none text-shadow-glow">Drag & Drop</p>
-                          <p className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.2em] opacity-40">or click to browse</p>
-                          <KbdShortcut />
-                          <p className="mt-4 text-[10px] text-muted-foreground font-black uppercase tracking-widest opacity-20">PNG, JPG, SVG, WEBP ARE SUPPORTED</p>
-                        </div>
-                      </div>
-                    )}
+                      )}
+                    </CardContent>
                     <input ref={inputRef} type="file" className="hidden" accept="image/*" onChange={(e) => handleFile(e.target.files?.[0])} />
                     <canvas ref={canvasRef} className="hidden" />
                   </Card>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                   <div className="bg-muted/30 p-8 rounded-2xl border border-border/50 studio-gradient">
-                      <h4 className="text-[10px] font-black uppercase tracking-[0.2em] mb-4 flex items-center gap-2 text-primary">
-                         <Eye className="h-4 w-4" /> Visibility Pulse
-                      </h4>
-                      <p className="text-[11px] text-muted-foreground leading-relaxed italic font-medium opacity-80">
-                        Modern YouTube UI spans approx <strong className="font-bold">15%</strong> of the bottom-right and <strong className="font-bold">10%</strong> of the top-right. Keep your focal subjects in the "Golden Triangle" (Top-Left 40% area).
-                      </p>
-                   </div>
-                   <div className="bg-primary/5 p-8 rounded-2xl border border-primary/10">
-                      <h4 className="text-[10px] font-black uppercase tracking-[0.2em] mb-4 text-primary">Logic Hub</h4>
-                      <p className="text-[11px] text-muted-foreground leading-relaxed italic font-medium opacity-80">
-                        Check your thumbnail on both "Safe Zones" and "Page Simulation". If your text is unreadable in the grid, it won't get clicked.
-                      </p>
-                   </div>
-                </div>
+                <p className="text-[9px] text-center text-muted-foreground font-black uppercase tracking-widest opacity-30 italic px-4">Safe-zone overlay • Golden triangle focus • Grid + Page simulation</p>
               </div>
 
               <div className="space-y-6 lg:sticky lg:top-24 h-fit">
                 <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl">
-                  <div className="p-6 bg-primary/5 border-b border-primary/10">
-                    <h3 className="text-xs font-black uppercase tracking-[0.2em] text-primary">Simulation Parameters</h3>
-                  </div>
+                   <div className="p-6 bg-primary/5 border-b border-primary/10 flex items-center justify-between">
+                     <h3 className="text-xs font-black uppercase tracking-[0.2em] text-primary">Simulation Parameters</h3>
+                     {image && (
+                       <Button 
+                         onClick={() => { setImage(null); }} 
+                         variant="ghost" 
+                         size="sm" 
+                         className="h-8 px-3 text-[9px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-xl transition-all"
+                       >
+                         Reset Stage
+                       </Button>
+                     )}
+                   </div>
                   <CardContent className="p-8">
                     <div className="pt-2">
                       <Button 

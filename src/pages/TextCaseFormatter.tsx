@@ -99,8 +99,8 @@ const TextCaseFormatter = () => {
 
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8 items-start">
             <div className="space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-700">
-              <Card className="glass-morphism border-primary/10 rounded-2xl shadow-2xl overflow-hidden bg-muted/5 p-6">
-                <CardContent className="p-4">
+              <Card className="glass-morphism border-primary/10 rounded-2xl shadow-2xl bg-muted/5 p-8 md:p-10">
+                <CardContent className="p-0">
                   <textarea
                     value={text}
                     onChange={(e) => setText(e.target.value)}
@@ -151,22 +151,39 @@ const TextCaseFormatter = () => {
               </div>
             </div>
 
-            <aside className="space-y-6">
-              <div className="p-8 rounded-2xl bg-gradient-to-br from-primary/10 to-transparent border border-primary/10 space-y-4">
-                 <h4 className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-primary">
-                    <Type className="h-4 w-4" /> Quick Tip
-                 </h4>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    Use <strong className="font-bold">CONSTANT_CASE</strong> for environment variables and <strong className="font-bold">kebab-case</strong> for URL slugs. 
-                    <br/><br/>
-                    Our algorithm preserves numbers and special characters correctly across all conversions.
-                  </p>
-              </div>
-              
-              <AdPlaceholder format="rectangle" />
-              
-              <div className="p-8 rounded-2xl bg-muted/20 border border-border/50 text-xs text-muted-foreground leading-relaxed italic opacity-70">
-                Privacy First: All text processing is done 100% locally in your browser. Nothing is sent to any server.
+            <aside className="space-y-6 lg:sticky lg:top-24 h-fit">
+              <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl">
+                 <div className="bg-primary/5 p-5 border-b border-primary/10 flex items-center justify-between">
+                   <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Text Analysis</h3>
+                   {text && (
+                     <Button 
+                       onClick={() => setText("")} 
+                       variant="ghost" 
+                       size="sm" 
+                       className="h-8 px-3 text-[9px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-2xl transition-all"
+                     >
+                       Reset Stage
+                     </Button>
+                   )}
+                 </div>
+                 <CardContent className="p-8 space-y-10">
+                    <div className="grid grid-cols-2 gap-4">
+                       <div className="bg-muted/5 p-5 rounded-2xl border border-border/50">
+                          <p className="text-[9px] font-black uppercase tracking-widest opacity-40 mb-1 leading-none">Words</p>
+                          <p className="text-2xl font-black italic tracking-tighter text-foreground">{stats.words}</p>
+                       </div>
+                       <div className="bg-muted/5 p-5 rounded-2xl border border-border/50">
+                          <p className="text-[9px] font-black uppercase tracking-widest opacity-40 mb-1 leading-none">Characters</p>
+                          <p className="text-2xl font-black italic tracking-tighter text-foreground">{stats.chars}</p>
+                       </div>
+                    </div>
+
+                    <p className="text-[9px] text-center text-muted-foreground font-black uppercase tracking-widest opacity-30 italic">Local computation • CONSTANT_CASE for env vars • kebab-case for URLs</p>
+                 </CardContent>
+              </Card>
+
+              <div className="px-6">
+                 <AdPlaceholder format="rectangle" className="opacity-40 grayscale group-hover:grayscale-0 transition-all border-border/50" />
               </div>
             </aside>
           </div>

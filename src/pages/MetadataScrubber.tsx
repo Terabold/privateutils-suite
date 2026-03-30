@@ -109,15 +109,21 @@ const MetadataScrubber = () => {
                 <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">Deep Privacy Sanitization Engine</p>
               </div>
             </div>
-            
-            {file && (
-               <Button onClick={() => { setFile(null); setPreview(null); setScrubbed(false); setReport(null); }} variant="ghost" size="sm" className="gap-2 h-10 px-5 text-[10px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-2xl transition-all">
-                  <Trash2 className="h-3.5 w-3.5" /> Wipe Queue
-               </Button>
-            )}
           </header>
 
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-12 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-[200px_1fr_380px] gap-8 items-start">
+            {/* Column 1: Sponsors */}
+            <aside className="hidden lg:flex flex-col gap-6 lg:sticky lg:top-24">
+               <div className="flex flex-col gap-4">
+                  <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/40 px-2 italic">Global Partners</h3>
+                  <div className="space-y-4">
+                    <AdPlaceholder format="vertical" className="opacity-40 grayscale hover:grayscale-0 transition-all border-border/50 h-[300px]" />
+                    <AdPlaceholder format="vertical" className="opacity-40 grayscale hover:grayscale-0 transition-all border-border/50 h-[300px]" />
+                  </div>
+               </div>
+            </aside>
+
+            {/* Column 2: Main Stage */}
             <div className="space-y-8">
               <Card className="glass-morphism border-primary/10 overflow-hidden min-h-[500px] flex flex-col items-center justify-center relative bg-muted/5 rounded-2xl shadow-inner p-10">
                 {preview ? (
@@ -147,28 +153,23 @@ const MetadataScrubber = () => {
                 <canvas ref={canvasRef} className="hidden" />
               </Card>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-muted/40 p-10 rounded-2xl border border-border/50 studio-gradient">
-                   <h4 className="text-[10px] font-black uppercase tracking-[0.2em] mb-4 flex items-center gap-2 text-primary">
-                      <Trash2 className="h-4 w-4" /> Sanitization
-                   </h4>
-                   <p className="text-[11px] text-muted-foreground leading-relaxed italic font-medium opacity-80">
-                     We use a <strong className="font-bold">Bit-Level Redraw</strong> technique. By re-rendering the image pixels onto a fresh canvas, all hidden metadata structures (EXIF, XMP, IPTC) are physically discarded.
-                   </p>
-                </div>
-                <div className="bg-primary/5 p-10 rounded-2xl border border-primary/10">
-                   <h4 className="text-[10px] font-black uppercase tracking-[0.2em] mb-4 text-primary font-black">Why Scrub?</h4>
-                   <p className="text-[11px] text-muted-foreground leading-relaxed italic font-medium opacity-80">
-                     Standard photos contain your exact <strong className="font-bold">GPS coordinates</strong>, camera model, and time taken. Sharing scrubbed files is essential for online privacy.
-                   </p>
-                </div>
-              </div>
+              <p className="text-[9px] text-center text-muted-foreground font-black uppercase tracking-widest opacity-30 italic px-4">Bit-level redraw • EXIF/XMP/IPTC stripped • GPS coordinates removed</p>
             </div>
 
             <aside className="space-y-6 lg:sticky lg:top-24 h-fit">
               <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl">
-                <div className="bg-primary/5 p-5 border-b border-primary/10">
+                <div className="bg-primary/5 p-5 border-b border-primary/10 flex items-center justify-between">
                   <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Privacy Report</h3>
+                  {file && (
+                    <Button 
+                      onClick={() => { setFile(null); setPreview(null); setScrubbed(false); setReport(null); }} 
+                      variant="ghost" 
+                      size="sm" 
+                      className="h-8 px-3 text-[9px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-xl transition-all"
+                    >
+                      Reset Stage
+                    </Button>
+                  )}
                 </div>
                 <CardContent className="p-8 space-y-12">
                    {file ? (
@@ -204,7 +205,7 @@ const MetadataScrubber = () => {
                              className="w-full gap-3 h-16 text-lg font-black rounded-2xl shadow-2xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all uppercase italic"
                            >
                              {scrubbed ? <FileCheck className="h-6 w-6" /> : <ShieldX className="h-6 w-6" />}
-                             {processing ? "Scrubbing Bits..." : scrubbed ? "Privacy Verified" : "Sanitize File"}
+                             {processing ? "Scrubbing Bits..." : scrubbed ? "Privacy Verified" : "Scrub Metadata"}
                            </Button>
                            <p className="text-[9px] text-center mt-4 text-muted-foreground font-black uppercase tracking-[0.2em] opacity-40 italic">
                              100% Client-Side Metadata Destruction

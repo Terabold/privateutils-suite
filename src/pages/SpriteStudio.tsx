@@ -67,16 +67,14 @@ const SpriteStudio = () => {
     const { naturalWidth, naturalHeight } = e.currentTarget;
     setImgSize({ w: naturalWidth, h: naturalHeight });
     
-    // Auto-scale to fit common viewports
+    // Auto-scale to fill common viewports, maximizing pixel art scale up to 40x
     const viewportW = containerRef.current?.clientWidth || 800;
     const viewportH = containerRef.current?.clientHeight || 800;
     const maxViewW = viewportW - 80;
     const maxViewH = viewportH - 80;
     
-    let newScale = 1;
-    if (naturalWidth > maxViewW || naturalHeight > maxViewH) {
-      newScale = Math.min(maxViewW / naturalWidth, maxViewH / naturalHeight);
-    }
+    // Scale up or down to fit, capping at a huge 40x for pixel precision
+    const newScale = Math.min(Math.min(maxViewW / naturalWidth, maxViewH / naturalHeight), 40);
     setScale(newScale);
 
     // Initial Centering (Top-Left point that centers a scaled image)
@@ -267,8 +265,8 @@ const SpriteStudio = () => {
       // Final clamping safety check to prevent export overflow
       if (nx < 0) { nw += nx; nx = 0; }
       if (ny < 0) { nh += ny; ny = 0; }
-      if (nx + nw > imgSize.w) { nw = imgSize.w - nx; }
-      if (ny + nh > imgSize.h) { nh = imgSize.h - ny; }
+      if (imgSize.w > 0 && nx + nw > imgSize.w) { nw = imgSize.w - nx; }
+      if (imgSize.h > 0 && ny + nh > imgSize.h) { nh = imgSize.h - ny; }
 
       return {
         ...s,
@@ -277,7 +275,7 @@ const SpriteStudio = () => {
         w: nw,
         h: nh
       };
-    }).filter(s => s.w > 2 && s.h > 2));
+    }).filter(s => s.w > 1 && s.h > 1));
   };
 
   const generateGrid = (rows: number, cols: number, gapX = 0, gapY = 0) => {
@@ -353,30 +351,36 @@ const SpriteStudio = () => {
     <div className="min-h-screen bg-background text-foreground theme-image transition-colors duration-500">
       <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
       
-      <main className="container mx-auto max-w-[1600px] px-6 py-12">
-        <div className="flex flex-col gap-8">
-          <header className="flex items-center justify-between flex-wrap gap-6 border-b border-primary/5 pb-8">
-            <div className="flex items-center gap-6">
-              <Link to="/">
-                <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-border/50 hover:bg-primary/5 transition-all group/back">
-                  <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
-                </Button>
-              </Link>
-              <div>
-                <h1 className="text-3xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow">
-                   Sprite <span className="text-primary italic">Studio</span>
-                </h1>
-                <p className="text-muted-foreground text-xs font-black uppercase tracking-[0.2em] opacity-60">Professional Pixel Partitioning Engine</p>
-              </div>
-            </div>
-            {image && (
-              <Button onClick={() => { setImage(null); setSlices([]); }} variant="ghost" size="sm" className="gap-2 h-10 px-4 text-[10px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-2xl transition-all">
-                Wipe Stage
-              </Button>
-            )}
-          </header>
+      <div className="flex justify-center items-start w-full relative">
+        {/* Left Sponsor Sidebar (Hidden below 1850px) */}
+        <aside className="hidden min-[1850px]:flex flex-col gap-10 sticky top-32 w-[300px] shrink-0 px-6 py-8 animate-in fade-in slide-in-from-left-8 duration-1000">
+           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
+           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
+           <div className="p-8 rounded-2xl border-2 border-dashed border-primary/5 bg-primary/5 text-center mt-12 studio-gradient">
+              <p className="text-[10px] font-black uppercase tracking-widest text-primary opacity-60">Verified Ad Space</p>
+           </div>
+        </aside>
 
-          <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_420px] gap-8 items-start">
+        <main className="container mx-auto max-w-[1600px] px-6 py-12 grow">
+          <div className="flex flex-col gap-8">
+            <header className="flex items-center justify-between flex-wrap gap-6 border-b border-primary/5 pb-8">
+              <div className="flex items-center gap-6">
+                <Link to="/">
+                  <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-border/50 hover:bg-primary/5 transition-all group/back">
+                    <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
+                  </Button>
+                </Link>
+                <div>
+                  <h1 className="text-3xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow">
+                     Sprite <span className="text-primary italic">Studio</span>
+                  </h1>
+                  <p className="text-muted-foreground text-xs font-black uppercase tracking-[0.2em] opacity-60">Professional Pixel Partitioning Engine</p>
+                </div>
+              </div>
+            </header>
+
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_350px] xl:grid-cols-[1fr_350px_350px] gap-8 items-start">
+              {/* Column 1: Main Stage */}
             <div className="space-y-6">
               <Card 
                 onMouseDown={handleMouseDown}
@@ -428,8 +432,8 @@ const SpriteStudio = () => {
                        ref={imgRef}
                        src={image} 
                        onLoad={onImageLoad}
-                       className="w-full h-full pointer-events-none select-none transition-all" 
-                       style={{ imageRendering: zoom > 2 ? 'pixelated' : 'auto' }}
+                       className="w-full h-full pointer-events-none select-none transition-all shadow-2xl" 
+                       style={{ imageRendering: (zoom > 1.5 || imgSize.w < 500) ? 'pixelated' : 'auto' }}
                        draggable={false}
                     />
                     <svg className="absolute inset-0 w-full h-full pointer-events-none overflow-visible" viewBox={`0 0 ${imgSize.w || 1} ${imgSize.h || 1}`}>
@@ -447,15 +451,37 @@ const SpriteStudio = () => {
                         const nw = Math.abs(slice.w);
                         const nh = Math.abs(slice.h);
                         return (
-                          <g key={slice.id}>
-                            <rect x={nx} y={ny} width={nw} height={nh} fill={activeId === slice.id ? "rgba(59, 130, 246, 0.15)" : "rgba(255, 255, 255, 0.05)"} stroke={activeId === slice.id ? "#3b82f6" : "rgba(255,255,255,0.4)"} strokeWidth={1 / zoom} />
-                            <text x={nx + 2} y={ny + 10} fontSize={Math.max(8, 12 / zoom)} fill={activeId === slice.id ? "#3b82f6" : "white"} className="font-mono font-black tracking-tighter select-none">{slice.name}</text>
+                          <g key={slice.id} className="drop-shadow-lg">
+                            <rect 
+                              x={nx} y={ny} width={nw} height={nh} 
+                              fill={activeId === slice.id ? "rgba(59, 130, 246, 0.4)" : "rgba(59, 130, 246, 0.2)"} 
+                              stroke={activeId === slice.id ? "#3b82f6" : "rgba(59, 130, 246, 0.8)"} 
+                              strokeWidth={activeId === slice.id ? 4 / zoom : 2 / zoom} 
+                              strokeDasharray={activeId === slice.id ? "none" : `${3 / zoom} ${2 / zoom}`}
+                            />
+                            {activeId === slice.id && (
+                              <rect 
+                                x={nx} y={ny} width={nw} height={nh} 
+                                fill="none" 
+                                stroke="#3b82f6" 
+                                strokeWidth={6 / zoom} 
+                                className="opacity-20 blur-[1px]" 
+                              />
+                            )}
+                            <text 
+                              x={nx + 2 / zoom} y={ny - 4 / zoom} 
+                              fontSize={Math.max(6, 10 / zoom)} 
+                              fill={activeId === slice.id ? "#3b82f6" : "white"} 
+                              className="font-mono font-black tracking-tighter select-none drop-shadow-md"
+                            >
+                              {slice.name}
+                            </text>
                             {activeId === slice.id && (
                               <>
-                                <circle cx={nx} cy={ny} r={3 / zoom} fill="white" stroke="#3b82f6" strokeWidth={0.5 / zoom} />
-                                <circle cx={nx + nw} cy={ny} r={3 / zoom} fill="white" stroke="#3b82f6" strokeWidth={0.5 / zoom} />
-                                <circle cx={nx} cy={ny + nh} r={3 / zoom} fill="white" stroke="#3b82f6" strokeWidth={0.5 / zoom} />
-                                <circle cx={nx + nw} cy={ny + nh} r={3 / zoom} fill="white" stroke="#3b82f6" strokeWidth={0.5 / zoom} />
+                                <circle cx={nx} cy={ny} r={5 / zoom} fill="white" stroke="#3b82f6" strokeWidth={1 / zoom} />
+                                <circle cx={nx + nw} cy={ny} r={5 / zoom} fill="white" stroke="#3b82f6" strokeWidth={1 / zoom} />
+                                <circle cx={nx} cy={ny + nh} r={5 / zoom} fill="white" stroke="#3b82f6" strokeWidth={1 / zoom} />
+                                <circle cx={nx + nw} cy={ny + nh} r={5 / zoom} fill="white" stroke="#3b82f6" strokeWidth={1 / zoom} />
                               </>
                             )}
                           </g>
@@ -467,15 +493,12 @@ const SpriteStudio = () => {
                 <input ref={inputRef} type="file" className="hidden" accept="image/*" onChange={(e) => handleFile(e.target.files?.[0])} />
               </Card>
 
-              <div className="flex justify-between items-center px-4">
-                 <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/40 italic">Drafting Engine v1.0 • Low Latency Precision</p>
-                 <div className="flex gap-4">
-                    <Button variant="ghost" size="sm" onClick={() => setSlices([])} className="h-8 text-[10px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10">Wipe Selection</Button>
-                 </div>
-              </div>
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/40 italic text-center">Drafting Engine v1.1 • Ultra-Resolution Partitioning Active</p>
             </div>
 
+            {/* Column 3: Tools & Pipeline */}
             <aside className="space-y-6 lg:sticky lg:top-24 h-fit">
+
               <Card className="glass-morphism border-primary/20 rounded-2xl shadow-2xl overflow-hidden bg-primary/5">
                  <CardContent className="p-8 space-y-6">
                     <div className="flex items-center gap-3 mb-2">
@@ -527,31 +550,56 @@ const SpriteStudio = () => {
                     )}
 
                     <div className="pt-2">
-                       <Button size="sm" variant="outline" onClick={() => { setZoom(1); setPan({ x: 0, y: 0 }); }} className="w-full text-[10px] font-black uppercase tracking-widest h-8 rounded-2xl gap-2">Reset Viewport</Button>
+                       <Button size="sm" variant="outline" onClick={() => { 
+                         const viewportW = containerRef.current?.clientWidth || 800;
+                         const viewportH = containerRef.current?.clientHeight || 800;
+                         const newScale = Math.min((viewportW - 80) / imgSize.w, (viewportH - 80) / imgSize.h, 40);
+                         setScale(newScale);
+                         setPan({ x: (viewportW - (imgSize.w * newScale)) / 2, y: (viewportH - (imgSize.h * newScale)) / 2 });
+                         setZoom(1); 
+                       }} className="w-full text-[10px] font-black uppercase tracking-widest h-8 rounded-2xl gap-2">Reset Viewport</Button>
                     </div>
                  </CardContent>
               </Card>
+              </aside>
 
-              {slices.length > 0 && (
-                <Card className="glass-morphism border-primary/10 rounded-2xl shadow-xl overflow-hidden">
-                   <div className="bg-primary/5 p-5 border-b border-primary/10">
-                      <h3 className="text-xs font-black uppercase tracking-[0.2em] text-primary">Catalog ({slices.length})</h3>
+              {/* Column 3: Sprite Pipeline */}
+              <aside className="space-y-6 lg:sticky lg:top-24 h-fit">
+                <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl xl:h-[calc(100vh-200px)] flex flex-col">
+                   <div className="bg-primary/5 p-5 border-b border-primary/10 flex items-center justify-between shrink-0">
+                     <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Sprite Pipeline</h3>
+                     {image && (
+                       <Button 
+                         onClick={() => setImage(null)} 
+                         variant="ghost" 
+                         size="sm" 
+                         className="h-8 px-3 text-[9px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-xl transition-all"
+                       >
+                         Reset Stage
+                       </Button>
+                     )}
                    </div>
-                   <CardContent className="p-0 max-h-[300px] overflow-y-auto">
-                      {slices.map((slice, idx) => (
-                        <div key={slice.id} onClick={() => setActiveId(slice.id)} className={`p-4 flex items-center justify-between transition-colors ${activeId === slice.id ? "bg-primary/10" : "hover:bg-primary/5"}`}>
-                           <span className="text-[10px] font-bold">#{idx + 1} {slice.name}</span>
-                           <Button size="icon" variant="ghost" onClick={(e) => { e.stopPropagation(); deleteSlice(slice.id); }} className="h-6 w-6 text-destructive opacity-40 hover:opacity-100"><Trash2 className="h-3 w-3" /></Button>
+                   <CardContent className="p-0 overflow-y-auto grow min-h-[300px]">
+                      {slices.length === 0 ? (
+                        <div className="p-10 text-center opacity-20">
+                           <Layers className="h-10 w-10 mx-auto mb-2" />
+                           <p className="text-[10px] font-black uppercase tracking-widest">Pipeline Empty</p>
                         </div>
-                      ))}
+                      ) : (
+                        slices.map((slice, idx) => (
+                          <div key={slice.id} onClick={() => setActiveId(slice.id)} className={`p-4 flex items-center justify-between transition-colors cursor-pointer border-b border-primary/5 ${activeId === slice.id ? "bg-primary/10" : "hover:bg-primary/5"}`}>
+                             <span className="text-[10px] font-bold">#{idx + 1} {slice.name}</span>
+                             <Button size="icon" variant="ghost" onClick={(e) => { e.stopPropagation(); deleteSlice(slice.id); }} className="h-6 w-6 text-destructive opacity-40 hover:opacity-100"><Trash2 className="h-3 w-3" /></Button>
+                          </div>
+                        ))
+                      )}
                    </CardContent>
                 </Card>
-              )}
-              <AdPlaceholder format="rectangle" />
-            </aside>
+              </aside>
+            </div>
           </div>
-        </div>
-      </main>
+        </main>
+      </div>
       <Footer />
     </div>
   );

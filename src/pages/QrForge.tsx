@@ -82,22 +82,24 @@ const QrForge = () => {
               </Link>
               <div>
                 <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow">
-                   Secure <span className="text-primary italic">QR Forge</span>
+                   Qr <span className="text-primary italic">Forge</span>
                 </h1>
-                <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">Privacy-First Link & Data Encoding</p>
+                <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">High-Precision Dynamic QR Generation</p>
               </div>
             </div>
-            {input && (
-              <Button onClick={() => setInput("")} variant="ghost" size="sm" className="gap-2 h-10 px-5 text-[10px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-2xl transition-all">
-                Wipe Stage
-              </Button>
-            )}
           </header>
 
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-12 items-start">
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-6 duration-700">
-              <Card className="glass-morphism border-primary/10 overflow-hidden bg-muted/5 rounded-2xl p-10 shadow-inner">
-                <div className="space-y-6">
+              <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-2xl transition-all duration-700">
+                 <div className="bg-primary/5 p-5 border-b border-primary/10 flex items-center justify-between">
+                  <div>
+                     <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary italic text-shadow-glow flex items-center gap-2">
+                         <Zap className="h-4 w-4" /> Forge Input
+                     </h3>
+                  </div>
+                </div>
+                <div className="p-10 space-y-6">
                   <Label className="text-[10px] font-black uppercase tracking-widest text-primary leading-none px-1">Payload Secret</Label>
                   <Input
                     value={input}
@@ -113,8 +115,8 @@ const QrForge = () => {
 
               {qrUrl && (
                 <div className="flex flex-col items-center gap-8 animate-in zoom-in-95 duration-700">
-                   <Card className="p-8 bg-white rounded-2xl shadow-2xl border-4 border-primary/10">
-                      <img src={qrUrl} className="h-64 w-64 object-contain" />
+                   <Card className="p-6 bg-white rounded-2xl shadow-2xl border-4 border-primary/10">
+                      <img src={qrUrl} className="h-52 w-52 object-contain" />
                    </Card>
                    
                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full">
@@ -131,8 +133,18 @@ const QrForge = () => {
 
             <aside className="space-y-8 lg:sticky lg:top-24 h-fit">
               <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl">
-                 <div className="bg-primary/5 p-5 border-b border-primary/10">
+                 <div className="bg-primary/5 p-5 border-b border-primary/10 flex items-center justify-between">
                    <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Styling Matrix</h3>
+                   {input && (
+                     <Button 
+                       onClick={() => { setInput(""); setQrUrl(null); }} 
+                       variant="ghost" 
+                       size="sm" 
+                       className="h-8 px-3 text-[9px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-xl transition-all"
+                     >
+                       Reset Stage
+                     </Button>
+                   )}
                  </div>
                  <CardContent className="p-8 space-y-10">
                      <div className="space-y-6">
@@ -172,29 +184,7 @@ const QrForge = () => {
                         </div>
                      </div>
 
-                    <div className="p-6 rounded-2xl bg-zinc-950/50 border border-border/50 space-y-4">
-                       <h4 className="text-[10px] font-black uppercase tracking-widest text-primary flex items-center gap-2">
-                          <Smartphone className="h-3.5 w-3.5" /> Direct Scan Logic
-                       </h4>
-                       <p className="text-[11px] text-muted-foreground leading-relaxed italic opacity-80 font-medium font-sans">
-                         Codes are generated using the <strong className="font-bold">ISO/IEC 18004</strong> standard, ensuring compatibility with all mobile artifacts and forensic scanners.
-                       </p>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4 pt-4">
-                       <div className="flex flex-col items-center text-center gap-3">
-                          <div className="h-10 w-10 bg-primary/10 rounded-2xl flex items-center justify-center text-primary">
-                             <ShieldCheck className="h-5 w-5" />
-                          </div>
-                          <span className="text-[8px] font-black uppercase tracking-tighter opacity-40">Air-Gapped</span>
-                       </div>
-                       <div className="flex flex-col items-center text-center gap-3">
-                          <div className="h-10 w-10 bg-primary/10 rounded-2xl flex items-center justify-center text-primary">
-                             <Zap className="h-5 w-5" />
-                          </div>
-                          <span className="text-[8px] font-black uppercase tracking-tighter opacity-40">Static</span>
-                       </div>
-                    </div>
+                    <p className="text-[9px] text-center text-muted-foreground font-black uppercase tracking-widest opacity-30 italic">ISO/IEC 18004 • Air-gapped generation • Universal scanner support</p>
                  </CardContent>
               </Card>
 

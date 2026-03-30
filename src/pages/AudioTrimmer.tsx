@@ -1,9 +1,9 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Upload, Scissors, Play, Pause, Download, Music, Trash2, SlidersHorizontal, RotateCcw, CloudUpload } from "lucide-react";
+import { ArrowLeft, ArrowRight, Play, Pause, Download, RotateCcw, CloudUpload, Scissors } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Slider } from "@/components/ui/slider";
+
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AdPlaceholder from "@/components/AdPlaceholder";
@@ -25,7 +25,6 @@ const AudioTrimmer = () => {
   const sourceNodeRef = useRef<AudioBufferSourceNode | null>(null);
   const startTimeRef = useRef(0);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const isPlayingRef = useRef(false);
 
@@ -39,7 +38,7 @@ const AudioTrimmer = () => {
   const handleFile = async (file: File | undefined) => {
     if (!file) return;
     setFileName(file.name);
-    
+
     try {
       const arrayBuffer = await file.arrayBuffer();
       if (!audioCtxRef.current) {
@@ -75,8 +74,7 @@ const AudioTrimmer = () => {
   const drawWaveform = () => {
     const canvas = canvasRef.current;
     if (!canvas || !audioBuffer) return;
-    
-    // Set actual resolution based on display size
+
     const dpr = window.devicePixelRatio || 1;
     const rect = canvas.getBoundingClientRect();
     canvas.width = rect.width * dpr;
@@ -93,8 +91,7 @@ const AudioTrimmer = () => {
     const amp = height / 2;
 
     ctx.clearRect(0, 0, width, height);
-    
-    // Draw baseline
+
     ctx.beginPath();
     ctx.moveTo(0, amp);
     ctx.lineTo(width, amp);
@@ -103,26 +100,26 @@ const AudioTrimmer = () => {
 
     const barWidth = 2;
     const gap = 1;
-    
+
     for (let i = 0; i < width; i += (barWidth + gap)) {
       let min = 1.0;
       let max = -1.0;
       for (let j = 0; j < step * (barWidth + gap); j++) {
-        const datum = data[Math.floor(i * step) + j];
+        const index = Math.floor(i * step) + j;
+        if (index >= data.length) break;
+        const datum = data[index];
         if (datum < min) min = datum;
         if (datum > max) max = datum;
       }
-      
-      // Mirror the bars for a fuller professional look
+
       const barHeight = Math.max(1, (max - min) * amp * 0.8);
       const gradient = ctx.createLinearGradient(0, amp - barHeight / 2, 0, amp + barHeight / 2);
-      gradient.addColorStop(0, "#7c3aed"); // Darker purple
-      gradient.addColorStop(0.5, "#a78bfa"); // Lighter purple/violet
+      gradient.addColorStop(0, "#7c3aed");
+      gradient.addColorStop(0.5, "#a78bfa");
       gradient.addColorStop(1, "#7c3aed");
-      
+
       ctx.fillStyle = gradient;
       ctx.globalAlpha = 0.9;
-      // Rounded bar corners
       const y = amp - barHeight / 2;
       ctx.beginPath();
       ctx.roundRect(i, y, barWidth, barHeight, 1);
@@ -133,7 +130,7 @@ const AudioTrimmer = () => {
 
   const playPreview = () => {
     if (!audioBuffer || !audioCtxRef.current) return;
-    
+
     if (isPlaying) {
       sourceNodeRef.current?.stop();
       setIsPlaying(false);
@@ -144,22 +141,21 @@ const AudioTrimmer = () => {
     const source = audioCtxRef.current.createBufferSource();
     source.buffer = audioBuffer;
     source.connect(audioCtxRef.current.destination);
-    
-    // Resume from current point if within range, otherwise start from range[0]
+
     let startOffset = currentTime;
-    if (startOffset < range[0] || startOffset >= range[1]) {
+    if (startOffset < range[0] - 0.01 || startOffset > range[1] + 0.01) {
       startOffset = range[0];
     }
-    
+
     const durationToPlay = range[1] - startOffset;
     if (durationToPlay <= 0) return;
-    
+
     source.start(0, startOffset, durationToPlay);
     sourceNodeRef.current = source;
     startTimeRef.current = audioCtxRef.current.currentTime - startOffset;
     setIsPlaying(true);
     isPlayingRef.current = true;
-    
+
     const updateProgress = () => {
       if (!audioCtxRef.current) return;
       const current = audioCtxRef.current.currentTime - startTimeRef.current;
@@ -173,16 +169,15 @@ const AudioTrimmer = () => {
         requestAnimationFrame(updateProgress);
       }
     };
-    
+
     requestAnimationFrame(updateProgress);
-    
+
     source.onended = () => {
       if (sourceNodeRef.current === source) {
         setIsPlaying(false);
         isPlayingRef.current = false;
-        // Only reset if we actually reached the end of the range
         if (audioCtxRef.current && (audioCtxRef.current.currentTime - startTimeRef.current) >= range[1] - 0.05) {
-           setCurrentTime(range[0]);
+          setCurrentTime(range[0]);
         }
       }
     };
@@ -203,7 +198,7 @@ const AudioTrimmer = () => {
       const startSample = Math.floor(range[0] * audioBuffer.sampleRate);
       const endSample = Math.floor(range[1] * audioBuffer.sampleRate);
       const length = endSample - startSample;
-      
+
       const trimmedBuffer = audioCtxRef.current.createBuffer(
         audioBuffer.numberOfChannels,
         length,
@@ -213,17 +208,14 @@ const AudioTrimmer = () => {
       for (let i = 0; i < audioBuffer.numberOfChannels; i++) {
         const channelData = audioBuffer.getChannelData(i);
         const trimmedData = trimmedBuffer.getChannelData(i);
-        for (let j = 0; j < length; j++) {
-          trimmedData[j] = channelData[startSample + j];
-        }
+        trimmedData.set(channelData.subarray(startSample, endSample));
       }
 
-      // Convert to WAV locally
       const wavBlob = audioBufferToWav(trimmedBuffer);
       const url = URL.createObjectURL(wavBlob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = `trimmed_${fileName.split('.')[0]}.wav`;
+      link.download = `trimmed_${fileName.split('.')[0] || 'audio'}.wav`;
       link.click();
       toast.success("Trimmed audio exported as WAV");
     } catch (e) {
@@ -233,7 +225,6 @@ const AudioTrimmer = () => {
     }
   };
 
-  // Helper to encode AudioBuffer to WAV
   const audioBufferToWav = (buffer: AudioBuffer) => {
     const numOfChan = buffer.numberOfChannels;
     const length = buffer.length * numOfChan * 2 + 44;
@@ -243,54 +234,58 @@ const AudioTrimmer = () => {
     let offset = 0;
     let pos = 0;
 
-    // write WAVE header
-    setUint32(0x46464952);                         // "RIFF"
-    setUint32(length - 8);                         // file length - 8
-    setUint32(0x45564157);                         // "WAVE"
+    const setUint16 = (data: number) => {
+      view.setUint16(pos, data, true);
+      pos += 2;
+    };
 
-    setUint32(0x20746d66);                         // "fmt " chunk
-    setUint32(16);                                 // length = 16
-    setUint16(1);                                  // PCM (uncompressed)
+    const setUint32 = (data: number) => {
+      view.setUint32(pos, data, true);
+      pos += 4;
+    };
+
+    setUint32(0x46464952);
+    setUint32(length - 8);
+    setUint32(0x45564157);
+
+    setUint32(0x20746d66);
+    setUint32(16);
+    setUint16(1);
     setUint16(numOfChan);
     setUint32(buffer.sampleRate);
-    setUint32(buffer.sampleRate * 2 * numOfChan); // avg. bytes/sec
-    setUint16(numOfChan * 2);                      // block-align
-    setUint16(16);                                 // 16-bit (hardcoded)
+    setUint32(buffer.sampleRate * 2 * numOfChan);
+    setUint16(numOfChan * 2);
+    setUint16(16);
 
-    setUint32(0x61746164);                         // "data" - chunk
-    setUint32(length - pos - 4);                   // chunk length
+    setUint32(0x61746164);
+    setUint32(length - pos - 4);
 
-    // write interleaved data
-    for(let i = 0; i < buffer.numberOfChannels; i++)
+    for (let i = 0; i < buffer.numberOfChannels; i++)
       channels.push(buffer.getChannelData(i));
 
-    while(pos < length) {
-      for(let i = 0; i < numOfChan; i++) {         // interleave channels
-        let sample = Math.max(-1, Math.min(1, channels[i][offset])); // clamp
-        sample = (sample < 0 ? sample * 0x8000 : sample * 0x7FFF);     // scale to 16-bit signed
-        view.setInt16(pos, sample, true);          // write 16-bit sample
+    while (pos < length) {
+      for (let i = 0; i < numOfChan; i++) {
+        let sample = Math.max(-1, Math.min(1, channels[i][offset]));
+        sample = (sample < 0 ? sample * 0x8000 : sample * 0x7FFF);
+        view.setInt16(pos, sample, true);
         pos += 2;
       }
-      offset++;                                     // next source sample
+      offset++;
     }
 
     return new Blob([bufferArray], { type: "audio/wav" });
-
-    function setUint16(data: number) {
-      view.setUint16(pos, data, true);
-      pos += 2;
-    }
-
-    function setUint32(data: number) {
-      view.setUint32(pos, data, true);
-      pos += 4;
-    }
   };
 
   return (
     <div className="min-h-screen bg-background text-foreground theme-audio transition-all duration-500">
+      <style>{`
+        input[type="number"].emerald-arrows::-webkit-inner-spin-button, 
+        input[type="number"].emerald-arrows::-webkit-outer-spin-button {
+          filter: sepia(1) hue-rotate(100deg) saturate(3) brightness(0.8);
+        }
+      `}</style>
       <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
-      
+
       <main className="container mx-auto max-w-[1400px] px-6 py-12">
         <div className="flex flex-col gap-10">
           <header className="flex items-center justify-between flex-wrap gap-8">
@@ -302,198 +297,234 @@ const AudioTrimmer = () => {
               </Link>
               <div>
                 <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic">
-                   Audio <span className="text-primary italic">Trimmer</span>
+                  Audio <span className="text-primary italic">Trimmer</span>
                 </h1>
-                <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">High-Precision Local Audio Clipping</p>
+                <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">High-Precision Local Audio Partitioning</p>
               </div>
             </div>
-            {audioBuffer && (
-              <Button onClick={() => { setAudioBuffer(null); setFileName(""); }} variant="ghost" size="sm" className="gap-2 h-10 px-5 text-[10px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-2xl transition-all">
-                Wipe Stage
-              </Button>
-            )}
           </header>
 
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-12 items-start">
-            <div className="space-y-8 animate-in fade-in slide-in-from-bottom-6 duration-700">
-              <Card className="glass-morphism border-primary/10 overflow-hidden min-h-[400px] flex flex-col items-center justify-center relative bg-muted/5 rounded-2xl shadow-inner p-10">
-                {!audioBuffer ? (
-                   <div
-                    onDragOver={(e) => e.preventDefault()}
-                    onDrop={(e) => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); }}
-                    onClick={() => inputRef.current?.click()}
-                    className="relative w-full flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/20 text-center transition-all cursor-pointer py-32 bg-background/50 hover:border-primary/40 hover:bg-primary/5 shadow-inner"
-                  >
-                    <div className="h-20 w-20 bg-primary/10 rounded-2xl flex items-center justify-center mb-8 shadow-inner group-hover:scale-110 transition-transform">
-                       <CloudUpload className="h-10 w-10 text-primary" />
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start animate-in fade-in slide-in-from-bottom-8 duration-700">
+            <div className="lg:col-span-8 space-y-8 animate-in fade-in slide-in-from-bottom-6 duration-700">
+              <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-2xl transition-all duration-700 hover:border-primary/30">
+                <div className="bg-primary/5 p-5 border-b border-primary/10 flex items-center justify-between">
+                  <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Wave Stage</h3>
+                  {audioBuffer && (
+                    <Button
+                      onClick={() => { setAudioBuffer(null); setFileName(""); }}
+                      variant="ghost"
+                      size="sm"
+                      className="h-8 px-3 text-[9px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-xl transition-all"
+                    >
+                      Reset Stage
+                    </Button>
+                  )}
+                </div>
+                <CardContent className="p-10">
+                  {!audioBuffer ? (
+                    <div
+                      onDragOver={(e) => e.preventDefault()}
+                      onDrop={(e) => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); }}
+                      onClick={() => inputRef.current?.click()}
+                      className="relative w-full flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/20 text-center cursor-pointer py-32 bg-background/50 hover:border-primary/40 hover:bg-primary/5 shadow-inner"
+                    >
+                      <div className="h-20 w-20 bg-primary/10 rounded-2xl flex items-center justify-center mb-8 shadow-inner group-hover:scale-110 transition-transform">
+                        <CloudUpload className="h-10 w-10 text-primary" />
+                      </div>
+                      <div className="px-6 space-y-1">
+                        <p className="text-3xl font-black text-foreground uppercase tracking-tighter italic leading-none text-shadow-glow">Drag & Drop</p>
+                        <p className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.2em] opacity-40">or click to browse</p>
+                        <KbdShortcut />
+                        <p className="mt-4 text-[10px] text-muted-foreground font-black uppercase tracking-widest opacity-20">MP3, WAV, or OGG Files Supported</p>
+                      </div>
                     </div>
-                    <div className="px-6 space-y-1">
-                      <p className="text-3xl font-black text-foreground uppercase tracking-tighter italic leading-none text-shadow-glow">Drag & Drop</p>
-                      <p className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.2em] opacity-40">or click to browse</p>
-                      <KbdShortcut />
-                      <p className="mt-4 text-[10px] text-muted-foreground font-black uppercase tracking-widest opacity-20">MP3, WAV, or OGG Files Supported</p>
+                  ) : (
+                    <div className="w-full space-y-6">
+                      <div
+                        className="relative h-64 w-full bg-background/50 rounded-2xl border border-border/50 shadow-inner group/waveform cursor-pointer select-none"
+                        onMouseDown={(e) => {
+                          const rect = e.currentTarget.getBoundingClientRect();
+                          const x = (e.clientX - rect.left) / rect.width;
+                          const clickTime = x * duration;
+
+                          // Check if clicking near left or right trim edge
+                          const leftEdgePos = range[0] / duration;
+                          const rightEdgePos = range[1] / duration;
+                          const edgeThreshold = 0.02; // ~2% of width for better hit area
+
+                          if (Math.abs(x - leftEdgePos) < edgeThreshold) {
+                            // Drag left trim handle
+                            const onMove = (ev: MouseEvent) => {
+                              const mx = Math.max(0, Math.min((ev.clientX - rect.left) / rect.width, 1));
+                              const t = mx * duration;
+                              setRange(prev => [Math.min(t, prev[1] - 0.05), prev[1]]);
+                              setCurrentTime(prev => t > prev ? t : prev); // Only move playhead if handle crosses it
+                            };
+                            const onUp = () => { window.removeEventListener('mousemove', onMove); window.removeEventListener('mouseup', onUp); };
+                            window.addEventListener('mousemove', onMove);
+                            window.addEventListener('mouseup', onUp);
+                          } else if (Math.abs(x - rightEdgePos) < edgeThreshold) {
+                            // Drag right trim handle
+                            const onMove = (ev: MouseEvent) => {
+                              const mx = Math.max(0, Math.min((ev.clientX - rect.left) / rect.width, 1));
+                              const t = mx * duration;
+                              setRange(prev => [prev[0], Math.max(t, prev[0] + 0.05)]);
+                              setCurrentTime(prev => t < prev ? t : prev); // Only move playhead if handle crosses it
+                            };
+                            const onUp = () => { window.removeEventListener('mousemove', onMove); window.removeEventListener('mouseup', onUp); };
+                            window.addEventListener('mousemove', onMove);
+                            window.addEventListener('mouseup', onUp);
+                          } else {
+                            // Click to seek playhead
+                            const newTime = Math.max(0, Math.min(clickTime, duration));
+                            setCurrentTime(newTime);
+                            const onMove = (ev: MouseEvent) => {
+                              const mx = (ev.clientX - rect.left) / rect.width;
+                              setCurrentTime(Math.max(0, Math.min(mx * duration, duration)));
+                            };
+                            const onUp = () => { window.removeEventListener('mousemove', onMove); window.removeEventListener('mouseup', onUp); };
+                            window.addEventListener('mousemove', onMove);
+                            window.addEventListener('mouseup', onUp);
+                          }
+                        }}
+                      >
+                        <canvas ref={canvasRef} className="w-full h-full pointer-events-none" />
+
+                        {/* Dimmed regions outside trim range */}
+                        <div className="absolute top-0 bottom-0 left-0 bg-black/60 pointer-events-none" style={{ width: `${(range[0] / duration) * 100}%` }} />
+                        <div className="absolute top-0 bottom-0 right-0 bg-black/60 pointer-events-none" style={{ width: `${((duration - range[1]) / duration) * 100}%` }} />
+
+                        {/* Green highlight for trim range */}
+                        <div className="absolute top-0 bottom-0 bg-emerald-500/10 pointer-events-none border-x border-emerald-500/30"
+                          style={{ left: `${(range[0] / duration) * 100}%`, width: `${((range[1] - range[0]) / duration) * 100}%` }} />
+
+                        {/* Left trim handle */}
+                        <div
+                          className="absolute top-0 bottom-0 w-[1px] bg-emerald-500 cursor-col-resize z-30 shadow-[0_0_20px_rgba(16,185,129,0.4)]"
+                          style={{ left: `${(range[0] / duration) * 100}%` }}
+                        >
+                          <div className="absolute top-1/2 -translate-y-1/2 -left-1.5 w-3 h-10 bg-emerald-500 rounded-full flex items-center justify-center shadow-2xl border border-white/30 hover:scale-110 active:scale-95 transition-all">
+                            <div className="w-[1px] h-4 bg-white/60" />
+                          </div>
+                        </div>
+
+                        {/* Right trim handle */}
+                        <div
+                          className="absolute top-0 bottom-0 w-[1px] bg-emerald-500 cursor-col-resize z-30 shadow-[0_0_20px_rgba(16,185,129,0.4)]"
+                          style={{ left: `${(range[1] / duration) * 100}%` }}
+                        >
+                          <div className="absolute top-1/2 -translate-y-1/2 -right-1.5 w-3 h-10 bg-emerald-500 rounded-full flex items-center justify-center shadow-2xl border border-white/30 hover:scale-110 active:scale-95 transition-all">
+                            <div className="w-[1px] h-4 bg-white/60" />
+                          </div>
+                        </div>
+
+                        {/* Playhead */}
+                        {audioBuffer && (
+                          <div
+                            className="absolute top-0 bottom-0 w-[2px] bg-white shadow-[0_0_10px_rgba(255,255,255,0.8)] z-50 pointer-events-none"
+                            style={{ left: `${(currentTime / duration) * 100}%` }}
+                          />
+                        )}
+                      </div>
+
+                      {/* Compact controls row */}
+                      <div className="flex items-center justify-between gap-4">
+                        <div className="flex items-center gap-3">
+                          <div className="flex items-center gap-3">
+                            <label className="text-[10px] font-black uppercase tracking-widest text-emerald-500">Start</label>
+                            <input
+                              type="number" step="0.01" value={range[0].toFixed(2)}
+                              onChange={(e) => setRange([Math.min(parseFloat(e.target.value) || 0, range[1]), range[1]])}
+                              className="w-24 bg-emerald-500/10 border border-emerald-500/30 rounded-xl px-4 py-3 text-sm font-black font-mono outline-none focus:border-emerald-500 transition-colors text-emerald-500"
+                            />
+                          </div>
+                          <span className="text-muted-foreground/30 text-xs">—</span>
+                          <div className="flex items-center gap-3">
+                            <label className="text-[10px] font-black uppercase tracking-widest text-emerald-500">End</label>
+                            <input
+                              type="number" step="0.1" value={range[1].toFixed(2)}
+                              onChange={(e) => {
+                                const v = parseFloat(e.target.value) || duration;
+                                setRange([range[0], Math.max(v, range[0])]);
+                                if (currentTime > v) setCurrentTime(v);
+                              }}
+                              className="w-24 bg-emerald-500/10 border border-emerald-500/30 rounded-xl px-4 py-3 text-sm font-black font-mono outline-none focus:border-emerald-500 transition-colors text-emerald-500 emerald-arrows"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-6">
+                          <div className="flex items-center gap-3">
+                            <Button
+                              variant="outline" size="icon"
+                              className="h-16 w-16 rounded-2xl border border-primary/20 hover:bg-primary/5 transition-all group"
+                              onClick={resetPlayback} title="Reset to Start"
+                            >
+                              <RotateCcw className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                            </Button>
+                            <button
+                              onClick={playPreview}
+                              className="h-20 w-20 rounded-2xl bg-primary flex items-center justify-center text-white hover:scale-110 transition-transform shadow-2xl shadow-primary/40 relative group overflow-hidden"
+                            >
+                              <div className="absolute inset-0 bg-gradient-to-tr from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                              {isPlaying ? <Pause className="h-8 w-8" /> : <Play className="h-8 w-8 fill-white" />}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                ) : (
-                  <div className="w-full space-y-10">
-                    <div className="relative h-48 w-full bg-background/50 rounded-2xl border border-border/50 overflow-hidden shadow-inner group/waveform">
-                       <canvas ref={canvasRef} className="w-full h-full" />
-                       
-                       {/* Selection Overlay */}
-                       <div 
-                         className="absolute top-0 bottom-0 bg-primary/20 border-x-2 border-primary shadow-[0_0_30px_rgba(139,92,246,0.3)]"
-                         style={{ 
-                            left: `${(range[0] / duration) * 100}%`, 
-                            right: `${100 - (range[1] / duration) * 100}%` 
-                         }}
-                       />
-
-                       {/* Playhead (Laser Beam) */}
-                       {audioBuffer && (
-                         <div 
-                           className="absolute top-0 bottom-0 w-[3px] bg-white shadow-[0_0_20px_rgba(255,255,255,0.8)] z-50 pointer-events-none"
-                           style={{ left: `${(currentTime / duration) * 100}%` }}
-                         />
-                       )}
-                    </div>
-
-                    <div className="flex items-center justify-center gap-6">
-                       <Button 
-                         variant="outline" 
-                         size="icon" 
-                         className="h-14 w-14 rounded-full border border-primary/20 hover:bg-primary/5 transition-all group"
-                         onClick={resetPlayback}
-                         title="Reset to Start"
-                       >
-                         <RotateCcw className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
-                       </Button>
-
-                       <Button 
-                         variant="outline" 
-                         size="icon" 
-                         className="h-20 w-20 rounded-full border-2 border-primary/20 hover:border-primary hover:bg-primary/10 transition-all group shadow-lg shadow-primary/5"
-                         onClick={playPreview}
-                       >
-                         {isPlaying ? <Pause className="h-8 w-8 text-primary" /> : <Play className="h-8 w-8 text-primary fill-primary" />}
-                       </Button>
-
-                       <div className="h-14 w-14" /> {/* Spacer for symmetry */}
-                    </div>
-
-                    <div className="p-8 bg-muted/20 rounded-2xl border border-border/50 space-y-6">
-                       <div className="flex justify-between items-center px-2">
-                          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Clipping Range</span>
-                          <span className="text-xs font-black bg-primary/10 text-primary px-3 py-1 rounded-2xl">
-                             {range[0].toFixed(2)}s - {range[1].toFixed(2)}s
-                          </span>
-                       </div>
-                       <Slider 
-                         value={range} 
-                         min={0} 
-                         max={duration} 
-                         step={0.01} 
-                         onValueChange={setRange} 
-                         className="py-4 cursor-crosshair"
-                       />
-                       <div className="flex justify-between text-[10px] uppercase font-black opacity-30 px-1">
-                          <span>00:00</span>
-                          <span>{Math.floor(duration/60).toString().padStart(2,'0')}:{(Math.floor(duration)%60).toString().padStart(2,'0')}</span>
-                       </div>
-                    </div>
-                  </div>
-                )}
-                <input ref={inputRef} type="file" className="hidden" accept="audio/*" onChange={(e) => handleFile(e.target.files?.[0])} />
+                  )}
+                  <input ref={inputRef} type="file" className="hidden" accept="audio/*" onChange={(e) => handleFile(e.target.files?.[0])} />
+                </CardContent>
               </Card>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-muted/40 p-10 rounded-2xl border border-border/50 studio-gradient">
-                   <h4 className="text-[10px] font-black uppercase tracking-[0.2em] mb-4 flex items-center gap-2 text-primary">
-                      <Scissors className="h-4 w-4" /> Lossless Logic
-                   </h4>
-                   <p className="text-[11px] text-muted-foreground leading-relaxed italic font-medium opacity-80">
-                     Our <strong className="font-bold">Local Sandbox</strong> decodes the audio into 32-bit floating point buffers for the highest precision clipping available in a browser.
-                   </p>
-                </div>
-                <div className="bg-primary/5 p-10 rounded-2xl border border-primary/10">
-                   <h4 className="text-[10px] font-black uppercase tracking-[0.2em] mb-4 text-primary font-black">Architecture</h4>
-                   <p className="text-[11px] text-muted-foreground leading-relaxed italic font-medium opacity-80">
-                     All processing happens via the <strong className="font-bold">Web Audio API</strong>. Your audio never touches a server, making it safe for confidential recordings.
-                   </p>
-                </div>
-              </div>
+              <p className="text-[9px] text-center text-muted-foreground font-black uppercase tracking-widest opacity-30 italic px-4">32-bit precision • Web Audio API sandbox • Zero server interaction</p>
             </div>
 
-
-            <aside className="space-y-6 lg:sticky lg:top-24 h-fit">
+            <aside className="lg:col-span-4 space-y-6 lg:sticky lg:top-24 h-fit">
               <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl">
                 <div className="bg-primary/5 p-5 border-b border-primary/10">
                   <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Export Parameters</h3>
                 </div>
-                <CardContent className="p-8 space-y-12">
-                   <div className="space-y-6">
-                      <div className="p-5 bg-background/50 rounded-2xl border border-border/50 space-y-4">
-                         <div className="flex items-center justify-between">
-                            <span className="text-[9px] font-black uppercase tracking-widest opacity-40">Source</span>
-                            <span className="text-[10px] font-black truncate max-w-[150px]">{fileName || "None"}</span>
-                         </div>
-                         <div className="flex items-center justify-between">
-                            <span className="text-[9px] font-black uppercase tracking-widest opacity-40">Duration</span>
-                            <span className="text-[10px] font-black">{duration.toFixed(2)}s</span>
-                         </div>
-                         <div className="flex items-center justify-between">
-                            <span className="text-[9px] font-black uppercase tracking-widest opacity-40">Format</span>
-                            <span className="text-[10px] font-black text-primary">LPCM WAV</span>
-                         </div>
+                <CardContent className="p-8 space-y-8">
+                  <div className="space-y-6">
+                    <div className="p-5 bg-background/50 rounded-2xl border border-border/50 space-y-4 shadow-inner">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[9px] font-black uppercase tracking-widest opacity-40">Source</span>
+                        <span className="text-[10px] font-black truncate max-w-[150px] italic">{fileName || "None"}</span>
                       </div>
-
-                      <div className="space-y-4">
-                         <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] opacity-40">
-                            <SlidersHorizontal className="h-3 w-3" /> Manual Bounds
-                         </div>
-                         <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                               <label className="text-[9px] font-black uppercase opacity-60">Start (s)</label>
-                               <input 
-                                 type="number" 
-                                 step="0.01"
-                                 value={range[0].toFixed(2)} 
-                                 onChange={(e) => setRange([Math.min(parseFloat(e.target.value) || 0, range[1]), range[1]])}
-                                 className="w-full bg-muted/40 border border-border/50 rounded-2xl p-3 text-xs font-black font-mono outline-none focus:border-primary/50 transition-colors"
-                               />
-                            </div>
-                            <div className="space-y-2">
-                               <label className="text-[9px] font-black uppercase opacity-60">End (s)</label>
-                               <input 
-                                 type="number" 
-                                 step="0.01"
-                                 value={range[1].toFixed(2)} 
-                                 onChange={(e) => setRange([range[0], Math.max(parseFloat(e.target.value) || duration, range[0])])}
-                                 className="w-full bg-muted/40 border border-border/50 rounded-2xl p-3 text-xs font-black font-mono outline-none focus:border-primary/50 transition-colors"
-                               />
-                            </div>
-                         </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-[9px] font-black uppercase tracking-widest opacity-40">Duration</span>
+                        <span className="text-[10px] font-black font-mono">{duration.toFixed(2)}s</span>
                       </div>
-                   </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-[9px] font-black uppercase tracking-widest opacity-40">Format</span>
+                        <span className="text-[10px] font-black text-primary italic">LPCM WAV</span>
+                      </div>
+                    </div>
+                  </div>
 
-                   <div className="pt-6">
-                      <Button 
-                        onClick={downloadTrimmed} 
-                        disabled={!audioBuffer || processing} 
-                        className="w-full gap-3 h-16 text-lg font-black rounded-2xl shadow-2xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all uppercase italic"
-                      >
-                         <Download className="h-6 w-6" />
-                         {processing ? "Slicing Samples..." : "Export Trimmed"}
-                      </Button>
-                      <p className="text-[9px] text-center mt-4 text-muted-foreground font-black uppercase tracking-[0.2em] opacity-40 italic">
-                        Direct-to-Disk High-Fidelity Export
-                      </p>
-                   </div>
+                  <div className="pt-6">
+                    <Button
+                      onClick={downloadTrimmed}
+                      disabled={!audioBuffer || processing}
+                      className="w-full gap-3 h-16 text-lg font-black rounded-2xl shadow-2xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all uppercase italic"
+                    >
+                      <Download className="h-6 w-6" />
+                      {processing ? "Slicing Samples..." : "Export Trimmed"}
+                    </Button>
+                    <p className="text-[9px] text-center mt-4 text-muted-foreground font-black uppercase tracking-[0.2em] opacity-40 italic">
+                      Direct-to-Disk High-Fidelity Export
+                    </p>
+                  </div>
                 </CardContent>
               </Card>
 
               <div className="px-6">
-                 <AdPlaceholder format="rectangle" className="opacity-40 grayscale group-hover:grayscale-0 transition-all" />
+                <AdPlaceholder format="rectangle" className="opacity-40 grayscale group-hover:grayscale-0 transition-all" />
               </div>
+
+
             </aside>
           </div>
         </div>
@@ -504,4 +535,3 @@ const AudioTrimmer = () => {
 };
 
 export default AudioTrimmer;
-

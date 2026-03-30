@@ -76,8 +76,8 @@ export const tools = [
     tags: ["DESIGN", "PRO"]
   },
   {
-    title: "Frame & GIF Studio",
-    description: "Extract high-res PNG frames and render optimized GIFs from any video",
+    title: "Video to GIF / Frame Extraction",
+    description: "Extract high-res PNG frames and render optimized GIFs from any video artifact",
     icon: <Camera className="h-5 w-5" />,
     to: "/frame-gif-studio",
     category: "Video Studio",
@@ -100,7 +100,7 @@ export const tools = [
     tags: ["SECURE", "QR"]
   },
   {
-    title: "PII Scrubber",
+    title: "PII Masker",
     description: "Forensic image redaction: physically blur and destroy sensitive information",
     icon: <ShieldX className="h-5 w-5" />,
     to: "/pii-masker",
@@ -133,12 +133,12 @@ export const tools = [
   },
 ];
 
-export const categoryConfig: Record<string, { icon: any, gradient: string, themeClass: string }> = {
-  "Video Studio": { icon: Video, gradient: "from-blue-600 to-indigo-500", themeClass: "theme-video" },
-  "Image Studio": { icon: ImageIcon, gradient: "from-orange-500 to-rose-500", themeClass: "theme-image" },
-  "Audio Lab": { icon: Music, gradient: "from-emerald-500 to-teal-500", themeClass: "theme-audio" },
-  "Privacy Belt": { icon: ShieldCheck, gradient: "from-purple-600 to-fuchsia-500", themeClass: "theme-privacy" },
-  "Utility Belt": { icon: Wrench, gradient: "from-amber-400 to-yellow-600", themeClass: "theme-utility" }
+export const categoryConfig: Record<string, { icon: any, gradient: string, themeClass: string, tagColor: string }> = {
+  "Video Studio": { icon: Video, gradient: "from-blue-600 to-indigo-500", themeClass: "theme-video", tagColor: "#3b82f6" },
+  "Image Studio": { icon: ImageIcon, gradient: "from-orange-500 to-rose-500", themeClass: "theme-image", tagColor: "#f97316" },
+  "Audio Lab": { icon: Music, gradient: "from-emerald-500 to-teal-500", themeClass: "theme-audio", tagColor: "#10b981" },
+  "Privacy Belt": { icon: ShieldCheck, gradient: "from-violet-500 to-fuchsia-400", themeClass: "theme-privacy", tagColor: "#8b5cf6" },
+  "Utility Belt": { icon: Wrench, gradient: "from-amber-400 to-yellow-600", themeClass: "theme-utility", tagColor: "#f59e0b" }
 };
 
 interface ToolsGridProps {
@@ -200,9 +200,13 @@ const ToolsGrid = ({ searchQuery = "", selectedCategory = null, onClearFilters }
                 <ToolCard {...tool} gradient={categoryConfig[tool.category]?.gradient} themeClass={categoryConfig[tool.category]?.themeClass} />
                 <div className="absolute top-4 right-4 flex gap-1.5 pointer-events-none z-50">
                   {tool.tags.map(tag => {
-                    const colorClass = categoryConfig[tool.category]?.gradient.split(' ')[0].replace('from-', '') || 'primary';
+                    const tagColor = categoryConfig[tool.category]?.tagColor || '#a78bfa';
                     return (
-                      <span key={tag} className={`text-[10px] bg-${colorClass}/10 text-${colorClass} font-black px-2 py-0.5 rounded-2xl border border-${colorClass}/20 shadow-xl opacity-0 translate-y-2 group-hover/card-wrapper:opacity-100 group-hover/card-wrapper:translate-y-0 transition-all duration-500 uppercase tracking-widest whitespace-nowrap backdrop-blur-md`}>
+                      <span 
+                        key={tag} 
+                        className="text-[10px] font-black px-2 py-0.5 rounded-2xl shadow-xl opacity-0 translate-y-2 group-hover/card-wrapper:opacity-100 group-hover/card-wrapper:translate-y-0 transition-all duration-500 uppercase tracking-widest whitespace-nowrap backdrop-blur-md"
+                        style={{ color: tagColor, backgroundColor: `${tagColor}15`, borderWidth: 1, borderStyle: 'solid', borderColor: `${tagColor}30` }}
+                      >
                         {tag}
                       </span>
                     );
@@ -214,7 +218,7 @@ const ToolsGrid = ({ searchQuery = "", selectedCategory = null, onClearFilters }
         </section>
       ) : (
         categories.map(category => {
-          const config = categoryConfig[category] || { icon: Sparkles, gradient: "from-primary to-accent", themeClass: "" };
+          const config = categoryConfig[category] || { icon: Sparkles, gradient: "from-primary to-accent", themeClass: "", tagColor: "#a78bfa" };
           const Icon = config.icon;
 
           return (
@@ -241,9 +245,13 @@ const ToolsGrid = ({ searchQuery = "", selectedCategory = null, onClearFilters }
                       <ToolCard {...tool} gradient={config.gradient} themeClass={config.themeClass} />
                       <div className="absolute top-4 right-4 flex gap-1.5 pointer-events-none z-50">
                         {tool.tags.map(tag => {
-                          const colorClass = config.gradient.split(' ')[0].replace('from-', '');
+                          const tagColor = config.tagColor;
                           return (
-                            <span key={tag} className={`text-[10px] bg-${colorClass}/10 text-${colorClass} font-black px-2 py-0.5 rounded-2xl border border-${colorClass}/20 shadow-xl opacity-0 translate-y-2 group-hover/card-wrapper:opacity-100 group-hover/card-wrapper:translate-y-0 transition-all duration-500 uppercase tracking-widest whitespace-nowrap backdrop-blur-md`}>
+                            <span 
+                              key={tag} 
+                              className="text-[10px] font-black px-2 py-0.5 rounded-2xl shadow-xl opacity-0 translate-y-2 group-hover/card-wrapper:opacity-100 group-hover/card-wrapper:translate-y-0 transition-all duration-500 uppercase tracking-widest whitespace-nowrap backdrop-blur-md"
+                              style={{ color: tagColor, backgroundColor: `${tagColor}15`, borderWidth: 1, borderStyle: 'solid', borderColor: `${tagColor}30` }}
+                            >
                               {tag}
                             </span>
                           );

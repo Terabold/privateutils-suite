@@ -95,7 +95,7 @@ const Index = () => {
           </div>
 
           {/* Privacy Manifesto Section */}
-          <section className="py-24 px-12 rounded-[2rem] bg-zinc-950 text-white dark:bg-zinc-900 border border-white/5 shadow-2xl relative overflow-hidden group mb-32">
+          <section className="py-24 px-12 rounded-2xl bg-zinc-950 text-white dark:bg-zinc-900 border border-white/5 shadow-2xl relative overflow-hidden group mb-32">
              <div className="absolute top-0 right-0 p-12 opacity-5 scale-150 rotate-12 group-hover:scale-[2] transition-transform duration-1000">
                 <ShieldCheck className="h-60 w-60" />
              </div>
@@ -128,7 +128,7 @@ const Index = () => {
 
           {/* Benefits Grid */}
           <section className="grid grid-cols-1 md:grid-cols-3 gap-12 py-12 mb-16">
-            <div className="flex flex-col items-center text-center p-6 studio-gradient rounded-[1rem]">
+            <div className="flex flex-col items-center text-center p-6 studio-gradient rounded-2xl">
               <div className="h-16 w-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mb-8 border border-primary/20">
                 <ShieldCheck className="h-8 w-8" />
               </div>
@@ -136,7 +136,7 @@ const Index = () => {
               <p className="text-muted-foreground text-sm leading-relaxed italic font-medium">Files remain in your local workspace</p>
             </div>
             
-            <div className="flex flex-col items-center text-center p-6 studio-gradient rounded-[1rem]">
+            <div className="flex flex-col items-center text-center p-6 studio-gradient rounded-2xl">
               <div className="h-16 w-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mb-8 border border-primary/20">
                 <Zap className="h-8 w-8" />
               </div>
@@ -144,7 +144,7 @@ const Index = () => {
               <p className="text-muted-foreground text-sm leading-relaxed italic font-medium">Parallel hardware rendering</p>
             </div>
             
-            <div className="flex flex-col items-center text-center p-6 studio-gradient rounded-[1rem]">
+            <div className="flex flex-col items-center text-center p-6 studio-gradient rounded-2xl">
               <div className="h-16 w-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mb-8 border border-primary/20">
                 <Lock className="h-8 w-8" />
               </div>

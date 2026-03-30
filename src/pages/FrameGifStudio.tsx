@@ -179,21 +179,16 @@ const FrameGifStudio = () => {
                 </Button>
               </Link>
               <div>
-                <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow">
-                   Frame & GIF <span className="text-primary italic">Studio</span>
-                </h1>
-                <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">Forensic Moment Extraction Engine</p>
+                 <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow">
+                    Video to <span className="text-primary italic">GIF / Frame Extraction</span>
+                 </h1>
+                 <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">Professional Video-to-Gif & Instance Recovery Engine</p>
               </div>
             </div>
-            {file && (
-              <Button onClick={() => { setFile(null); setVideoUrl(null); setFrames([]); }} variant="ghost" size="sm" className="gap-2 h-10 px-5 text-[10px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-2xl transition-all">
-                Wipe Stage
-              </Button>
-            )}
           </header>
 
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-12 items-start">
-            <div className="space-y-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+            <div className="lg:col-span-8 space-y-8">
               {!file ? (
                 <Card className="glass-morphism border-primary/10 overflow-hidden min-h-[500px] flex flex-col items-center justify-center relative bg-muted/5 rounded-2xl shadow-inner p-10 select-none">
                    <div
@@ -310,10 +305,20 @@ const FrameGifStudio = () => {
               )}
             </div>
 
-            <aside className="space-y-8 lg:sticky lg:top-24 h-fit">
+            <aside className="lg:col-span-4 space-y-6 lg:sticky lg:top-24 h-fit">
               <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl">
-                 <div className="bg-primary/5 p-5 border-b border-primary/10">
-                   <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">GIF Parameters</h3>
+                 <div className="bg-primary/5 p-5 border-b border-primary/10 flex items-center justify-between">
+                   <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">GIF Processing</h3>
+                   {file && (
+                     <Button 
+                       onClick={() => { setFile(null); setVideoUrl(null); setFrames([]); }} 
+                       variant="ghost" 
+                       size="sm" 
+                       className="h-8 px-3 text-[9px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-xl transition-all"
+                     >
+                       Reset Stage
+                     </Button>
+                   )}
                  </div>
                  <CardContent className="p-8 space-y-10">
                     <div className="space-y-6">
@@ -337,14 +342,7 @@ const FrameGifStudio = () => {
                        </div>
                     </div>
 
-                    <div className="p-6 rounded-2xl bg-primary/5 border border-primary/10 space-y-4">
-                       <h4 className="text-[10px] font-black uppercase tracking-widest text-primary flex items-center gap-2">
-                          <Layers className="h-3.5 w-3.5" /> High-DPI Encoding
-                       </h4>
-                       <p className="text-[11px] text-muted-foreground leading-relaxed italic opacity-80 font-medium">
-                         Our <strong className="font-bold">Lanczos Scaling</strong> algorithm ensures zero color-banding on complex gradients while maintaining small file sizes.
-                       </p>
-                    </div>
+                    <p className="text-[9px] text-center text-muted-foreground font-black uppercase tracking-widest opacity-30 italic">Lanczos scaling • Zero color-banding • Optimized file size</p>
 
                     <div className="pt-4">
                       {processing && (

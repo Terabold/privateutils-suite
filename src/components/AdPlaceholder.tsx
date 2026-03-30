@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import { Info } from "lucide-react";
 
 interface AdPlaceholderProps {
-  format: "banner" | "header_banner" | "rectangle";
+  format: "banner" | "header_banner" | "rectangle" | "vertical";
   className?: string;
 }
 
@@ -11,6 +11,7 @@ export const AdPlaceholder = ({ format, className }: AdPlaceholderProps) => {
     banner: "w-full max-w-[728px] h-[90px]",
     header_banner: "w-full lg:max-w-[1000px] h-[90px] lg:h-[120px]",
     rectangle: "w-[300px] h-[250px]",
+    vertical: "w-[160px] h-[600px]",
   };
 
   return (

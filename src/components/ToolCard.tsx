@@ -18,7 +18,7 @@ const ToolCard = ({ title, description, icon, to, gradient = "from-primary to-ac
           <div className={`mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${gradient} text-white shadow-lg shadow-black/20 group-hover/card-link:scale-110 transition-transform duration-500`}>
             {icon}
           </div>
-          <CardTitle className="text-xl font-black uppercase tracking-tight font-display mb-3 text-foreground group-hover/card-link:text-primary transition-colors">
+          <CardTitle className="text-xl font-black uppercase tracking-tight font-display mb-3 text-foreground group-hover/card-link:text-[hsl(var(--primary))] transition-colors">
             {title}
           </CardTitle>
           <CardDescription className="text-sm font-medium leading-relaxed opacity-60 italic group-hover/card-link:opacity-100 transition-opacity">
