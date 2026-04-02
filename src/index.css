@@ -37,7 +37,7 @@
   }
 
   .dark {
-    --background: 240 15% 4%; /* Solid Deep Charcoal */
+    --background: 240 10% 3.9%; /* Slightly brighter deep slate for non-OLED readability (#0d0d0d) */
     --foreground: 210 40% 98%;
     
     --card: 240 15% 6%;
@@ -100,8 +100,17 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground antialiased;
+    @apply bg-background text-foreground antialiased text-[16px];
     font-family: 'Outfit', sans-serif;
+  }
+}
+
+@layer base {
+  input, select, textarea {
+    @apply text-base !important;
+  }
+  label {
+    @apply text-sm !important;
   }
 }
 
@@ -118,7 +127,12 @@
   }
   
   .shadow-glow {
-    filter: drop-shadow(0 0 8px hsl(var(--primary) / 0.3));
+    filter: drop-shadow(0 0 12px hsl(var(--primary) / 0.4));
+  }
+
+  /* Universal Premium Containers */
+  .studio-workbench {
+    @apply relative w-full h-full flex flex-col items-center justify-center rounded-[24px] border-2 border-dashed border-primary/20 text-center transition-all bg-background/50 hover:border-primary/40 hover:bg-primary/5 shadow-inner;
   }
 
   /* Accessible Hover Fix: Ensure high-contrast on hover */

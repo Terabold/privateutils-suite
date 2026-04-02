@@ -105,23 +105,29 @@ const CsvJsonForge = () => {
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8 items-start">
             <div className="space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-700">
               
-              <div className="flex gap-2">
-                 <button 
-                  onClick={() => setMode('csv2json')}
-                  className={`px-6 py-3 rounded-2xl border transition-all font-black uppercase tracking-widest text-[10px] flex items-center gap-2 ${
-                    mode === 'csv2json' ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20' : 'bg-muted/5 border-border/30 text-muted-foreground hover:bg-primary/5'
-                  }`}
-                 >
-                    <Table className="h-4 w-4" /> CSV to JSON
-                 </button>
-                 <button 
-                  onClick={() => setMode('json2csv')}
-                  className={`px-6 py-3 rounded-2xl border transition-all font-black uppercase tracking-widest text-[10px] flex items-center gap-2 ${
-                    mode === 'json2csv' ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20' : 'bg-muted/5 border-border/30 text-muted-foreground hover:bg-primary/5'
-                  }`}
-                 >
-                    <FileJson className="h-4 w-4" /> JSON to CSV
-                 </button>
+              <div className="flex items-center justify-between gap-4 bg-primary/5 p-4 rounded-3xl border border-primary/10 shadow-inner">
+                 <div className="flex gap-2">
+                    <button 
+                     onClick={() => setMode('csv2json')}
+                     className={`px-6 py-3 rounded-2xl border transition-all font-black uppercase tracking-widest text-[10px] flex items-center gap-2 ${
+                       mode === 'csv2json' ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20' : 'bg-muted/5 border-border/30 text-muted-foreground hover:bg-primary/5'
+                     }`}
+                    >
+                       <Table className="h-4 w-4" /> CSV to JSON
+                    </button>
+                    <button 
+                     onClick={() => setMode('json2csv')}
+                     className={`px-6 py-3 rounded-2xl border transition-all font-black uppercase tracking-widest text-[10px] flex items-center gap-2 ${
+                       mode === 'json2csv' ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20' : 'bg-muted/5 border-border/30 text-muted-foreground hover:bg-primary/5'
+                     }`}
+                    >
+                       <FileJson className="h-4 w-4" /> JSON to CSV
+                    </button>
+                 </div>
+
+                 <Button onClick={convert} disabled={!input} className="px-10 gap-3 h-12 text-sm font-black rounded-xl shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all uppercase italic">
+                    <RefreshCw className={`h-4 w-4 ${input && "animate-spin-slow"}`} /> Transform Data
+                 </Button>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -134,17 +140,15 @@ const CsvJsonForge = () => {
                          placeholder={mode === 'csv2json' ? "name,age,city\nJohn,30,NY\nJane,25,LA" : '[{"name":"John","age":30}]'}
                          className="h-[400px] w-full bg-zinc-950/40 border border-border/30 rounded-xl p-6 text-xs font-mono text-foreground focus:outline-none focus:border-primary/40 custom-scrollbar whitespace-pre"
                        />
-                       <div className="flex justify-center -mt-8 mb-4">
-                          <KbdShortcut />
-                       </div>
-                       <Button onClick={convert} className="w-full gap-2 h-12 font-bold rounded-2xl shadow-xl shadow-primary/20 bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 transition-all">
-                          <RefreshCw className="h-4 w-4" /> Convert
-                       </Button>
                     </CardContent>
                  </Card>
 
                  <Card className="glass-morphism border-primary/10 rounded-2xl shadow-xl bg-muted/5 p-8">
-                    <CardContent className="p-0 space-y-4">
+                    <div className="px-6 space-y-1 text-center">
+                      <p className="text-4xl font-black text-foreground uppercase tracking-tighter italic leading-none text-shadow-glow">Deploy Data Master</p>
+                      <p className="text-[11px] text-muted-foreground font-black uppercase tracking-[0.2em] opacity-40 italic mt-2">CSV or JSON Source Files Supported</p>
+                    </div>
+                    <CardContent className="p-0 space-y-4 mt-6">
                        <div className="flex items-center justify-between">
                           <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Output</p>
                           <Button 

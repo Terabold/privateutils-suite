@@ -8,7 +8,6 @@ import Footer from "@/components/Footer";
 import AdPlaceholder from "@/components/AdPlaceholder";
 import { toast } from "sonner";
 import { usePasteFile } from "@/hooks/usePasteFile";
-import { KbdShortcut } from "@/components/KbdShortcut";
 
 // Helper for HSL to Hex
 function hslToHex(h: number, s: number, l: number) {
@@ -213,10 +212,6 @@ const ColorPaletteGenerator = () => {
                     <Button onClick={refresh} variant="ghost" className="h-14 px-8 font-black rounded-2xl border border-white/10 hover:bg-white/5 transition-all text-xs uppercase italic gap-3 group">
                       <RefreshCw className="h-4 w-4 group-hover:rotate-180 transition-transform duration-700" /> Randomize
                     </Button>
-                    <div className="flex flex-col items-center gap-2">
-                       <KbdShortcut />
-                       <p className="text-[8px] font-black uppercase tracking-[0.2em] opacity-20 italic">Paste image to seed palette</p>
-                    </div>
                   </div>
 
                   <div className="pt-12 border-t border-white/5 space-y-8">

@@ -1,6 +1,6 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Upload, RefreshCw, Download, Play, Pause, Music, Zap, CloudUpload } from "lucide-react";
+import { ArrowLeft, RefreshCw, Download, Play, Pause, Music, Zap, CloudUpload, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Navbar from "@/components/Navbar";
@@ -13,13 +13,24 @@ import { KbdShortcut } from "@/components/KbdShortcut";
 const ReverseAudio = () => {
   const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
   const [file, setFile] = useState<File | null>(null);
+  const [audioBuffer, setAudioBuffer] = useState<AudioBuffer | null>(null);
   const [processing, setProcessing] = useState(false);
-  const [reversedBlob, setReversedBlob] = useState<Blob | null>(null);
+  const [objectUrl, setObjectUrl] = useState<string | null>(null);
+  const [processedUrl, setProcessedUrl] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
   
-  const audioContextRef = useRef<AudioContext | null>(null);
-  const sourceRef = useRef<AudioBufferSourceNode | null>(null);
+  const audioCtxRef = useRef<AudioContext | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const staticCanvasRef = useRef<HTMLCanvasElement>(null);
+  
+  const audioRef = useRef<HTMLAudioElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const isPlayingRef = useRef(false);
+  const animationRef = useRef<number | null>(null);
+  const playheadAnimationRef = useRef<number | null>(null);
+  const sourceCreatedRef = useRef(false);
 
   const toggleDark = useCallback(() => {
     const next = !darkMode;
@@ -28,28 +39,143 @@ const ReverseAudio = () => {
     localStorage.setItem("theme", next ? "dark" : "light");
   }, [darkMode]);
 
-  const handleFile = (f: File | undefined) => {
+  const ensureAudioGraph = useCallback(() => {
+    const audio = audioRef.current;
+    if (!audio || sourceCreatedRef.current) return;
+
+    const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const source = ctx.createMediaElementSource(audio);
+    const analyser = ctx.createAnalyser();
+    
+    analyser.fftSize = 256;
+    source.connect(analyser);
+    analyser.connect(ctx.destination);
+
+    audioCtxRef.current = ctx;
+    analyserRef.current = analyser;
+    sourceCreatedRef.current = true;
+  }, []);
+
+  const drawVisualizer = useCallback(() => {
+    if (!analyserRef.current || !canvasRef.current || !audioRef.current || audioRef.current.paused) return;
+    const canvas = canvasRef.current;
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    if (canvas.width !== rect.width * dpr) {
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+    }
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    ctx.scale(dpr, dpr);
+
+    const analyser = analyserRef.current;
+    const bufferLength = analyser.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
+    analyser.getByteFrequencyData(dataArray);
+
+    const width = rect.width;
+    const height = rect.height;
+    ctx.clearRect(0, 0, width, height);
+    
+    const barWidth = (width / bufferLength) * 2;
+    let x = 0;
+
+    for (let i = 0; i < bufferLength; i++) {
+      const barHeight = (dataArray[i] / 255) * height;
+      const gradient = ctx.createLinearGradient(0, height - barHeight, 0, height);
+      gradient.addColorStop(0, "#8b5cf6");
+      gradient.addColorStop(1, "#6366f1");
+      
+      ctx.fillStyle = gradient;
+      ctx.beginPath();
+      ctx.roundRect(x, height - barHeight, barWidth, barHeight, [2, 2, 0, 0]);
+      ctx.fill();
+      x += barWidth + 2;
+    }
+    animationRef.current = requestAnimationFrame(drawVisualizer);
+  }, []);
+
+  const drawStaticWaveform = useCallback(() => {
+    const canvas = staticCanvasRef.current;
+    if (!canvas || !audioBuffer) return;
+
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    ctx.scale(dpr, dpr);
+
+    const width = rect.width;
+    const height = rect.height;
+    const data = audioBuffer.getChannelData(0);
+    const step = Math.ceil(data.length / width);
+    const amp = height / 2;
+
+    ctx.clearRect(0, 0, width, height);
+    const barWidth = 2;
+    const gap = 1;
+    
+    for (let i = 0; i < width; i += (barWidth + gap)) {
+      let min = 1.0;
+      let max = -1.0;
+      for (let j = 0; j < step * (barWidth + gap); j++) {
+        const index = Math.floor(i * step) + j;
+        if (index >= data.length) break;
+        const datum = data[index];
+        if (datum < min) min = datum;
+        if (datum > max) max = datum;
+      }
+      const barHeight = Math.max(1, (max - min) * amp * 0.8);
+      ctx.fillStyle = "rgba(139, 92, 246, 0.7)";
+      ctx.beginPath();
+      ctx.roundRect(i, amp - barHeight / 2, barWidth, barHeight, 1);
+      ctx.fill();
+    }
+  }, [audioBuffer]);
+
+  useEffect(() => {
+    if (audioBuffer) drawStaticWaveform();
+  }, [audioBuffer, drawStaticWaveform]);
+
+  const handleFile = async (f: File | undefined) => {
     if (!f) return;
+    if (objectUrl) URL.revokeObjectURL(objectUrl);
+    if (processedUrl) URL.revokeObjectURL(processedUrl);
+    
     setFile(f);
-    setReversedBlob(null);
-    toast.success("Audio Artifact Staged");
+    setProcessedUrl(null);
+    const url = URL.createObjectURL(f);
+    setObjectUrl(url);
+    
+    try {
+      const arrayBuffer = await f.arrayBuffer();
+      const tempCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const buffer = await tempCtx.decodeAudioData(arrayBuffer);
+      setAudioBuffer(buffer);
+      await tempCtx.close();
+      toast.success("Audio Artifact Staged");
+    } catch (e) {
+      toast.error("Failed to decode audio master.");
+    }
+    
+    sourceCreatedRef.current = false;
   };
 
   usePasteFile(handleFile);
 
   const processReverse = async () => {
-    if (!file) return;
+    if (!audioBuffer || !file) return;
     setProcessing(true);
+    toast.info("Flipping Phase Matrix...");
 
     try {
-      if (!audioContextRef.current) audioContextRef.current = new AudioContext();
-      const ctx = audioContextRef.current;
-      
-      const arrayBuffer = await file.arrayBuffer();
-      const audioBuffer = await ctx.decodeAudioData(arrayBuffer);
-      
-      // Create a new buffer for the reversed audio
-      const reversedBuffer = ctx.createBuffer(
+      const tempCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const reversedBuffer = tempCtx.createBuffer(
         audioBuffer.numberOfChannels,
         audioBuffer.length,
         audioBuffer.sampleRate
@@ -63,10 +189,11 @@ const ReverseAudio = () => {
         }
       }
 
-      // Encode to WAV (Simple helper)
-      const wavBlob = bufferToWave(reversedBuffer, audioBuffer.length);
-      setReversedBlob(wavBlob);
+      const wavBlob = bufferToWave(reversedBuffer, reversedBuffer.length);
+      const url = URL.createObjectURL(wavBlob);
+      setProcessedUrl(url);
       toast.success("Temporal Inversion Complete");
+      await tempCtx.close();
     } catch (e) {
       console.error(e);
       toast.error("Audio processing failed.");
@@ -75,7 +202,6 @@ const ReverseAudio = () => {
     }
   };
 
-  // Simplified WAV encoder
   const bufferToWave = (abuf: AudioBuffer, len: number) => {
     const numOfChan = abuf.numberOfChannels;
     const length = len * numOfChan * 2 + 44;
@@ -115,162 +241,218 @@ const ReverseAudio = () => {
     return new Blob([buffer], {type: "audio/wav"});
   };
 
-  const playPreview = () => {
-    if (!reversedBlob || !audioContextRef.current) return;
-    if (isPlaying) {
-      sourceRef.current?.stop();
-      setIsPlaying(false);
-      return;
-    }
-
-    const ctx = audioContextRef.current;
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-      const buffer = await ctx.decodeAudioData(e.target?.result as ArrayBuffer);
-      const source = ctx.createBufferSource();
-      source.buffer = buffer;
-      source.connect(ctx.destination);
-      source.onended = () => setIsPlaying(false);
-      source.start();
-      sourceRef.current = source;
+  const handlePlay = () => {
+    if (!audioRef.current) return;
+    ensureAudioGraph();
+    audioCtxRef.current?.resume().catch(() => {});
+    
+    if (audioRef.current.paused) {
+      audioRef.current.play();
       setIsPlaying(true);
+      isPlayingRef.current = true;
+      startPlayheadLoop();
+      drawVisualizer();
+    } else {
+      audioRef.current.pause();
+      setIsPlaying(false);
+      isPlayingRef.current = false;
+      if (playheadAnimationRef.current) cancelAnimationFrame(playheadAnimationRef.current);
+    }
+  };
+
+  const startPlayheadLoop = () => {
+    if (playheadAnimationRef.current) cancelAnimationFrame(playheadAnimationRef.current);
+    const update = () => {
+      if (audioRef.current && isPlayingRef.current) {
+        setCurrentTime(audioRef.current.currentTime);
+        playheadAnimationRef.current = requestAnimationFrame(update);
+      }
     };
-    reader.readAsArrayBuffer(reversedBlob);
+    playheadAnimationRef.current = requestAnimationFrame(update);
+  };
+
+  const resetPlayback = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      setCurrentTime(0);
+      setIsPlaying(false);
+      isPlayingRef.current = false;
+    }
   };
 
   return (
     <div className="min-h-screen bg-background text-foreground theme-audio transition-all duration-500 overflow-x-hidden">
       <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
       
-      <div className="flex justify-center items-start w-full relative">
-        <aside className="hidden min-[1850px]:flex flex-col gap-10 sticky top-32 w-[300px] shrink-0 px-6 py-8 animate-in fade-in slide-in-from-left-8 duration-1000">
-           <AdPlaceholder format="rectangle" className="opacity-40 grayscale border-border/50" />
-           <AdPlaceholder format="rectangle" className="opacity-40 grayscale border-border/50" />
-        </aside>
+      <main className="container mx-auto max-w-[1400px] px-6 py-12 grow">
+        <div className="flex flex-col gap-10">
+          <header className="flex items-center gap-6">
+            <Link to="/">
+              <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-border/50 hover:bg-primary/5 transition-all group/back">
+                <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
+              </Button>
+            </Link>
+            <div>
+              <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow">
+                  Reverse <span className="text-primary italic">Audio</span>
+              </h1>
+              <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[9px]">Temporal Phase Inversion Studio</p>
+            </div>
+          </header>
 
-        <main className="container mx-auto max-w-[1400px] px-6 py-12 grow">
-          <div className="flex flex-col gap-10">
-            <header className="flex items-center gap-6">
-              <Link to="/">
-                <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-border/50 hover:bg-primary/5 transition-all group/back">
-                  <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
-                </Button>
-              </Link>
-              <div>
-                <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow">
-                   Reverse <span className="text-primary italic">Audio</span>
-                </h1>
-                <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">Temporal Phase Inversion Studio</p>
-              </div>
-            </header>
-
-            <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-12 items-start animate-in fade-in slide-in-from-bottom-8 duration-700">
-              <div className="space-y-8">
-                {!file ? (
-                  <Card className="glass-morphism border-primary/10 overflow-hidden min-h-[500px] flex flex-col items-center justify-center relative bg-muted/5 rounded-2xl shadow-inner p-10 select-none">
-                     <div
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start animate-in fade-in slide-in-from-bottom-8 duration-700">
+            <div className="lg:col-span-8 space-y-8">
+              {!file ? (
+                <Card className="glass-morphism border-primary/10 overflow-hidden min-h-[400px] flex flex-col items-center justify-center relative bg-muted/5 rounded-2xl shadow-inner p-10 select-none">
+                    <div
                       onDragOver={(e) => e.preventDefault()}
                       onDrop={(e) => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); }}
                       onClick={() => !processing && inputRef.current?.click()}
                       className="relative w-full flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/20 text-center transition-all cursor-pointer py-32 bg-background/50 hover:border-primary/40 hover:bg-primary/5 shadow-inner"
                     >
                       <div className="h-24 w-24 bg-primary/10 rounded-2xl flex items-center justify-center mb-8 shadow-inner group-hover:scale-110 transition-transform">
-                         <Music className="h-12 w-12 text-primary" />
+                        <Music className="h-12 w-12 text-primary" />
                       </div>
                       <div className="px-6 space-y-1">
-                        <p className="text-3xl font-black text-foreground uppercase tracking-tighter italic leading-none text-shadow-glow">Deploy Hub Artifact</p>
-                        <p className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.2em] opacity-40">Drag or click to browse</p>
-                        <KbdShortcut />
+                        <p className="text-3xl font-black text-foreground uppercase tracking-tighter italic leading-none text-shadow-glow">Deploy Artifact</p>
+                        <p className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.2em] opacity-40">Drag master or click</p>
                         <p className="mt-4 text-[10px] text-muted-foreground font-black uppercase tracking-widest opacity-20 text-center">MP3, WAV, OGG Support • Bit-Level Reversion</p>
                       </div>
                       <input ref={inputRef} type="file" className="hidden" accept="audio/*" onChange={(e) => handleFile(e.target.files?.[0])} />
                     </div>
-                  </Card>
-                ) : (
-                  <div className="space-y-8">
-                    <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-2xl p-0 relative">
-                       <div className="bg-primary/5 p-6 border-b border-primary/10 flex items-center justify-between">
-                          <div className="flex items-center gap-4">
-                             <div className="bg-primary/10 p-2 rounded-xl border border-primary/20">
-                                <Music className="h-5 w-5 text-primary" />
+                </Card>
+              ) : (
+                <div className="animate-in fade-in slide-in-from-bottom-8 duration-700">
+                  <Card className="glass-morphism border-primary/10 p-0 rounded-2xl shadow-2xl bg-zinc-900/50 group relative overflow-hidden">
+                    <div className="bg-primary/5 p-5 border-b border-primary/10 flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <Music className="h-4 w-4 text-primary" />
+                        <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Wave Stage</h3>
+                      </div>
+                    </div>
+                    <CardContent className="p-10">
+                      <div className="space-y-10">
+                        <div className="flex items-center justify-between">
+                           <div className="flex items-center gap-3">
+                              <div className="h-10 w-10 rounded-2xl bg-primary/20 flex items-center justify-center text-primary">
+                                 <Music className="h-5 w-5" />
+                              </div>
+                              <div>
+                                 <p className="text-[10px] font-black uppercase tracking-widest opacity-40 text-foreground">Acoustic Status</p>
+                                 <p className="text-2xl font-black italic tracking-tight text-primary uppercase">Ready for Inversion</p>
+                              </div>
+                           </div>
+                            <div className="text-right">
+                               <p className="text-[10px] font-black uppercase tracking-widest opacity-20 text-foreground">Active Source</p>
+                               <p className="text-xs font-black text-foreground truncate max-w-[200px] italic">{file.name}</p>
+                            </div>
+                        </div>
+
+                        <div className="pt-6 border-t border-primary/10 flex flex-col items-center gap-6">
+                          <div 
+                            className="w-full h-48 bg-background/50 rounded-2xl border border-border/50 shadow-inner flex items-center justify-center overflow-hidden relative group/waveform cursor-pointer"
+                            onClick={(e) => {
+                              if (!audioBuffer) return;
+                              const rect = e.currentTarget.getBoundingClientRect();
+                              const x = (e.clientX - rect.left) / rect.width;
+                              const t = x * audioBuffer.duration;
+                              if (audioRef.current) audioRef.current.currentTime = t;
+                              setCurrentTime(t);
+                            }}
+                          >
+                             <canvas ref={staticCanvasRef} className="absolute inset-0 w-full h-full opacity-60 pointer-events-none" />
+                             <canvas ref={canvasRef} className="absolute inset-0 w-full h-full z-10 pointer-events-none" />
+                             {audioBuffer && (
+                                <div 
+                                  className="absolute top-0 bottom-0 w-[3px] bg-white shadow-[0_0_20px_rgba(255,255,255,0.8)] z-50 pointer-events-none"
+                                  style={{ left: `${(currentTime / audioBuffer.duration) * 100}%` }}
+                                />
+                             )}
+                          </div>
+                          
+                          <div className="w-full flex items-center justify-between gap-6 px-2">
+                             <div className="flex items-center gap-5">
+                                <Button variant="outline" size="icon" className="h-10 w-10 rounded-full border border-primary/20 hover:bg-primary/5 group" onClick={resetPlayback}>
+                                  <RotateCcw className="h-4 w-4 text-muted-foreground group-hover:text-primary" />
+                                </Button>
+                                <button onClick={handlePlay} className="h-14 w-14 rounded-full bg-primary flex items-center justify-center text-primary-foreground hover:scale-110 transition-transform shadow-xl">
+                                  {isPlaying ? <Pause className="h-6 w-6" /> : <Play className="h-6 w-6 fill-current" />}
+                                </button>
                              </div>
-                             <div>
-                                <h3 className="text-xs font-black uppercase tracking-widest">{file.name}</h3>
-                                <p className="text-[9px] opacity-40 font-bold">{(file.size / (1024 * 1024)).toFixed(2)} MB • READY FOR INVERSION</p>
+                             
+                             <div className="text-right">
+                                <p className="text-[10px] font-black uppercase tracking-widest opacity-20">Temporal Registry</p>
+                                <code className="text-sm font-black text-foreground font-mono">
+                                   {currentTime.toFixed(2)}s <span className="opacity-20 mx-1">/</span> {audioBuffer ? audioBuffer.duration.toFixed(2) : "0.00"}s
+                                </code>
                              </div>
                           </div>
-                          <Button variant="ghost" size="icon" onClick={() => { setFile(null); setReversedBlob(null); }} className="h-10 w-10 text-destructive hover:bg-destructive/10">
-                             <RefreshCw className="h-4 w-4" />
-                          </Button>
-                       </div>
-                       <CardContent className="p-8 flex flex-col items-center justify-center min-h-[300px]">
-                          {processing ? (
-                            <div className="space-y-4 text-center">
-                               <div className="h-16 w-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto" />
-                               <p className="text-[10px] font-black uppercase tracking-widest text-primary italic">Flipping Phase Matrix...</p>
-                            </div>
-                          ) : reversedBlob ? (
-                            <div className="space-y-10 w-full max-w-md">
-                               <div className="flex items-center justify-center gap-10">
-                                  <Button onClick={playPreview} variant="outline" className="h-20 w-20 rounded-full border-primary/20 bg-primary/5 hover:bg-primary/10 transition-all scale-110">
-                                     {isPlaying ? <Pause className="h-8 w-8 text-primary" /> : <Play className="h-8 w-8 text-primary fill-current" />}
-                                  </Button>
-                               </div>
-                               <Button asChild className="w-full h-20 text-lg font-black rounded-3xl gap-3 shadow-2xl shadow-primary/20 italic uppercase tracking-tighter hover:scale-[1.02] active:scale-[0.98] transition-all">
-                                  <a href={URL.createObjectURL(reversedBlob)} download={`reversed_${file.name.split('.')[0]}.wav`}>
-                                     <Download className="h-6 w-6" /> Download Artifact
-                                  </a>
-                               </Button>
-                            </div>
-                          ) : (
-                            <div className="flex flex-col items-center justify-center opacity-20">
-                               <RefreshCw className="h-16 w-16 mb-4 animate-in fade-in" />
-                               <p className="text-[10px] font-black uppercase tracking-widest uppercase">Select action to start</p>
-                            </div>
-                          )}
-                       </CardContent>
-                    </Card>
-                  </div>
-                )}
-              </div>
 
-              <aside className="space-y-6 lg:sticky lg:top-24 h-fit">
-                <Card className="glass-morphism border-primary/10 rounded-3xl overflow-hidden shadow-xl">
-                   <div className="bg-primary/5 p-5 border-b border-primary/10 flex items-center gap-3">
-                      <Zap className="h-4 w-4 text-primary" />
-                      <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Audio Engineering</h3>
-                   </div>
-                   <CardContent className="p-8 space-y-10">
-                      <div className="space-y-4">
-                         <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 leading-none">Status</p>
-                         <div className="p-4 rounded-2xl bg-muted/5 border border-white/5 space-y-1">
-                            <p className="text-[10px] font-bold">Engine: <span className="text-primary font-mono uppercase">Web Audio Native</span></p>
-                            <p className="text-[10px] font-bold">Latency: <span className="text-primary font-mono uppercase">Zero (Client)</span></p>
-                         </div>
+                          <audio ref={audioRef} src={objectUrl || ""} className="hidden" />
+                        </div>
                       </div>
-
-                      <div className="pt-4 border-t border-white/5">
-                        <Button 
-                          onClick={processReverse} 
-                          disabled={!file || processing || reversedBlob !== null} 
-                          className="w-full h-20 text-lg font-black rounded-[28px] gap-3 shadow-2xl shadow-primary/20 italic uppercase tracking-tight hover:scale-[1.02] active:scale-[0.98] transition-all"
-                        >
-                           <RefreshCw className={`h-6 w-6 ${processing ? 'animate-spin' : ''}`} />
-                           {processing ? "Inverting..." : "Reverse Audio"}
-                        </Button>
-                      </div>
-                   </CardContent>
-                </Card>
-              </aside>
+                    </CardContent>
+                    
+                    <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                       <Button 
+                         onClick={() => { setFile(null); setAudioBuffer(null); setObjectUrl(null); setProcessedUrl(null); }} 
+                         variant="destructive" 
+                         size="sm" 
+                         className="h-8 px-4 text-[9px] font-black uppercase tracking-widest rounded-xl shadow-2xl hover:scale-105 active:scale-95 transition-all"
+                       >
+                         Reset Stage
+                       </Button>
+                    </div>
+                  </Card>
+                </div>
+              )}
             </div>
-          </div>
-        </main>
 
-        <aside className="hidden min-[1850px]:flex flex-col gap-10 sticky top-32 w-[300px] shrink-0 px-6 py-8 animate-in fade-in slide-in-from-right-8 duration-1000">
-           <AdPlaceholder format="rectangle" className="opacity-40 grayscale border-border/50" />
-           <AdPlaceholder format="rectangle" className="opacity-40 grayscale border-border/50" />
-        </aside>
-      </div>
+            <aside className="lg:col-span-4 space-y-6 lg:sticky lg:top-24 h-fit">
+              <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl">
+                 <div className="bg-primary/5 p-5 border-b border-primary/10 flex items-center gap-3">
+                   <Zap className="h-4 w-4 text-primary" />
+                   <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Inversion Logic</h3>
+                 </div>
+                 <CardContent className="p-8 space-y-8">
+                    <div className="space-y-4">
+                        <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 leading-none">Engineering Data</p>
+                        <div className="p-4 rounded-2xl bg-muted/5 border border-white/5 space-y-1">
+                           <p className="text-[9px] font-bold">Engine: <span className="text-primary font-mono uppercase">Temporal Flip</span></p>
+                           <p className="text-[9px] font-bold">Buffer: <span className="text-primary font-mono uppercase">Full Array</span></p>
+                        </div>
+                    </div>
+
+                    {processedUrl ? (
+                      <Button asChild className="w-full gap-3 h-20 text-lg font-black rounded-2xl shadow-xl hover:scale-[1.01] transition-all uppercase italic">
+                        <a href={processedUrl} download={`reversed_${file?.name}`}>
+                           <Download className="h-6 w-6" /> Download Artifact
+                        </a>
+                      </Button>
+                    ) : (
+                      <Button 
+                        onClick={processReverse} 
+                        disabled={!file || processing} 
+                        className="w-full gap-3 h-16 text-lg font-black rounded-2xl shadow-xl hover:scale-[1.01] transition-all uppercase italic"
+                      >
+                        <RefreshCw className={`h-6 w-6 ${processing ? "animate-spin" : ""}`} />
+                        {processing ? "Inverting..." : "Reverse Audio"}
+                      </Button>
+                    )}
+                    <p className="text-[9px] text-center mt-4 text-muted-foreground font-black uppercase tracking-widest opacity-40 italic leading-relaxed">
+                      Flips the temporal phase of the audio buffer. Zero server interaction.
+                    </p>
+                 </CardContent>
+              </Card>
+
+              <div className="px-6">
+                 <AdPlaceholder format="rectangle" className="opacity-40 grayscale group-hover:grayscale-0 transition-all" />
+              </div>
+            </aside>
+          </div>
+        </div>
+      </main>
       <Footer />
     </div>
   );

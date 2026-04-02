@@ -1,16 +1,20 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Download, RefreshCw, Zap, Image as ImageIcon, CloudUpload, Sparkles } from "lucide-react";
+import { ArrowLeft, Download, RefreshCw, Layers, Zap, Activity, ShieldCheck, Settings2, ImageIcon, CloudUpload, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import AdPlaceholder from "@/components/AdPlaceholder";
 import { usePasteFile } from "@/hooks/usePasteFile";
-import { KbdShortcut } from "@/components/KbdShortcut";
 import { toast } from "sonner";
+import { FFmpeg } from "@ffmpeg/ffmpeg";
+import { fetchFile, toBlobURL } from "@ffmpeg/util";
 
 const ImageCompressor = () => {
   const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
@@ -19,10 +23,13 @@ const ImageCompressor = () => {
   const [quality, setQuality] = useState<number>(0.8);
   const [targetFormat, setTargetFormat] = useState<string>("webp");
   const [processing, setProcessing] = useState(false);
-  
+
   const [originalSize, setOriginalSize] = useState<number>(0);
   const [compressedSize, setCompressedSize] = useState<number>(0);
   const [compressedUrl, setCompressedUrl] = useState<string | null>(null);
+  const [highEfficiency, setHighEfficiency] = useState(false);
+  const [isBaking, setIsBaking] = useState(false);
+  const ffmpegRef = useRef(new FFmpeg());
   const inputRef = useRef<HTMLInputElement>(null);
 
   const toggleDark = useCallback(() => {
@@ -42,13 +49,24 @@ const ImageCompressor = () => {
     setOriginalSize(f.size);
     setCompressedUrl(null);
     setCompressedSize(0);
-    
+
     const reader = new FileReader();
     reader.onload = (e) => {
       const img = new Image();
       img.src = e.target?.result as string;
       img.onload = () => {
         setOriginalImage(img);
+
+        const extension = f.name.split('.').pop()?.toLowerCase();
+        if (extension === 'png') {
+          setTargetFormat('png');
+          setHighEfficiency(false);
+        } else if (extension === 'jpg' || extension === 'jpeg') {
+          setTargetFormat('jpg');
+        } else {
+          setTargetFormat('webp');
+        }
+
         toast.success("Image staged for compression.");
       };
     };
@@ -58,6 +76,25 @@ const ImageCompressor = () => {
 
   usePasteFile(handleFile);
 
+  const loadFFmpeg = async () => {
+    const ffmpeg = ffmpegRef.current;
+    if (ffmpeg.loaded) return true;
+    try {
+      const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/esm";
+      await ffmpeg.load({
+        coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, "text/javascript"),
+        wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, "application/wasm"),
+      });
+      return true;
+    } catch (error) {
+      console.error("FFmpeg Load Error:", error);
+      toast.error("WASM Engine failed to initialize.");
+      return false;
+    }
+  };
+
+  const compressedUrlRef = useRef<string | null>(null);
+
   const compressImage = useCallback(async () => {
     if (!originalImage || !file) return;
     setProcessing(true);
@@ -66,7 +103,10 @@ const ImageCompressor = () => {
     canvas.width = originalImage.width;
     canvas.height = originalImage.height;
     const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    if (!ctx) {
+      setProcessing(false);
+      return;
+    }
     ctx.drawImage(originalImage, 0, 0);
 
     const mimeMap: Record<string, string> = {
@@ -74,37 +114,49 @@ const ImageCompressor = () => {
       'jpg': 'image/jpeg',
       'png': 'image/png'
     };
-    const requestedMime = mimeMap[targetFormat] || 'image/webp';
 
-    // PNG is lossless in this generic canvas implementation
-    canvas.toBlob((blob) => {
-      if (blob) {
-        // MIME Check: Ensure browser didn't fallback
-        if (blob.type !== requestedMime && targetFormat !== 'png') {
-          toast.error(`Engine Fault: Browser forced ${blob.type} instead of ${targetFormat}.`);
-          setProcessing(false);
-          return;
-        }
+    let actualFormat = targetFormat;
+    const requestedMime = mimeMap[actualFormat] || 'image/webp';
+    let finalBlob: Blob | null = null;
 
-        // Size Check: Ensure we actually saved space
-        if (blob.size > originalSize && targetFormat !== 'png') {
-          toast.warning("Optimization Warning: Compressed result is larger than master. Try lower quality.");
-        }
-
-        if (compressedUrl) URL.revokeObjectURL(compressedUrl);
-        const url = URL.createObjectURL(blob);
-        setCompressedUrl(url);
-        setCompressedSize(blob.size);
+    if (actualFormat === 'png' && quality < 0.98) {
+      setIsBaking(true);
+      const loaded = await loadFFmpeg();
+      if (loaded) {
+        const ffmpeg = ffmpegRef.current;
+        const inputData = await fetchFile(file);
+        await ffmpeg.writeFile('input.png', inputData);
+        // Map quality 0.0-1.0 to color count 2-256
+        const colors = Math.max(2, Math.round(quality * 256));
+        await ffmpeg.exec(['-i', 'input.png', '-vf', `format=rgba,palettegen=max_colors=${colors}`, 'palette.png']);
+        await ffmpeg.exec(['-i', 'input.png', '-i', 'palette.png', '-filter_complex', 'paletteuse', 'output.png']);
+        const data = await ffmpeg.readFile('output.png');
+        finalBlob = new Blob([data as any], { type: 'image/png' });
       }
-      setProcessing(false);
-    }, requestedMime, targetFormat === 'png' ? undefined : quality);
-  }, [originalImage, quality, targetFormat, compressedUrl, file, originalSize]);
+      setIsBaking(false);
+    } else {
+      const getBlob = (m: string, q: number): Promise<Blob | null> =>
+        new Promise(resolve => canvas.toBlob(blob => resolve(blob), m, actualFormat === 'png' ? undefined : q));
+
+      finalBlob = await getBlob(requestedMime, quality);
+    }
+
+    if (finalBlob) {
+      if (compressedUrlRef.current) URL.revokeObjectURL(compressedUrlRef.current);
+      const url = URL.createObjectURL(finalBlob);
+      compressedUrlRef.current = url;
+      setCompressedUrl(url);
+      setCompressedSize(finalBlob.size);
+    }
+
+    setProcessing(false);
+  }, [originalImage, quality, targetFormat, file]);
 
   useEffect(() => {
     if (originalImage) {
       const timer = setTimeout(() => {
         compressImage();
-      }, 300);
+      }, 50);
       return () => clearTimeout(timer);
     }
   }, [quality, targetFormat, originalImage, compressImage]);
@@ -112,213 +164,246 @@ const ImageCompressor = () => {
   const savings = originalSize > 0 ? Math.max(0, Math.round(((originalSize - compressedSize) / originalSize) * 100)) : 0;
 
   return (
-    <div className="min-h-screen bg-background text-foreground transition-all duration-300 theme-image overflow-x-hidden">
+    <div className="h-screen bg-[#050505] text-foreground transition-all duration-300 theme-image overflow-hidden flex flex-col font-sans">
       <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
       
-      <main className="container mx-auto max-w-[1400px] px-6 py-4 md:py-8 grow flex flex-col justify-start">
-        <div className="flex flex-col gap-4 md:gap-6">
-          <header className="flex items-center justify-between flex-wrap gap-4 animate-in fade-in slide-in-from-top-4 duration-500">
-            <div className="flex items-center gap-4">
+      <main className="flex-1 flex overflow-hidden min-h-0 bg-zinc-950/20">
+        <div className="w-full h-full flex flex-col p-4 md:px-8 md:py-4 gap-4">
+          <header className="flex items-center justify-between shrink-0 animate-in fade-in slide-in-from-top-4 duration-500 bg-zinc-900 border border-white/20 p-3 rounded-2xl backdrop-blur-3xl shadow-2xl">
+            <div className="flex items-center gap-5">
               <Link to="/">
-                <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border-primary/10 hover:bg-primary/5 group/back transition-colors">
+                <Button variant="outline" size="icon" className="h-9 w-9 rounded-xl border border-white/20 hover:bg-primary/20 transition-all group/back bg-black/60">
                   <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
                 </Button>
               </Link>
-              <div>
-                <h1 className="text-3xl md:text-4xl font-black tracking-tighter font-display uppercase italic text-shadow-glow leading-none">
-                   Image <span className="text-primary italic">Compressor</span>
+              <div className="flex items-baseline gap-4">
+                <h1 className="text-xl md:text-2xl font-black tracking-tighter font-display uppercase italic text-shadow-glow leading-none text-white">
+                  Image <span className="text-primary italic">Compressor</span>
                 </h1>
-                <p className="text-muted-foreground mt-1 font-black uppercase tracking-[0.2em] opacity-40 text-[9px]">Native Hardware Optimization Engine</p>
               </div>
+            </div>
+            
+            <div className="hidden md:flex items-center gap-6 px-5 border-l border-white/10 ml-auto h-full py-1">
+                <div className="flex flex-col items-end">
+                    <span className="text-[6px] font-black text-primary uppercase tracking-widest leading-none mb-1.5">Engine Pipeline</span>
+                    <div className="flex items-center gap-2">
+                        <div className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,1)]" />
+                        <span className="text-[8px] font-black text-white/80 uppercase tracking-widest leading-none italic">Active</span>
+                    </div>
+                </div>
             </div>
           </header>
 
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_0.8fr] gap-4 md:gap-6 items-start">
-            {/* WORKBENCH COLUMN */}
-            <div className="space-y-4 animate-in fade-in slide-in-from-bottom-6 duration-700">
-              <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-2xl">
-                <div className="bg-primary/5 p-2 px-4 border-b border-primary/10 flex items-center justify-between">
-                  <h3 className="text-[9px] font-black uppercase tracking-[0.2em] text-primary italic leading-none">Studio Workbench</h3>
-                  {file && (
-                    <Button 
-                      onClick={() => { setFile(null); setOriginalImage(null); setCompressedUrl(null); }} 
-                      variant="ghost" 
-                      size="sm" 
-                      className="h-5 px-2 text-[7.5px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-lg transition-colors"
-                    >
-                      Purge
-                    </Button>
-                  )}
-                </div>
-                <CardContent className="p-3 md:p-4">
-                  {!file ? (
-                    <div
-                      onDragOver={(e) => e.preventDefault()}
-                      onDrop={(e) => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); }}
-                      onClick={() => !processing && inputRef.current?.click()}
-                      className="relative w-full h-[350px] md:h-[420px] flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/20 text-center cursor-pointer bg-background/50 hover:border-primary/40 hover:bg-primary/5 shadow-inner transition-all duration-300 group/upload"
-                    >
-                      <div className="h-20 w-20 bg-primary/10 rounded-2xl flex items-center justify-center mb-6 shadow-inner group-hover/upload:scale-110 group-hover/upload:rotate-3 transition-all duration-500">
-                          <CloudUpload className="h-10 w-10 text-primary" />
+          <div className="flex-1 grid grid-cols-1 lg:grid-cols-[250px_1fr_400px] gap-4 overflow-hidden items-stretch relative">
+            {/* SPONSOR PILLAR - LEFT COLUMN */}
+            <aside className="hidden lg:flex flex-col gap-4 min-h-0 overflow-hidden animate-in slide-in-from-left-8 duration-700">
+               <div className="flex-1 flex flex-col items-center justify-start py-8 opacity-40 hover:opacity-100 transition-all duration-500 bg-zinc-900/40 rounded-[2.5rem] border border-white/5 shadow-inner">
+                  <div className="w-full flex flex-col items-center justify-center p-2 gap-6">
+                    <AdPlaceholder format="rectangle" className="grayscale border-white/10 rounded-3xl h-[300px] w-full max-w-[230px] shadow-2xl bg-black/40" />
+                    <p className="text-[7px] text-white/30 font-black uppercase tracking-[0.5em] text-center italic">
+                        Studio Sponsorship • Artifact Portal
+                    </p>
+                  </div>
+               </div>
+            </aside>
+
+            {/* STAGE AREA - CENTER COLUMN */}
+            <div className="relative flex flex-col overflow-hidden min-h-0">
+              <Card className="flex-1 glass-morphism border-primary/40 rounded-[2.5rem] overflow-hidden shadow-2xl relative group bg-black/99 flex items-center justify-center p-1 border-b-[8px] border-primary/50 transition-all duration-700">
+                {!file ? (
+                  <div
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={(e) => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); }}
+                    onClick={() => !processing && inputRef.current?.click()}
+                    className="absolute inset-4 flex flex-col items-center justify-center rounded-[2rem] border-2 border-dashed border-primary/40 text-center cursor-pointer bg-black/60 hover:border-primary hover:bg-primary/5 shadow-2xl transition-all duration-300 group/upload"
+                  >
+                    <div className="h-20 w-20 bg-primary/20 rounded-3xl flex items-center justify-center mb-6 transition-all duration-700 group-hover/upload:scale-110 shadow-inner ring-2 ring-primary/40">
+                        <CloudUpload className="h-10 w-10 text-primary" />
+                    </div>
+                    <div className="px-6 space-y-2">
+                       <p className="text-3xl font-black text-white uppercase tracking-tighter italic text-shadow-glow leading-none">Deploy Image Artifact</p>
+                       <p className="text-[10px] text-primary font-black uppercase tracking-[0.3em] italic leading-none">Native Hardware Quantization</p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="w-full h-full relative flex items-center justify-center p-2 animate-in fade-in zoom-in-95 duration-1000">
+                    {compressedUrl ? (
+                      <div className="relative w-full h-full flex items-center justify-center group/result px-4 py-4">
+                        <img 
+                          src={compressedUrl} 
+                          alt="Compressed Artifact" 
+                          className="max-w-full max-h-full object-contain rounded-2xl shadow-[0_50px_120px_rgba(0,0,0,1)] transition-all duration-700 border border-white/5" 
+                        />
                       </div>
-                      <div className="px-6 space-y-2">
-                        <p className="text-3xl font-black text-foreground uppercase tracking-tighter italic leading-none text-shadow-glow">Deploy Artifact</p>
-                        <p className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.2em] opacity-50">Drag master or click</p>
-                        <div className="pt-2 scale-90">
-                          <KbdShortcut />
+                    ) : (
+                      <div className="flex flex-col items-center gap-8 text-center animate-in zoom-in-95 duration-500">
+                        <div className="h-20 w-20 bg-primary/20 rounded-3xl flex items-center justify-center relative border border-primary/40 shadow-2xl overflow-hidden">
+                           <RefreshCw className="h-10 w-10 text-primary animate-spin" />
+                        </div>
+                        <div className="space-y-2">
+                           <p className="text-2xl font-black text-white uppercase tracking-tighter italic text-shadow-glow font-display leading-none">Crunching Bits</p>
+                           <p className="text-[10px] font-black text-primary uppercase tracking-[0.4em] italic animate-pulse">WASM Processor</p>
                         </div>
                       </div>
-                      <input ref={inputRef} type="file" className="hidden" accept="image/*" onChange={(e) => handleFile(e.target.files?.[0])} />
+                    )}
+                    
+                    <div className="absolute top-6 left-6 opacity-0 group-hover:opacity-100 transition-all z-10 pointer-events-auto">
+                      <Button 
+                        onClick={() => { 
+                          setFile(null); 
+                          setOriginalImage(null); 
+                          setCompressedUrl(null); 
+                          setCompressedSize(0); 
+                        }} 
+                        variant="destructive" 
+                        size="sm" 
+                        className="h-11 px-10 text-[11px] font-black uppercase tracking-widest rounded-2xl bg-red-600 text-white shadow-2xl hover:scale-105 hover:bg-red-500 transition-all border-b-4 border-red-900"
+                      >
+                        Reset Stage
+                      </Button>
                     </div>
-                  ) : (
-                    <div className="flex flex-col items-center gap-4 w-full py-2">
-                      <div className="relative group w-full bg-background/50 p-1.5 rounded-xl border-2 border-primary/10 shadow-2xl overflow-hidden max-h-[300px] flex items-center justify-center studio-gradient">
-                         {compressedUrl ? (
-                           <img src={compressedUrl} alt="Compressed Artifact" className="w-full h-full max-h-[290px] object-contain rounded-lg shadow-2xl" />
-                         ) : (
-                           <RefreshCw className="h-10 w-10 text-primary animate-spin" />
-                         )}
+                  </div>
+                )}
+              </Card>
+            </div>
+
+            {/* SIDEBAR TOOLS - RIGHT COLUMN */}
+            <aside className="flex flex-col gap-4 min-h-0 overflow-hidden animate-in slide-in-from-right-8 duration-700">
+              <Card className="glass-morphism border-primary/30 rounded-[2rem] overflow-hidden shadow-2xl bg-black/90 flex-1 flex flex-col border-b-4 border-l-4 border-white/5">
+                <div className="bg-primary/20 p-5 border-b border-primary/30 flex items-center justify-between shrink-0 h-14">
+                   <div className="flex items-center gap-4">
+                      <Settings2 className="h-5 w-5 text-primary" />
+                      <h3 className="text-[12px] font-black uppercase tracking-[0.3em] text-white italic leading-none">Studio Controls</h3>
+                   </div>
+                   <Activity className="h-5 w-5 text-primary animate-pulse" />
+                </div>
+                <CardContent className="p-6 space-y-5 flex-1 overflow-y-auto custom-scrollbar pt-6">
+                  <div className="space-y-5 animate-in fade-in duration-500">
+                    <div className="space-y-5">
+                      <div className="flex justify-between items-end px-1">
+                        <div className="space-y-1">
+                           <label className="text-[11px] font-black uppercase tracking-[0.2em] text-primary italic leading-none">Bit Quality</label>
+                           <p className="text-[9px] font-black text-white uppercase tracking-widest leading-none italic">
+                             {quality >= 0.8 ? "Studio Master" : quality >= 0.5 ? "Balanced" : "Compressed"}
+                           </p>
+                        </div>
+                        <span className="text-4xl font-black tracking-tighter text-primary italic leading-none font-mono text-shadow-glow">{Math.round(quality * 100)}%</span>
                       </div>
-                      <div className="text-center px-4">
-                        <p className="text-sm font-black text-primary truncate italic uppercase opacity-80 bg-primary/5 px-4 py-1 rounded-xl border border-primary/10 w-full max-w-[300px] mx-auto">{file.name}</p>
+                      
+                      <div className="relative">
+                        <Slider 
+                          value={[quality * 100]} 
+                          max={100} 
+                          min={1}
+                          step={1} 
+                          onValueChange={(val) => setQuality(val[0] / 100)}
+                          className="py-4 cursor-pointer relative z-10"
+                        />
+                        <div className="flex justify-between mt-1 px-1 text-[8px] font-black uppercase tracking-[0.3em] text-white/40 italic">
+                          <span>Max Savings</span>
+                          <span>Max Detail</span>
+                        </div>
                       </div>
+                      
+                      <div className="grid grid-cols-3 gap-2.5 pt-1">
+                         {[
+                           { label: "Eco", val: 0.3, icon: Zap },
+                           { label: "Std", val: 0.7, icon: Activity },
+                           { label: "Max", val: 0.95, icon: ShieldCheck }
+                         ].map((tier) => (
+                           <Button 
+                             key={tier.label}
+                             variant="outline" 
+                             onClick={() => setQuality(tier.val)}
+                             className={`h-12 flex flex-col gap-1 rounded-xl border-white/10 bg-zinc-950 hover:bg-primary/20 transition-all ${Math.abs(quality - tier.val) < 0.05 ? "bg-primary border-primary shadow-2xl scale-[1.05] text-white" : "text-white/60"}`}
+                           >
+                              <tier.icon className="h-4 w-4 text-primary" />
+                              <span className="text-[9px] font-black uppercase tracking-widest leading-none">{tier.label}</span>
+                           </Button>
+                         ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4 pt-4 border-t border-white/10">
+                    <div className="space-y-3">
+                        <label className="text-[11px] font-black uppercase tracking-[0.2em] text-primary italic leading-none px-1">Target Spec</label>
+                        <Select value={targetFormat} onValueChange={(v) => setTargetFormat(v)}>
+                          <SelectTrigger className="h-12 bg-zinc-950 border-white/10 rounded-xl font-black uppercase tracking-tighter text-sm shadow-inner px-6 hover:bg-zinc-900 transition-colors text-white">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent className="glass-morphism border-white/20 bg-black backdrop-blur-3xl font-sans">
+                            <SelectItem value="webp" className="font-black py-4 text-xs uppercase tracking-widest cursor-pointer text-white hover:bg-primary/20">WEBP CORE</SelectItem>
+                            <SelectItem value="jpg" className="font-black py-4 text-xs uppercase tracking-widest cursor-pointer text-white hover:bg-primary/20">JPG LEGACY</SelectItem>
+                            <SelectItem value="png" className="font-black py-4 text-xs uppercase tracking-widest cursor-pointer text-white hover:bg-primary/20">PNG QUANT</SelectItem>
+                          </SelectContent>
+                        </Select>
+                    </div>
+
+                    <div className="space-y-3 pb-1">
+                        <div className={`h-12 flex items-center justify-center bg-zinc-950 border border-white/10 rounded-xl shadow-inner px-6 overflow-hidden transition-all duration-700 ${targetFormat === 'png' ? 'border-primary bg-primary/10 shadow-[0_0_20px_rgba(var(--primary),0.1)]' : ''}`}>
+                          <div className="flex items-center gap-3">
+                              <Zap className="h-4 w-4 text-primary" />
+                              <span className="text-[10px] font-black text-white/80 uppercase tracking-[0.2em] whitespace-nowrap italic leading-none">
+                                {targetFormat === 'png' ? 'QUANT CORE' : 'HARDWARE OPS'}
+                              </span>
+                          </div>
+                        </div>
+                    </div>
+                  </div>
+
+                  {compressedUrl && (
+                    <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 space-y-4 pt-1">
+                      {/* INTEGRATED METRICS - RECOVERED PER USER REQUEST */}
+                      <div className="grid grid-cols-3 gap-2.5 px-px">
+                        <div className="flex flex-col items-center justify-center bg-zinc-950/60 border border-white/5 rounded-xl py-3 shadow-2xl ring-1 ring-white/5">
+                           <p className="text-[7px] font-black text-primary uppercase tracking-widest mb-1.5 leading-none">Source</p>
+                           <p className="text-[12px] font-black text-white italic tracking-tighter font-mono leading-none">{(originalSize / 1024 / 1024).toFixed(2)}MB</p>
+                        </div>
+                        <div className="flex flex-col items-center justify-center bg-zinc-950/60 border border-white/5 rounded-xl py-3 shadow-2xl ring-1 ring-white/5">
+                           <p className="text-[7px] font-black text-emerald-400 uppercase tracking-widest mb-1.5 leading-none">Target</p>
+                           <p className="text-[12px] font-black text-emerald-400 italic tracking-tighter font-mono leading-none">{(compressedSize / 1024 / 1024).toFixed(2)}MB</p>
+                        </div>
+                        <div className="flex flex-col items-center justify-center bg-primary/10 border border-primary/20 rounded-xl py-3 shadow-2xl ring-1 ring-primary/20">
+                           <p className="text-[7px] font-black text-primary uppercase tracking-widest mb-1.5 leading-none">Savings</p>
+                           <p className="text-[12px] font-black text-primary italic tracking-tighter font-mono leading-none">-{savings}%</p>
+                        </div>
+                      </div>
+
+                      <Button 
+                        className="w-full gap-4 h-16 text-xl font-black rounded-2xl shadow-[0_15px_40px_rgba(var(--primary),0.3)] hover:scale-[1.02] active:scale-[0.98] transition-all uppercase italic border-b-4 border-primary-foreground/20 group/download bg-primary text-white relative overflow-hidden"
+                        onClick={() => {
+                          if (!compressedUrlRef.current) return;
+                          const a = document.createElement("a");
+                          a.href = compressedUrlRef.current;
+                          a.download = `${file?.name.replace(/\.[^.]+$/, "")}_optimized.${targetFormat}`;
+                          a.click();
+                        }}
+                      >
+                        <div className="absolute inset-0 bg-white/20 translate-y-full group-hover/download:translate-y-0 transition-transform duration-400" />
+                        <Download className="h-7 w-7 group-hover/download:translate-y-1 transition-transform relative z-10" /> 
+                        <span className="relative z-10 font-display tracking-tight">Dispatch Artifact</span>
+                      </Button>
                     </div>
                   )}
                 </CardContent>
               </Card>
-
-              {file && (
-                <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl studio-gradient border-b-2 border-r-2 animate-in fade-in slide-in-from-bottom-2 duration-500">
-                  <div className="bg-primary/5 p-3 px-4 border-b border-primary/10">
-                    <h2 className="text-[9px] font-black uppercase tracking-[0.2em] text-primary italic leading-none">Process Geometry</h2>
-                  </div>
-                  <CardContent className="p-4 md:p-6 space-y-6">
-                    {targetFormat !== 'png' ? (
-                      <div className="space-y-3">
-                        <div className="flex justify-between items-end px-1">
-                          <label className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 italic leading-none">Yield Quality</label>
-                          <span className="text-lg font-black tracking-tighter text-primary italic leading-none">{Math.round(quality * 100)}%</span>
-                        </div>
-                        <Slider 
-                          value={[quality * 100]} 
-                          min={1} 
-                          max={100} 
-                          step={1} 
-                          onValueChange={(val) => setQuality(val[0] / 100)}
-                          className="py-1"
-                        />
-                      </div>
-                    ) : (
-                      <div className="bg-primary/5 p-3 rounded-lg border border-primary/10 text-center">
-                         <p className="text-[9px] font-black text-primary uppercase tracking-[0.15em] italic">Lossless Transfer Mode Active</p>
-                      </div>
-                    )}
-
-                    <div className="grid grid-cols-2 gap-4">
-                       <div className="space-y-1.5">
-                          <label className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 italic leading-none px-1">Output Spec</label>
-                          <Select value={targetFormat} onValueChange={(v) => {
-                            setTargetFormat(v);
-                            if (v !== 'png') setQuality(0.8);
-                          }}>
-                            <SelectTrigger className="h-10 bg-background border-primary/10 rounded-xl font-black uppercase tracking-tighter text-xs shadow-inner">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent className="glass-morphism border-primary/20">
-                              <SelectItem value="webp" className="font-black py-2 text-[10px]">WEBP (ULTRA)</SelectItem>
-                              <SelectItem value="jpg" className="font-black py-2 text-[10px]">JPG (LGCY)</SelectItem>
-                              <SelectItem value="png" className="font-black py-2 text-[10px]">PNG (LOSSLESS)</SelectItem>
-                            </SelectContent>
-                          </Select>
-                       </div>
-                       <div className="space-y-1.5 pt-0.5">
-                          <label className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 italic leading-none px-1">Optimization</label>
-                          <div className="h-10 flex items-center justify-center bg-background/50 border border-primary/10 rounded-xl shadow-inner px-4 overflow-hidden">
-                             <div className="flex items-center gap-2">
-                                <Zap className="h-3 w-3 text-primary animate-pulse" />
-                                <span className="text-[8px] font-black text-primary uppercase tracking-widest whitespace-nowrap">NATIVE CORE</span>
-                             </div>
-                          </div>
-                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
-            </div>
-
-            {/* INTEGRITY PANEL COLUMN */}
-            <div className="space-y-4">
-              {compressedUrl ? (
-                <Card className="border-primary/20 bg-primary/5 rounded-2xl shadow-xl overflow-hidden animate-in slide-in-from-right-8 fade-in duration-700 border-b-4 border-r-4 relative group">
-                  <div className="bg-primary/5 p-3 px-4 border-b border-primary/10 flex items-center justify-between relative z-10">
-                    <h2 className="text-[9px] font-black uppercase tracking-[0.2em] text-primary italic leading-none">Integrity Analysis</h2>
-                    <Sparkles className="h-3 w-3 text-primary" />
-                  </div>
-                  
-                  <CardContent className="p-4 md:p-6 flex flex-col items-center relative z-10">
-                    <div className="w-20 h-20 rounded-2xl bg-primary/20 backdrop-blur-xl border border-primary/30 flex items-center justify-center mb-6 shadow-xl rotate-3 hover:rotate-0 transition-transform duration-500 shadow-primary/20">
-                       <div className="text-center">
-                          <p className="text-2xl font-black italic tracking-tighter text-primary">-{savings}%</p>
-                          <p className="text-[7.5px] font-black uppercase tracking-[0.2em] text-primary/60 text-shadow-glow">Savings</p>
-                       </div>
-                    </div>
-
-                    <div className="w-full space-y-3 mb-6">
-                       <div className="flex justify-between items-center bg-background/30 p-3 rounded-xl border border-white/5 shadow-inner">
-                          <div>
-                             <p className="text-[7.5px] font-black text-muted-foreground uppercase tracking-widest mb-0.5 italic">Source</p>
-                             <p className="text-lg font-black tracking-tighter text-foreground uppercase italic leading-none">{(originalSize / 1024 / 1024).toFixed(2)}MB</p>
-                          </div>
-                          <div className="h-6 w-[1px] bg-primary/10 mx-2" />
-                          <div>
-                             <p className="text-[7.5px] font-black text-muted-foreground uppercase tracking-widest mb-0.5 text-right italic">Optimized</p>
-                             <p className="text-lg font-black tracking-tighter text-primary uppercase italic text-right leading-none">{(compressedSize / 1024 / 1024).toFixed(2)}MB</p>
-                          </div>
-                       </div>
-
-                       <div className="grid grid-cols-2 gap-3">
-                          <div className="p-2.5 bg-background/20 border border-primary/5 rounded-xl space-y-0.5 text-center">
-                             <span className="text-[7.5px] font-black text-muted-foreground/50 uppercase tracking-widest italic">Binary</span>
-                             <p className="text-[9px] font-black text-foreground uppercase truncate">image/{targetFormat}</p>
-                          </div>
-                          <div className="p-2.5 bg-background/20 border border-primary/5 rounded-xl space-y-0.5 text-center">
-                             <span className="text-[7.5px] font-black text-muted-foreground/50 uppercase tracking-widest italic">Enc</span>
-                             <p className="text-[8px] font-black text-primary italic uppercase tracking-tighter leading-none">Verified</p>
-                          </div>
-                       </div>
-                    </div>
-
-                    <Button 
-                      className="w-full gap-3 h-12 text-xs font-black rounded-xl shadow-xl shadow-primary/30 hover:scale-[1.01] active:scale-[0.99] transition-all uppercase italic"
-                      onClick={() => {
-                        if (!compressedUrl) return;
-                        const a = document.createElement("a");
-                        a.href = compressedUrl;
-                        a.download = `${file?.name.replace(/\.[^.]+$/, "")}_optimized.${targetFormat}`;
-                        a.click();
-                      }}
-                      disabled={!compressedUrl}
-                    >
-                      <Download className="h-4 w-4" /> Export Optimized
-                    </Button>
-                    
-                    <p className="mt-4 text-[6.5px] text-muted-foreground font-black uppercase tracking-[0.4em] opacity-40 italic text-center w-full px-4 leading-relaxed">Hardware Bitstream Optimization Engine<br/>Secure Local Forge</p>
-                  </CardContent>
-                </Card>
-              ) : (
-                <div className="h-full min-h-[300px] flex flex-col items-center justify-center space-y-6 opacity-20 filter grayscale hover:opacity-40 transition-all duration-1000 p-12 text-center rounded-2xl border-4 border-dashed border-primary/5">
-                   <ImageIcon className="h-20 w-20 text-primary" />
-                   <div className="space-y-1">
-                       <p className="text-lg font-black uppercase italic tracking-tighter">Ready for Scan</p>
-                       <p className="text-[7px] font-black uppercase tracking-widest italic leading-relaxed">Deploy primary image master<br/>to trigger production integrity analysis</p>
-                   </div>
-                </div>
-              )}
-            </div>
+            </aside>
           </div>
         </div>
       </main>
-      <Footer />
+      
+      <div className="h-10 bg-black border-t border-white/10 shrink-0 flex items-center justify-between px-8">
+          <div className="flex items-center gap-6">
+              <p className="text-[9px] font-black text-white uppercase tracking-[0.4em] italic leading-none opacity-40">Secure Local Forge • Precision Pipeline</p>
+          </div>
+          <div className="flex items-center gap-6">
+              <span className="text-[8px] font-black text-primary uppercase tracking-widest italic leading-none">WASM Engine Ready</span>
+              <div className="h-1.5 w-1.5 rounded-full bg-primary shadow-[0_0_8px_rgba(var(--primary),0.5)]" />
+          </div>
+      </div>
+
+      <input ref={inputRef} type="file" className="hidden" accept="image/*" onChange={(e) => handleFile(e.target.files?.[0])} />
     </div>
   );
 };

@@ -10,7 +10,6 @@ import Footer from "@/components/Footer";
 import AdPlaceholder from "@/components/AdPlaceholder";
 import { toast } from "sonner";
 import { usePasteFile } from "@/hooks/usePasteFile";
-import { KbdShortcut } from "@/components/KbdShortcut";
 
 const JsonForge = () => {
   const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
@@ -169,10 +168,10 @@ const JsonForge = () => {
               <Card className="glass-morphism border-primary/10 overflow-hidden relative bg-black shadow-2xl rounded-2xl group flex flex-col min-h-[600px]">
                 <div className="bg-[#050505] px-4 py-2 border-b border-white/5 flex items-center justify-between">
                    <div className="flex items-center gap-3">
-                      <div className="flex gap-2 items-center bg-[#0a0a0a] px-4 py-2 rounded-t-lg border-x border-t border-white/5 -mb-[9px] relative z-10">
-                         <FileJson className="h-3.5 w-3.5 text-yellow-400" />
-                         <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">dataset.json</span>
-                      </div>
+                       <div className="flex gap-2 items-center bg-[#0a0a0a] px-4 py-2 rounded-t-lg border-x border-t border-white/10 -mb-[1px] relative z-10 shadow-[0_-4px_10px_rgba(0,0,0,0.5)]">
+                          <FileJson className="h-3.5 w-3.5 text-yellow-500" />
+                          <span className="text-[10px] font-black uppercase tracking-widest text-zinc-300">dataset.json</span>
+                       </div>
                    </div>
                    
                    <div className="flex items-center gap-1">
@@ -194,22 +193,18 @@ const JsonForge = () => {
 
                 <div className="flex-1 flex overflow-hidden relative">
                    {/* Line Numbers Gutter */}
-                   <div className="w-12 bg-[#050505] border-r border-white/5 flex flex-col py-6 items-center font-mono text-[10px] text-zinc-600 select-none">
-                      {Array.from({ length: Math.max(1, input.split('\n').length) }).map((_, i) => (
-                         <div key={i} className="leading-relaxed h-6">{i + 1}</div>
-                      ))}
-                   </div>
-                   
-                   <textarea
-                     value={input}
-                     onChange={(e) => handleInput(e.target.value)}
-                     placeholder='Paste your JSON artifact here...'
-                     className="flex-1 bg-transparent p-6 font-mono text-sm text-[#9cdcfe] resize-none outline-none selection:bg-primary/30 leading-relaxed custom-scrollbar"
-                     spellCheck={false}
-                   />
-                   <div className="absolute bottom-6 right-6 z-20">
-                      <KbdShortcut />
-                   </div>
+                    <div className="w-12 bg-[#050505] border-r border-white/5 flex flex-col py-6 items-center font-mono text-[10px] text-zinc-600 select-none">
+                       {Array.from({ length: Math.max(1, input.split('\n').length) }).map((_, i) => (
+                          <div key={i} className="leading-relaxed h-6">{i + 1}</div>
+                       ))}
+                    </div>
+                    
+                    <textarea
+                      value={input}
+                      onChange={(e) => handleInput(e.target.value)}
+                      className="flex-1 bg-transparent p-6 font-mono text-sm text-[#9cdcfe] resize-none outline-none selection:bg-primary/30 leading-relaxed custom-scrollbar"
+                      spellCheck={false}
+                    />
 
                    {error && (
                      <div className="absolute bottom-0 inset-x-0 p-4 bg-destructive/10 border-t border-destructive/20 text-destructive flex items-start gap-3 animate-in slide-in-from-bottom-4 z-30 backdrop-blur-md">
@@ -237,17 +232,7 @@ const JsonForge = () => {
                   <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl">
                      <div className="bg-primary/5 p-5 border-b border-primary/10 flex items-center justify-between">
                        <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Status Console</h3>
-                       {input && (
-                         <Button 
-                           onClick={clearInput} 
-                           variant="ghost" 
-                           size="sm" 
-                           className="h-8 px-3 text-[9px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-2xl transition-all"
-                         >
-                           Reset Stage
-                         </Button>
-                       )}
-                       {!error && input.length > 0 && <span className="flex items-center gap-1.5 text-[9px] font-black text-emerald-500 uppercase tracking-widest"><Check className="h-3 w-3" /> Valid</span>}
+                       {!error && input.length > 0 && <span className="flex items-center gap-1.5 text-[9px] font-black text-emerald-500 uppercase tracking-widest"><Check className="h-3 w-3" /> Valid Architecture</span>}
                      </div>
                  <CardContent className="p-8 space-y-10">
                     <div className="grid grid-cols-2 gap-4">

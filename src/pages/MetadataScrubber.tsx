@@ -153,6 +153,18 @@ const MetadataScrubber = () => {
                         </div>
                       </div>
                     )}
+
+                    {/* Purge Button (Integrated into Workbench) */}
+                    <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                       <Button 
+                         onClick={() => { setImage(null); setScrubbed(false); setReport(null); }} 
+                         variant="destructive" 
+                         size="sm" 
+                         className="h-8 px-4 text-[9px] font-black uppercase tracking-widest rounded-xl shadow-2xl hover:scale-105 active:scale-95 transition-all"
+                       >
+                         Reset Stage
+                       </Button>
+                    </div>
                   </Card>
                   
                   <div className="p-8 rounded-3xl bg-muted/5 border border-primary/5 flex items-center justify-between">

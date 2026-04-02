@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Upload, Volume2, Download, Music, ShieldCheck, Terminal, Play, RotateCcw, CloudUpload } from "lucide-react";
+import { ArrowLeft, Volume2, Download, Music, Zap, Play, Pause, RotateCcw, CloudUpload, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Card, CardContent } from "@/components/ui/card";
@@ -65,7 +65,6 @@ const UniversalVolumeBooster = () => {
     if (!analyserRef.current || !canvasRef.current || !audioRef.current || audioRef.current.paused) return;
     const canvas = canvasRef.current;
     
-    // Set actual resolution
     const dpr = window.devicePixelRatio || 1;
     const rect = canvas.getBoundingClientRect();
     if (canvas.width !== rect.width * dpr) {
@@ -141,7 +140,6 @@ const UniversalVolumeBooster = () => {
         if (datum > max) max = datum;
       }
       
-      // Apply volume factor to the visual height, with a slight compression to keep it looking clean at high gain
       const barHeight = Math.min(height, Math.max(1, (max - min) * amp * 0.8 * volumeFactor));
       ctx.fillStyle = volume > 150 ? "rgba(139, 92, 246, 0.9)" : "rgba(139, 92, 246, 0.7)";
       ctx.beginPath();
@@ -292,9 +290,6 @@ const UniversalVolumeBooster = () => {
 
     try {
       const arrayBuffer = await file.arrayBuffer();
-      const ctx = new (window.OfflineAudioContext || (window as any).OfflineAudioContext)(2, 1, 44100); // Temporary for probing
-      
-      // Real decode
       const probingCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
       const audioBuffer = await probingCtx.decodeAudioData(arrayBuffer);
       await probingCtx.close();
@@ -336,56 +331,58 @@ const UniversalVolumeBooster = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground theme-audio transition-all duration-500">
+    <div className="min-h-screen bg-background text-foreground theme-audio transition-all duration-500 overflow-x-hidden">
       <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
       
       <main className="container mx-auto max-w-[1400px] px-6 py-12">
         <div className="flex flex-col gap-10">
-          <header className="flex items-center justify-between flex-wrap gap-8">
-            <div className="flex items-center gap-6">
-              <Link to="/">
-                <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-border/50 hover:bg-primary/5 transition-all group/back">
-                  <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
-                </Button>
-              </Link>
-              <div>
-                <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow leading-none">
-                   Universal Volume <span className="text-primary italic">Booster</span>
-                </h1>
-                <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[9px]">High-Performance Bitstream Amplification</p>
-              </div>
+          <header className="flex items-center gap-6 animate-in fade-in slide-in-from-top-4 duration-500">
+            <Link to="/">
+              <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-border/50 hover:bg-primary/5 transition-all group/back">
+                <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
+              </Button>
+            </Link>
+            <div>
+              <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow leading-none">
+                Universal Volume <span className="text-primary italic">Booster</span>
+              </h1>
+              <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[9px]">High-Performance Bitstream Amplification</p>
             </div>
           </header>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start animate-in fade-in slide-in-from-bottom-8 duration-700">
             <div className="lg:col-span-8 space-y-8">
-              {!file && (
-                <Card className="glass-morphism border-primary/10 overflow-hidden min-h-[400px] flex flex-col items-center justify-center relative bg-muted/5 rounded-2xl shadow-inner p-10">
+              {!file ? (
+                <Card className="glass-morphism border-primary/10 overflow-hidden min-h-[400px] flex flex-col items-center justify-center relative bg-muted/5 rounded-2xl shadow-inner p-10 select-none">
                     <div
                       onDragOver={(e) => e.preventDefault()}
                       onDrop={(e) => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); }}
                       onClick={() => !processing && inputRef.current?.click()}
-                      className={`relative w-full flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/20 text-center transition-all ${!processing ? "cursor-pointer py-32 bg-background/50 hover:border-primary/40 hover:bg-primary/5 shadow-inner" : "py-32 opacity-50"}`}
+                      className="relative w-full flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/20 text-center transition-all cursor-pointer py-32 bg-background/50 hover:border-primary/40 hover:bg-primary/5 shadow-inner"
                     >
-                       <div className="h-20 w-20 bg-primary/10 rounded-2xl flex items-center justify-center mb-8 shadow-inner group-hover:scale-110 transition-transform">
-                          <CloudUpload className="h-10 w-10 text-primary" />
+                       <div className="h-24 w-24 bg-primary/10 rounded-2xl flex items-center justify-center mb-8 shadow-inner group-hover:scale-110 transition-transform">
+                          <Volume2 className="h-12 w-12 text-primary" />
                        </div>
                        
-                       <div className="px-6 text-center space-y-2">
+                       <div className="px-6 text-center space-y-1">
                          <p className="text-3xl font-black text-foreground uppercase tracking-tighter italic leading-none text-shadow-glow">Deploy Artifact</p>
                          <p className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.2em] opacity-40">Drag master or click</p>
-                         <KbdShortcut />
-                         <p className="mt-4 text-[10px] text-muted-foreground font-black uppercase tracking-widest opacity-20">MP3, WAV, OGG, & MP4 Audio Streams Supported</p>
+                         <p className="mt-4 text-[10px] text-muted-foreground font-black uppercase tracking-widest opacity-20 text-center">MP3, WAV, OGG, & MP4 Audio Streams Supported • 32-bit Core</p>
                        </div>
                       <input ref={inputRef} type="file" className="hidden" accept="audio/*,video/*" onChange={(e) => handleFile(e.target.files?.[0])} disabled={processing} />
                     </div>
                 </Card>
-              )}
-
-              {file && objectUrl && (
+              ) : (
                 <div className="animate-in fade-in slide-in-from-bottom-8 duration-700">
-                  <Card className="glass-morphism border-primary/10 p-10 rounded-2xl shadow-2xl bg-zinc-900/50">
-                    <div className="space-y-10">
+                  <Card className="glass-morphism border-primary/10 p-0 rounded-2xl shadow-2xl bg-zinc-900/50 group relative overflow-hidden">
+                    <div className="bg-primary/5 p-5 border-b border-primary/10 flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <Volume2 className="h-4 w-4 text-primary" />
+                        <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Wave Stage</h3>
+                      </div>
+                    </div>
+                    <CardContent className="p-10">
+                      <div className="space-y-10">
                       <div className="flex items-center justify-between">
                          <div className="flex items-center gap-3">
                             <div className="h-10 w-10 rounded-2xl bg-primary/20 flex items-center justify-center text-primary">
@@ -393,19 +390,17 @@ const UniversalVolumeBooster = () => {
                             </div>
                             <div>
                                <p className="text-[10px] font-black uppercase tracking-widest opacity-40 text-foreground">Gain Level</p>
-                               <p className="text-2xl font-black italic tracking-tight text-primary">{volume}%</p>
+                               <p className="text-2xl font-black italic tracking-tight text-primary">{volume.toFixed(0)}%</p>
                             </div>
                          </div>
                           <div className="text-right">
                              <p className="text-[10px] font-black uppercase tracking-widest opacity-20 text-foreground">Peak Boost</p>
-                             <p className="text-xl font-black text-foreground">{((volume - 100) / 100 * 6).toFixed(2)} dB</p>
+                             <p className="text-xl font-black text-foreground">+{((volume - 100) / 100 * 12).toFixed(2)} dB</p>
                           </div>
                       </div>
 
                        <Slider
-                         min={0}
-                         max={500}
-                         step={0.1}
+                         min={0} max={500} step={1}
                          value={[volume]}
                          onValueChange={([v]) => setVolume(v)}
                          className="py-6"
@@ -417,7 +412,6 @@ const UniversalVolumeBooster = () => {
                         <span>Hyper-Gain (5x)</span>
                       </div>
 
-                      {/* Professional Player Layout */}
                       <div className="pt-6 border-t border-primary/10 flex flex-col items-center gap-6">
                         <div 
                           className="w-full h-32 bg-background/50 rounded-2xl border border-border/50 shadow-inner flex items-center justify-center overflow-hidden relative group/waveform cursor-pointer"
@@ -440,11 +434,8 @@ const UniversalVolumeBooster = () => {
                             window.addEventListener('mouseup', onUp);
                           }}
                         >
-                           {/* Static Waveform Background */}
                            <canvas ref={staticCanvasRef} className="absolute inset-0 w-full h-full opacity-60 pointer-events-none" />
-                           {/* Live Frequency Overlay */}
                            <canvas ref={canvasRef} className="absolute inset-0 w-full h-full z-10 pointer-events-none" />
-                           {/* Playhead (Laser Beam) */}
                            {audioBuffer && (
                               <div 
                                 className="absolute top-0 bottom-0 w-[3px] bg-white shadow-[0_0_20px_rgba(255,255,255,0.8)] z-50 pointer-events-none"
@@ -453,48 +444,38 @@ const UniversalVolumeBooster = () => {
                            )}
                         </div>
                         
-                        {/* Custom Player Controls */}
                         <div className="w-full flex items-center justify-between gap-6 px-2">
                            <div className="flex items-center gap-5">
-                              <Button 
-                                variant="outline" 
-                                size="icon" 
-                                className="h-10 w-10 rounded-full border border-primary/20 hover:bg-primary/10 transition-all group"
-                                onClick={resetPlayback}
-                                title="Reset playback"
-                              >
+                              <Button variant="outline" size="icon" className="h-10 w-10 rounded-full border border-primary/20 hover:bg-primary/5 group" onClick={resetPlayback}>
                                 <RotateCcw className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
                               </Button>
-
-                              <button 
-                                onClick={handlePlay}
-                                className="h-14 w-14 rounded-full bg-primary flex items-center justify-center text-primary-foreground hover:scale-110 transition-transform shadow-xl shadow-primary/20"
-                              >
-                                {isPlaying ? <span className="h-5 w-5 border-l-4 border-r-4 border-primary-foreground" /> : <Play className="h-6 w-6 fill-current" />}
+                              <button onClick={handlePlay} className="h-14 w-14 rounded-full bg-primary flex items-center justify-center text-primary-foreground hover:scale-110 transition-transform shadow-xl">
+                                {isPlaying ? <Pause className="h-6 w-6" /> : <Play className="h-6 w-6 fill-current" />}
                               </button>
-                              <div>
-                                 <p className="text-[10px] font-black uppercase tracking-widest opacity-20 text-foreground">Status</p>
-                                 <p className="text-xs font-black italic tracking-tight text-primary">{isPlaying ? "Live Monitoring" : "Paused"}</p>
-                              </div>
                            </div>
                            
                            <div className="text-right">
-                              <p className="text-[10px] font-black uppercase tracking-widest opacity-20 text-foreground">Time Offset</p>
+                              <p className="text-[10px] font-black uppercase tracking-widest opacity-20">Time Registry</p>
                               <code className="text-sm font-black text-foreground font-mono">
-                                 {Math.floor(currentTime/60).toString().padStart(2,'0')}:{(Math.floor(currentTime)%60).toString().padStart(2,'0')} 
-                                 <span className="opacity-20 mx-1">/</span>
-                                 {audioBuffer ? `${Math.floor(audioBuffer.duration/60).toString().padStart(2,'0')}: ${(Math.floor(audioBuffer.duration)%60).toString().padStart(2,'0')}` : "00:00"}
+                                 {currentTime.toFixed(2)}s <span className="opacity-20 mx-1">/</span> {audioBuffer ? audioBuffer.duration.toFixed(2) : "0.00"}s
                               </code>
                            </div>
                         </div>
 
-                        <audio
-                          ref={audioRef}
-                          src={objectUrl}
-                          onPause={() => { if (animationRef.current) cancelAnimationFrame(animationRef.current); }}
-                          className="hidden"
-                        />
+                        <audio ref={audioRef} src={objectUrl || ""} className="hidden" />
                       </div>
+                    </div>
+                  </CardContent>
+                    
+                    <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                       <Button 
+                         onClick={() => { setFile(null); setAudioBuffer(null); setObjectUrl(null); }} 
+                         variant="destructive" 
+                         size="sm" 
+                         className="h-8 px-4 text-[9px] font-black uppercase tracking-widest rounded-xl shadow-2xl hover:scale-105 active:scale-95 transition-all"
+                       >
+                         Reset Stage
+                       </Button>
                     </div>
                   </Card>
                 </div>
@@ -503,29 +484,22 @@ const UniversalVolumeBooster = () => {
 
             <aside className="lg:col-span-4 space-y-6 lg:sticky lg:top-24 h-fit">
               <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl">
-                 <div className="bg-primary/5 p-5 border-b border-primary/10 flex items-center justify-between">
+                 <div className="bg-primary/5 p-5 border-b border-primary/10 flex items-center gap-3">
+                   <Zap className="h-4 w-4 text-primary" />
                    <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Power Profile</h3>
-                   {file && (
-                     <Button 
-                       onClick={() => { setFile(null); setAudioBuffer(null); setObjectUrl(null); }} 
-                       variant="ghost" 
-                       size="sm" 
-                       className="h-8 px-3 text-[9px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-2xl transition-all"
-                     >
-                       Reset Stage
-                     </Button>
-                   )}
                  </div>
                  <CardContent className="p-8 space-y-8">
                     <Button 
                       onClick={processAndDownload} 
                       disabled={!file || processing} 
-                      className="w-full gap-3 h-16 text-lg font-black rounded-2xl shadow-xl shadow-primary/10 hover:bg-primary hover:text-primary-foreground hover:scale-[1.01] active:scale-[0.99] transition-all uppercase italic"
+                      className="w-full gap-3 h-16 text-lg font-black rounded-2xl shadow-xl hover:scale-[1.01] transition-all uppercase italic"
                     >
                       <Download className="h-6 w-6" />
-                      {processing ? "Amplifying Artifact..." : "Export Boosted"}
+                      {processing ? "Enhancing..." : "Export Boosted"}
                     </Button>
-                    <p className="text-[9px] text-center mt-4 text-muted-foreground font-black uppercase tracking-widest opacity-40 italic">Anti-clipping • 32-bit precision • Local only</p>
+                    <p className="text-[9px] text-center mt-4 text-muted-foreground font-black uppercase tracking-widest opacity-40 italic leading-relaxed">
+                      High-Precision Bitstream Amplification Engine • Direct-to-Disk High-Fidelity Export.
+                    </p>
                  </CardContent>
               </Card>
 
@@ -583,4 +557,3 @@ function encodeWav(audioBuffer: AudioBuffer): ArrayBuffer {
 }
 
 export default UniversalVolumeBooster;
-

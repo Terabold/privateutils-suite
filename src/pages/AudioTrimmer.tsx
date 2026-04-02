@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, ArrowRight, Play, Pause, Download, RotateCcw, CloudUpload, Scissors } from "lucide-react";
+import { ArrowLeft, Play, Pause, Download, RotateCcw, CloudUpload, Scissors, RefreshCw, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -277,7 +277,7 @@ const AudioTrimmer = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground theme-audio transition-all duration-500">
+    <div className="min-h-screen bg-background text-foreground theme-audio transition-all duration-500 overflow-x-hidden">
       <style>{`
         input[type="number"].emerald-arrows::-webkit-inner-spin-button, 
         input[type="number"].emerald-arrows::-webkit-outer-spin-button {
@@ -288,37 +288,28 @@ const AudioTrimmer = () => {
 
       <main className="container mx-auto max-w-[1400px] px-6 py-12">
         <div className="flex flex-col gap-10">
-          <header className="flex items-center justify-between flex-wrap gap-8">
-            <div className="flex items-center gap-6">
-              <Link to="/">
-                <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-border/50 hover:bg-primary/5 transition-all group/back">
-                  <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
-                </Button>
-              </Link>
-              <div>
-                <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow leading-none">
-                  Audio <span className="text-primary italic">Trimmer</span>
-                </h1>
-                <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[9px]">High-Precision Local Audio Partitioning</p>
-              </div>
+          <header className="flex items-center gap-6 animate-in fade-in slide-in-from-top-4 duration-500">
+            <Link to="/">
+              <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-border/50 hover:bg-primary/5 transition-all group/back">
+                <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
+              </Button>
+            </Link>
+            <div>
+              <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow leading-none">
+                Audio <span className="text-primary italic">Trimmer</span>
+              </h1>
+              <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[9px]">High-Precision Local Audio Partitioning</p>
             </div>
           </header>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start animate-in fade-in slide-in-from-bottom-8 duration-700">
-            <div className="lg:col-span-8 space-y-8 animate-in fade-in slide-in-from-bottom-6 duration-700">
-              <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl transition-all duration-700 hover:border-primary/30">
+            <div className="lg:col-span-8 space-y-8">
+              <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl transition-all duration-700 hover:border-primary/30 group relative">
                 <div className="bg-primary/5 p-5 border-b border-primary/10 flex items-center justify-between">
-                  <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Wave Stage</h3>
-                  {audioBuffer && (
-                    <Button
-                      onClick={() => { setAudioBuffer(null); setFileName(""); }}
-                      variant="ghost"
-                      size="sm"
-                      className="h-8 px-3 text-[9px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-xl transition-all"
-                    >
-                      Reset Stage
-                    </Button>
-                  )}
+                  <div className="flex items-center gap-3">
+                    <Scissors className="h-4 w-4 text-primary" />
+                    <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Wave Stage</h3>
+                  </div>
                 </div>
                 <CardContent className="p-10">
                   {!audioBuffer ? (
@@ -475,6 +466,18 @@ const AudioTrimmer = () => {
                     </div>
                   )}
                   <input ref={inputRef} type="file" className="hidden" accept="audio/*" onChange={(e) => handleFile(e.target.files?.[0])} />
+                  
+                  {/* Reset Button (Integrated into Workbench) */}
+                  <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                    <Button 
+                      onClick={() => { setAudioBuffer(null); setFileName(""); }} 
+                      variant="destructive" 
+                      size="sm" 
+                      className="h-8 px-4 text-[9px] font-black uppercase tracking-widest rounded-xl shadow-2xl hover:scale-105 active:scale-95 transition-all"
+                    >
+                      Reset Stage
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
 
@@ -483,23 +486,24 @@ const AudioTrimmer = () => {
 
             <aside className="lg:col-span-4 space-y-6 lg:sticky lg:top-24 h-fit">
               <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl">
-                <div className="bg-primary/5 p-5 border-b border-primary/10">
+                <div className="bg-primary/5 p-5 border-b border-primary/10 flex items-center gap-3">
+                  <RefreshCw className="h-4 w-4 text-primary" />
                   <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Export Parameters</h3>
                 </div>
                 <CardContent className="p-8 space-y-8">
                   <div className="space-y-6">
-                    <div className="p-5 bg-background/50 rounded-2xl border border-border/50 space-y-4 shadow-inner">
+                    <div className="p-6 bg-background/50 rounded-2xl border border-border/50 space-y-4 shadow-inner">
                       <div className="flex items-center justify-between">
-                        <span className="text-[9px] font-black uppercase tracking-widest opacity-40">Source</span>
-                        <span className="text-[10px] font-black truncate max-w-[150px] italic">{fileName || "None"}</span>
+                        <span className="text-[9px] font-black uppercase tracking-widest opacity-40">Source Mass</span>
+                        <span className="text-[11px] font-black truncate max-w-[150px] italic text-primary">{fileName || "None"}</span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-[9px] font-black uppercase tracking-widest opacity-40">Duration</span>
-                        <span className="text-[10px] font-black font-mono">{duration.toFixed(2)}s</span>
+                        <span className="text-[9px] font-black uppercase tracking-widest opacity-40">Duration Scan</span>
+                        <span className="text-[11px] font-black font-mono text-foreground">{duration.toFixed(2)}s</span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-[9px] font-black uppercase tracking-widest opacity-40">Format</span>
-                        <span className="text-[10px] font-black text-primary italic">LPCM WAV</span>
+                        <span className="text-[9px] font-black uppercase tracking-widest opacity-40">Binary Forge</span>
+                        <span className="text-[11px] font-black text-primary italic">LPCM WAV</span>
                       </div>
                     </div>
                   </div>
@@ -523,8 +527,6 @@ const AudioTrimmer = () => {
               <div className="px-6">
                 <AdPlaceholder format="rectangle" className="opacity-40 grayscale group-hover:grayscale-0 transition-all" />
               </div>
-
-
             </aside>
           </div>
         </div>

@@ -233,20 +233,22 @@ const VideoAspectStudio = () => {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
               <div className="lg:col-span-8 space-y-8 flex flex-col items-center w-full">
               {!file ? (
-                <Card className="glass-morphism border-primary/10 overflow-hidden min-h-[180px] w-full flex flex-col items-center justify-center relative bg-muted/5 rounded-2xl shadow-inner p-4 select-none animate-in fade-in zoom-in-95 duration-500">
+                <Card className="glass-morphism border-primary/10 overflow-hidden min-h-[500px] w-full flex flex-col items-center justify-center relative bg-muted/5 rounded-3xl shadow-2xl p-10 select-none animate-in fade-in zoom-in-95 duration-500">
                    <div
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={(e) => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); }}
                     onClick={() => !processing && inputRef.current?.click()}
-                    className={`relative w-full flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/20 text-center transition-all ${!processing ? "cursor-pointer py-10 bg-background/50 hover:border-primary/40 hover:bg-primary/5 shadow-inner" : "py-10 opacity-50"}`}
+                    className={cn(
+                      "relative w-full h-[500px] flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/20 text-center transition-all",
+                      !processing ? "cursor-pointer bg-background/50 hover:border-primary/40 hover:bg-primary/5 shadow-inner" : "opacity-50"
+                    )}
                   >
-                    <div className="h-12 w-12 bg-primary/10 rounded-2xl flex items-center justify-center mb-4 shadow-inner group-hover:scale-110 transition-transform">
-                       <CloudUpload className="h-6 w-6 text-primary" />
+                    <div className="h-20 w-20 bg-primary/10 rounded-2xl flex items-center justify-center mb-8 shadow-inner group-hover:scale-110 transition-transform">
+                       <CloudUpload className="h-10 w-10 text-primary" />
                     </div>
                     <div className="px-6 space-y-1">
-                      <p className="text-xl font-bold text-foreground uppercase tracking-tighter italic leading-none text-shadow-glow">Deploy Hub Artifact</p>
-                      <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-[0.2em] opacity-40 italic leading-none pt-1">MP4, MOV, WebM Artifacts Supported</p>
-                      <KbdShortcut />
+                      <p className="text-3xl font-black text-foreground uppercase tracking-tighter italic leading-none text-shadow-glow">Deploy Artifact</p>
+                      <p className="text-[11px] text-muted-foreground font-bold uppercase tracking-[0.2em] opacity-40 italic mt-2">MP4, MOV, WebM Artifacts Supported</p>
                     </div>
                     <label htmlFor="aspect-upload-input" className="sr-only">Upload Video for Aspect Remapping</label>
                     <input id="aspect-upload-input" name="aspect-upload-input" ref={inputRef} type="file" className="hidden" accept="video/*" onChange={(e) => handleFile(e.target.files?.[0])} />
@@ -410,7 +412,7 @@ const VideoAspectStudio = () => {
                           </div>
                           <Progress value={progress} className="h-2 w-full bg-primary/10 shadow-inner rounded-full" />
                           
-                          <div className="mt-4 bg-zinc-950/80 backdrop-blur-xl rounded-xl p-4 font-mono text-[9px] text-primary/60 overflow-hidden shadow-inner border border-white/5 min-h-[140px] flex flex-col justify-end">
+                          <div className="mt-4 bg-zinc-950/80 backdrop-blur-xl rounded-xl p-4 font-mono text-[9px] text-primary/60 overflow-y-auto shadow-inner border border-white/5 min-h-[140px] flex flex-col">
                             <div className="space-y-1">
                               {logs.map((log, i) => (
                                 <div key={i} className="leading-relaxed truncate border-l border-primary/20 pl-3 opacity-60 hover:opacity-100 transition-opacity">{`> ${log}`}</div>

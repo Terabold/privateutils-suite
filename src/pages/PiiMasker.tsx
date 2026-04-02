@@ -269,7 +269,7 @@ const PiiMasker = () => {
                 </Card>
               ) : textContent !== null ? (
                 <div className="space-y-8 animate-in fade-in zoom-in duration-500">
-                  <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-2xl bg-zinc-950 p-0 relative min-h-[600px] flex flex-col">
+                  <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-2xl bg-zinc-950 p-0 relative min-h-[600px] flex flex-col group">
                     <div className="bg-primary/5 p-4 border-b border-primary/10 flex items-center justify-between">
                        <h3 className="text-[10px] font-black uppercase tracking-widest text-primary">Live Document Stream</h3>
                        <p className="text-[9px] font-black opacity-30 uppercase tracking-widest">Select text to redact</p>
@@ -291,11 +291,23 @@ const PiiMasker = () => {
                        </Button>
                        <p className="text-[9px] font-black opacity-20 uppercase tracking-widest italic">Manual Block-Cipher Active</p>
                     </div>
+                    
+                    {/* Reset Button (Text Mode) */}
+                    <div className="absolute top-4 right-4 z-10">
+                       <Button 
+                         onClick={() => { setImage(null); setTextContent(null); setFile(null); setRegions([]); }} 
+                         variant="destructive" 
+                         size="sm" 
+                         className="h-8 px-4 text-[9px] font-black uppercase tracking-widest rounded-xl shadow-2xl hover:scale-105 active:scale-95 transition-all border border-black/20"
+                       >
+                         Reset Stage
+                       </Button>
+                    </div>
                   </Card>
                 </div>
               ) : (
                 <div className="space-y-8">
-                  <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-2xl bg-zinc-950 p-0 relative">
+                  <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-2xl bg-zinc-950 p-0 relative group">
                     <div 
                       ref={containerRef}
                       className="w-full h-[650px] relative overflow-hidden flex items-center justify-center bg-[#0a0a0a] rounded-2xl"
@@ -319,6 +331,14 @@ const PiiMasker = () => {
                       />
                     </div>
                     <div className="absolute top-6 right-6 flex gap-2">
+                       <Button 
+                         onClick={() => { setImage(null); setTextContent(null); setFile(null); setRegions([]); }} 
+                         variant="destructive" 
+                         size="sm" 
+                         className="h-8 px-4 text-[9px] font-black uppercase tracking-widest rounded-xl shadow-2xl hover:scale-105 active:scale-95 transition-all border border-black/20"
+                       >
+                         Reset Stage
+                       </Button>
                        <Button size="icon" variant="ghost" onClick={() => setRegions(prev => prev.slice(0, -1))} disabled={regions.length === 0} className="h-12 w-12 rounded-2xl bg-black/60 text-white backdrop-blur-md border border-white/10 hover:bg-black/80">
                           <Undo2 className="h-5 w-5" />
                        </Button>
@@ -336,16 +356,6 @@ const PiiMasker = () => {
                <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl">
                   <div className="bg-primary/5 p-5 border-b border-primary/10 flex items-center justify-between">
                     <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Redaction Logic</h3>
-                    {(image || textContent) && (
-                      <Button 
-                        onClick={() => { setImage(null); setTextContent(null); setFile(null); setRegions([]); }} 
-                        variant="ghost" 
-                        size="sm" 
-                        className="h-8 px-3 text-[9px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-2xl transition-all"
-                      >
-                        Reset Stage
-                      </Button>
-                    )}
                   </div>
                  <CardContent className="p-5 space-y-6">
                     {image && (

@@ -223,18 +223,9 @@ const SvgOptimizer = () => {
                       </div>
                     )}
 
-                    <p className="text-[9px] text-center text-muted-foreground font-black uppercase tracking-widest opacity-30 italic">Inkscape/Illustrator bloat stripped • W3C compliant output</p>
-
-                    <div className="space-y-4 pt-4 border-t border-border/20">
-                       <div className="flex items-center gap-4 text-muted-foreground/60 transition-colors hover:text-foreground group cursor-default">
-                          <Check className="h-4 w-4 text-emerald-500" />
-                          <span className="text-[10px] font-black uppercase tracking-widest">W3C Compliant</span>
-                       </div>
-                       <div className="flex items-center gap-4 text-muted-foreground/60 transition-colors hover:text-foreground group cursor-default">
-                          <AlertCircle className="h-4 w-4 text-primary" />
-                          <span className="text-[10px] font-black uppercase tracking-widest">Non-Destructive</span>
-                       </div>
-                    </div>
+                    <p className="text-[9px] text-center text-muted-foreground font-black uppercase tracking-widest opacity-30 italic pt-4">
+                      W3C Compliant • Non-Destructive • Bloat Stripped
+                    </p>
 
                     <Button variant="ghost" onClick={copyToClipboard} className="w-full gap-2 h-14 border border-border/50 rounded-2xl font-black uppercase tracking-widest text-[10px]">
                        <Copy className="h-4 w-4" /> Copy SVG Code

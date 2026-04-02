@@ -14,7 +14,6 @@ import Footer from "@/components/Footer";
 import AdPlaceholder from "@/components/AdPlaceholder";
 import { toast } from "sonner";
 import { usePasteFile } from "@/hooks/usePasteFile";
-import { KbdShortcut } from "@/components/KbdShortcut";
 
 // --- Logic Helpers ---
 
@@ -244,9 +243,6 @@ const DataForge = () => {
                            className="flex-1 bg-transparent p-6 font-mono text-sm text-[#9cdcfe] resize-none outline-none selection:bg-primary/30 leading-relaxed custom-scrollbar"
                            placeholder='Paste JSON for structural audit...'
                          />
-                         <div className="absolute bottom-6 right-6 z-20">
-                            <KbdShortcut />
-                         </div>
                          {error && (
                            <div className="absolute bottom-0 inset-x-0 p-4 bg-destructive/10 border-t border-destructive/20 text-destructive flex items-start gap-3 backdrop-blur-md">
                              <AlertCircle className="h-4 w-4 mt-0.5" />
@@ -293,9 +289,6 @@ const DataForge = () => {
                               placeholder={transMode === 'csv2json' ? "name,age\nJohn,30" : '[{"name":"John"}]'}
                               className="h-[400px] w-full bg-zinc-950/40 border border-border/30 rounded-xl p-6 text-xs font-mono text-foreground focus:outline-none focus:border-primary/40 custom-scrollbar"
                             />
-                            <div className="flex justify-center -mt-8 mb-4">
-                               <KbdShortcut />
-                            </div>
                             <Button onClick={convert} className="w-full gap-2 h-12 font-bold rounded-2xl shadow-xl shadow-primary/20 bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 transition-all">
                                <RefreshCw className="h-4 w-4" /> Translate Asset
                             </Button>

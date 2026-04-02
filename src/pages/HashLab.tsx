@@ -95,7 +95,6 @@ const HashLab = () => {
                 <CardContent className="p-0 space-y-4">
                   <div className="flex flex-col gap-1">
                     <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Input Data</p>
-                    <KbdShortcut />
                   </div>
                   <textarea
                     value={input}
