@@ -56,8 +56,9 @@ const Base64Image = () => {
 
       <div className="flex justify-center items-start w-full relative">
         <aside className="hidden min-[1850px]:flex flex-col gap-10 sticky top-32 w-[300px] shrink-0 px-6 py-8 animate-in fade-in slide-in-from-left-8 duration-1000">
-           <AdPlaceholder format="rectangle" className="opacity-40 grayscale border-border/50" />
-           <AdPlaceholder format="rectangle" className="opacity-40 grayscale border-border/50" />
+           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
+           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
+           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
         </aside>
 
         <main className="container mx-auto max-w-[1400px] px-6 py-12 grow">
@@ -81,7 +82,7 @@ const Base64Image = () => {
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-12 items-start animate-in fade-in slide-in-from-bottom-8 duration-700">
               <div className="space-y-8">
                 <Card
-                  className="glass-morphism border-primary/10 rounded-3xl shadow-2xl bg-muted/5 p-12 border-2 border-dashed flex flex-col items-center justify-center gap-6 group hover:border-primary/30 transition-all cursor-pointer relative overflow-hidden"
+                  className={`glass-morphism border-primary/10 rounded-2xl shadow-xl bg-muted/5 border-2 border-dashed flex items-center justify-center gap-4 group hover:border-primary/30 transition-all cursor-pointer relative overflow-hidden ${base64 ? "p-4 py-6" : "p-12"}`}
                   onDragOver={(e) => e.preventDefault()}
                   onDrop={handleDrop}
                   onClick={() => document.getElementById('fileInput')?.click()}
@@ -94,14 +95,38 @@ const Base64Image = () => {
                     onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])}
                   />
 
-                  <div className="h-24 w-24 rounded-3xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform duration-500 shadow-inner">
-                    <FileStack className="h-10 w-10" />
-                  </div>
-                  <div className="text-center group-hover:scale-105 transition-transform duration-500">
-                    <h2 className="text-2xl font-black uppercase tracking-widest mb-2 italic text-shadow-glow">Drop Artifact</h2>
-                    <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground/60 font-black">Local Bit-Level Encoding Only</p>
-                    <KbdShortcut />
-                  </div>
+                  {base64 ? (
+                    <div className="flex items-center justify-between w-full px-4 animate-in fade-in slide-in-from-top-2 duration-300">
+                      <div className="flex items-center gap-5">
+                        <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary shadow-inner border border-primary/20">
+                          <ImageIcon className="h-6 w-6" />
+                        </div>
+                        <div>
+                          <p className="text-[10px] font-black uppercase tracking-widest text-primary leading-none mb-1 italic">Active Artifact : Detected</p>
+                          <p className="text-sm font-black text-foreground uppercase tracking-tighter truncate max-w-[300px]">{fileName}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <div className="hidden md:flex flex-col items-end opacity-40">
+                           <p className="text-[8px] font-black uppercase tracking-[0.2em] leading-none mb-1 italic">Swap Mode Active</p>
+                           <p className="text-[9px] font-black uppercase tracking-widest">Click or Ctrl+V to Exchange</p>
+                        </div>
+                        <div className="h-10 w-[1px] bg-white/5" />
+                        <KbdShortcut />
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center">
+                      <div className="h-14 w-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform duration-500 shadow-inner">
+                        <FileStack className="h-6 w-6" />
+                      </div>
+                      <div className="text-center group-hover:scale-105 transition-transform duration-500 mt-4">
+                        <h2 className="text-xl font-black uppercase tracking-widest mb-1 italic text-shadow-glow">Deploy Hub</h2>
+                        <p className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground/60 font-black">Click to Browse · Ctrl+V to paste artifact</p>
+                        <KbdShortcut />
+                      </div>
+                    </div>
+                  )}
                 </Card>
 
                 {base64 && (
@@ -117,8 +142,8 @@ const Base64Image = () => {
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
-                      <CardContent className="p-8 flex items-center justify-center bg-zinc-950/20 min-h-[350px]">
-                        <img src={preview} alt="Preview" className="max-h-[300px] object-contain rounded-2xl shadow-2xl border border-white/5" />
+                      <CardContent className="p-8 flex items-center justify-center bg-zinc-950/20 min-h-[250px]">
+                        <img src={preview} alt="Preview" className="max-h-[200px] object-contain rounded-2xl shadow-2xl border border-white/5" />
                       </CardContent>
                     </Card>
 
@@ -141,7 +166,7 @@ const Base64Image = () => {
                         <textarea
                           readOnly
                           value={base64}
-                          className="w-full h-[350px] bg-zinc-950/40 p-8 text-[11px] font-mono text-foreground/70 border-none resize-none focus:outline-none custom-scrollbar break-all leading-relaxed shadow-inner"
+                          className="w-full h-[250px] bg-zinc-950/40 p-8 text-[11px] font-mono text-foreground/70 border-none resize-none focus:outline-none custom-scrollbar break-all leading-relaxed shadow-inner"
                         />
                       </CardContent>
                     </Card>
@@ -182,9 +207,6 @@ const Base64Image = () => {
                        </div>
                     </div>
 
-                    <div className="pt-6 border-t border-primary/10 opacity-40 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-700">
-                      <AdPlaceholder format="rectangle" />
-                    </div>
                   </CardContent>
                 </Card>
 
@@ -201,6 +223,9 @@ const Base64Image = () => {
         <aside className="hidden min-[1850px]:flex flex-col gap-10 sticky top-32 w-[300px] shrink-0 px-6 py-8 animate-in fade-in slide-in-from-right-8 duration-1000">
            <AdPlaceholder format="rectangle" className="opacity-40 grayscale border-border/50" />
            <AdPlaceholder format="rectangle" className="opacity-40 grayscale border-border/50" />
+           <div className="p-8 rounded-2xl border-2 border-dashed border-primary/5 bg-primary/5 text-center mt-12 studio-gradient">
+              <p className="text-[10px] font-black uppercase tracking-widest text-primary opacity-60">Verified Ad Space</p>
+           </div>
         </aside>
       </div>
       <Footer />

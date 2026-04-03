@@ -31,6 +31,10 @@ const ImageCompressor = () => {
   const [isBaking, setIsBaking] = useState(false);
   const ffmpegRef = useRef(new FFmpeg());
   const inputRef = useRef<HTMLInputElement>(null);
+  const [zoom, setZoom] = useState(1);
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const [isPanning, setIsPanning] = useState(false);
+  const [startPan, setStartPan] = useState({ x: 0, y: 0 });
 
   const toggleDark = useCallback(() => {
     const next = !darkMode;
@@ -167,7 +171,14 @@ const ImageCompressor = () => {
     <div className="h-screen bg-[#050505] text-foreground transition-all duration-300 theme-image overflow-hidden flex flex-col font-sans">
       <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
       
-      <main className="flex-1 flex overflow-hidden min-h-0 bg-zinc-950/20">
+      <div className="flex justify-center items-start w-full relative">
+        <aside className="hidden min-[1850px]:flex flex-col gap-10 sticky top-32 w-[300px] shrink-0 px-6 py-8 animate-in fade-in slide-in-from-left-8 duration-1000">
+           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
+           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
+           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
+        </aside>
+
+        <main className="container mx-auto max-w-[1400px] px-6 py-12 grow overflow-visible">
         <div className="w-full h-full flex flex-col p-4 md:px-8 md:py-4 gap-4">
           <header className="flex items-center justify-between shrink-0 animate-in fade-in slide-in-from-top-4 duration-500 bg-zinc-900 border border-white/20 p-3 rounded-2xl backdrop-blur-3xl shadow-2xl">
             <div className="flex items-center gap-5">
@@ -194,19 +205,7 @@ const ImageCompressor = () => {
             </div>
           </header>
 
-          <div className="flex-1 grid grid-cols-1 lg:grid-cols-[250px_1fr_400px] gap-4 overflow-hidden items-stretch relative">
-            {/* SPONSOR PILLAR - LEFT COLUMN */}
-            <aside className="hidden lg:flex flex-col gap-4 min-h-0 overflow-hidden animate-in slide-in-from-left-8 duration-700">
-               <div className="flex-1 flex flex-col items-center justify-start py-8 opacity-40 hover:opacity-100 transition-all duration-500 bg-zinc-900/40 rounded-[2.5rem] border border-white/5 shadow-inner">
-                  <div className="w-full flex flex-col items-center justify-center p-2 gap-6">
-                    <AdPlaceholder format="rectangle" className="grayscale border-white/10 rounded-3xl h-[300px] w-full max-w-[230px] shadow-2xl bg-black/40" />
-                    <p className="text-[7px] text-white/30 font-black uppercase tracking-[0.5em] text-center italic">
-                        Studio Sponsorship • Artifact Portal
-                    </p>
-                  </div>
-               </div>
-            </aside>
-
+          <div className="flex-1 grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-4 overflow-hidden items-stretch relative">
             {/* STAGE AREA - CENTER COLUMN */}
             <div className="relative flex flex-col overflow-hidden min-h-0">
               <Card className="flex-1 glass-morphism border-primary/40 rounded-[2.5rem] overflow-hidden shadow-2xl relative group bg-black/99 flex items-center justify-center p-1 border-b-[8px] border-primary/50 transition-all duration-700">
@@ -229,11 +228,37 @@ const ImageCompressor = () => {
                   <div className="w-full h-full relative flex items-center justify-center p-2 animate-in fade-in zoom-in-95 duration-1000">
                     {compressedUrl ? (
                       <div className="relative w-full h-full flex items-center justify-center group/result px-4 py-4">
-                        <img 
-                          src={compressedUrl} 
-                          alt="Compressed Artifact" 
-                          className="max-w-full max-h-full object-contain rounded-2xl shadow-[0_50px_120px_rgba(0,0,0,1)] transition-all duration-700 border border-white/5" 
-                        />
+                        <div 
+                          className="relative w-full h-full flex items-center justify-center overflow-hidden cursor-crosshair active:cursor-grabbing select-none"
+                          onMouseDown={(e) => {
+                            if (e.button === 0 || e.button === 2) {
+                              setIsPanning(true);
+                              setStartPan({ x: e.clientX - offset.x, y: e.clientY - offset.y });
+                              e.preventDefault();
+                            }
+                          }}
+                          onMouseMove={(e) => {
+                            if (isPanning) {
+                              setOffset({ x: e.clientX - startPan.x, y: e.clientY - startPan.y });
+                            }
+                          }}
+                          onMouseUp={() => setIsPanning(false)}
+                          onMouseLeave={() => setIsPanning(false)}
+                          onWheel={(e) => {
+                            const delta = e.deltaY > 0 ? -0.1 : 0.1;
+                            setZoom(prev => Math.min(10, Math.max(1, prev + delta)));
+                          }}
+                        >
+                          <img 
+                            src={compressedUrl} 
+                            alt="Compressed Artifact" 
+                            className="max-w-full max-h-full object-contain rounded-2xl shadow-[0_50px_120px_rgba(0,0,0,1)] transition-transform duration-75 border border-white/5" 
+                            style={{
+                              imageRendering: zoom > 1 ? 'pixelated' : 'auto',
+                              transform: `translate3d(${offset.x}px, ${offset.y}px, 0) scale(${zoom})`
+                            }}
+                          />
+                        </div>
                       </div>
                     ) : (
                       <div className="flex flex-col items-center gap-8 text-center animate-in zoom-in-95 duration-500">
@@ -356,17 +381,17 @@ const ImageCompressor = () => {
                     <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 space-y-4 pt-1">
                       {/* INTEGRATED METRICS - RECOVERED PER USER REQUEST */}
                       <div className="grid grid-cols-3 gap-2.5 px-px">
-                        <div className="flex flex-col items-center justify-center bg-zinc-950/60 border border-white/5 rounded-xl py-3 shadow-2xl ring-1 ring-white/5">
-                           <p className="text-[7px] font-black text-primary uppercase tracking-widest mb-1.5 leading-none">Source</p>
-                           <p className="text-[12px] font-black text-white italic tracking-tighter font-mono leading-none">{(originalSize / 1024 / 1024).toFixed(2)}MB</p>
+                        <div className="flex flex-col items-center justify-center bg-zinc-950/60 border border-white/5 rounded-xl py-4 shadow-2xl ring-1 ring-white/5">
+                           <p className="text-[8px] font-black text-primary uppercase tracking-widest mb-2 leading-none">Source</p>
+                           <p className="text-[16px] font-black text-white italic tracking-tighter font-mono leading-none">{(originalSize / 1024 / 1024).toFixed(2)}MB</p>
                         </div>
-                        <div className="flex flex-col items-center justify-center bg-zinc-950/60 border border-white/5 rounded-xl py-3 shadow-2xl ring-1 ring-white/5">
-                           <p className="text-[7px] font-black text-emerald-400 uppercase tracking-widest mb-1.5 leading-none">Target</p>
-                           <p className="text-[12px] font-black text-emerald-400 italic tracking-tighter font-mono leading-none">{(compressedSize / 1024 / 1024).toFixed(2)}MB</p>
+                        <div className="flex flex-col items-center justify-center bg-zinc-950/60 border border-white/5 rounded-xl py-4 shadow-2xl ring-1 ring-white/5">
+                           <p className="text-[8px] font-black text-emerald-400 uppercase tracking-widest mb-2 leading-none">Target</p>
+                           <p className="text-[16px] font-black text-emerald-400 italic tracking-tighter font-mono leading-none">{(compressedSize / 1024 / 1024).toFixed(2)}MB</p>
                         </div>
-                        <div className="flex flex-col items-center justify-center bg-primary/10 border border-primary/20 rounded-xl py-3 shadow-2xl ring-1 ring-primary/20">
-                           <p className="text-[7px] font-black text-primary uppercase tracking-widest mb-1.5 leading-none">Savings</p>
-                           <p className="text-[12px] font-black text-primary italic tracking-tighter font-mono leading-none">-{savings}%</p>
+                        <div className="flex flex-col items-center justify-center bg-primary/10 border border-primary/20 rounded-xl py-4 shadow-2xl ring-1 ring-primary/20">
+                           <p className="text-[8px] font-black text-primary uppercase tracking-widest mb-2 leading-none">Savings</p>
+                           <p className="text-[16px] font-black text-primary italic tracking-tighter font-mono leading-none">-{savings}%</p>
                         </div>
                       </div>
 
@@ -391,7 +416,15 @@ const ImageCompressor = () => {
             </aside>
           </div>
         </div>
-      </main>
+        </main>
+
+        <aside className="hidden min-[1850px]:flex flex-col gap-10 sticky top-32 w-[300px] shrink-0 px-6 py-8 animate-in fade-in slide-in-from-right-8 duration-1000">
+           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
+           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
+           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
+        </aside>
+      </div>
+      <Footer />
       
       <div className="h-10 bg-black border-t border-white/10 shrink-0 flex items-center justify-between px-8">
           <div className="flex items-center gap-6">

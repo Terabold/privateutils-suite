@@ -1,6 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, ShieldX, Download, Trash2, Undo2, Eraser, Square, Layers, Sparkles, CloudUpload } from "lucide-react";
+import { ArrowLeft, Upload, Download, Shield, ShieldAlert, FileText, Image as ImageIcon, Check, Copy, Trash2, Undo2, MousePointer2, Move, ZoomIn, ZoomOut, Maximize2, RefreshCw, Grid3X3, ShieldX, Eraser, Square, Layers, Sparkles, CloudUpload } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
@@ -34,9 +35,10 @@ const PiiMasker = () => {
   const [blurStrength, setBlurStrength] = useState(20);
   const [processing, setProcessing] = useState(false);
   const [zoom, setZoom] = useState(1);
-  const [pan, setPan] = useState({ x: 0, y: 0 });
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [isPanning, setIsPanning] = useState(false);
-  const [panStart, setPanStart] = useState({ x: 0, y: 0 });
+  const [startPan, setStartPan] = useState({ x: 0, y: 0 });
+  const [showGrid, setShowGrid] = useState(false);
   
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -51,10 +53,16 @@ const PiiMasker = () => {
 
   const handleFile = (f: File | undefined) => {
     if (!f) return;
+    
+    if (f.type === "image/gif") {
+      toast.error("GIF artifacts are not natively supported by the masking engine. Please use static masters.");
+      return;
+    }
+
     setFile(f);
     setRegions([]);
     setZoom(1);
-    setPan({ x: 0, y: 0 });
+    setOffset({ x: 0, y: 0 });
 
     const isImage = f.type.startsWith("image/");
     if (isImage) {
@@ -64,6 +72,18 @@ const PiiMasker = () => {
         img.onload = () => {
           setImage(img);
           setTextContent(null);
+          
+          // Auto-Fit and Center Logic
+          const container = containerRef.current;
+          if (container) {
+            const pad = 80;
+            const availableW = container.clientWidth - pad;
+            const availableH = container.clientHeight - pad;
+            const fitZoom = Math.min(availableW / img.width, availableH / img.height, 1);
+            setZoom(fitZoom);
+            setOffset({ x: 0, y: 0 });
+          }
+          
           toast.success("Identity Scrubber Initialized");
         };
         img.src = e.target?.result as string;
@@ -92,6 +112,33 @@ const PiiMasker = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(image, 0, 0);
 
+    if (showGrid || zoom > 8) {
+      ctx.save();
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.15)";
+      ctx.lineWidth = 0.5 / zoom;
+      
+      // Major grid (50px)
+      for (let x = 0; x <= canvas.width; x += 50) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+      }
+      for (let y = 0; y <= canvas.height; y += 50) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+      }
+
+      // Pixel grid (1px) - only at extreme zoom
+      if (zoom > 15) {
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.05)";
+        ctx.lineWidth = 0.2 / zoom;
+        for (let x = 0; x <= canvas.width; x += 1) {
+          ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+        }
+        for (let y = 0; y <= canvas.height; y += 1) {
+          ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+        }
+      }
+      ctx.restore();
+    }
+
     regions.forEach(r => {
       ctx.save();
       if (r.style === "blur") {
@@ -105,20 +152,34 @@ const PiiMasker = () => {
         ctx.fillRect(r.x, r.y, r.width, r.height);
       }
       ctx.restore();
-      ctx.strokeStyle = "rgba(124, 58, 237, 0.4)";
-      ctx.lineWidth = 2 / zoom;
+      
+      ctx.strokeStyle = "rgba(124, 58, 237, 0.6)";
+      ctx.lineWidth = 1 / zoom;
       ctx.strokeRect(r.x, r.y, r.width, r.height);
+
+      ctx.strokeStyle = "white";
+      ctx.lineWidth = 1.2 / zoom;
+      ctx.setLineDash([4 / zoom, 3 / zoom]);
+      ctx.strokeRect(r.x, r.y, r.width, r.height);
+      ctx.setLineDash([]);
     });
 
     if (isDrawing) {
-      ctx.strokeStyle = "#7c3aed";
-      ctx.lineWidth = 2 / zoom;
-      ctx.setLineDash([5 / zoom, 5 / zoom]);
+      ctx.save();
+      ctx.strokeStyle = "rgba(255, 255, 255, 1)";
+      ctx.lineWidth = Math.max(0.5, 2 / zoom);
+      ctx.setLineDash([Math.max(1, 5 / zoom), Math.max(1, 5 / zoom)]);
+      
       const x = Math.min(startPos.x, currPos.x);
       const y = Math.min(startPos.y, currPos.y);
       const w = Math.abs(startPos.x - currPos.x);
       const h = Math.abs(startPos.y - currPos.y);
+      
+      // Outer glow for visibility
+      ctx.shadowColor = "rgba(0, 0, 0, 0.8)";
+      ctx.shadowBlur = 4 / zoom;
       ctx.strokeRect(x, y, w, h);
+      ctx.restore();
     }
   }, [image, regions, isDrawing, startPos, currPos, zoom]);
 
@@ -129,11 +190,13 @@ const PiiMasker = () => {
   useEffect(() => {
     const el = containerRef.current;
     if (!el || !image) return;
+
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault();
-      const factor = e.deltaY > 0 ? 0.92 : 1.08;
-      setZoom(prev => Math.max(0.2, Math.min(prev * factor, 20)));
+      const factor = e.deltaY > 0 ? 0.9 : 1.1;
+      setZoom(prev => Math.min(50, Math.max(0.1, prev * factor)));
     };
+
     el.addEventListener("wheel", handleWheel, { passive: false });
     return () => el.removeEventListener("wheel", handleWheel);
   }, [image]);
@@ -154,7 +217,7 @@ const PiiMasker = () => {
     if (!image) return;
     if (e.button === 2) {
       setIsPanning(true);
-      setPanStart({ x: e.clientX, y: e.clientY });
+      setStartPan({ x: e.clientX - offset.x, y: e.clientY - offset.y });
       return;
     }
     if (e.button === 0) {
@@ -167,10 +230,10 @@ const PiiMasker = () => {
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (isPanning) {
-      const dx = e.clientX - panStart.x;
-      const dy = e.clientY - panStart.y;
-      setPan(prev => ({ x: prev.x + dx, y: prev.y + dy }));
-      setPanStart({ x: e.clientX, y: e.clientY });
+      setOffset({
+        x: e.clientX - startPan.x,
+        y: e.clientY - startPan.y
+      });
       return;
     }
     if (!isDrawing) return;
@@ -224,10 +287,17 @@ const PiiMasker = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground theme-privacy transition-all duration-500">
+    <div className="min-h-screen bg-background text-foreground theme-privacy transition-all duration-500 overflow-x-hidden">
       <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
       
-      <main className="container mx-auto max-w-[1400px] px-6 py-12">
+      <div className="flex justify-center items-start w-full relative">
+        <aside className="hidden min-[1850px]:flex flex-col gap-10 sticky top-32 w-[300px] shrink-0 px-6 py-8 animate-in fade-in slide-in-from-left-8 duration-1000">
+           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
+           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
+           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
+        </aside>
+
+        <main className="container mx-auto max-w-[1400px] px-6 py-12 grow overflow-visible">
         <div className="flex flex-col gap-10">
           <header className="flex items-center justify-between flex-wrap gap-8">
             <div className="flex items-center gap-6">
@@ -245,7 +315,7 @@ const PiiMasker = () => {
             </div>
           </header>
 
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-12 items-start animate-in fade-in slide-in-from-bottom-8 duration-700">
+          <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_380px] gap-12 items-start animate-in fade-in slide-in-from-bottom-8 duration-700">
             <div className="space-y-8">
               {!image && !textContent ? (
                 <Card className="glass-morphism border-primary/10 overflow-hidden min-h-[400px] flex flex-col items-center justify-center relative bg-muted/5 rounded-2xl shadow-inner p-10">
@@ -264,7 +334,7 @@ const PiiMasker = () => {
                       <KbdShortcut />
                       <p className="mt-4 text-[10px] text-muted-foreground font-black uppercase tracking-widest opacity-20 text-center uppercase tracking-tighter font-black">Images, Logs, TXT or MD Supported</p>
                     </div>
-                    <input ref={inputRef} type="file" className="hidden" accept="image/*,text/plain,text/markdown,.log" onChange={(e) => handleFile(e.target.files?.[0])} />
+                    <input ref={inputRef} type="file" className="hidden" accept="image/png,image/jpeg,image/webp,text/plain,text/markdown,.log" onChange={(e) => handleFile(e.target.files?.[0])} />
                   </div>
                 </Card>
               ) : textContent !== null ? (
@@ -307,46 +377,78 @@ const PiiMasker = () => {
                 </div>
               ) : (
                 <div className="space-y-8">
-                  <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-2xl bg-zinc-950 p-0 relative group">
-                    <div 
-                      ref={containerRef}
-                      className="w-full h-[650px] relative overflow-hidden flex items-center justify-center bg-[#0a0a0a] rounded-2xl"
-                      onMouseDown={handleMouseDown}
-                      onMouseMove={handleMouseMove}
-                      onMouseUp={handleMouseUp}
-                      onMouseLeave={handleMouseUp}
-                      onContextMenu={(e) => e.preventDefault()}
-                      style={{ cursor: isPanning ? 'grabbing' : 'crosshair' }}
-                    >
-                      <canvas
-                        ref={canvasRef}
-                        className="shadow-2xl origin-center"
-                        style={{ 
-                          transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
-                          transition: isPanning || isDrawing ? 'none' : 'transform 0.15s ease-out',
-                          maxWidth: 'calc(100% - 60px)',
-                          maxHeight: 'calc(100% - 60px)',
-                          objectFit: 'contain'
-                        }}
-                      />
-                    </div>
-                    <div className="absolute top-6 right-6 flex gap-2">
-                       <Button 
-                         onClick={() => { setImage(null); setTextContent(null); setFile(null); setRegions([]); }} 
-                         variant="destructive" 
-                         size="sm" 
-                         className="h-8 px-4 text-[9px] font-black uppercase tracking-widest rounded-xl shadow-2xl hover:scale-105 active:scale-95 transition-all border border-black/20"
-                       >
-                         Reset Stage
-                       </Button>
-                       <Button size="icon" variant="ghost" onClick={() => setRegions(prev => prev.slice(0, -1))} disabled={regions.length === 0} className="h-12 w-12 rounded-2xl bg-black/60 text-white backdrop-blur-md border border-white/10 hover:bg-black/80">
-                          <Undo2 className="h-5 w-5" />
-                       </Button>
-                       <Button size="icon" variant="ghost" onClick={() => setRegions([])} disabled={regions.length === 0} className="h-12 w-12 rounded-2xl bg-destructive/60 text-white backdrop-blur-md border border-white/10 hover:bg-destructive/80">
-                          <Trash2 className="h-5 w-5" />
-                       </Button>
-                    </div>
-                    <p className="text-[9px] text-center text-muted-foreground/30 font-black uppercase tracking-widest py-2 italic">Left-click: mask • Right-click: pan • Scroll: zoom</p>
+                  <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-2xl bg-zinc-950 p-10 relative group h-[650px] flex flex-col items-center justify-center">
+                        <div 
+                          ref={containerRef}
+                          className="w-full h-full relative overflow-hidden flex items-center justify-center bg-[#050505] rounded-2xl select-none shadow-2xl group/canvas"
+                          onMouseDown={handleMouseDown}
+                          onMouseMove={handleMouseMove}
+                          onMouseUp={handleMouseUp}
+                          onMouseLeave={handleMouseUp}
+                          onContextMenu={(e) => e.preventDefault()}
+                          style={{ 
+                            cursor: isPanning ? 'grabbing' : 'crosshair',
+                            backgroundImage: `linear-gradient(45deg, rgba(255,255,255,0.02) 25%, transparent 25%), 
+                                             linear-gradient(-45deg, rgba(255,255,255,0.02) 25%, transparent 25%), 
+                                             linear-gradient(45deg, transparent 75%, rgba(255,255,255,0.02) 75%), 
+                                             linear-gradient(-45deg, transparent 75%, rgba(255,255,255,0.02) 75%)`,
+                            backgroundSize: '20px 20px'
+                          }}
+                        >
+                          <div
+                              className="relative shadow-2xl ring-1 ring-white/10 pointer-events-none origin-center transition-transform duration-75 ease-out"
+                              style={{
+                                transform: `translate3d(${offset.x}px, ${offset.y}px, 0) scale(${zoom})`,
+                                imageRendering: zoom > 2 ? 'pixelated' : 'auto',
+                                willChange: 'transform',
+                                width: image?.width,
+                                height: image?.height
+                              }}
+                            >
+                            <canvas
+                              ref={canvasRef}
+                              className="block"
+                            />
+                            <svg className="absolute inset-0 w-full h-full pointer-events-none overflow-visible">
+                              {zoom > 4 && (
+                                <defs>
+                                  <pattern id="pixel-grid-pii" width="1" height="1" patternUnits="userSpaceOnUse">
+                                    <path d="M 1 0 L 0 0 0 1" fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="0.05" />
+                                  </pattern>
+                                </defs>
+                              )}
+                              {zoom > 4 && <rect width="100%" height="100%" fill="url(#pixel-grid-pii)" opacity="0.4" />}
+                            </svg>
+                          </div>
+
+                          {/* Floating HUD controls (Studio Style) */}
+                          <div className="absolute top-8 right-8 z-20 flex gap-2 p-2 bg-black/40 backdrop-blur-md rounded-2xl border border-white/10 shadow-2xl animate-in fade-in slide-in-from-top-4 duration-500">
+                            <Button 
+                              onClick={() => { setImage(null); setTextContent(null); setRegions([]); }} 
+                              variant="ghost" 
+                              size="icon" 
+                              className="h-10 w-10 text-destructive hover:bg-destructive/10 rounded-xl"
+                            >
+                               <RefreshCw className="h-5 w-5" />
+                            </Button>
+                            <div className="w-[1px] h-6 bg-white/10 self-center" />
+                            <Button size="icon" variant="ghost" className="h-10 w-10 text-white hover:bg-white/10 rounded-xl" onClick={() => setZoom(z => Math.max(0.1, z * 0.9))}>
+                               <ZoomOut className="h-5 w-5" />
+                            </Button>
+                            <div className="w-[1px] h-6 bg-white/10 self-center" />
+                            <Button size="icon" variant="ghost" className="h-10 w-10 text-white hover:bg-white/10 rounded-xl" onClick={() => setZoom(z => Math.min(50, z * 1.1))}>
+                               <ZoomIn className="h-5 w-5 font-black" />
+                            </Button>
+                            <div className="w-[1px] h-6 bg-white/10 self-center" />
+                            <Button size="icon" variant="ghost" className="h-10 w-10 text-white hover:bg-white/10 rounded-xl" onClick={() => { setZoom(1); setOffset({ x: 0, y: 0 }); }}>
+                               <Maximize2 className="h-5 w-5" />
+                            </Button>
+                          </div>
+
+                          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 px-6 py-2 bg-black/60 backdrop-blur-md rounded-full border border-white/5 text-[9px] font-black uppercase tracking-widest text-primary/60 italic">
+                            {Math.round(zoom * 100)}% Magnification • Left-Click Mask • Right-Click Pan
+                          </div>
+                        </div>
                   </Card>
                 </div>
               )}
@@ -415,9 +517,16 @@ const PiiMasker = () => {
                  </CardContent>
                </Card>
             </aside>
+            </div>
           </div>
-        </div>
-      </main>
+        </main>
+
+        <aside className="hidden min-[1850px]:flex flex-col gap-10 sticky top-32 w-[300px] shrink-0 px-6 py-8 animate-in fade-in slide-in-from-right-8 duration-1000">
+           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
+           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
+           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
+        </aside>
+      </div>
       <Footer />
     </div>
   );

@@ -121,10 +121,17 @@ const TimestampConverter = () => {
     : [];
 
   return (
-    <div className="min-h-screen bg-background text-foreground theme-utility transition-colors duration-500">
+    <div className="min-h-screen bg-background text-foreground theme-utility transition-colors duration-500 overflow-x-hidden">
       <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
+      
+      <div className="flex justify-center items-start w-full relative">
+        <aside className="hidden min-[1850px]:flex flex-col gap-10 sticky top-32 w-[300px] shrink-0 px-6 py-8 animate-in fade-in slide-in-from-left-8 duration-1000">
+           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
+           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
+           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
+        </aside>
 
-      <main className="container mx-auto max-w-[1400px] px-6 py-12">
+        <main className="container mx-auto max-w-[1400px] px-6 py-12 grow">
         <div className="flex flex-col gap-10">
           <header className="flex items-center gap-6">
             <Link to="/">
@@ -142,7 +149,7 @@ const TimestampConverter = () => {
             </div>
           </header>
 
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8 items-start">
+          <div className="grid grid-cols-1 xl:grid-cols-[1fr_320px] gap-8 items-start">
             <div className="space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-700">
               <Card className="glass-morphism border-primary/10 rounded-2xl shadow-2xl bg-muted/5 p-8">
                 <CardContent className="p-0 space-y-6">
@@ -204,14 +211,14 @@ const TimestampConverter = () => {
 
               {date && (
                 <Card className="glass-morphism border-primary/10 rounded-2xl shadow-2xl bg-muted/5 overflow-hidden">
-                  <div className="bg-primary/5 p-5 border-b border-primary/10">
+                  <div className="bg-primary/5 h-[56px] px-6 border-b border-primary/10 flex items-center">
                     <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">All Formats</h3>
                   </div>
                   <CardContent className="p-0">
                     {rows.map((row, i) => (
                       <div
                         key={row.id}
-                        className={`group flex items-center justify-between gap-4 px-6 py-4 ${i !== rows.length - 1 ? "border-b border-border/20" : ""} hover:bg-primary/5 transition-colors`}
+                        className={`group flex items-center justify-between gap-4 px-6 py-1.5 ${i !== rows.length - 1 ? "border-b border-white/5" : ""} hover:bg-primary/5 transition-colors`}
                       >
                         <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/50 w-40 shrink-0">{row.label}</p>
                         <p className="text-sm font-mono text-foreground/80 flex-1 break-all">{row.value}</p>
@@ -235,7 +242,7 @@ const TimestampConverter = () => {
 
             <aside className="space-y-6 lg:sticky lg:top-24 h-fit">
               <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl">
-                <div className="bg-primary/5 p-5 border-b border-primary/10">
+                <div className="bg-primary/5 h-[56px] px-6 border-b border-primary/10 flex items-center">
                   <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Live Clock</h3>
                 </div>
                 <CardContent className="p-8 space-y-6">
@@ -265,7 +272,14 @@ const TimestampConverter = () => {
             </aside>
           </div>
         </div>
-      </main>
+        </main>
+
+        <aside className="hidden min-[1850px]:flex flex-col gap-10 sticky top-32 w-[300px] shrink-0 px-6 py-8 animate-in fade-in slide-in-from-right-8 duration-1000">
+           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
+           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
+           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
+        </aside>
+      </div>
       <Footer />
     </div>
   );

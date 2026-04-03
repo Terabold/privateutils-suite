@@ -126,7 +126,14 @@ const YouTubeThumbnailHub = () => {
     <div className="min-h-screen bg-background text-foreground theme-video transition-all duration-300">
       <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
       
-      <main className="container mx-auto max-w-[1600px] px-6 py-12">
+      <div className="flex justify-center items-start w-full relative">
+        <aside className="hidden min-[1850px]:flex flex-col gap-10 sticky top-32 w-[300px] shrink-0 px-6 py-8 animate-in fade-in slide-in-from-left-8 duration-1000">
+           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
+           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
+           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
+        </aside>
+
+        <main className="container mx-auto max-w-[1400px] px-6 py-12 grow">
         <div className="flex flex-col gap-10">
           <header className="flex flex-col gap-8">
             <div className="flex items-center justify-between flex-wrap gap-8">
@@ -379,7 +386,14 @@ const YouTubeThumbnailHub = () => {
             </div>
           )}
         </div>
-      </main>
+        </main>
+
+        <aside className="hidden min-[1850px]:flex flex-col gap-10 sticky top-32 w-[300px] shrink-0 px-6 py-8 animate-in fade-in slide-in-from-right-8 duration-1000">
+           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
+           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
+           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
+        </aside>
+      </div>
       <Footer />
       <input ref={inputRef} type="file" className="hidden" accept="image/*" onChange={(e) => handleFile(e.target.files?.[0])} />
       <canvas ref={canvasRef} className="hidden" />

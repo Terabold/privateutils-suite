@@ -106,8 +106,15 @@ const JwtDecoder = () => {
   return (
     <div className="min-h-screen bg-background text-foreground theme-utility transition-colors duration-500">
       <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
+      
+      <div className="flex justify-center items-start w-full relative">
+        <aside className="hidden min-[1850px]:flex flex-col gap-10 sticky top-32 w-[300px] shrink-0 px-6 py-8 animate-in fade-in slide-in-from-left-8 duration-1000">
+           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
+           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
+           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
+        </aside>
 
-      <main className="container mx-auto max-w-[1400px] px-6 py-12">
+        <main className="container mx-auto max-w-[1400px] px-6 py-12 grow">
         <div className="flex flex-col gap-10">
           <header className="flex items-center gap-6">
             <Link to="/">
@@ -289,7 +296,14 @@ const JwtDecoder = () => {
             </aside>
           </div>
         </div>
-      </main>
+        </main>
+
+        <aside className="hidden min-[1850px]:flex flex-col gap-10 sticky top-32 w-[300px] shrink-0 px-6 py-8 animate-in fade-in slide-in-from-right-8 duration-1000">
+           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
+           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
+           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
+        </aside>
+      </div>
       <Footer />
     </div>
   );

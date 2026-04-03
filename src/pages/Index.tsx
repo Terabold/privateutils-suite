@@ -87,9 +87,7 @@ const Index = () => {
         <aside className="hidden min-[1850px]:flex flex-col gap-10 sticky top-32 w-[300px] shrink-0 px-6 py-8 animate-in fade-in slide-in-from-left-8 duration-1000">
            <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
            <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
-           <div className="p-8 rounded-2xl border-2 border-dashed border-primary/5 bg-primary/5 text-center mt-12 studio-gradient">
-              <p className="text-[10px] font-black uppercase tracking-widest text-primary opacity-60">Creative Studio Partner</p>
-           </div>
+           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
         </aside>
 
         <main className="container mx-auto max-w-[1400px] px-6 py-10 lg:py-16 grow overflow-visible">
@@ -122,7 +120,7 @@ const Index = () => {
           </div>
 
           {/* Privacy Manifesto Section */}
-          <section className="py-24 px-12 rounded-2xl bg-zinc-950 text-white dark:bg-zinc-900 border border-white/5 shadow-2xl relative overflow-hidden group mb-32">
+          <section className="py-24 px-12 rounded-2xl bg-zinc-950 text-white dark:bg-zinc-900 border border-white/5 shadow-2xl relative overflow-hidden group mb-32 hover-glow transition-all duration-500">
              <div className="absolute top-0 right-0 p-12 opacity-5 scale-150 rotate-12 group-hover:scale-[2] transition-transform duration-1000">
                 <ShieldCheck className="h-60 w-60" />
              </div>
@@ -155,7 +153,7 @@ const Index = () => {
 
           {/* Benefits Grid */}
           <section className="grid grid-cols-1 md:grid-cols-3 gap-12 py-12 mb-16">
-            <div className="flex flex-col items-center text-center p-6 studio-gradient rounded-2xl">
+            <div className="flex flex-col items-center text-center p-6 studio-gradient rounded-2xl hover-glow transition-all duration-300">
               <div className="h-16 w-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mb-8 border border-primary/20">
                 <ShieldCheck className="h-8 w-8" />
               </div>
@@ -163,7 +161,7 @@ const Index = () => {
               <p className="text-muted-foreground text-sm leading-relaxed italic font-medium">Files remain in your local workspace</p>
             </div>
             
-            <div className="flex flex-col items-center text-center p-6 studio-gradient rounded-2xl">
+            <div className="flex flex-col items-center text-center p-6 studio-gradient rounded-2xl hover-glow transition-all duration-300">
               <div className="h-16 w-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mb-8 border border-primary/20">
                 <Zap className="h-8 w-8" />
               </div>
@@ -171,7 +169,7 @@ const Index = () => {
               <p className="text-muted-foreground text-sm leading-relaxed italic font-medium">Parallel hardware rendering</p>
             </div>
             
-            <div className="flex flex-col items-center text-center p-6 studio-gradient rounded-2xl">
+            <div className="flex flex-col items-center text-center p-6 studio-gradient rounded-2xl hover-glow transition-all duration-300">
               <div className="h-16 w-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mb-8 border border-primary/20">
                 <Lock className="h-8 w-8" />
               </div>
@@ -185,9 +183,7 @@ const Index = () => {
         <aside className="hidden min-[1850px]:flex flex-col gap-10 sticky top-32 w-[300px] shrink-0 px-6 py-8 animate-in fade-in slide-in-from-right-8 duration-1000">
            <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
            <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
-           <div className="p-8 rounded-2xl border-2 border-dashed border-primary/5 bg-primary/5 text-center mt-12 studio-gradient">
-              <p className="text-[10px] font-black uppercase tracking-widest text-primary opacity-60">Verified Ad Space</p>
-           </div>
+           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
         </aside>
 
       </div>

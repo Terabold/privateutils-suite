@@ -273,179 +273,193 @@ const BinaryToAudio = () => {
     <div className="min-h-screen bg-background text-foreground theme-audio transition-all duration-500 overflow-x-hidden">
       <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
       
-      <main className="container mx-auto max-w-[1400px] px-6 py-12 grow">
-        <div className="flex flex-col gap-10">
-          <header className="flex items-center gap-6">
-            <Link to="/">
-              <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-border/50 hover:bg-primary/5 transition-all group/back">
-                <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
-              </Button>
-            </Link>
-            <div>
-              <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow">
-                  Binary To <span className="text-primary italic">Audio</span>
-              </h1>
-              <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[9px]">Experimental Data-Bending Laboratory</p>
-            </div>
-          </header>
+      <div className="flex justify-center items-start w-full relative">
+        <aside className="hidden min-[1850px]:flex flex-col gap-10 sticky top-32 w-[300px] shrink-0 px-6 py-8 animate-in fade-in slide-in-from-left-8 duration-1000">
+           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
+           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
+           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
+        </aside>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start animate-in fade-in slide-in-from-bottom-8 duration-700">
-            <div className="lg:col-span-8 space-y-8">
-              {!file ? (
-                <Card className="glass-morphism border-primary/10 overflow-hidden min-h-[400px] flex flex-col items-center justify-center relative bg-muted/5 rounded-2xl shadow-inner p-10 select-none">
-                    <div
-                      onDragOver={(e) => e.preventDefault()}
-                      onDrop={(e) => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); }}
-                      onClick={() => !processing && inputRef.current?.click()}
-                      className="relative w-full flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/20 text-center transition-all cursor-pointer py-32 bg-background/50 hover:border-primary/40 hover:bg-primary/5 shadow-inner"
-                    >
-                      <div className="h-24 w-24 bg-primary/10 rounded-2xl flex items-center justify-center mb-8 shadow-inner group-hover:scale-110 transition-transform">
-                        <Binary className="h-12 w-12 text-primary" />
-                      </div>
-                      <div className="px-6 space-y-1">
-                        <p className="text-3xl font-black text-foreground uppercase tracking-tighter italic leading-none text-shadow-glow">Load Byte-Stream</p>
-                        <p className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.2em] opacity-40">Drag any file to hear its structure</p>
-                        <KbdShortcut />
-                        <p className="mt-4 text-[10px] text-muted-foreground font-black uppercase tracking-widest opacity-20 text-center">Interprets 16-bit Signed Integers as PCM Waves</p>
-                      </div>
-                      <input ref={inputRef} type="file" className="hidden" onChange={(e) => handleFile(e.target.files?.[0])} />
-                    </div>
-                </Card>
-              ) : (
-                <div className="animate-in fade-in slide-in-from-bottom-8 duration-700">
-                  <Card className="glass-morphism border-primary/10 p-10 rounded-2xl shadow-2xl bg-zinc-900/50 group relative">
-                    <div className="space-y-10">
-                      <div className="flex items-center justify-between">
-                         <div className="flex items-center gap-3">
-                            <div className="h-10 w-10 rounded-2xl bg-primary/20 flex items-center justify-center text-primary">
-                               <Radio className="h-5 w-5" />
-                            </div>
-                            <div>
-                               <p className="text-[10px] font-black uppercase tracking-widest opacity-40 text-foreground">Sampling Matrix</p>
-                               <p className="text-2xl font-black italic tracking-tight text-primary uppercase">{sampleRate} Hz Engine</p>
-                            </div>
-                         </div>
-                          <div className="text-right">
-                             <p className="text-[10px] font-black uppercase tracking-widest opacity-20 text-foreground">Active Buffer</p>
-                             <p className="text-xs font-black text-foreground truncate max-w-[200px] italic">{file.name}</p>
-                          </div>
-                      </div>
-
-                      <div className="pt-6 border-t border-primary/10 flex flex-col items-center gap-6">
-                        <div 
-                          className="w-full h-48 bg-background/50 rounded-2xl border border-border/50 shadow-inner flex items-center justify-center overflow-hidden relative group/waveform cursor-pointer"
-                          onClick={(e) => {
-                            if (!audioBuffer) return;
-                            const rect = e.currentTarget.getBoundingClientRect();
-                            const x = (e.clientX - rect.left) / rect.width;
-                            const t = x * audioBuffer.duration;
-                            if (audioRef.current) audioRef.current.currentTime = t;
-                            setCurrentTime(t);
-                          }}
-                        >
-                           {audioBuffer ? (
-                             <>
-                               <canvas ref={staticCanvasRef} className="absolute inset-0 w-full h-full opacity-60 pointer-events-none" />
-                               <canvas ref={canvasRef} className="absolute inset-0 w-full h-full z-10 pointer-events-none" />
-                               <div 
-                                  className="absolute top-0 bottom-0 w-[3px] bg-white shadow-[0_0_20px_rgba(255,255,255,0.8)] z-50 pointer-events-none"
-                                  style={{ left: `${(currentTime / audioBuffer.duration) * 100}%` }}
-                                />
-                             </>
-                           ) : (
-                             <div className="flex flex-col items-center justify-center opacity-20 text-center animate-pulse">
-                               <Zap className="h-12 w-12 mb-3" />
-                               <p className="text-[10px] font-black uppercase tracking-widest">Interpret Bitstream to Generate Oscillogram</p>
-                             </div>
-                           )}
-                        </div>
-                        
-                        <div className="w-full flex items-center justify-between gap-6 px-2">
-                           <div className="flex items-center gap-5">
-                              <Button variant="outline" size="icon" className="h-10 w-10 rounded-full border border-primary/20 hover:bg-primary/5 group" onClick={resetPlayback} disabled={!audioBuffer}>
-                                <RotateCcw className="h-4 w-4 text-muted-foreground group-hover:text-primary" />
-                              </Button>
-                              <button onClick={handlePlay} disabled={!audioBuffer} className="h-14 w-14 rounded-full bg-primary flex items-center justify-center text-primary-foreground hover:scale-110 transition-transform shadow-xl disabled:opacity-50">
-                                {isPlaying ? <Pause className="h-6 w-6" /> : <Play className="h-6 w-6 fill-current" />}
-                              </button>
-                           </div>
-                           
-                           <div className="text-right">
-                              <p className="text-[10px] font-black uppercase tracking-widest opacity-20">Phasor Registry</p>
-                              <code className="text-sm font-black text-foreground font-mono">
-                                 {currentTime.toFixed(2)}s <span className="opacity-20 mx-1">/</span> {audioBuffer ? audioBuffer.duration.toFixed(2) : "0.00"}s
-                              </code>
-                           </div>
-                        </div>
-
-                        <audio ref={audioRef} src={objectUrl || ""} className="hidden" />
-                      </div>
-                    </div>
-                    
-                    <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-                       <Button 
-                         onClick={() => { setFile(null); setAudioBuffer(null); setObjectUrl(null); setProcessedUrl(null); }} 
-                         variant="destructive" 
-                         size="sm" 
-                         className="h-8 px-4 text-[9px] font-black uppercase tracking-widest rounded-xl shadow-2xl hover:scale-105 active:scale-95 transition-all"
-                       >
-                         Reset Stage
-                       </Button>
-                    </div>
-                  </Card>
-                </div>
-              )}
-            </div>
-
-            <aside className="lg:col-span-4 space-y-6 lg:sticky lg:top-24 h-fit">
-              <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl">
-                 <div className="bg-primary/5 p-5 border-b border-primary/10 flex items-center gap-3">
-                   <Zap className="h-4 w-4 text-primary" />
-                   <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">PCM Configuration</h3>
-                 </div>
-                 <CardContent className="p-8 space-y-8">
-                    <div className="space-y-6">
-                       <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
-                          <span className="text-muted-foreground/60">Sample Rate</span>
-                          <span className="text-primary italic">{sampleRate} Hz</span>
-                       </div>
-                       <Slider 
-                         min={1000} max={48000} step={1000}
-                         value={[sampleRate]}
-                         onValueChange={([v]) => { setSampleRate(v); setAudioBuffer(null); setProcessedUrl(null); }}
-                       />
-                       <p className="text-[8px] opacity-40 leading-relaxed uppercase font-black tracking-tighter italic">Low rates yields industrial textures. High rates reveal structural noise.</p>
-                    </div>
-
-                    {processedUrl ? (
-                      <Button asChild className="w-full gap-3 h-20 text-lg font-black rounded-2xl shadow-xl hover:scale-[1.01] transition-all uppercase italic">
-                        <a href={processedUrl} download={`glitch_${file?.name}.wav`}>
-                           <Download className="h-6 w-6" /> Export Glitch-Track
-                        </a>
-                      </Button>
-                    ) : (
-                      <Button 
-                        onClick={processBinary} 
-                        disabled={!file || processing} 
-                        className="w-full gap-3 h-16 text-lg font-black rounded-2xl shadow-xl hover:scale-[1.01] transition-all uppercase italic"
-                      >
-                        <RefreshCw className={`h-6 w-6 ${processing ? "animate-spin" : ""}`} />
-                        {processing ? "Bending..." : "Interpret Bitstream"}
-                      </Button>
-                    )}
-                    <p className="text-[9px] text-center mt-4 text-muted-foreground font-black uppercase tracking-widest opacity-40 italic leading-relaxed">
-                      Surgical data interpretation. Zero server interaction.
-                    </p>
-                 </CardContent>
-              </Card>
-
-              <div className="px-6">
-                 <AdPlaceholder format="rectangle" className="opacity-40 grayscale group-hover:grayscale-0 transition-all" />
+        <main className="container mx-auto max-w-[1400px] px-6 py-12 grow">
+          <div className="flex flex-col gap-10">
+            <header className="flex items-center gap-6">
+              <Link to="/">
+                <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-border/50 hover:bg-primary/5 transition-all group/back">
+                  <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
+                </Button>
+              </Link>
+              <div>
+                <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow">
+                    Binary To <span className="text-primary italic">Audio</span>
+                </h1>
+                <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[9px]">Experimental Data-Bending Laboratory</p>
               </div>
-            </aside>
+            </header>
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start animate-in fade-in slide-in-from-bottom-8 duration-700">
+              <div className="lg:col-span-8 space-y-8">
+                {!file ? (
+                  <Card className="glass-morphism border-primary/10 overflow-hidden min-h-[400px] flex flex-col items-center justify-center relative bg-muted/5 rounded-2xl shadow-inner p-10 select-none">
+                      <div
+                        onDragOver={(e) => e.preventDefault()}
+                        onDrop={(e) => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); }}
+                        onClick={() => !processing && inputRef.current?.click()}
+                        className="relative w-full flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/20 text-center transition-all cursor-pointer py-32 bg-background/50 hover:border-primary/40 hover:bg-primary/5 shadow-inner"
+                      >
+                        <div className="h-24 w-24 bg-primary/10 rounded-2xl flex items-center justify-center mb-8 shadow-inner group-hover:scale-110 transition-transform">
+                          <Binary className="h-12 w-12 text-primary" />
+                        </div>
+                        <div className="px-6 space-y-1">
+                          <p className="text-3xl font-black text-foreground uppercase tracking-tighter italic leading-none text-shadow-glow">Load Byte-Stream</p>
+                          <p className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.2em] opacity-40">Drag any file to hear its structure</p>
+                          <KbdShortcut />
+                          <p className="mt-4 text-[10px] text-muted-foreground font-black uppercase tracking-widest opacity-20 text-center">Interprets 16-bit Signed Integers as PCM Waves</p>
+                        </div>
+                        <input ref={inputRef} type="file" className="hidden" onChange={(e) => handleFile(e.target.files?.[0])} />
+                      </div>
+                  </Card>
+                ) : (
+                  <div className="animate-in fade-in slide-in-from-bottom-8 duration-700">
+                    <Card className="glass-morphism border-primary/10 p-10 rounded-2xl shadow-2xl bg-zinc-900/50 group relative">
+                      <div className="space-y-10">
+                        <div className="flex items-center justify-between">
+                           <div className="flex items-center gap-3">
+                              <div className="h-10 w-10 rounded-2xl bg-primary/20 flex items-center justify-center text-primary">
+                                 <Radio className="h-5 w-5" />
+                              </div>
+                              <div>
+                                 <p className="text-[10px] font-black uppercase tracking-widest opacity-40 text-foreground">Sampling Matrix</p>
+                                 <p className="text-2xl font-black italic tracking-tight text-primary uppercase">{sampleRate} Hz Engine</p>
+                              </div>
+                           </div>
+                            <div className="text-right">
+                               <p className="text-[10px] font-black uppercase tracking-widest opacity-20 text-foreground">Active Buffer</p>
+                               <p className="text-xs font-black text-foreground truncate max-w-[200px] italic">{file.name}</p>
+                            </div>
+                        </div>
+
+                        <div className="pt-6 border-t border-primary/10 flex flex-col items-center gap-6">
+                          <div 
+                            className="w-full h-48 bg-background/50 rounded-2xl border border-border/50 shadow-inner flex items-center justify-center overflow-hidden relative group/waveform cursor-pointer"
+                            onClick={(e) => {
+                              if (!audioBuffer) return;
+                              const rect = e.currentTarget.getBoundingClientRect();
+                              const x = (e.clientX - rect.left) / rect.width;
+                              const t = x * audioBuffer.duration;
+                              if (audioRef.current) audioRef.current.currentTime = t;
+                              setCurrentTime(t);
+                            }}
+                          >
+                             {audioBuffer ? (
+                               <>
+                                 <canvas ref={staticCanvasRef} className="absolute inset-0 w-full h-full opacity-60 pointer-events-none" />
+                                 <canvas ref={canvasRef} className="absolute inset-0 w-full h-full z-10 pointer-events-none" />
+                                 <div 
+                                    className="absolute top-0 bottom-0 w-[3px] bg-white shadow-[0_0_20px_rgba(255,255,255,0.8)] z-50 pointer-events-none"
+                                    style={{ left: `${(currentTime / audioBuffer.duration) * 100}%` }}
+                                  />
+                               </>
+                             ) : (
+                               <div className="flex flex-col items-center justify-center opacity-20 text-center animate-pulse">
+                                 <Zap className="h-12 w-12 mb-3" />
+                                 <p className="text-[10px] font-black uppercase tracking-widest">Interpret Bitstream to Generate Oscillogram</p>
+                               </div>
+                             )}
+                          </div>
+                          
+                          <div className="w-full flex items-center justify-between gap-6 px-2">
+                             <div className="flex items-center gap-5">
+                                <Button variant="outline" size="icon" className="h-10 w-10 rounded-full border border-primary/20 hover:bg-primary/5 group" onClick={resetPlayback} disabled={!audioBuffer}>
+                                  <RotateCcw className="h-4 w-4 text-muted-foreground group-hover:text-primary" />
+                                </Button>
+                                <button onClick={handlePlay} disabled={!audioBuffer} className="h-14 w-14 rounded-full bg-primary flex items-center justify-center text-primary-foreground hover:scale-110 transition-transform shadow-xl disabled:opacity-50">
+                                  {isPlaying ? <Pause className="h-6 w-6" /> : <Play className="h-6 w-6 fill-current" />}
+                                </button>
+                             </div>
+                             
+                             <div className="text-right">
+                                <p className="text-[10px] font-black uppercase tracking-widest opacity-20">Phasor Registry</p>
+                                <code className="text-sm font-black text-foreground font-mono">
+                                   {currentTime.toFixed(2)}s <span className="opacity-20 mx-1">/</span> {audioBuffer ? audioBuffer.duration.toFixed(2) : "0.00"}s
+                                </code>
+                             </div>
+                          </div>
+
+                          <audio ref={audioRef} src={objectUrl || ""} className="hidden" />
+                        </div>
+                      </div>
+                      
+                      <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                         <Button 
+                           onClick={() => { setFile(null); setAudioBuffer(null); setObjectUrl(null); setProcessedUrl(null); }} 
+                           variant="destructive" 
+                           size="sm" 
+                           className="h-8 px-4 text-[9px] font-black uppercase tracking-widest rounded-xl shadow-2xl hover:scale-105 active:scale-95 transition-all"
+                         >
+                           Reset Stage
+                         </Button>
+                      </div>
+                    </Card>
+                  </div>
+                )}
+              </div>
+
+              <aside className="lg:col-span-4 space-y-6 lg:sticky lg:top-24 h-fit">
+                <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl">
+                   <div className="bg-primary/5 p-5 border-b border-primary/10 flex items-center gap-3">
+                     <Zap className="h-4 w-4 text-primary" />
+                     <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">PCM Configuration</h3>
+                   </div>
+                   <CardContent className="p-8 space-y-8">
+                      <div className="space-y-6">
+                         <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
+                            <span className="text-muted-foreground/60">Sample Rate</span>
+                            <span className="text-primary italic">{sampleRate} Hz</span>
+                         </div>
+                         <Slider 
+                           min={1000} max={48000} step={1000}
+                           value={[sampleRate]}
+                           onValueChange={([v]) => { setSampleRate(v); setAudioBuffer(null); setProcessedUrl(null); }}
+                         />
+                         <p className="text-[8px] opacity-40 leading-relaxed uppercase font-black tracking-tighter italic">Low rates yields industrial textures. High rates reveal structural noise.</p>
+                      </div>
+
+                      {processedUrl ? (
+                        <Button asChild className="w-full gap-3 h-20 text-lg font-black rounded-2xl shadow-xl hover:scale-[1.01] transition-all uppercase italic">
+                          <a href={processedUrl} download={`glitch_${file?.name}.wav`}>
+                             <Download className="h-6 w-6" /> Export Glitch-Track
+                          </a>
+                        </Button>
+                      ) : (
+                        <Button 
+                          onClick={processBinary} 
+                          disabled={!file || processing} 
+                          className="w-full gap-3 h-16 text-lg font-black rounded-2xl shadow-xl hover:scale-[1.01] transition-all uppercase italic"
+                        >
+                          <RefreshCw className={`h-6 w-6 ${processing ? "animate-spin" : ""}`} />
+                          {processing ? "Bending..." : "Interpret Bitstream"}
+                        </Button>
+                      )}
+                      <p className="text-[9px] text-center mt-4 text-muted-foreground font-black uppercase tracking-widest opacity-40 italic leading-relaxed">
+                        Surgical data interpretation. Zero server interaction.
+                      </p>
+                   </CardContent>
+                </Card>
+
+                <div className="px-6">
+                   <AdPlaceholder format="rectangle" className="opacity-40 grayscale group-hover:grayscale-0 transition-all" />
+                </div>
+              </aside>
+            </div>
           </div>
-        </div>
-      </main>
+        </main>
+
+        <aside className="hidden min-[1850px]:flex flex-col gap-10 sticky top-32 w-[300px] shrink-0 px-6 py-8 animate-in fade-in slide-in-from-right-8 duration-1000">
+           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
+           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
+           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
+        </aside>
+      </div>
       <Footer />
     </div>
   );

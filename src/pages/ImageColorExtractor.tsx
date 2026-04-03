@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Upload, Copy, Check, Pipette, Search, ZoomIn, ZoomOut, Maximize2, MousePointer2, CloudUpload } from "lucide-react";
+import { ArrowLeft, Upload, Copy, Check, Pipette, Search, ZoomIn, ZoomOut, Maximize2, MousePointer2, CloudUpload, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
@@ -43,12 +43,19 @@ const ImageColorExtractor = () => {
 
   const handleFile = (f: File | undefined) => {
     if (!f) return;
+    
+    // Color extractor is for static palettes, reject GIFs to manage user expectations
+    if (f.type === "image/gif") {
+      toast.error("GIF artifacts are not natively supported by the precision extractor.");
+      return;
+    }
+
     if (imgSrc) URL.revokeObjectURL(imgSrc);
     setZoom(1);
     setOffset({ x: 0, y: 0 });
     setColor(null);
     
-    // Extract static frame from potentially animated formats (GIF/WEBP)
+    // Extract static frame
     const url = URL.createObjectURL(f);
     const img = new Image();
     img.onload = () => {
@@ -85,8 +92,8 @@ const ImageColorExtractor = () => {
       if (!imgSrc) return;
       e.preventDefault();
       
-      const delta = e.deltaY > 0 ? -0.5 : 0.5;
-      setZoom(prev => Math.min(50, Math.max(1, prev + delta)));
+      const factor = e.deltaY > 0 ? 0.9 : 1.1;
+      setZoom(prev => Math.min(50, Math.max(1, prev * factor)));
     };
 
     el.addEventListener("wheel", handleWheelNative, { passive: false });
@@ -178,9 +185,10 @@ const ImageColorExtractor = () => {
                 </Button>
               </Link>
               <div>
-                <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic">
+                 <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow flex items-center gap-3">
                     Color <span className="text-primary italic">Extractor</span>
-                </h1>
+                    <div className="h-3 w-3 rounded-full bg-primary animate-pulse shadow-[0_0_15px_rgba(var(--primary),0.8)]" />
+                 </h1>
                 <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">Neural Color Palette Analysis</p>
               </div>
             </div>
@@ -217,16 +225,29 @@ const ImageColorExtractor = () => {
                 ) : (
                   <div className="relative w-full h-full flex items-center justify-center cursor-crosshair active:cursor-grabbing">
 
-                    <div className="absolute top-4 right-4 z-20 flex gap-1.5 p-1.5 bg-black/40 backdrop-blur-md rounded-2xl border border-white/10 shadow-2xl">
-                        <Button size="icon" variant="ghost" className="h-10 w-10 text-white hover:bg-white/10 rounded-xl" onClick={() => setZoom(z => Math.max(1, z - 1))}>
+                    <div className="absolute top-8 right-8 z-20 flex gap-2 p-2 bg-black/40 backdrop-blur-md rounded-2xl border border-white/10 shadow-2xl animate-in fade-in slide-in-from-top-4 duration-500">
+                        {imgSrc && (
+                          <Button 
+                            onClick={() => { setImgSrc(null); setColor(null); }} 
+                            variant="ghost" 
+                            size="icon" 
+                            className="h-10 w-10 text-destructive hover:bg-destructive/10 rounded-xl transition-all"
+                          >
+                             <RefreshCw className="h-5 w-5" />
+                          </Button>
+                        )}
+                        <div className="w-[1px] h-6 bg-white/10 self-center mx-1" />
+                        <Button size="icon" variant="ghost" className="h-10 w-10 text-white hover:bg-white/10 rounded-xl transition-all" onClick={() => {
+                          setZoom(prevZoom => Math.min(50, prevZoom * 0.9));
+                        }}>
                            <ZoomOut className="h-5 w-5" />
                         </Button>
-                        <div className="w-[1px] h-6 bg-white/10 self-center" />
-                        <Button size="icon" variant="ghost" className="h-10 w-10 text-white hover:bg-white/10 rounded-xl" onClick={() => setZoom(z => Math.min(50, z + 1))}>
-                           <ZoomIn className="h-5 w-5 font-black" />
+                        <Button size="icon" variant="ghost" className="h-10 w-10 text-white hover:bg-white/10 rounded-xl transition-all" onClick={() => {
+                          setZoom(prevZoom => Math.min(50, prevZoom * 1.1));
+                        }}>
+                           <ZoomIn className="h-5 w-5" />
                         </Button>
-                        <div className="w-[1px] h-6 bg-white/10 self-center" />
-                        <Button size="icon" variant="ghost" className="h-10 w-10 text-white hover:bg-white/10 rounded-xl" onClick={() => { setZoom(1); setOffset({ x: 0, y: 0 }); }}>
+                        <Button size="icon" variant="ghost" className="h-10 w-10 text-white hover:bg-white/10 rounded-xl transition-all" onClick={() => { setZoom(1); setOffset({ x: 0, y: 0 }); }}>
                            <Maximize2 className="h-5 w-5" />
                         </Button>
                     </div>
@@ -251,7 +272,7 @@ const ImageColorExtractor = () => {
                     </div>
                   </div>
                 )}
-                <input ref={inputRef} type="file" className="hidden" accept="image/*" onChange={(e) => handleFile(e.target.files?.[0])} />
+                <input ref={inputRef} type="file" className="hidden" accept="image/png,image/jpeg,image/webp" onChange={(e) => handleFile(e.target.files?.[0])} />
                 <canvas ref={canvasRef} className="hidden" />
               </Card>
               
@@ -262,16 +283,6 @@ const ImageColorExtractor = () => {
               <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl">
                  <div className="bg-primary/5 p-5 border-b border-primary/10 flex items-center justify-between">
                    <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Extraction Logic</h3>
-                   {imgSrc && (
-                     <Button 
-                       onClick={() => { setImgSrc(null); setColor(null); }} 
-                       variant="ghost" 
-                       size="sm" 
-                       className="h-8 px-3 text-[9px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-xl transition-all"
-                     >
-                       Reset Stage
-                     </Button>
-                   )}
                  </div>
                 <CardContent className="p-5 space-y-6">
                    <div className="space-y-4">
