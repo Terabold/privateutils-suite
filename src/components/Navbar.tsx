@@ -15,12 +15,12 @@ interface NavbarProps {
   categories?: string[];
 }
 
-const categoryIcons: Record<string, any> = {
-  "Video Studio": Video,
-  "Image Studio": ImageIcon,
-  "Privacy Belt": ShieldCheck,
-  "Audio Lab": Music,
-  "Utility Belt": Wrench,
+const categoryThemes: Record<string, { color: string, icon: any }> = {
+  "Video Studio": { color: "221.2 83.2% 53.3%", icon: Video },
+  "Image Studio": { color: "24.6 95% 53.1%", icon: ImageIcon },
+  "Privacy Belt": { color: "280 85% 60%", icon: ShieldCheck },
+  "Audio Lab": { color: "142.1 76.2% 36.3%", icon: Music },
+  "Utility Belt": { color: "38 92% 50%", icon: Wrench },
 };
 
 const Navbar = ({
@@ -54,8 +54,10 @@ const Navbar = ({
 
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 group cursor-pointer select-none shrink-0 no-underline">
-          <div className="h-2 w-8 bg-primary rounded-full group-hover:w-14 transition-all duration-500" />
-          <span className="text-xl font-black tracking-tight text-foreground font-display uppercase italic text-hover-glow transition-all duration-300">
+          <div className="h-1.5 w-10 bg-primary/10 rounded-full relative overflow-hidden transition-all duration-500 group-hover:bg-primary/20">
+            <div className="absolute inset-0 bg-primary opacity-0 group-hover:opacity-100 group-hover:animate-pulse transition-opacity duration-700" />
+          </div>
+          <span className="text-xl font-black tracking-tight text-foreground font-display uppercase italic transition-all duration-300 group-hover:text-shadow-glow">
             Local<span className="text-primary not-italic">Tools</span>
           </span>
         </Link>
@@ -77,7 +79,7 @@ const Navbar = ({
                   handleQuickSearch(e.target.value);
                 }
               }}
-              className="h-9 pl-11 pr-10 text-sm font-medium bg-zinc-950/40 border-primary/5 rounded-2xl focus-visible:ring-primary/20 focus-visible:border-primary/20 transition-all placeholder:text-muted-foreground/30 shadow-inner"
+              className="h-9 pl-11 pr-10 text-sm font-medium bg-zinc-900/60 dark:bg-card/40 border-primary/5 rounded-2xl focus-visible:ring-primary/20 focus-visible:border-primary/20 transition-all placeholder:text-muted-foreground/30 shadow-inner"
             />
             {(isHomePage ? searchQuery : toolSearchQuery) && (
               <button
@@ -106,14 +108,22 @@ const Navbar = ({
                   navigate("/");
                 }
               }}
-              className={`px-5 py-2 rounded-2xl font-black uppercase tracking-widest text-[10px] transition-all duration-300 flex items-center gap-2 border border-transparent ${isHomePage && selectedCategory === null ? "bg-primary text-white shadow-lg shadow-primary/20 scale-105" : "text-muted-foreground hover:text-foreground hover:bg-primary/5 hover-glow"
+              style={{ 
+                "--glow-color": "hsl(250 85% 60% / 0.4)",
+                "--border-glow": "hsl(250 85% 60% / 0.2)"
+              } as React.CSSProperties}
+              className={`px-5 py-2 rounded-2xl font-black uppercase tracking-widest text-[10px] transition-all duration-500 flex items-center gap-2 border ${
+                isHomePage && selectedCategory === null 
+                  ? "bg-primary text-white shadow-lg shadow-primary/20 scale-105 border-primary/20" 
+                  : "text-muted-foreground hover:text-foreground hover:bg-white/5 dark:bg-white/5 border-transparent hover:border-[var(--border-glow)] hover:shadow-[0_0_20px_var(--glow-color)]"
                 }`}
             >
               <Sparkles className="h-3.5 w-3.5" />
               All
             </button>
-            {(isHomePage ? categories : Object.keys(categoryIcons)).map((category) => {
-              const Icon = categoryIcons[category] || Sparkles;
+            {(isHomePage ? categories : Object.keys(categoryThemes)).map((category) => {
+              const theme = categoryThemes[category] || { color: "250 85% 60%", icon: Sparkles };
+              const Icon = theme.icon;
               const isActive = isHomePage && selectedCategory === category;
               return (
                 <button
@@ -125,7 +135,14 @@ const Navbar = ({
                       navigate(`/?category=${encodeURIComponent(category)}`);
                     }
                   }}
-                  className={`px-5 py-2 rounded-2xl font-black uppercase tracking-widest text-[10px] transition-all duration-300 flex items-center gap-2 border border-transparent ${isActive ? "bg-primary text-white shadow-lg shadow-primary/20 scale-105" : "text-muted-foreground hover:text-foreground hover:bg-primary/5 hover-glow"
+                  style={{ 
+                    "--glow-color": `hsl(${theme.color} / 0.4)`,
+                    "--border-glow": `hsl(${theme.color} / 0.2)`
+                  } as React.CSSProperties}
+                  className={`px-5 py-2 rounded-2xl font-black uppercase tracking-widest text-[10px] transition-all duration-500 flex items-center gap-2 border ${
+                    isActive 
+                      ? "bg-primary text-white shadow-lg shadow-primary/20 scale-105 border-primary/20" 
+                      : "text-muted-foreground hover:text-foreground hover:bg-white/5 dark:bg-white/5 border-transparent hover:border-[var(--border-glow)] hover:shadow-[0_0_20px_var(--glow-color)]"
                     }`}
                 >
                   <Icon className="h-3.5 w-3.5" />
@@ -165,7 +182,7 @@ const Navbar = ({
                 handleQuickSearch(e.target.value);
               }
             }}
-            className="h-8 pl-9 pr-8 text-xs bg-zinc-950/40 border-primary/5 rounded-2xl focus-visible:ring-primary/10"
+            className="h-8 pl-9 pr-8 text-xs bg-zinc-900/60 dark:bg-card/40 border-primary/5 rounded-2xl focus-visible:ring-primary/10"
           />
         </form>
       </div>

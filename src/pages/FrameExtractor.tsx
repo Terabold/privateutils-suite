@@ -6,6 +6,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AdPlaceholder from "@/components/AdPlaceholder";
+import SponsorSidebars from "@/components/SponsorSidebars";
+
 import { toast } from "sonner";
 import { usePasteFile } from "@/hooks/usePasteFile";
 import { KbdShortcut } from "@/components/KbdShortcut";
@@ -205,13 +207,7 @@ const FrameExtractor = () => {
       <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
       
       <div className="flex justify-center items-start w-full relative">
-        <aside className="hidden min-[1850px]:flex flex-col gap-10 sticky top-32 w-[300px] shrink-0 px-6 py-8 animate-in fade-in slide-in-from-left-8 duration-300">
-           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
-           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
-           <div className="p-8 rounded-2xl border-2 border-dashed border-primary/5 bg-primary/5 text-center mt-12 studio-gradient">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-primary opacity-60">Verified Workspace Partner</p>
-           </div>
-        </aside>
+        <SponsorSidebars position="left" />
 
         <main className="grow transition-all duration-300 container mx-auto max-w-[1400px] px-6 py-12">
           <div className="flex flex-col gap-10">
@@ -615,13 +611,7 @@ const FrameExtractor = () => {
           </div>
         </main>
 
-        <aside className="hidden min-[1850px]:flex flex-col gap-10 sticky top-32 w-[300px] shrink-0 px-6 py-8 animate-in fade-in slide-in-from-right-8 duration-300">
-           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
-           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
-           <div className="p-8 rounded-2xl border-2 border-dashed border-primary/5 bg-primary/5 text-center mt-12 studio-gradient">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-primary opacity-60">Verified Workspace Partner</p>
-           </div>
-        </aside>
+        <SponsorSidebars position="right" />
       </div>
       <Footer />
     </div>

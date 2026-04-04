@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AdPlaceholder from "@/components/AdPlaceholder";
+import SponsorSidebars from "@/components/SponsorSidebars";
 import { toast } from "sonner";
 import { usePasteFile } from "@/hooks/usePasteFile";
 import { KbdShortcut } from "@/components/KbdShortcut";
@@ -101,11 +102,7 @@ const SvgOptimizer = () => {
       <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
 
       <div className="flex justify-center items-start w-full relative">
-        <aside className="hidden min-[1850px]:flex flex-col gap-10 sticky top-32 w-[300px] shrink-0 px-6 py-8 animate-in fade-in slide-in-from-left-8 duration-1000">
-          <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
-          <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
-          <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
-        </aside>
+        <SponsorSidebars position="left" />
 
         <main className="container mx-auto max-w-[1400px] px-6 py-12 grow">
           <div className="flex flex-col gap-10">
@@ -245,11 +242,7 @@ const SvgOptimizer = () => {
           </div>
         </main>
 
-        <aside className="hidden min-[1850px]:flex flex-col gap-10 sticky top-32 w-[300px] shrink-0 px-6 py-8 animate-in fade-in slide-in-from-right-8 duration-1000">
-          <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
-          <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
-          <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
-        </aside>
+        <SponsorSidebars position="right" />
       </div>
       <Footer />
     </div>

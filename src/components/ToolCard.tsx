@@ -13,8 +13,11 @@ interface ToolCardProps {
 const ToolCard = ({ title, description, icon, to, gradient = "from-primary to-accent", themeClass }: ToolCardProps) => {
   return (
     <Link to={to} className={`group/card-link block h-full select-none cursor-pointer ${themeClass}`}>
-      <Card className={`h-full border-border/50 bg-white/5 dark:bg-zinc-900 hover:bg-white/10 dark:hover:bg-zinc-800 transition-all duration-300 rounded-2xl overflow-hidden relative z-30 group-hover/card-link:border-primary/50 group-hover/card-link:shadow-glow opacity-95 hover:opacity-100`}>
-        <CardHeader className="p-8">
+      <Card className={`h-full border-border/50 bg-white/5 dark:bg-zinc-900/60 hover:bg-white/10 dark:hover:bg-zinc-800/80 transition-all duration-300 rounded-2xl overflow-hidden relative z-30 group-hover/card-link:border-primary/50 group-hover/card-link:shadow-glow opacity-95 hover:opacity-100 dark:backdrop-blur-md border dark:border-white/20 dark:ring-1 dark:ring-white/5`}>
+
+
+
+        <CardHeader className="p-5 px-7">
           <div className={`mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${gradient} text-white shadow-lg shadow-black/20 group-hover/card-link:scale-110 transition-transform duration-500`}>
             {icon}
           </div>

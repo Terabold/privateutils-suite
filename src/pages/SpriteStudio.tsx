@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Upload, Download, Scissors, Maximize2, Move, ZoomIn, ZoomOut, RotateCcw, Image as ImageIcon, Plus, Check, RefreshCw, Layers, Sparkles, CloudUpload, Grid3X3, Trash2, Square, Settings2, FolderArchive, MousePointer2 } from "lucide-react";
+import { ArrowLeft, Upload, Download, Scissors, Maximize2, Move, ZoomIn, ZoomOut, RotateCcw, Image as ImageIcon, Plus, Check, RefreshCw, Layers, Sparkles, CloudUpload, Grid3X3, Trash2, Square, Settings2, FolderArchive, MousePointer2, GripVertical } from "lucide-react";
 import { motion, Reorder, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -11,6 +11,8 @@ import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AdPlaceholder from "@/components/AdPlaceholder";
+import SponsorSidebars from "@/components/SponsorSidebars";
+
 import JSZip from "jszip";
 import { usePasteFile } from "@/hooks/usePasteFile";
 import { KbdShortcut } from "@/components/KbdShortcut";
@@ -64,9 +66,9 @@ const SpriteStudio = () => {
   const handleFile = (f: File | undefined) => {
     if (!f) return;
     setSlices([]);
-    const reader = new FileReader();
-    reader.onload = (e) => setImage(e.target?.result as string);
-    reader.readAsDataURL(f);
+    if (image) URL.revokeObjectURL(image);
+    const url = URL.createObjectURL(f);
+    setImage(url);
   };
 
   usePasteFile((file) => handleFile(file));
@@ -390,16 +392,9 @@ const SpriteStudio = () => {
       <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
 
       <div className="flex justify-center items-start w-full relative">
-        {/* Left Sponsor Sidebar (Hidden below 1850px) */}
-        <aside className="hidden min-[1850px]:flex flex-col gap-10 sticky top-32 w-[300px] shrink-0 px-6 py-8 animate-in fade-in slide-in-from-left-8 duration-1000">
-          <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
-          <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
-          <div className="p-8 rounded-2xl border-2 border-dashed border-primary/5 bg-primary/5 text-center mt-12 studio-gradient">
-            <p className="text-[10px] font-black uppercase tracking-widest text-primary opacity-60">Verified Ad Space</p>
-          </div>
-        </aside>
+        <SponsorSidebars position="left" />
 
-        <main className="container mx-auto max-w-[1600px] px-6 py-12 grow overflow-hidden">
+        <main className="container mx-auto max-w-[1800px] px-6 py-12 grow overflow-hidden">
           <div className="flex flex-col gap-8">
             <header className="flex items-center justify-between flex-wrap gap-6 border-b border-primary/5 pb-8">
               <div className="flex items-center gap-6">
@@ -417,9 +412,51 @@ const SpriteStudio = () => {
               </div>
             </header>
 
-            <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_400px] gap-8 items-start">
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] xl:grid-cols-[1fr_340px_280px] gap-6 items-start">
               {/* Column 1: Main Stage */}
-              <div className="space-y-6">
+              <div className="space-y-4">
+                {/* Horizontal Command Bar */}
+                <div className="glass-morphism border border-white/5 rounded-2xl p-2 px-5 flex items-center justify-between gap-4 bg-black/20 backdrop-blur-md shadow-lg animate-in fade-in slide-in-from-top-4 duration-500">
+                  <div className="flex items-center gap-6 divide-x divide-white/5">
+                    <div className="flex items-center gap-2.5">
+                      <div className="h-2 w-2 rounded-full bg-primary/40" />
+                      <div className="flex flex-col">
+                        <span className="text-[7px] font-black uppercase tracking-widest text-muted-foreground italic">Canvas Resolution</span>
+                        <span className="text-[10px] font-black text-foreground tracking-tighter italic">{imgSize.w > 0 ? `${imgSize.w} x ${imgSize.h} PIXELS` : "EMPTY STAGE"}</span>
+                      </div>
+                    </div>
+                    <div className="pl-6 flex items-center gap-2.5">
+                      <div className="h-2 w-2 rounded-full bg-primary/40" />
+                      <div className="flex flex-col">
+                        <span className="text-[7px] font-black uppercase tracking-widest text-muted-foreground italic">Asset Partitioning</span>
+                        <span className="text-[10px] font-black text-foreground tracking-tighter italic">{slices.length} ACTIVE NODES</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <Button onClick={() => { if (image) URL.revokeObjectURL(image); setImage(null); setSlices([]); setActiveId(null); }} variant="outline" size="sm" className="h-8 px-4 rounded-xl font-black text-[8px] uppercase gap-2 border-primary/10 bg-primary/5 backdrop-blur-md hover:bg-destructive/20 hover:text-destructive transition-all">
+                      <Trash2 className="h-3 w-3" /> Clean Stage
+                    </Button>
+                    <div className="w-[1px] h-4 bg-white/5" />
+                    <Button 
+                      onClick={() => {
+                        const viewportW = containerRef.current?.clientWidth || 800;
+                        const viewportH = containerRef.current?.clientHeight || 800;
+                        const newScale = Math.min((viewportW - 80) / imgSize.w, (viewportH - 80) / imgSize.h, 40);
+                        setScale(newScale);
+                        setPan({ x: (viewportW - (imgSize.w * newScale)) / 2, y: (viewportH - (imgSize.h * newScale)) / 2 });
+                        setZoom(1);
+                      }} 
+                      disabled={!image}
+                      variant="outline" 
+                      size="sm" 
+                      className="h-8 px-4 rounded-xl font-black text-[8px] uppercase gap-2 border-primary/10 bg-primary/5 backdrop-blur-md hover:bg-primary/20 transition-all tracking-wider"
+                    >
+                      <RotateCcw className="h-3 w-3" /> Reset Viewport
+                    </Button>
+                  </div>
+                </div>
                 <Card
                   onMouseDown={handleMouseDown}
                   onMouseMove={handleMouseMove}
@@ -427,14 +464,15 @@ const SpriteStudio = () => {
                   onMouseLeave={handleMouseUp}
                   onContextMenu={(e) => e.preventDefault()}
                   ref={containerRef}
-                  className="glass-morphism border-primary/10 overflow-hidden h-[75vh] min-h-[600px] flex flex-col items-center justify-center relative bg-[#050505]/40 rounded-3xl select-none shadow-2xl group/canvas p-0"
+                  className="glass-morphism border-primary/10 overflow-hidden h-[calc(70vh-68px)] min-h-[500px] flex flex-col items-center justify-center relative bg-muted/5 rounded-2xl select-none shadow-2xl group/canvas p-0"
                   style={{
-                    backgroundImage: `linear-gradient(45deg, rgba(255,255,255,0.02) 25%, transparent 25%), 
-                                     linear-gradient(-45deg, rgba(255,255,255,0.02) 25%, transparent 25%), 
-                                     linear-gradient(45deg, transparent 75%, rgba(255,255,255,0.02) 75%), 
-                                     linear-gradient(-45deg, transparent 75%, rgba(255,255,255,0.02) 75%)`,
+                    backgroundImage: `linear-gradient(45deg, var(--checker-color) 25%, transparent 25%), 
+                                     linear-gradient(-45deg, var(--checker-color) 25%, transparent 25%), 
+                                     linear-gradient(45deg, transparent 75%, var(--checker-color) 75%), 
+                                     linear-gradient(-45deg, transparent 75%, var(--checker-color) 75%)`,
                     backgroundSize: '20px 20px',
-                    backgroundPosition: '0 0, 0 10px, 10px -10px, -10px 0px'
+                    backgroundPosition: '0 0, 0 10px, 10px -10px, -10px 0px',
+                    ["--checker-color" as any]: darkMode ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.03)"
                   }}
                 >
                   {!image ? (
@@ -458,36 +496,37 @@ const SpriteStudio = () => {
                   ) : (
                     <>
                       <div
-                        className={`absolute shadow-2xl ring-1 ring-primary/20 pointer-events-none origin-top-left flex items-start justify-start top-0 left-0 ${isPanning || dragType ? "" : "transition-transform duration-200"}`}
+                        className="absolute shadow-2xl ring-1 ring-primary/20 pointer-events-none origin-top-left flex items-start justify-start top-0 left-0"
                         style={{
                           width: imgSize.w,
                           height: imgSize.h,
-                          transform: `translate(${pan.x}px, ${pan.y}px) scale(${scale * zoom})`,
+                          transform: `translate3d(${pan.x}px, ${pan.y}px, 0) scale(${scale * zoom})`,
                           opacity: imgSize.w > 0 ? 1 : 0,
-                          willChange: "transform"
+                          willChange: "transform",
+                          imageRendering: "pixelated"
                         }}
                       >
                         <img
+                          key={image}
                           ref={imgRef}
                           src={image}
                           onLoad={onImageLoad}
-                          className="w-full h-full pointer-events-none select-none transition-all shadow-2xl"
+                          className="w-full h-full pointer-events-none select-none"
                           style={{
-                            imageRendering: (zoom > 1.2 || imgSize.w < 800) ? 'pixelated' : 'auto',
+                            imageRendering: "pixelated",
+                            // @ts-ignore
+                            ["-ms-interpolation-mode"]: "nearest-neighbor",
                             maxWidth: '100%',
-                            maxHeight: '100%'
+                            maxHeight: '100%',
+                            willChange: "transform"
                           }}
                           draggable={false}
                         />
-                        <svg className="absolute inset-0 w-full h-full pointer-events-none overflow-visible" viewBox={`0 0 ${imgSize.w || 1} ${imgSize.h || 1}`}>
-                          {zoom > 4 && (
-                            <defs>
-                              <pattern id="pixel-grid" width="1" height="1" patternUnits="userSpaceOnUse">
-                                <path d="M 1 0 L 0 0 0 1" fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="0.05" />
-                              </pattern>
-                            </defs>
-                          )}
-                          {zoom > 4 && <rect width="100%" height="100%" fill="url(#pixel-grid)" opacity="0.4" />}
+                        <svg
+                          className="absolute inset-0 w-full h-full pointer-events-none overflow-visible"
+                          viewBox={`0 0 ${imgSize.w || 1} ${imgSize.h || 1}`}
+                          style={{ imageRendering: 'pixelated' }}
+                        >
                           {slices.map((slice) => {
                             const nx = slice.w < 0 ? slice.x + slice.w : slice.x;
                             const ny = slice.h < 0 ? slice.y + slice.h : slice.y;
@@ -516,194 +555,152 @@ const SpriteStudio = () => {
                         </svg>
                       </div>
 
-                      {/* Stage Overlays (HUD) */}
-                      <div className="absolute top-8 left-8 flex flex-col gap-3 pointer-events-none">
-                        <div className="px-5 py-3 rounded-2xl bg-black/60 backdrop-blur-md border border-white/5 text-[10px] font-black uppercase tracking-widest text-primary shadow-2xl flex items-center gap-3">
-                          <Settings2 className="h-3.5 w-3.5" />
-                          Studio Master View
+                      {/* Minimal HUD Layer */}
+                      <div className="absolute bottom-6 right-6 pointer-events-none">
+                        <div className="px-5 py-2 rounded-2xl bg-black/40 backdrop-blur-md border border-white/5 text-[9px] font-black uppercase tracking-widest text-muted-foreground/30 italic group-hover:opacity-100 opacity-0 transition-opacity">
+                          Drafting Engine v1.2 • Super-Resolution Partitioning
                         </div>
-                      </div>
-
-                      <div className="absolute top-8 right-8 flex flex-col gap-4 items-end pointer-events-none">
-                        <div className="flex items-center gap-2 p-2 px-4 rounded-2xl bg-zinc-950/80 backdrop-blur-xl border border-white/5 shadow-2xl">
-                          <div className="flex flex-col text-right">
-                            <span className="text-[8px] font-black text-muted-foreground/50 uppercase tracking-widest leading-none mb-1">Canvas Resolution</span>
-                            <span className="text-xs font-black italic text-foreground tracking-tighter">{imgSize.w} x {imgSize.h}px</span>
-                          </div>
-                          <div className="w-px h-6 bg-white/5 mx-2" />
-                          <div className="flex flex-col text-right">
-                            <span className="text-[8px] font-black text-muted-foreground/50 uppercase tracking-widest leading-none mb-1">Asset Partition</span>
-                            <span className="text-xs font-black italic text-primary tracking-tighter">{slices.length} STACKED</span>
-                          </div>
-                        </div>
-
-                        {image && (
-                          <Button
-                            onClick={(e) => { e.stopPropagation(); setImage(null); setSlices([]); setActiveId(null); }}
-                            variant="destructive"
-                            className="h-10 px-8 text-[11px] font-black uppercase tracking-widest rounded-2xl shadow-2xl hover:scale-105 active:scale-95 transition-all bg-destructive/10 text-destructive border border-destructive/20 backdrop-blur-md hover:bg-destructive hover:text-white pointer-events-auto shadow-destructive/20"
-                          >
-                            Reset Stage
-                          </Button>
-                        )}
-                      </div>
-
-                      <div className="absolute bottom-8 right-8 pointer-events-auto flex items-center gap-4">
-                        <Button size="sm" variant="outline" onClick={() => {
-                          const viewportW = containerRef.current?.clientWidth || 800;
-                          const viewportH = containerRef.current?.clientHeight || 800;
-                          const newScale = Math.min((viewportW - 80) / imgSize.w, (viewportH - 80) / imgSize.h, 40);
-                          setScale(newScale);
-                          setPan({ x: (viewportW - (imgSize.w * newScale)) / 2, y: (viewportH - (imgSize.h * newScale)) / 2 });
-                          setZoom(1);
-                        }} className="text-[10px] font-black uppercase tracking-widest h-10 px-6 rounded-2xl gap-3 bg-black/40 backdrop-blur-md border-white/5 hover:bg-white/5 shadow-2xl">
-                          <RotateCcw className="h-3.5 w-3.5" /> Reset Viewport
-                        </Button>
                       </div>
                     </>
                   )}
                 </Card>
-                <input ref={inputRef} type="file" className="hidden" accept="image/*" onChange={(e) => handleFile(e.target.files?.[0])} />
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/40 italic text-center">Drafting Engine v1.2 • Super-Resolution Studio Partitioning • No Persistence</p>
+                <input 
+                  ref={inputRef} 
+                  type="file" 
+                  className="hidden" 
+                  accept="image/*" 
+                  onChange={(e) => {
+                    handleFile(e.target.files?.[0]);
+                    e.target.value = "";
+                  }} 
+                />
               </div>
 
-              {/* Column 2: Unified Sidebar */}
-              <aside className="space-y-6 lg:sticky lg:top-24 h-fit pb-12 overflow-y-auto max-h-[calc(100vh-140px)] custom-scrollbar pr-1">
-                <Card className="glass-morphism border-primary/20 rounded-[2.5rem] shadow-2xl overflow-hidden bg-primary/5 studio-gradient border-b-4 border-r-4">
-                  <CardContent className="p-10 space-y-8">
-                    <div className="flex items-center gap-4 mb-4">
-                      <div className="h-12 w-12 bg-primary/20 rounded-2xl flex items-center justify-center shadow-inner">
-                        <FolderArchive className="h-6 w-6 text-primary" />
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="text-lg font-black tracking-tighter uppercase italic text-foreground leading-none">Master Export</h3>
-                        <p className="text-[9px] font-black uppercase tracking-[0.2em] text-primary/60 mt-2 italic">Production Batch Dispatch</p>
+              <aside className="lg:sticky lg:top-24 h-[70vh] min-h-[550px]">
+                {/* Card 1: Master Studio Controls */}
+                <Card className="glass-morphism border-primary/20 rounded-2xl shadow-2xl overflow-hidden bg-background/20 backdrop-blur-3xl h-full flex flex-col">
+                  {/* Drafting Section (Top - Scrollable) */}
+                  <div className="flex flex-col grow min-h-0">
+                    <div className="bg-primary/5 p-4 border-b border-primary/10 flex items-center justify-between shrink-0">
+                      <div className="flex items-center gap-2.5">
+                        <Settings2 className="h-3.5 w-3.5 text-primary" />
+                        <h3 className="text-[9px] font-black uppercase tracking-[0.2em] text-primary italic leading-none">Drafting Master</h3>
                       </div>
                     </div>
-                    <Button onClick={downloadZip} disabled={!image || slices.length === 0 || processing} className="w-full gap-4 h-16 text-xl font-black rounded-3xl shadow-2xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all uppercase italic border border-primary/20">
-                      {processing ? "Baking Studio ZIP..." : <><Download className="h-7 w-7" /> Download Assets</>}
-                    </Button>
-                  </CardContent>
-                </Card>
 
-                <Card className="glass-morphism border-primary/10 rounded-[2.5rem] shadow-xl overflow-hidden">
-                  <div className="bg-primary/5 p-8 border-b border-primary/10 space-y-8">
-                    <div className="flex items-center justify-between">
-                      <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-primary flex items-center gap-3 italic">
-                        <Settings2 className="h-4 w-4" /> Drafting Master
-                      </h3>
-                    </div>
-
-                    <div className="flex bg-zinc-950/40 p-2.5 rounded-3xl border border-white/5 gap-2.5 shadow-inner">
-                      <button onClick={() => setMode("manual")} className={`flex-1 py-4 text-[10px] font-black uppercase tracking-widest rounded-2xl transition-all ${mode === "manual" ? "bg-primary text-white shadow-xl scale-[1.02]" : "text-muted-foreground hover:bg-white/5"}`}>Manual</button>
-                      <button onClick={() => setMode("grid")} className={`flex-1 py-4 text-[10px] font-black uppercase tracking-widest rounded-2xl transition-all ${mode === "grid" ? "bg-primary text-white shadow-xl scale-[1.02]" : "text-muted-foreground hover:bg-white/5"}`}>Grid Master</button>
-                    </div>
-
-                    {mode === "grid" && (
-                      <div className="flex bg-zinc-950/20 p-1.5 rounded-2xl border border-white/5 shadow-inner">
-                        <button onClick={() => setGridMode("count")} className={`flex-1 py-2.5 text-[9px] font-black uppercase tracking-[0.2em] rounded-xl transition-all ${gridMode === "count" ? "bg-white/10 text-white shadow-md" : "text-muted-foreground hover:text-white"}`}>Fixed Density</button>
-                        <button onClick={() => setGridMode("pixel")} className={`flex-1 py-2.5 text-[9px] font-black uppercase tracking-[0.2em] rounded-xl transition-all ${gridMode === "pixel" ? "bg-white/10 text-white shadow-md" : "text-muted-foreground hover:text-white"}`}>Pixel Precision</button>
+                    <div className="p-5 pb-5 overflow-y-auto custom-scrollbar grow">
+                      <div className="flex bg-primary/5 backdrop-blur-md p-2 rounded-xl border border-primary/10 gap-2 shadow-inner mb-6">
+                        <button onClick={() => setMode("manual")} className={`flex-1 py-4 text-xs font-black uppercase tracking-widest rounded-lg transition-all ${mode === "manual" ? "bg-primary text-white shadow-xl" : "text-muted-foreground hover:bg-primary/10"}`}>Manual</button>
+                        <button onClick={() => setMode("grid")} className={`flex-1 py-4 text-xs font-black uppercase tracking-widest rounded-lg transition-all ${mode === "grid" ? "bg-primary text-white shadow-xl" : "text-muted-foreground hover:bg-primary/10"}`}>Grid</button>
                       </div>
-                    )}
-                  </div>
 
-                  <CardContent className="p-10 space-y-10">
-                    <div className="space-y-4">
-                      <div className="flex justify-between items-center px-1">
-                        <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 italic">Viewport Zoom</Label>
-                        <span className="text-xl font-black text-primary italic tracking-tighter">{Math.round(zoom * 100)}%</span>
-                      </div>
-                      <input type="range" min="0.2" max="25" step="0.1" value={zoom} onChange={(e) => setZoom(parseFloat(e.target.value))} className="w-full h-1.5 bg-primary/20 rounded-2xl appearance-none cursor-pointer accent-primary shadow-inner" />
-                    </div>
-
-                    {mode === "grid" && (
-                      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8 animate-in slide-in-from-top-4 duration-500">
-                        {gridMode === 'count' ? (
-                          <div className="grid grid-cols-2 gap-5">
-                            <div className="space-y-3">
-                              <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 italic">Density Rows</Label>
-                              <Input type="number" value={gridConfig.rows} onChange={(e) => setGridConfig({ ...gridConfig, rows: parseInt(e.target.value) || 1 })} className="h-12 text-sm font-black rounded-2xl bg-zinc-950/40 border-white/5" />
-                            </div>
-                            <div className="space-y-3">
-                              <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 italic">Density Cols</Label>
-                              <Input type="number" value={gridConfig.cols} onChange={(e) => setGridConfig({ ...gridConfig, cols: parseInt(e.target.value) || 1 })} className="h-12 text-sm font-black rounded-2xl bg-zinc-950/40 border-white/5" />
-                            </div>
+                      <div className="space-y-6">
+                        <div className="space-y-2.5">
+                          <div className="flex justify-between items-center px-1">
+                            <Label className="text-[8px] font-black uppercase tracking-widest text-muted-foreground/60 italic">Zoom</Label>
+                            <span className="text-sm font-black text-primary italic tracking-tighter">{Math.round(zoom * 100)}%</span>
                           </div>
-                        ) : (
-                          <div className="grid grid-cols-2 gap-5">
-                            <div className="space-y-3">
-                              <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 italic">Cell Width</Label>
-                              <Input type="number" value={gridConfig.cellW} onChange={(e) => setGridConfig({ ...gridConfig, cellW: parseInt(e.target.value) || 1 })} className="h-12 text-sm font-black rounded-2xl bg-zinc-950/40 border-white/5" />
-                            </div>
-                            <div className="space-y-3">
-                              <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 italic">Cell Height</Label>
-                              <Input type="number" value={gridConfig.cellH} onChange={(e) => setGridConfig({ ...gridConfig, cellH: parseInt(e.target.value) || 1 })} className="h-12 text-sm font-black rounded-2xl bg-zinc-950/40 border-white/5" />
-                            </div>
-                          </div>
-                        )}
-
-                        <div className="grid grid-cols-2 gap-5 pt-2">
-                          <div className="space-y-3">
-                            <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 italic">Gap Horizontal</Label>
-                            <Input type="number" value={gridConfig.gapX} onChange={(e) => setGridConfig({ ...gridConfig, gapX: parseInt(e.target.value) || 0 })} className="h-12 text-sm font-black rounded-2xl bg-zinc-950/40 border-white/5" />
-                          </div>
-                          <div className="space-y-3">
-                            <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 italic">Gap Vertical</Label>
-                            <Input type="number" value={gridConfig.gapY} onChange={(e) => setGridConfig({ ...gridConfig, gapY: parseInt(e.target.value) || 0 })} className="h-12 text-sm font-black rounded-2xl bg-zinc-950/40 border-white/5" />
-                          </div>
+                          <input type="range" min="0.2" max="25" step="0.1" value={zoom} onChange={(e) => setZoom(parseFloat(e.target.value))} className="w-full h-1 bg-primary/20 rounded-2xl appearance-none cursor-pointer accent-primary shadow-inner" />
                         </div>
 
-                        <Button
-                          variant="secondary"
-                          className="w-full h-14 rounded-3xl font-black gap-3 text-xs uppercase shadow-xl shadow-black/20 italic border border-white/5"
-                          onClick={() => generateGrid(gridConfig.rows, gridConfig.cols, gridConfig.gapX, gridConfig.gapY, gridConfig.cellW, gridConfig.cellH, gridMode)}
-                        >
-                          <Grid3X3 className="h-4 w-4" /> Apply Grid Schema
-                        </Button>
-                      </motion.div>
-                    )}
+                        {mode === "grid" && (
+                          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6 animate-in slide-in-from-top-4 duration-500">
+                            <div className="flex bg-primary/5 backdrop-blur-md p-1.5 rounded-xl border border-primary/10 shadow-inner mb-2">
+                              <button onClick={() => setGridMode("count")} className={`flex-1 py-1.5 text-[9px] font-black uppercase tracking-[0.2em] rounded-lg transition-all ${gridMode === "count" ? "bg-primary text-white shadow-md font-bold" : "text-muted-foreground hover:text-primary"}`}>Fixed</button>
+                              <button onClick={() => setGridMode("pixel")} className={`flex-1 py-1.5 text-[9px] font-black uppercase tracking-[0.2em] rounded-lg transition-all ${gridMode === "pixel" ? "bg-primary text-white shadow-md font-bold" : "text-muted-foreground hover:text-primary"}`}>Pixel</button>
+                            </div>
 
-                  </CardContent>
+                            <div className="grid grid-cols-2 gap-3">
+                              <div className="space-y-1.5">
+                                <Label className="text-[8px] font-black uppercase tracking-widest text-muted-foreground/60 italic">{gridMode === 'count' ? 'Rows' : 'Width'}</Label>
+                                <Input type="number" value={gridMode === 'count' ? gridConfig.rows : gridConfig.cellW} onChange={(e) => setGridConfig({ ...gridConfig, [gridMode === 'count' ? 'rows' : 'cellW']: parseInt(e.target.value) || 1 })} className="h-7 text-[10px] font-black rounded-lg bg-zinc-950/40 border-white/5" />
+                              </div>
+                              <div className="space-y-1.5">
+                                <Label className="text-[8px] font-black uppercase tracking-widest text-muted-foreground/60 italic">{gridMode === 'count' ? 'Cols' : 'Height'}</Label>
+                                <Input type="number" value={gridMode === 'count' ? gridConfig.cols : gridConfig.cellH} onChange={(e) => setGridConfig({ ...gridConfig, [gridMode === 'count' ? 'cols' : 'cellH']: parseInt(e.target.value) || 1 })} className="h-7 text-[10px] font-black rounded-lg bg-zinc-950/40 border-white/5" />
+                              </div>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-3">
+                              <div className="space-y-1.5">
+                                <Label className="text-[8px] font-black uppercase tracking-widest text-muted-foreground/60 italic">Gap X</Label>
+                                <Input type="number" value={gridConfig.gapX} onChange={(e) => setGridConfig({ ...gridConfig, gapX: parseInt(e.target.value) || 0 })} className="h-7 text-[10px] font-black rounded-lg bg-zinc-950/40 border-white/5" />
+                              </div>
+                              <div className="space-y-1.5">
+                                <Label className="text-[8px] font-black uppercase tracking-widest text-muted-foreground/60 italic">Gap Y</Label>
+                                <Input type="number" value={gridConfig.gapY} onChange={(e) => setGridConfig({ ...gridConfig, gapY: parseInt(e.target.value) || 0 })} className="h-7 text-[10px] font-black rounded-lg bg-zinc-950/40 border-white/5" />
+                              </div>
+                            </div>
+
+                            <Button variant="secondary" className="w-full h-10 rounded-xl font-black gap-2 text-[10px] uppercase shadow-xl shadow-black/20 italic border border-white/5 hover:translate-y-[-1px] transition-all" onClick={() => generateGrid(gridConfig.rows, gridConfig.cols, gridConfig.gapX, gridConfig.gapY, gridConfig.cellW, gridConfig.cellH, gridMode)}>
+                              <Grid3X3 className="h-3 w-3" /> Apply Grid Schema
+                            </Button>
+                          </motion.div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Export Section (Bottom - Pinned) */}
+                  <div className="bg-primary/5 p-5 border-t border-primary/10 studio-gradient shrink-0">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="h-8 w-8 bg-primary/20 rounded-xl flex items-center justify-center shadow-inner">
+                        <FolderArchive className="h-4 w-4 text-primary" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-sm font-black tracking-tighter uppercase italic text-foreground leading-none">Export Master</h3>
+                        <p className="text-[7px] font-black uppercase tracking-[0.2em] text-primary/60 mt-1 italic">Batch Dispatch</p>
+                      </div>
+                    </div>
+                    <Button onClick={downloadZip} disabled={!image || slices.length === 0 || processing} className="w-full gap-2.5 h-11 text-sm font-black rounded-2xl shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all uppercase italic border border-primary/10">
+                      {processing ? "Baking..." : <><Download className="h-4 w-4" /> Download Assets</>}
+                    </Button>
+                  </div>
                 </Card>
+              </aside>
 
-                <Card className="glass-morphism border-primary/10 rounded-[2.5rem] shadow-xl overflow-hidden flex flex-col min-h-[300px]">
-                  <div className="bg-primary/5 p-6 border-b border-primary/10 flex items-center justify-between shrink-0">
-                    <div className="flex items-center gap-3">
-                      <Layers className="h-4 w-4 text-primary" />
-                      <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-primary italic leading-none">Partition Stack</h3>
+              {/* Card 3: Partition Stack Section */}
+              <aside className="lg:sticky lg:top-24 h-[70vh] min-h-[500px] flex flex-col">
+                <Card className="glass-morphism border-primary/10 rounded-2xl shadow-xl overflow-hidden flex flex-col h-full bg-background/20">
+                  <div className="bg-primary/5 p-4 border-b border-primary/10 flex items-center justify-between shrink-0">
+                    <div className="flex items-center gap-2">
+                      <Layers className="h-3 w-3 text-primary" />
+                      <h3 className="text-[9px] font-black uppercase tracking-[0.2em] text-primary italic leading-none">Partition Stack</h3>
                     </div>
                     {slices.length > 0 && (
-                      <Button
-                        onClick={() => setSlices([])}
-                        variant="ghost"
-                        size="sm"
-                        className="h-8 px-4 text-[9px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-2xl transition-all"
-                      >
-                        Purge Stack
-                      </Button>
+                      <Button onClick={() => setSlices([])} variant="ghost" size="sm" className="h-6 px-2.5 text-[7px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-lg transition-all">Purge</Button>
                     )}
                   </div>
-                  <CardContent className="p-2 overflow-y-auto grow custom-scrollbar">
+                  <CardContent className="p-0 overflow-y-auto grow custom-scrollbar">
                     {slices.length === 0 ? (
-                      <div className="p-12 text-center opacity-10 flex flex-col items-center">
-                        <Layers className="h-12 w-12 mb-4" />
-                        <p className="text-[10px] font-black uppercase tracking-[0.4em] italic">Pipeline Empty</p>
+                      <div className="p-8 text-center opacity-10 flex flex-col items-center">
+                        <Layers className="h-8 w-8 mb-3" />
+                        <p className="text-[9px] font-black uppercase tracking-[0.4em] italic">Pipeline Empty</p>
                       </div>
                     ) : (
-                      <div className="grid grid-cols-1 gap-1">
+                      <Reorder.Group axis="y" values={slices} onReorder={setSlices} className="divide-y divide-white/5">
                         {slices.map((slice, idx) => (
-                          <div key={slice.id} onClick={() => setActiveId(slice.id)} className={`p-4 px-6 flex items-center justify-between transition-all cursor-pointer rounded-2xl ${activeId === slice.id ? "bg-primary/10 shadow-inner" : "hover:bg-primary/5"}`}>
-                            <div className="flex items-center gap-4 overflow-hidden">
-                              <span className="text-[10px] font-black opacity-20 italic">#{String(idx + 1).padStart(2, '0')}</span>
-                              <span className="text-[10px] font-black uppercase tracking-tighter truncate max-w-[120px]">{slice.name}</span>
-                            </div>
-                            <div className="flex items-items-center gap-2">
-                              <span className="text-[8px] font-black opacity-40 italic">{slice.w}x{slice.h}</span>
-                              <Button size="icon" variant="ghost" onClick={(e) => { e.stopPropagation(); deleteSlice(slice.id); }} className="h-8 w-8 text-destructive opacity-30 hover:opacity-100 transition-opacity hover:bg-destructive/10 rounded-xl"><Trash2 className="h-3.5 w-3.5" /></Button>
-                            </div>
-                          </div>
+                            <Reorder.Item 
+                              key={slice.id} 
+                              value={slice}
+                              layout
+                              dragElastic={0}
+                              dragTransition={{ power: 0 }}
+                              onClick={() => setActiveId(slice.id)} 
+                              className={`p-3 px-4 flex items-center justify-between transition-none cursor-default z-10 ${activeId === slice.id ? "bg-primary/20 shadow-inner" : "hover:bg-primary/10 bg-transparent"}`}
+                            >
+                              <div className="flex items-center gap-3 overflow-hidden pointer-events-none">
+                                <GripVertical className="h-3 w-3 text-muted-foreground/30 cursor-grab active:cursor-grabbing pointer-events-auto" />
+                                <span className="text-[9px] font-black text-primary/80 italic">#{String(idx + 1).padStart(2, '0')}</span>
+                                <span className="text-[9px] font-black uppercase tracking-tighter truncate max-w-[100px] text-foreground">{slice.name}</span>
+                              </div>
+                              <div className="flex items-center gap-2 pointer-events-none">
+                                <span className="text-[8px] font-black text-muted-foreground italic">{slice.w}x{slice.h}</span>
+                                <Button size="icon" variant="ghost" onClick={(e) => { e.stopPropagation(); deleteSlice(slice.id); }} className="h-6 w-6 text-destructive opacity-40 hover:opacity-100 transition-opacity hover:bg-destructive/10 rounded-lg pointer-events-auto"><Trash2 className="h-3 w-3" /></Button>
+                              </div>
+                            </Reorder.Item>
                         ))}
-                      </div>
+                      </Reorder.Group>
                     )}
                   </CardContent>
                 </Card>
@@ -712,11 +709,6 @@ const SpriteStudio = () => {
           </div>
         </main>
 
-        <aside className="hidden min-[1850px]:flex flex-col gap-10 sticky top-32 w-[300px] shrink-0 px-6 py-8 animate-in fade-in slide-in-from-right-8 duration-1000">
-           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50 shadow-2xl" />
-           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50 shadow-2xl" />
-           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50 shadow-2xl" />
-        </aside>
       </div>
       <Footer />
     </div>

@@ -5,6 +5,8 @@ import ToolsGrid, { tools } from "@/components/ToolsGrid";
 import Footer from "@/components/Footer";
 import { ShieldCheck, Zap, Lock } from "lucide-react";
 import AdPlaceholder from "@/components/AdPlaceholder";
+import SponsorSidebars from "@/components/SponsorSidebars";
+
 
 const Index = () => {
   const location = useLocation();
@@ -84,11 +86,7 @@ const Index = () => {
       <div className="flex justify-center items-start w-full relative">
         
         {/* Left Sponsor Sidebar */}
-        <aside className="hidden min-[1850px]:flex flex-col gap-10 sticky top-32 w-[300px] shrink-0 px-6 py-8 animate-in fade-in slide-in-from-left-8 duration-1000">
-           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
-           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
-           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
-        </aside>
+        <SponsorSidebars position="left" />
 
         <main className="container mx-auto max-w-[1400px] px-6 py-10 lg:py-16 grow overflow-visible">
           {/* Static Branding Section (Improved Vertical Density) */}
@@ -180,11 +178,7 @@ const Index = () => {
         </main>
 
         {/* Right Sponsor Sidebar */}
-        <aside className="hidden min-[1850px]:flex flex-col gap-10 sticky top-32 w-[300px] shrink-0 px-6 py-8 animate-in fade-in slide-in-from-right-8 duration-1000">
-           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
-           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
-           <AdPlaceholder format="rectangle" className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all border-border/50" />
-        </aside>
+        <SponsorSidebars position="right" />
 
       </div>
 

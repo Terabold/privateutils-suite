@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 
 export const tools = [
   {
-    title: "Universal Media Converter",
+    title: "Media Converter",
     description: "The ultimate tool to convert video and image formats using Native Browser engines",
     icon: <Video className="h-5 w-5" />,
     to: "/universal-media-converter",
@@ -12,7 +12,7 @@ export const tools = [
     tags: ["ULTIMATE", "NATIVE"]
   },
   {
-    title: "YouTube Verify",
+    title: "YouTube Hub",
     description: "Preview overlays & live page simulations to ensure your thumbnails aren't covered",
     icon: <Layout className="h-5 w-5" />,
     to: "/youtube-thumbnail-hub",
@@ -20,7 +20,7 @@ export const tools = [
     tags: ["SAFE-ZONES", "SIM"]
   },
   {
-    title: "3D Perspective Tilt",
+    title: "3D Perspective",
     description: "Create angled thumbnails and cinematic perspective mockups with 1:1 export",
     icon: <Layers className="h-5 w-5" />,
     to: "/perspective-tilter",
@@ -37,7 +37,7 @@ export const tools = [
     tags: ["EXIF", "SCRUB"]
   },
   {
-    title: "Sprite Studio (Slicer)",
+    title: "Sprite Slicer",
     description: "Interactive multi-box image splitter & sprite extractor with accurate edge logic",
     icon: <Scissors className="h-5 w-5" />,
     to: "/sprite-studio",
@@ -53,7 +53,7 @@ export const tools = [
     tags: ["TRIM", "WAV"]
   },
   {
-    title: "Universal Volume Booster",
+    title: "Volume Booster",
     description: "Directly adjust volume levels of your audio assets and video sound streams",
     icon: <Volume2 className="h-5 w-5" />,
     to: "/universal-volume-booster",
@@ -181,7 +181,7 @@ export const tools = [
     tags: ["DEV", "LIVE"]
   },
   {
-    title: "Lorem Ipsum Generator",
+    title: "Lorem Generator",
     description: "Generate professional placeholder text in Classic, Buzzword, or Hipster styles",
     icon: <FileText className="h-5 w-5" />,
     to: "/lorem-generator",
@@ -189,7 +189,7 @@ export const tools = [
     tags: ["CONTENT", "DEV"]
   },
   {
-    title: "Secure Password Generator",
+    title: "Password Forge",
     description: "Hardware-backed high-entropy password generator with instant audit and local-only logic",
     icon: <ShieldCheck className="h-5 w-5" />,
     to: "/password-generator",
@@ -221,7 +221,7 @@ export const tools = [
     tags: ["QUICK", "MATH"]
   },
   {
-    title: "Base64 Image Encoder",
+    title: "Image Encoder",
     description: "Direct image-to-memory-string conversion for developers and creative artifact logic",
     icon: <FileStack className="h-5 w-5" />,
     to: "/base64-image",
@@ -245,7 +245,7 @@ export const tools = [
     tags: ["GLITCH", "PCM"]
   },
   {
-    title: "Audio Mono/Stereo",
+    title: "Mono / Stereo",
     description: "Professional channel remapping: convert Mono to pseudo-Stereo or mix Stereo to Mono",
     icon: <Layers className="h-5 w-5" />,
     to: "/audio-mono-stereo",
@@ -307,7 +307,7 @@ const ToolsGrid = ({ searchQuery = "", selectedCategory = null, onClearFilters }
         </div>
         <h3 className="text-4xl font-black uppercase italic tracking-tighter mb-4">No artifacts found</h3>
         <p className="text-muted-foreground font-medium mb-10 max-w-md mx-auto opacity-60 italic">Your search criteria didn't match any of our local processing tools.</p>
-        <Button onClick={onClearFilters} variant="outline" className="h-14 px-10 rounded-2xl font-black uppercase tracking-widest text-xs border-primary/20 hover:bg-primary/5 transition-all">
+        <Button onClick={onClearFilters} variant="outline" className="h-14 px-10 rounded-2xl font-black uppercase tracking-widest text-xs border-primary/20 bg-primary/5 hover:bg-primary/20 dark:bg-white/5 dark:hover:bg-white/10 transition-all">
           Clear Calibration
         </Button>
       </div>
@@ -360,7 +360,7 @@ const ToolsGrid = ({ searchQuery = "", selectedCategory = null, onClearFilters }
 
           return (
             <section key={category} className="animate-in fade-in slide-in-from-bottom-8 duration-1000">
-              <div className="flex items-center gap-6 mb-16 px-2">
+              <div className="flex items-center gap-6 mb-10 px-2">
                 <div className={`p-4 rounded-2xl bg-gradient-to-br ${config.gradient} shadow-lg shadow-black/20`}>
                   <Icon className="h-8 w-8 text-white" />
                 </div>
