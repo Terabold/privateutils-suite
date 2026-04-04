@@ -91,6 +91,26 @@ const Navbar = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Dynamic Browser Tab Title Management
+  useEffect(() => {
+    if (isHomePage) {
+      if (selectedCategory) {
+        document.title = `${selectedCategory} | PrivateUtils`;
+      } else if (searchQuery) {
+        document.title = `Search: ${searchQuery} | PrivateUtils`;
+      } else {
+        document.title = "PrivateUtils | Studio";
+      }
+    } else {
+      const tool = tools.find(t => t.to === location.pathname);
+      if (tool) {
+        document.title = `${tool.title} | PrivateUtils`;
+      } else {
+        document.title = "PrivateUtils | Studio";
+      }
+    }
+  }, [location.pathname, isHomePage, selectedCategory, searchQuery]);
+
   return (
     <header className="sticky top-0 z-[100] border-b border-white/5 bg-background/80 backdrop-blur-xl transition-all duration-500 py-4">
       <div className="container mx-auto max-w-[1500px] flex h-[80px] items-center justify-between px-4 lg:px-8 gap-4 md:gap-12">
