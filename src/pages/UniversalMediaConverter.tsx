@@ -52,6 +52,13 @@ const UniversalMediaConverter = () => {
     if (inputRef.current) inputRef.current.value = "";
   };
 
+  // Resource Cleanup Engine (Prevent Memory Leaks)
+  useEffect(() => {
+    return () => {
+      if (resultUrl) URL.revokeObjectURL(resultUrl);
+    };
+  }, [resultUrl]);
+
   // Progress Smoothing Engine (Professional Crawl)
   useEffect(() => {
     if (progress < progressTarget) {

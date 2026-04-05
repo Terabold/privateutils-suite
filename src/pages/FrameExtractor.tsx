@@ -47,6 +47,14 @@ const FrameExtractor = () => {
   const [displayTime, setDisplayTime] = useState(0);
   const rAFRef = useRef<number>();
 
+  // Resource Cleanup Engine (Prevent Memory Leaks)
+  useEffect(() => {
+    return () => {
+      if (videoUrl) URL.revokeObjectURL(videoUrl);
+      frames.forEach(f => URL.revokeObjectURL(f.url));
+    };
+  }, [videoUrl, frames]);
+
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);

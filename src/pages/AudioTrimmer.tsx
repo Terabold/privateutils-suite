@@ -22,6 +22,14 @@ const AudioTrimmer = () => {
   const [range, setRange] = useState([0, 100]); // Start/End in seconds
   const [duration, setDuration] = useState(0);
   const [processing, setProcessing] = useState(false);
+  const [resultUrl, setResultUrl] = useState<string | null>(null);
+
+  // Resource Cleanup Engine (Prevent Memory Leaks)
+  useEffect(() => {
+    return () => {
+      if (resultUrl) URL.revokeObjectURL(resultUrl);
+    };
+  }, [resultUrl]);
 
   const audioCtxRef = useRef<AudioContext | null>(null);
   const sourceNodeRef = useRef<AudioBufferSourceNode | null>(null);

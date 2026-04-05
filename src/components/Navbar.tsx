@@ -112,8 +112,8 @@ const Navbar = ({
   }, [location.pathname, isHomePage, selectedCategory, searchQuery]);
 
   return (
-    <header className="sticky top-0 z-[100] border-b border-white/5 bg-background/80 backdrop-blur-xl py-4 w-screen left-0 transition-theme shadow-lg shadow-black/20 overflow-hidden">
-      <div className="container mx-auto px-4 lg:px-8 flex flex-wrap lg:flex-nowrap h-auto lg:h-[100px] items-center gap-y-4 lg:gap-x-12 max-w-[1500px] w-full transition-theme py-2 lg:py-0">
+    <header className="sticky top-0 z-[100] border-b border-white/5 bg-background/80 backdrop-blur-xl py-4 w-full transition-theme shadow-lg shadow-black/20 overflow-visible">
+      <div className="container mx-auto px-4 lg:px-8 flex flex-wrap lg:flex-nowrap h-auto lg:h-[115px] items-center justify-between lg:justify-start gap-y-4 lg:gap-x-12 max-w-[1500px] w-full transition-theme py-2 lg:py-0">
 
         {/* 1. Logo Row - Persistent Logic */}
         <div className="flex w-full lg:w-auto items-center justify-between lg:justify-start gap-6 lg:shrink-0 lg:min-w-[240px]">
@@ -129,14 +129,20 @@ const Navbar = ({
                 <path d="M5 4h9a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-4v6H5V4zm5 7h4a2 2 0 0 0 0-4h-4v4z" />
               </svg>
             </div>
-            <div className="flex h-10 md:h-11 items-center gap-1">
+            <div className="flex h-10 md:h-11 items-center gap-2">
               <span className="text-[24px] md:text-[28px] font-black tracking-tighter text-foreground font-display uppercase italic transition-theme group-hover:text-shadow-glow flex items-center leading-none">
                 Private<span className="not-italic logo-text-transition" style={{ color: `hsl(${activeTheme?.hsl || 'var(--primary)'})` }}>Utils</span>
               </span>
+              <div className="px-2 py-0.5 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0 group/wip relative">
+                <span className="text-[9px] font-black text-primary uppercase tracking-widest leading-none">WIP</span>
+                <div className="absolute top-8 left-1/2 -translate-x-1/2 px-3 py-2 bg-popover text-popover-foreground text-[10px] font-black rounded-lg opacity-0 group-hover/wip:opacity-100 transition-opacity pointer-events-none whitespace-nowrap shadow-2xl border border-white/10 z-[120] uppercase tracking-wider italic">
+                  Work In Progress • Deployment in progress
+                </div>
+              </div>
             </div>
           </Link>
 
-          {/* Persistent Theme Toggle (Locked next to logo on mobile, shifted on desktop manually via flex) */}
+          {/* Persistent Theme Toggle (Locked next to logo on mobile/tablet, shifted on desktop manually via flex) */}
           <div className="lg:hidden flex items-center gap-2">
             <Button
               variant="ghost"
@@ -150,7 +156,7 @@ const Navbar = ({
         </div>
 
         {/* 2. Unified Search + Categories Column (Fluid and Centered) */}
-        <div className="flex flex-col grow w-full lg:max-w-2xl gap-3 relative transition-theme">
+        <div className="flex flex-col flex-1 w-full lg:max-w-2xl mx-auto gap-3 relative transition-theme items-center lg:items-stretch">
           <div ref={searchRef} className="relative group mx-auto lg:mx-0 w-full max-w-lg lg:max-w-none">
             <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
               <Search className="h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
@@ -201,8 +207,8 @@ const Navbar = ({
           </div>
 
           {/* 3. Category pills - DYNAMIC Scaling (Paddings and Font size shrink with viewport) */}
-          <div className="w-full overflow-x-auto no-scrollbar pb-1">
-            <div className="flex flex-nowrap items-center gap-[clamp(4px,1vw,8px)] justify-center w-max min-w-full px-2 md:px-4">
+          <div className="w-full overflow-x-auto no-scrollbar py-4 -my-4">
+            <div className="flex flex-nowrap items-center gap-[clamp(4px,1vw,8px)] justify-center w-max min-w-full px-2 md:px-4 py-2">
               {Object.keys(categoryConfig).filter(k => k !== "All").map((category) => {
                 const theme = categoryConfig[category];
                 const Icon = theme.icon;
@@ -218,7 +224,7 @@ const Navbar = ({
                           "--border-glow": `hsl(${theme.hsl} / 0.2)`,
                           backgroundColor: isActive ? `hsl(${theme.hsl})` : undefined
                         } as React.CSSProperties}
-                        className={`px-[clamp(8px,1.5vw,24px)] py-1.5 md:py-2.5 rounded-2xl font-bold md:font-semibold text-[clamp(9px,1.1vw,14px)] transition-theme flex items-center gap-[clamp(4px,1vw,10px)] border whitespace-nowrap shrink-0 ${isActive
+                        className={`px-[clamp(6px,1.2vw,24px)] py-1.5 md:py-2.5 rounded-2xl font-bold md:font-semibold text-[clamp(8px,1vw,14px)] transition-all flex items-center gap-[clamp(2px,0.8vw,10px)] border whitespace-nowrap shrink transition-theme ${isActive
                           ? "text-white shadow-lg scale-105 border-white/20"
                           : "text-muted-foreground hover:text-foreground bg-zinc-100 dark:bg-white/5 border-zinc-200/50 dark:border-transparent hover:border-[var(--border-glow)] hover:shadow-[0_0_20px_var(--glow-color)] shadow-sm"
                           }`}

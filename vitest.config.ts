@@ -1,9 +1,10 @@
-import { defineConfig } from "vitest/config";
+import { defineConfig, type UserConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 
+// Manually extend Vite's UserConfig to avoid importing the recursive Vitest heavy type tree
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react() as any],
   test: {
     environment: "jsdom",
     globals: true,
@@ -13,4 +14,4 @@ export default defineConfig({
   resolve: {
     alias: { "@": path.resolve(__dirname, "./src") },
   },
-});
+} as UserConfig & { test: any });

@@ -20,6 +20,14 @@ const AudioMonoStereo = () => {
   const [processing, setProcessing] = useState(false);
   const [objectUrl, setObjectUrl] = useState<string | null>(null);
   const [processedUrl, setProcessedUrl] = useState<string | null>(null);
+
+  // Resource Cleanup Engine (Prevent Memory Leaks)
+  useEffect(() => {
+    return () => {
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+      if (processedUrl) URL.revokeObjectURL(processedUrl);
+    };
+  }, [objectUrl, processedUrl]);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [mode, setMode] = useState<"mono-to-stereo" | "stereo-to-mono">("mono-to-stereo");
@@ -141,6 +149,14 @@ const AudioMonoStereo = () => {
       ctx.fill();
     }
   }, [audioBuffer, mode]);
+
+  // Resource Cleanup Engine (Prevent Memory Leaks)
+  useEffect(() => {
+    return () => {
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+      if (processedUrl) URL.revokeObjectURL(processedUrl);
+    };
+  }, [objectUrl, processedUrl]);
 
   useEffect(() => {
     if (audioBuffer) drawStaticWaveform();

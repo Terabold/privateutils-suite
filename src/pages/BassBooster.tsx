@@ -155,6 +155,14 @@ const BassBooster = () => {
     }
   }, [audioBuffer]);
 
+  // Resource Cleanup Engine (Prevent Memory Leaks)
+  useEffect(() => {
+    return () => {
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+      if (processedUrl) URL.revokeObjectURL(processedUrl);
+    };
+  }, [objectUrl, processedUrl]);
+
   useEffect(() => {
     if (audioBuffer) drawStaticWaveform();
   }, [audioBuffer, drawStaticWaveform]);

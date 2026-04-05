@@ -167,6 +167,15 @@ const ImageCompressor = () => {
     }
   }, [quality, targetFormat, originalImage, compressImage]);
 
+  // Resource Cleanup Engine (Prevent Memory Leaks)
+  useEffect(() => {
+    return () => {
+      if (compressedUrlRef.current) {
+        URL.revokeObjectURL(compressedUrlRef.current);
+      }
+    };
+  }, []);
+
   const savings = originalSize > 0 ? Math.max(0, Math.round(((originalSize - compressedSize) / originalSize) * 100)) : 0;
 
   return (
