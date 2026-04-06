@@ -7,6 +7,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
 import AdBox from "@/components/AdBox";
 import { toast } from "sonner";
@@ -280,6 +281,14 @@ const JsonForge = () => {
                 </Card>
               </aside>
             </div>
+            {/* SEO & Tool Guide Section */}
+            <ToolExpertSection
+              title="JSON Studio Forge"
+              description="The JSON Studio is a high-speed data architecture utility designed to validate, prettify, and minify complex JSON structures with ECMA-404 compliance."
+              transparency="Our validation engine runs entirely on your browser's local V8 JavaScript thread. Whether you're debugging a sensitive API response or formatting a configuration file, your data environment is fully isolated from our servers, ensuring zero leakage of proprietary schemas."
+              limitations="While the Studio can handle multi-megabyte JSON payloads, attempting to 'Prettify' an extraordinarily large single-line file (e.g., 50MB+) may cause the browser's UI thread to lock as it calculates thousands of line breaks and indentations. For massive data dumps, we recommend using a CLI-based tool like jq."
+              accent="indigo"
+            />
           </div>
         </main>
 

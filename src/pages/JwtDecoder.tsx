@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-
+import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
 import AdBox from "@/components/AdBox";
 import { usePasteFile } from "@/hooks/usePasteFile";
@@ -290,6 +290,14 @@ const JwtDecoder = () => {
                 </Card>
               </aside>
             </div>
+            {/* SEO & Tool Guide Section */}
+            <ToolExpertSection
+              title="Universal JWT Decoder"
+              description="The Universal JWT Decoder is a specialized diagnostic utility for developers to inspect the Header, Payload, and Signature components of JSON Web Tokens without compromising security."
+              transparency="Unlike online debuggers that may log your tokens (including sensitive claims or secrets) in their database, this tool decodes your JWT entirely within your browser's local sandbox. No data is sent over the network, ensuring your internal development tokens remain strictly private."
+              limitations="This tool is a decoder, not a validator. While it can display the contents of a token and check its expiration status, it does not verify the cryptographic signature against a public or private key. For production-level verification, always use a trusted library in your backend environment."
+              accent="indigo"
+            />
           </div>
         </main>
 

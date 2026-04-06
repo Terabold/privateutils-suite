@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import ToolExpertSection from "@/components/ToolExpertSection";
 
 import SponsorSidebars from "@/components/SponsorSidebars";
 import AdBox from "@/components/AdBox";
@@ -611,6 +612,15 @@ const FrameExtractor = () => {
                 </div>
               </DialogContent>
             </Dialog>
+
+            {/* SEO & Tool Guide Section */}
+            <ToolExpertSection
+              title="Global Frame Extractor"
+              description="The Frame Extractor is a high-performance temporal capture engine designed to recover high-resolution PNG artifacts from any video stream with millisecond precision."
+              transparency="Using your device's hardware-accelerated canvas API, we render and capture video frames directly in your local browser sandbox. This ensures that your private video masters—whether they're family memories or unreleased professional footage—never touch a remote server."
+              limitations="Capturing hundreds of high-resolution 4K frames can consume significant system memory (RAM). While the tool includes a Resource Cleanup Engine, we recommend closing other intensive browser tabs during large extraction sessions to prevent 'Out of Memory' stutters."
+              accent="blue"
+            />
 
             <footer className="pt-20 border-t border-border/50">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

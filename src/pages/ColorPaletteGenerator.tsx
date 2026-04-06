@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
 import AdBox from "@/components/AdBox";
 import { toast } from "sonner";
@@ -254,6 +255,15 @@ const ColorPaletteGenerator = () => {
                 </Card>
               </div>
             </div>
+            
+            {/* SEO & Tool Guide Section */}
+            <ToolExpertSection
+              title="Studio Palette Generator"
+              description="The Studio Palette Generator is a professional-grade color architect tool engineered for front-end developers, UI/UX designers, and digital artists."
+              transparency="Our Harmony Engine processes all HSL matrix calculations and image color-sampling directly within your local browser, eliminating server round-trips. You can safely drop unreleased screenshots or logos without risking leaks."
+              limitations="However, uploading extraordinarily massive, unoptimized RAW photographs strictly to sample a pixel can cause temporary input lag or memory stutter. We recommend using web-optimized images for sampling to ensure lightning-fast performance."
+              accent="blue"
+            />
           </div>
         </main>
 

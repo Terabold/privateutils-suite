@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import ToolExpertSection from "@/components/ToolExpertSection";
 
 import SponsorSidebars from "@/components/SponsorSidebars";
 import AdBox from "@/components/AdBox";
@@ -707,6 +708,16 @@ const SpriteStudio = () => {
                   </CardContent>
                 </Card>
               </aside>
+            </div>
+            {/* SEO & Tool Guide Section */}
+            <div className="max-w-[1240px] w-full mt-10">
+              <ToolExpertSection
+                title="Professional Sprite Partitioning Studio"
+                description="The Sprite Studio is a high-precision asset management engine designed for game developers and UI designers to slice large texture atlases and sprite sheets into individual, optimized PNG artifacts."
+                transparency="Our studio utilizes the browser's native Canvas API 2D context to perform pixel-perfect extraction. The 'Grid Schema' and 'Manual Drafting' engines run entirely within your local V8 environment—ensuring that your proprietary game assets and character designs are never uploaded to a remote server. All processing, including ZIP compression via JSZip, is handled client-side."
+                limitations="The visualizer is optimized for high-performance 'Nearest Neighbor' rendering (Pixelated), making it ideal for pixel art. However, extremely large textures (8192px+) may hit browser-specific canvas memory limits. For massive atlases, we recommend slicing in smaller logical chunks."
+                accent="blue"
+              />
             </div>
           </div>
         </main>

@@ -11,6 +11,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import ToolExpertSection from "@/components/ToolExpertSection";
 
 import SponsorSidebars from "@/components/SponsorSidebars";
 import AdBox from "@/components/AdBox";
@@ -382,6 +383,14 @@ const DataForge = () => {
                 </Card>
               </aside>
             </div>
+            {/* SEO & Tool Guide Section */}
+            <ToolExpertSection
+              title="Data Forge Studio"
+              description="The Data Forge is an all-in-one architecture and translation suite designed for developers who need to prettify, minify, and translate data formats without compromising security."
+              transparency="Whether you're using the Architecture tab to audit raw JSON or the Translation tab to bridge CSV and JSON formats, every single operation is handled by your browser's local V8 engine. No network packets are dispatched, ensuring your API keys, customer lists, and proprietary schemas remain 100% private."
+              limitations="While the Forge is highly optimized for standard developer workflows, extremely large data artifacts (e.g., a 200MB JSON dump) can cause the browser's main thread to hang duringprettification or translation. For massive dataset manipulation, dedicated server-side scripts or desktop CLI tools are more suitable."
+              accent="indigo"
+            />
           </div>
         </main>
 

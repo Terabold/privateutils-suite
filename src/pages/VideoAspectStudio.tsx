@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import ToolExpertSection from "@/components/ToolExpertSection";
 
 import SponsorSidebars from "@/components/SponsorSidebars";
 import AdBox from "@/components/AdBox";
@@ -427,6 +428,14 @@ const VideoAspectStudio = () => {
                 </Card>
               </aside>
             </div>
+            {/* SEO & Tool Guide Section */}
+            <ToolExpertSection
+              title="Social Media Aspect Remapping Studio"
+              description="The Video Aspect Studio is a specialized utility for reformatting video content for platforms like TikTik, Instagram Reels, and YouTube Shorts without compromising privacy."
+              transparency="Our remapping engine utilizes a local FFmpeg WASM cluster to perform hardware-accelerated 'Padded' or 'Cropped' transformations. The entire rendering process—including libx264 encoding—happens within your browser's isolated process. No video data or transformed assets are ever uploaded, ensuring your social media content remains strictly confidential until you decide to post."
+              limitations="High-definition video rendering (1080p+) in the browser is a resource-intensive operation. Depending on your hardware, processing a 1-minute clip may take several minutes as the CPU handles complex x264 compression. For 4K cinematic files, we recommend using dedicated desktop software for optimal performance."
+              accent="purple"
+            />
           </div>
         </main>
 

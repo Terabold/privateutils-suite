@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-
+import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
 import AdBox from "@/components/AdBox";
 
@@ -72,7 +72,7 @@ const TextCaseFormatter = () => {
       <div className="flex justify-center items-start w-full relative">
         <SponsorSidebars position="left" />
 
-        <main className="container mx-auto max-w-[1240px] px-6 py-12 grow overflow-visible">
+        <main className="w-full max-w-[1800px] mx-auto px-6 py-12 grow overflow-visible">
         <div className="flex flex-col gap-10">
           <header className="flex items-center justify-between flex-wrap gap-8">
             <div className="flex items-center gap-6">
@@ -95,8 +95,8 @@ const TextCaseFormatter = () => {
               <AdBox height={250} label="300x250 AD" className="w-full max-w-[400px]" />
             </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8 items-start">
-            <div className="space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-700">
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-12 items-start w-full">
+            <div className="w-full space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-700">
               <Card className="glass-morphism border-primary/10 rounded-2xl shadow-2xl bg-muted/5 p-8 md:p-10">
                 <CardContent className="p-0">
                   <textarea
@@ -143,10 +143,6 @@ const TextCaseFormatter = () => {
                   </Button>
                 </CardContent>
               </Card>
-
-              <div className="flex justify-center">
-                
-              </div>
             </div>
 
             <aside className="space-y-6 lg:sticky lg:top-24 h-fit">
@@ -178,11 +174,19 @@ const TextCaseFormatter = () => {
                   <p className="text-[9px] text-center text-muted-foreground font-black uppercase tracking-widest opacity-30 italic">Local computation • CONSTANT_CASE for env vars • kebab-case for URLs</p>
                 </CardContent>
               </Card>
-
-              <div className="px-6">
-                
-              </div>
             </aside>
+
+          </div>
+
+          {/* SEO & Tool Guide Section */}
+          <div className="max-w-[1240px] w-full mt-10">
+            <ToolExpertSection
+              title="Professional Text Case Transformation Lab"
+              description="The Text Case Formatter is a high-speed string manipulation utility designed for developers, copywriters, and data analysts to standardize text formats across different naming conventions."
+              transparency="Our formatter executes all transformations using local JavaScript string methods (regex and mapping). Whether you are converting a list of variables to 'snake_case' for a database or formatting a paragraph to 'Sentence Case' for a blog post, the logic runs entirely in your browser's local thread. Your text inputs are never transmitted to our servers, ensuring your sensitive scripts and drafts remain private."
+              limitations="While our 'Sentence Case' and 'Title Case' engines are highly accurate, they rely on standard linguistic patterns. Complex proper nouns or specialized technical acronyms may require manual review after the initial transformation."
+              accent="indigo"
+            />
           </div>
         </div>
       </main>

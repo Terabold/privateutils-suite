@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-
+import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
 import AdBox from "@/components/AdBox";
 
@@ -170,16 +170,16 @@ const UnitConverter = () => {
                 </Card>
 
                 {/* Results Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {currentCat.units.map(u => {
                     const result = convert(parseFloat(val) || 0, fromUnit, u.id);
                     const formatted = result.toLocaleString(undefined, { maximumFractionDigits: 6 });
 
                     return (
                       <Card key={u.id} className={`glass-morphism border-primary/10 rounded-2xl shadow-lg bg-muted/5 transition-all group overflow-hidden ${u.id === fromUnit ? 'opacity-40 pointer-events-none' : ''}`}>
-                        <CardContent className="p-6 flex items-center justify-between gap-4 relative overflow-hidden">
+                        <CardContent className="p-4 flex items-center justify-between gap-4 relative overflow-hidden">
                           <div className="flex-1 overflow-hidden relative z-10">
-                            <p className="text-[9px] font-black uppercase tracking-widest opacity-40 mb-1 leading-none">{u.label}</p>
+                            <p className="text-[9px] font-black uppercase tracking-widest opacity-40 mb-1 leading-none">{u.label} ({u.id})</p>
                             <div className="text-xl font-mono font-black italic tracking-tighter truncate selection:bg-primary/30">
                               {formatted}
                             </div>
@@ -235,6 +235,14 @@ const UnitConverter = () => {
                 </div>
               </aside>
             </div>
+            {/* SEO & Tool Guide Section */}
+            <ToolExpertSection
+              title="Professional Unit Transformation Studio"
+              description="The Unit Converter is a high-precision measurement utility designed to translate between Metric, Imperial, and Scientific units across various physical dimensions."
+              transparency="Our converter utilizes local mathematical constants and SI-standard formulas to perform instant transformations. Whether you are calculating building materials in 'Feet' or converting temperatures for a laboratory report, all arithmetic occurs within your browser's local sandbox. Your measurement data is never transmitted to our servers, ensuring your project specifications and technical data remain entirely private."
+              limitations="While our tool provides high-precision results (up to 6 decimal points), rounding errors can occur in extreme scientific conversions. For aerospace or medical-grade precision beyond standard engineering tolerances, always cross-reference with primary ISO standards."
+              accent="indigo"
+            />
           </div>
         </main>
 

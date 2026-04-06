@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-
+import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
 import AdBox from "@/components/AdBox";
 
@@ -243,6 +243,14 @@ const LoremGenerator = () => {
                 </Card>
               </aside>
             </div>
+            {/* SEO & Tool Guide Section */}
+            <ToolExpertSection
+              title="Studio Lorem Generator"
+              description="The Lorem Generator is a high-speed placeholder text engine designed for UI/UX designers and developers who need instant, varied content for mocking up layouts."
+              transparency="Unlike online generators that rely on server-side scripts, our algorithm uses a local JavaScript dictionary to assemble sentences and paragraphs directly in your browser. No data is fetched or logged—your generation patterns remain 100% private."
+              limitations="While the tool is optimized for standard mockups, generating extremely large blocks of text (e.g., 50,000+ words) can cause the browser's DOM rendering engine to lag. For massive content stress-testing, we recommend breaking the generation into smaller segments."
+              accent="emerald"
+            />
           </div>
         </main>
 

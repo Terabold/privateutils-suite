@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
 import AdBox from "@/components/AdBox";
 import { toast } from "sonner";
@@ -249,6 +250,14 @@ const SvgOptimizer = () => {
 
               </aside>
             </div>
+            {/* SEO & Tool Guide Section */}
+            <ToolExpertSection
+              title="Professional SVG Code Optimizer"
+              description="The SVG Optimizer is a high-fidelity vector minification suite designed to strip metadata, hidden bloat, and redundant XML nodes from your SVG artifacts while preserving visual integrity."
+              transparency="Our optimizer utilizes a specialized browser-build of SVGO (SVG Optimizer). Every pass, from multipass path simplification to ID prefixing, happens directly in your browser's V8 thread. Because the code is processed locally, your proprietary icons and vector illustrations never leave your device. We provide a 'Source vs Optimized' diff to ensure total transparency in the reduction ratio."
+              limitations="While our minification engine is extremely thorough, some highly complex vector illustrations with nested filters or proprietary Adobe/Inkscape metadata may require custom SVGO plugins for maximum reduction. For most web use-cases, our default 'Preset-Default' provides the optimal balance of size and compatibility."
+              accent="emerald"
+            />
           </div>
         </main>
 

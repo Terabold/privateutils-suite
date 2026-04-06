@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import ToolExpertSection from "@/components/ToolExpertSection";
 
 import SponsorSidebars from "@/components/SponsorSidebars";
 import AdBox from "@/components/AdBox";
@@ -521,6 +522,14 @@ const PiiMasker = () => {
                </Card>
               </aside>
             </div>
+            {/* SEO & Tool Guide Section */}
+            <ToolExpertSection
+              title="Identity & PII Masker Studio"
+              description="The Identity Masker is a forensic-grade redaction suite designed to permanently obscure Personally Identifiable Information (PII) from images and text documents."
+              transparency="Our masker operates with 'Neural-Grade' privacy by using local Gaussian blur and solid block-cipher algorithms. Unlike cloud-based redaction tools that might store a copy of your unmasked original for 'training' purposes, our tool never uploads your raw data. Every mask is applied locally in your browser's V8 thread, ensuring your sensitive credentials stay safe."
+              limitations="While the Gaussian blur is mathematically complex, extraordinarily high-resolution 8K masters may experience minor frame-drops during real-time dragging of redaction regions. For the most secure redaction, we recommend using 'Blackout' mode for sensitive passwords or numeric data."
+              accent="rose"
+            />
           </div>
         </main>
 

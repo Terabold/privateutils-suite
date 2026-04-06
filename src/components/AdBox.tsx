@@ -7,9 +7,10 @@ interface AdBoxProps {
   label?: string;
   className?: string;
   isSticky?: boolean;
+  adFormat?: "auto" | "horizontal" | "vertical" | "rectangle" | "fluid";
 }
 
-const AdBox = ({ width, height, label = "AD SPACE", className, isSticky }: AdBoxProps) => {
+const AdBox = ({ width, height, label = "AD SPACE", className, isSticky, adFormat }: AdBoxProps) => {
   // Vite מזהה אוטומטית: true כשאתה על המחשב שלך, false כשהאתר באוויר
   const isLocalDev = import.meta.env.DEV;
 
@@ -47,6 +48,9 @@ const AdBox = ({ width, height, label = "AD SPACE", className, isSticky }: AdBox
   }
 
   // מצב 2: פרודקשן (מה שהמשתמשים יראו כשהאתר יהיה באוויר)
+  // Ensure we use horizontal format for sticky setups to avoid massive 300x250 blocks on mobile
+  const finalAdFormat = adFormat || (isSticky || (height && Number(height) <= 90) ? "horizontal" : "auto");
+
   return (
     <div
       className={cn(
@@ -61,7 +65,7 @@ const AdBox = ({ width, height, label = "AD SPACE", className, isSticky }: AdBox
         style={{ display: "block", minHeight: styleParams.height, width: "100%" }}
         data-ad-client="ca-pub-8938339685834274" 
         data-ad-slot="3087709280"               /* PrivacySuite_Sidebars Ad Unit */
-        data-ad-format="auto"
+        data-ad-format={finalAdFormat}
         data-full-width-responsive="true"
       ></ins>
     </div>

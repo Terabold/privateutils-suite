@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-
+import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
 import AdBox from "@/components/AdBox";
 import QRCode from "qrcode";
@@ -241,6 +241,14 @@ const QrForge = () => {
                 </div>
               </aside>
             </div>
+            {/* SEO & Tool Guide Section */}
+            <ToolExpertSection
+              title="Secure QR Studio Forge"
+              description="The Secure QR Forge is a high-speed data encoding utility designed to generate ISO/IEC 18004 compliant QR codes for URLs, text, and encrypted protocols."
+              transparency="Our encoding engine runs entirely on your local device using a specialized JavaScript library. Unlike online QR generators that may track the URLs you encode or redirect your users through their servers, our 'Forge' creates direct, non-tracking artifacts. Your source payload never touches our network, ensuring absolute privacy for your digital redirects."
+              limitations="While the tool supports high-level error correction (Level H), encoding massive amounts of text (over 2,000 characters) will result in a extremely dense matrix that may be difficult for older smartphone cameras to scan reliably. For maximum compatibility, we recommend keeping payloads concise."
+              accent="emerald"
+            />
           </div>
         </main>
 

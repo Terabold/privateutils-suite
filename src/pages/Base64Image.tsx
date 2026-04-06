@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
 import AdBox from "@/components/AdBox";
 import { toast } from "sonner";
@@ -221,6 +222,15 @@ const Base64Image = () => {
                 </div>
               </aside>
             </div>
+
+            {/* SEO & Tool Guide Section */}
+            <ToolExpertSection
+              title="Base64 Image Encoder"
+              description="The Base64 Image Encoder is a specialized front-end utility that allows you to instantly convert standard image files (like JPG, PNG, GIF, or WebP) into portable Base64 Data URLs without relying on a remote server."
+              transparency="This encoder leverages the native HTML5 FileReader API, meaning the entire image-to-text transformation happens strictly within the private confines of your local browser session. It's 100% secure for private design assets."
+              limitations="However, please understand that Base64 encoding generally increases file size by about 33%. While embedding small icons is efficient, encoding massive high-resolution photographs can severely degrade website performance and may cause your browser tab to stall."
+              accent="blue"
+            />
           </div>
         </main>
 

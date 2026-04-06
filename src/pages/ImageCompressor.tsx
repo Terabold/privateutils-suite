@@ -10,6 +10,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import ToolExpertSection from "@/components/ToolExpertSection";
 
 import SponsorSidebars from "@/components/SponsorSidebars";
 import AdBox from "@/components/AdBox";
@@ -179,14 +180,14 @@ const ImageCompressor = () => {
   const savings = originalSize > 0 ? Math.max(0, Math.round(((originalSize - compressedSize) / originalSize) * 100)) : 0;
 
   return (
-    <div className="h-screen bg-background text-foreground transition-all duration-300 theme-image overflow-hidden flex flex-col font-sans">
+    <div className="min-h-screen bg-background text-foreground transition-all duration-300 theme-image flex flex-col font-sans">
       <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
 
       <div className="flex justify-center items-start w-full relative">
         <SponsorSidebars position="left" />
 
         <main className="container mx-auto max-w-[1240px] px-6 py-12 grow overflow-visible">
-          <div className="w-full h-full flex flex-col p-4 md:px-8 md:py-4 gap-4">
+          <div className="w-full flex flex-col gap-10">
             <header className="flex items-center gap-6 animate-in fade-in slide-in-from-top-4 duration-500">
               <Link to="/">
                 <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-white/20 hover:bg-primary/20 transition-all group/back bg-black/60 shadow-2xl">
@@ -208,10 +209,10 @@ const ImageCompressor = () => {
               <AdBox height={250} label="300x250 AD" className="w-full max-w-[400px]" />
             </div>
 
-            <div className="flex-1 grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-4 overflow-hidden items-stretch relative">
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-8 items-start relative animate-in fade-in slide-in-from-bottom-8 duration-700">
               {/* STAGE AREA - CENTER COLUMN */}
-              <div className="relative flex flex-col overflow-hidden min-h-0">
-                <Card className="flex-1 glass-morphism border-primary/40 rounded-xl overflow-hidden shadow-2xl relative group bg-card flex items-center justify-center p-1 border-b-[8px] border-primary/50 transition-all duration-700">
+              <div className="relative flex flex-col min-h-0 w-full">
+                <Card className="glass-morphism border-primary/40 rounded-xl overflow-hidden shadow-2xl relative group bg-card flex items-center justify-center p-1 border-b-[8px] border-primary/50 transition-all duration-700 min-h-[500px]">
                   {!file ? (
                     <div
                       onDragOver={(e) => e.preventDefault()}
@@ -228,9 +229,9 @@ const ImageCompressor = () => {
                       </div>
                     </div>
                   ) : (
-                    <div className="w-full h-full relative flex items-center justify-center p-2 animate-in fade-in zoom-in-95 duration-1000">
+                    <div className="relative w-full h-full min-h-[400px] flex items-center justify-center p-2 animate-in fade-in zoom-in-95 duration-1000">
                       {compressedUrl ? (
-                        <div className="relative w-full h-full flex items-center justify-center group/result px-4 py-4">
+                        <div className="relative w-full h-full flex items-center justify-center group/result px-4 py-12">
                           <div
                             className="relative w-full h-full flex items-center justify-center overflow-hidden cursor-crosshair active:cursor-grabbing select-none"
                             onMouseDown={(e) => {
@@ -296,8 +297,8 @@ const ImageCompressor = () => {
               </div>
 
               {/* SIDEBAR TOOLS - RIGHT COLUMN */}
-              <aside className="flex flex-col gap-4 min-h-0 overflow-hidden animate-in slide-in-from-right-8 duration-700">
-                <Card className="glass-morphism border-primary/30 rounded-xl overflow-hidden shadow-2xl bg-card flex-1 flex flex-col border-b-4 border-l-4 border-white/5">
+              <aside className="lg:sticky lg:top-24 h-fit animate-in slide-in-from-right-8 duration-700">
+                <Card className="glass-morphism border-primary/30 rounded-xl overflow-hidden shadow-2xl bg-card flex flex-col border-b-4 border-l-4 border-white/5">
                   <div className="bg-primary/20 p-5 border-b border-primary/30 flex items-center justify-between shrink-0 h-14">
                     <div className="flex items-center gap-4">
                       <Settings2 className="h-5 w-5 text-primary" />
@@ -305,7 +306,7 @@ const ImageCompressor = () => {
                     </div>
                     <Activity className="h-5 w-5 text-primary animate-pulse" />
                   </div>
-                  <CardContent className="p-6 space-y-5 flex-1 overflow-y-auto custom-scrollbar pt-6">
+                  <CardContent className="p-6 space-y-5 pt-6">
                     <div className="space-y-5 animate-in fade-in duration-500">
                       <div className="space-y-5">
                         <div className="flex justify-between items-end px-1">
@@ -439,6 +440,14 @@ const ImageCompressor = () => {
                 </Card>
               </aside>
             </div>
+            {/* SEO & Tool Guide Section */}
+            <ToolExpertSection
+              title="Studio Image Compressor"
+              description="The Image Compressor is a professional-grade quantization engine designed to shrink image file sizes while maintaining maximum visual fidelity."
+              transparency="Our compression pipeline utilizes both the browser's native Canvas API and an optional WASM-powered FFmpeg backend for high-efficiency PNG quantization. Every byte is crunched locally on your machine, ensuring your private photos or proprietary assets are never uploaded to our servers."
+              limitations="While the tool is hardware-accelerated, compressing exceptionally large images (e.g., 50MB+ RAW files) can temporarily lock your browser's main thread. For massive batch processing of hundreds of high-res images, a dedicated desktop CLI or server-side farm is recommended."
+              accent="blue"
+            />
           </div>
         </main>
 

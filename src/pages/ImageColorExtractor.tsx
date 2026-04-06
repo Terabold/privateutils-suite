@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-
+import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
 import AdBox from "@/components/AdBox";
 import { toast } from "sonner";
@@ -368,6 +368,14 @@ const ImageColorExtractor = () => {
                 </Card>
               </aside>
             </div>
+            {/* SEO & Tool Guide Section */}
+            <ToolExpertSection
+              title="Precision Color Extractor"
+              description="The Color Extractor is a high-fidelity sampling engine designed for digital artists and front-end developers to isolate sub-pixel color values from any source image."
+              transparency="Our extraction logic utilizes the HTML5 Canvas API to sample RGBA data directly from your local hardware buffer. This process is 100% private—your source images never leave your device, ensuring total security for unreleased design assets."
+              limitations="While the tool supports zooming up to 5000% for precision sampling, loading extremely high-resolution RAW photographs (e.g., 100MB+ DSLR shots) may cause temporary memory spikes in your browser. We recommend using web-optimized JPG/PNG files for the smoothest performance."
+              accent="blue"
+            />
           </div>
         </main>
 

@@ -8,6 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
 import AdBox from "@/components/AdBox";
 import { usePasteFile } from "@/hooks/usePasteFile";
@@ -643,6 +644,14 @@ const UniversalMediaConverter = () => {
                 </Card>
               </aside>
             </div>
+            {/* SEO & Tool Guide Section */}
+            <ToolExpertSection
+              title="Universal Media Conversion Studio"
+              description="The Universal Media Converter is a flagship multimedia engine designed to process video, audio, and image artifacts directly within your browser's local sandbox."
+              transparency="Our studio utilizes a dual-engine pipeline: a native Canvas/MediaRecorder bridge for lightweight formats and a multi-threaded FFmpeg.WASM instance for professional-grade transcoding. By leveraging WebAssembly, we perform bitstream manipulation entirely on your local hardware. Your private videos, sensitive recordings, and proprietary assets never touch a remote server, ensuring absolute data sovereignty and air-gapped privacy."
+              limitations="The browser's V8 engine and WASM memory heap have a physical limit (typically ~2-4GB of RAM). While we support video files up to 500MB, extremely long or high-bitrate 4K files may exceed these boundaries. For massive production render-tasks, we recommend a dedicated CLI environment."
+              accent="blue"
+            />
           </div>
         </main>
 

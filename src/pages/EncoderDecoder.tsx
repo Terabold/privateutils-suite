@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-
+import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
 import AdBox from "@/components/AdBox";
 
@@ -239,6 +239,14 @@ const EncoderDecoder = () => {
                      </aside>
                   </div>
                </div>
+               {/* SEO & Tool Guide Section */}
+               <ToolExpertSection
+                  title="Universal Encoder / Decoder"
+                  description="The Universal Encoder / Decoder is a Swiss-army knife for data sanitization, translation, and forensic analysis, supporting Base64, URL percent-encoding, HTML entities, and Hexadecimal formats."
+                  transparency="Unlike online converters that log your queries to a central server, this tool operates exclusively within your browser's local memory. Whether you're decoding a sensitive Base64 token or encoding a URL for a secure API request, the process remains fully air-gapped from our servers."
+                  limitations="While highly efficient for text-based payloads, encoding extraordinarily large files into Hex or Base64 can lead to a 33-400% increase in string size. Processing multi-megabyte blobs in a single tab may cause temporary UI freezes as the browser handles the massive string allocation."
+                  accent="blue"
+               />
             </main>
 
             <SponsorSidebars position="right" />

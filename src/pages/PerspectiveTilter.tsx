@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
 import AdBox from "@/components/AdBox";
 import { toast } from "sonner";
@@ -437,6 +438,14 @@ const PerspectiveTilter = () => {
                 </Card>
               </aside>
             </div>
+            {/* SEO & Tool Guide Section */}
+            <ToolExpertSection
+              title="3D Image Perspective Studio"
+              description="The Perspective Tilter is a high-fidelity 3D transformation engine designed to give your screenshots and UI designs depth by applying realistic Pitch, Yaw, and Perspective projections."
+              transparency="Our 3D engine leverages the browser's native CSS3 Transform-3D matrix and the 'html-to-image' library to capture your result at high resolutions. Every transformation and render happens in your local browser sandbox—your proprietary design assets never leave your device."
+              limitations="While the tool is optimized for modern browsers, rendering extremely large images (4K+) with complex shadows and high-degree tilts can be memory-intensive. For the crispest results, we recommend using an output resolution that is within 2x of your source image."
+              accent="blue"
+            />
           </div>
         </main>
 

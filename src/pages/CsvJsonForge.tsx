@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
 import AdBox from "@/components/AdBox";
 import { toast } from "sonner";
@@ -261,16 +262,24 @@ const CsvJsonForge = () => {
                      </aside>
                   </div>
                </div>
-            </main>
+            {/* SEO & Tool Guide Section */}
+            <ToolExpertSection
+              title="CSV / JSON Forge"
+              description="The CSV/JSON Forge is a high-speed data translation utility that bridges the gap between spreadsheet-oriented CSV files and developer-friendly JSON structures."
+              transparency="Instead of uploading sensitive mailing lists or financial records to a third-party server, this tool utilizes your browser's local JavaScript engine. The entire conversion logic—whether parsing or flattening—is executed air-gapped on your own machine."
+              limitations="However, please note that rendering enormously large datasets (e.g., 500MB+ CSV files) is not ideal for the browser. A multi-gigabyte text buffer will almost always result in an Out of Memory crash. We recommend staying under 10MB for a fluid experience."
+              accent="emerald"
+            />
+          </main>
 
-            <SponsorSidebars position="right" />
-         </div>
-         <Footer />
+          <SponsorSidebars position="right" />
+        </div>
+        <Footer />
 
-         {/* Mobile Sticky Anchor Ad */}
-         <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-background/80 dark:bg-black/80 backdrop-blur-sm border-t border-border dark:border-white/10 py-2 h-[66px] overflow-hidden">
-            <AdBox height={50} label="320x50 ANCHOR AD" className="w-full" />
-         </div>
+        {/* Mobile Sticky Anchor Ad */}
+        <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-background/80 dark:bg-black/80 backdrop-blur-sm border-t border-border dark:border-white/10 py-2 h-[66px] overflow-hidden">
+          <AdBox height={50} label="320x50 ANCHOR AD" className="w-full" />
+        </div>
       </div>
    );
 };
