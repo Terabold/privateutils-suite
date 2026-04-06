@@ -15,7 +15,7 @@ const NotFound = () => {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-6 font-sans selection:bg-primary/30 selection:text-white">
       {/* Background Decorative Element */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      <div className="absolute inset-0 overflow-x-clip pointer-events-none">
         <div className="absolute top-[20%] left-[10%] w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] animate-pulse" />
         <div className="absolute bottom-[20%] right-[10%] w-[400px] h-[400px] bg-primary/10 rounded-full blur-[100px]" />
       </div>

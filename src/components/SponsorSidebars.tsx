@@ -14,22 +14,20 @@ interface SponsorSidebarsProps {
  */
 const SponsorSidebars = ({ position, className }: SponsorSidebarsProps) => {
   return (
-    <aside 
+    <aside
       className={cn(
-        "hidden min-[1600px]:flex flex-col gap-10 sticky top-24 w-[300px] shrink-0 duration-1000 animate-in fade-in pt-8",
-        position === "left" 
-            ? "slide-in-from-left-8 ml-8 mr-12" 
-            : "slide-in-from-right-8 ml-12 mr-8",
+        "hidden min-[1600px]:flex flex-col gap-4 sticky top-[110px] h-fit self-start w-[300px] shrink-0 duration-1000 animate-in fade-in",
+        position === "left"
+          ? "slide-in-from-left-8 ml-8 mr-12"
+          : "slide-in-from-right-8 ml-12 mr-8",
         className
       )}
     >
       {/* Top Ad (300x250) */}
-      <AdBox width={300} height={250} label="300x250 AD" />
+      <AdBox adFormat="vertical" width={300} height={250} label="300x250 AD" />
 
-      {/* Bottom Sticky Ad (300x600) */}
-      <div className="pt-20">
-        <AdBox width={300} height={600} label="300x600 AD" className="sticky top-40" />
-      </div>
+      {/* Bottom Ad (300x600) */}
+      <AdBox adFormat="vertical" width={300} height={600} label="300x600 AD" />
     </aside>
   );
 };

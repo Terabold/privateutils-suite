@@ -124,7 +124,6 @@
     @apply bg-background text-foreground antialiased text-[16px] pb-20 md:pb-0;
     font-family: 'Outfit', sans-serif;
     width: 100% !important;
-    overflow-x: hidden !important;
     transition: background-color 0.4s ease-in-out, color 0.4s ease-in-out, border-color 0.4s ease-in-out, box-shadow 0.4s ease-in-out;
   }
 
@@ -330,4 +329,34 @@ input[type="color"]::-webkit-color-swatch-wrapper {
 input[type="color"]::-webkit-color-swatch {
   border: none;
   border-radius: 1rem;
+}
+
+/* --- Google AdSense Mobile Fixes --- */
+ins.adsbygoogle[data-ad-status="unfilled"] {
+  display: none !important;
+}
+
+/* Force AdSense backgrounds to be completely transparent if they fail to load */
+.adsbygoogle {
+  background: transparent !important;
+}
+
+/* Prevent Google Auto-Ads from creating massive overlays on mobile */
+.google-auto-placed {
+  background: transparent !important;
+  pointer-events: none !important;
+}
+
+.google-auto-placed ins {
+  pointer-events: auto !important;
+}
+
+
+/* העלמת הקונטיינר העוטף לחלוטין כאשר גוגל לא מחזירה מודעה */
+div:has(> ins.adsbygoogle[data-ad-status="unfilled"]) {
+  display: none !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }

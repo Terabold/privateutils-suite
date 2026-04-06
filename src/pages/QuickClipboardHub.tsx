@@ -75,14 +75,14 @@ const QuickClipboardHub = () => {
 
             {/* Mobile Inline Ad */}
             <div className="flex min-[1600px]:hidden justify-center mb-8 w-full">
-              <AdBox height={250} label="300x250 AD" className="w-full max-w-[400px]" />
+              <AdBox adFormat="horizontal" height={250} label="300x250 AD" className="w-full max-w-[400px]" />
             </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center min-h-[500px]">
              {/* Master Paste Zone */}
              <div className="space-y-8 animate-in fade-in slide-in-from-left-8 duration-1000">
                 <Card 
-                  className="glass-morphism border-primary/20 overflow-hidden relative bg-black shadow-[0_0_50px_-12px_rgba(139,92,246,0.3)] rounded-2xl group border-2 cursor-pointer"
+                  className="glass-morphism border-primary/20 overflow-x-clip relative bg-black shadow-[0_0_50px_-12px_rgba(139,92,246,0.3)] rounded-2xl group border-2 cursor-pointer"
                   onClick={async () => {
                     try {
                       const items = await navigator.clipboard.read();
@@ -145,7 +145,7 @@ const QuickClipboardHub = () => {
              <div className="space-y-8 animate-in fade-in slide-in-from-right-8 duration-1000">
                  <p className="text-[9px] text-center text-muted-foreground font-black uppercase tracking-widest opacity-30 italic px-4">Local memory only • Auto MIME detection • PNG, JPEG, PDF, Binary</p>
 
-                <Card className="glass-morphism border-primary/10 rounded-2xl bg-zinc-950/50 shadow-xl overflow-hidden">
+                <Card className="glass-morphism border-primary/10 rounded-2xl bg-zinc-950/50 shadow-xl overflow-x-clip">
                    <div className="bg-[#0a0a0a] px-6 py-4 border-b border-white/5 flex items-center justify-between">
                       <h3 className="text-[10px] font-black uppercase tracking-widest opacity-40 flex items-center gap-2">
                          <History className="h-3.5 w-3.5" /> Extraction Log
@@ -212,8 +212,8 @@ const QuickClipboardHub = () => {
       <Footer />
     
       {/* Mobile Sticky Anchor Ad */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-black/80 backdrop-blur-sm border-t border-white/10 py-2 h-[66px] overflow-hidden">
-        <AdBox height={50} label="320x50 ANCHOR AD" className="w-full" />
+      <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-black/80 backdrop-blur-sm border-t border-white/10 py-2 h-[66px] overflow-x-clip">
+        <AdBox adFormat="horizontal" height={50} label="320x50 ANCHOR AD" className="w-full" />
       </div>
     </div>
   );

@@ -143,7 +143,7 @@ const JsonForge = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground theme-utility transition-all duration-500 overflow-x-hidden">
+    <div className="min-h-screen bg-background text-foreground theme-utility transition-all duration-500 ">
       <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
 
       <div className="flex justify-center items-start w-full relative">
@@ -167,12 +167,12 @@ const JsonForge = () => {
 
             {/* Mobile Inline Ad */}
             <div className="flex min-[1600px]:hidden justify-center mb-8 w-full">
-              <AdBox height={250} label="300x250 AD" className="w-full max-w-[400px]" />
+              <AdBox adFormat="horizontal" height={250} label="300x250 AD" className="w-full max-w-[400px]" />
             </div>
 
             <div className="grid grid-cols-1 xl:grid-cols-[1fr_380px] gap-12 items-start overflow-visible">
               <div className="space-y-8 animate-in fade-in slide-in-from-bottom-6 duration-700">
-                <Card className="glass-morphism border-border dark:border-primary/10 overflow-hidden relative bg-zinc-100 dark:bg-[#0a0a0a] shadow-lg dark:shadow-2xl rounded-2xl group flex flex-col min-h-[600px]">
+                <Card className="glass-morphism border-border dark:border-primary/10 overflow-x-clip relative bg-zinc-100 dark:bg-[#0a0a0a] shadow-lg dark:shadow-2xl rounded-2xl group flex flex-col min-h-[600px]">
 
                   {/* VS Code Style Header */}
                   <div className="px-4 pt-3 border-b border-border dark:border-white/5 flex items-end justify-between relative z-10">
@@ -201,7 +201,7 @@ const JsonForge = () => {
                   </div>
 
                   {/* Body Content */}
-                  <div className="flex-1 flex overflow-hidden bg-white dark:bg-black min-h-[500px] relative z-0">
+                  <div className="flex-1 flex overflow-x-clip bg-white dark:bg-black min-h-[500px] relative z-0">
                     {/* Line Numbers Gutter */}
                     <div className="w-12 bg-zinc-50 dark:bg-[#050505] border-r border-border dark:border-white/5 flex flex-col py-6 items-center font-mono text-[10px] text-muted-foreground/50 dark:text-zinc-600 select-none min-h-[500px]">
                       {Array.from({ length: Math.max(1, input.split('\n').length) }).map((_, i) => (
@@ -240,7 +240,7 @@ const JsonForge = () => {
               </div>
 
               <aside className="space-y-8 lg:sticky lg:top-24 h-fit">
-                <Card className="glass-morphism border-border dark:border-primary/10 rounded-2xl overflow-hidden shadow-lg dark:shadow-xl bg-card border-2 dark:border-primary/5">
+                <Card className="glass-morphism border-border dark:border-primary/10 rounded-2xl overflow-x-clip shadow-lg dark:shadow-xl bg-card border-2 dark:border-primary/5">
                   <div className="bg-primary/5 dark:bg-primary/10 p-5 border-b border-border dark:border-primary/10 flex items-center justify-between">
                     <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary italic">Status Console</h3>
                     {!error && input.length > 0 && <span className="flex items-center gap-1.5 text-[9px] font-black text-emerald-600 dark:text-emerald-500 uppercase tracking-widest animate-pulse"><Check className="h-3 w-3" /> Valid Architecture</span>}
@@ -297,8 +297,8 @@ const JsonForge = () => {
       <Footer />
 
       {/* Mobile Sticky Anchor Ad */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-background/80 dark:bg-black/80 backdrop-blur-sm border-t border-border dark:border-white/10 py-2 h-[66px] overflow-hidden">
-        <AdBox height={50} label="320x50 ANCHOR AD" className="w-full" />
+      <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-background/80 dark:bg-black/80 backdrop-blur-sm border-t border-border dark:border-white/10 py-2 h-[66px] overflow-x-clip">
+        <AdBox adFormat="horizontal" height={50} label="320x50 ANCHOR AD" className="w-full" />
       </div>
     </div>
   );

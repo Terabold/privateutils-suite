@@ -221,7 +221,7 @@ const DataForge = () => {
 
             {/* Mobile Inline Ad */}
             <div className="flex min-[1600px]:hidden justify-center mb-8 w-full">
-              <AdBox height={250} label="300x250 AD" className="w-full max-w-[400px]" />
+              <AdBox adFormat="horizontal" height={250} label="300x250 AD" className="w-full max-w-[400px]" />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-12 items-start">
@@ -230,7 +230,7 @@ const DataForge = () => {
                 {activeTab === 'architecture' ? (
                   // ARCHITECTURE TAB
                   <div className="space-y-8">
-                    <Card className="glass-morphism border-primary/10 overflow-hidden relative bg-card shadow-2xl rounded-2xl group flex flex-col min-h-[600px]">
+                    <Card className="glass-morphism border-primary/10 overflow-x-clip relative bg-card shadow-2xl rounded-2xl group flex flex-col min-h-[600px]">
                       <div className="bg-background/40 px-4 py-2 border-b border-white/5 flex items-center justify-between">
                         <div className="flex items-center gap-2 bg-background px-4 py-2 rounded-t-lg border-x border-t border-white/5 -mb-[9px] relative z-10 shadow-xl">
                           <FileJson className="h-3.5 w-3.5 text-primary" />
@@ -244,7 +244,7 @@ const DataForge = () => {
                           <Button size="icon" variant="ghost" onClick={() => handleInput("")} className="h-8 w-8 text-destructive/50 hover:text-destructive"><Trash2 className="h-3.5 w-3.5" /></Button>
                         </div>
                       </div>
-                      <div className="flex-1 flex overflow-hidden relative">
+                      <div className="flex-1 flex overflow-x-clip relative">
                         <div className="w-12 bg-background/20 border-r border-white/5 flex flex-col py-6 items-center font-mono text-[10px] text-muted-foreground select-none">
                           {Array.from({ length: Math.max(1, input.split('\n').length) }).map((_, i) => (
                             <div key={i} className="leading-relaxed h-6">{i + 1}</div>
@@ -328,7 +328,7 @@ const DataForge = () => {
               </div>
 
               <aside className="space-y-8 lg:sticky lg:top-24 h-fit">
-                <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl bg-card">
+                <Card className="glass-morphism border-primary/10 rounded-2xl overflow-x-clip shadow-xl bg-card">
                   <div className="bg-primary/5 p-5 border-b border-primary/10 flex items-center justify-between">
                     <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Forge Console</h3>
                     {activeTab === 'architecture' && !error && input.length > 0 && <span className="flex items-center gap-1.5 text-[9px] font-black text-emerald-500 uppercase tracking-widest"><Check className="h-3 w-3" /> Valid</span>}
@@ -399,8 +399,8 @@ const DataForge = () => {
       <Footer />
     
       {/* Mobile Sticky Anchor Ad */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-black/80 backdrop-blur-sm border-t border-white/10 py-2 h-[66px] overflow-hidden">
-        <AdBox height={50} label="320x50 ANCHOR AD" className="w-full" />
+      <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-black/80 backdrop-blur-sm border-t border-white/10 py-2 h-[66px] overflow-x-clip">
+        <AdBox adFormat="horizontal" height={50} label="320x50 ANCHOR AD" className="w-full" />
       </div>
     </div>
   );

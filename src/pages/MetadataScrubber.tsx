@@ -83,7 +83,7 @@ const MetadataScrubber = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground theme-privacy transition-all duration-500 overflow-x-hidden">
+    <div className="min-h-screen bg-background text-foreground theme-privacy transition-all duration-500 ">
       <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
       
       <div className="flex justify-center items-start w-full relative">
@@ -107,13 +107,13 @@ const MetadataScrubber = () => {
 
             {/* Mobile Inline Ad */}
             <div className="flex min-[1600px]:hidden justify-center mb-8 w-full">
-              <AdBox height={250} label="300x250 AD" className="w-full max-w-[400px]" />
+              <AdBox adFormat="horizontal" height={250} label="300x250 AD" className="w-full max-w-[400px]" />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-12 items-start animate-in fade-in slide-in-from-bottom-8 duration-700 overflow-visible">
               <div className="space-y-8">
                 {!image ? (
-                  <Card className="glass-morphism border-primary/10 overflow-hidden min-h-[500px] flex flex-col items-center justify-center relative bg-card rounded-2xl shadow-inner p-10 select-none">
+                  <Card className="glass-morphism border-primary/10 overflow-x-clip min-h-[500px] flex flex-col items-center justify-center relative bg-card rounded-2xl shadow-inner p-10 select-none">
                     <div
                       onDragOver={(e) => e.preventDefault()}
                       onDrop={(e) => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); }}
@@ -135,7 +135,7 @@ const MetadataScrubber = () => {
                   </Card>
                 ) : (
                   <div className="space-y-8">
-                    <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-2xl bg-card p-2 relative group cursor-crosshair">
+                    <Card className="glass-morphism border-primary/10 rounded-2xl overflow-x-clip shadow-2xl bg-card p-2 relative group cursor-crosshair">
                       <div className={`relative transition-all duration-700 ${!scrubbed ? 'grayscale blur-[2px] group-hover:grayscale-0 group-hover:blur-none' : ''}`}>
                         <img src={image} className="w-full h-auto max-h-[700px] object-contain rounded-xl" alt="Source Artifact" />
                       </div>
@@ -201,7 +201,7 @@ const MetadataScrubber = () => {
               </div>
 
               <aside className="space-y-8 lg:sticky lg:top-24 h-fit">
-                <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl border-2 border-primary/5 bg-card">
+                <Card className="glass-morphism border-primary/10 rounded-2xl overflow-x-clip shadow-xl border-2 border-primary/5 bg-card">
                   <div className="bg-primary/5 p-5 border-b border-primary/10 flex items-center gap-3">
                     <Smartphone className="h-4 w-4 text-primary" />
                     <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary italic leading-none">Scrub Logic Pipeline</h3>
@@ -295,8 +295,8 @@ const MetadataScrubber = () => {
       <canvas ref={canvasRef} className="hidden" />
     
       {/* Mobile Sticky Anchor Ad */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-black/80 backdrop-blur-sm border-t border-white/10 py-2 h-[66px] overflow-hidden">
-        <AdBox height={50} label="320x50 ANCHOR AD" className="w-full" />
+      <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-black/80 backdrop-blur-sm border-t border-white/10 py-2 h-[66px] overflow-x-clip">
+        <AdBox adFormat="horizontal" height={50} label="320x50 ANCHOR AD" className="w-full" />
       </div>
     </div>
   );

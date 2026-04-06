@@ -6,7 +6,7 @@ const Footer = () => {
     <footer className="mt-20 border-t bg-muted/30">
       <div className="container mx-auto px-4 py-12">
         <div className="flex flex-col items-center mb-10 w-full">
-          <AdBox width="60%" height={90} label="DYNAMIC BANNER AD" className="w-full md:w-[60%] max-w-full h-auto" />
+          <AdBox adFormat="horizontal" width="60%" height={90} label="DYNAMIC BANNER AD" className="w-full md:w-[60%] max-w-full h-auto" />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center md:text-left">

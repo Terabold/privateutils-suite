@@ -125,7 +125,7 @@ const ColorPaletteGenerator = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground theme-image transition-all duration-500 overflow-x-hidden">
+    <div className="min-h-screen bg-background text-foreground theme-image transition-all duration-500 ">
       <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
       
       <div className="flex justify-center items-start w-full relative">
@@ -151,13 +151,13 @@ const ColorPaletteGenerator = () => {
 
             {/* Mobile Inline Ad */}
             <div className="flex min-[1600px]:hidden justify-center mb-8 w-full">
-              <AdBox height={250} label="300x250 AD" className="w-full max-w-[400px]" />
+              <AdBox adFormat="horizontal" height={250} label="300x250 AD" className="w-full max-w-[400px]" />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-12 items-start animate-in fade-in slide-in-from-bottom-8 duration-700 overflow-visible">
               {/* Left: Palette Preview */}
               <div className="space-y-8 animate-in fade-in slide-in-from-left-6 duration-700 lg:sticky lg:top-24">
-                <div className="flex flex-col h-[600px] rounded-2xl overflow-hidden shadow-2xl border border-white/10 group bg-card backdrop-blur-3xl">
+                <div className="flex flex-col h-[600px] rounded-2xl overflow-x-clip shadow-2xl border border-white/10 group bg-card backdrop-blur-3xl">
                   {palette.map((hex, i) => (
                     <div 
                       key={i} 
@@ -176,7 +176,7 @@ const ColorPaletteGenerator = () => {
 
               {/* Right: Controls & Export */}
               <div className="space-y-8 animate-in fade-in slide-in-from-right-6 duration-700 overflow-visible">
-                <Card className="glass-morphism border-primary/10 rounded-2xl shadow-2xl bg-card p-10 overflow-hidden relative">
+                <Card className="glass-morphism border-primary/10 rounded-2xl shadow-2xl bg-card p-10 overflow-x-clip relative">
                   <CardContent className="p-0 space-y-12 relative z-10">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
                       <div className="space-y-6">
@@ -272,8 +272,8 @@ const ColorPaletteGenerator = () => {
       <Footer />
     
       {/* Mobile Sticky Anchor Ad */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-black/80 backdrop-blur-sm border-t border-white/10 py-2 h-[66px] overflow-hidden">
-        <AdBox height={50} label="320x50 ANCHOR AD" className="w-full" />
+      <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-black/80 backdrop-blur-sm border-t border-white/10 py-2 h-[66px] overflow-x-clip">
+        <AdBox adFormat="horizontal" height={50} label="320x50 ANCHOR AD" className="w-full" />
       </div>
     </div>
   );

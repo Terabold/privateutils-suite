@@ -195,7 +195,7 @@ const VideoToGif = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground theme-video transition-all duration-300 overflow-x-hidden">
+    <div className="min-h-screen bg-background text-foreground theme-video transition-all duration-300 ">
       <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
 
       <div className="flex justify-center items-start w-full relative">
@@ -219,13 +219,13 @@ const VideoToGif = () => {
 
             {/* Mobile Inline Ad */}
             <div className="flex min-[1600px]:hidden justify-center mb-8 w-full">
-              <AdBox height={250} label="300x250 AD" className="w-full max-w-[400px]" />
+              <AdBox adFormat="horizontal" height={250} label="300x250 AD" className="w-full max-w-[400px]" />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
               <div className="lg:col-span-8 space-y-8">
                 {!file ? (
-                  <Card className="glass-morphism border-primary/10 overflow-hidden min-h-[600px] flex flex-col items-center justify-center relative bg-card rounded-2xl shadow-inner p-10 select-none">
+                  <Card className="glass-morphism border-primary/10 overflow-x-clip min-h-[600px] flex flex-col items-center justify-center relative bg-card rounded-2xl shadow-inner p-10 select-none">
                     <div
                       onDragOver={(e) => e.preventDefault()}
                       onDrop={(e) => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); }}
@@ -246,7 +246,7 @@ const VideoToGif = () => {
                   </Card>
                 ) : (
                   <div className="space-y-8 animate-in fade-in slide-in-from-bottom-6 duration-300">
-                    <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden bg-black shadow-2xl relative border border-border/50 max-w-2xl w-full mx-auto group">
+                    <Card className="glass-morphism border-primary/10 rounded-2xl overflow-x-clip bg-black shadow-2xl relative border border-border/50 max-w-2xl w-full mx-auto group">
                       <video
                         ref={videoRef}
                         src={videoUrl!}
@@ -324,7 +324,7 @@ const VideoToGif = () => {
               </div>
 
               <aside className="lg:col-span-4 space-y-6 lg:sticky lg:top-24 h-fit">
-                <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl border-border/20 bg-card">
+                <Card className="glass-morphism border-primary/10 rounded-2xl overflow-x-clip shadow-xl border-border/20 bg-card">
                   <div className="bg-primary/5 p-8 border-b border-primary/10">
                     <h2 className="text-xs font-bold uppercase tracking-[0.2em] text-primary">Configuration Master</h2>
                   </div>
@@ -355,7 +355,7 @@ const VideoToGif = () => {
                 </Card>
 
                 {processing && (
-                  <Card className="glass-morphism border-primary/20 bg-primary/5 rounded-2xl overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-500">
+                  <Card className="glass-morphism border-primary/20 bg-primary/5 rounded-2xl overflow-x-clip shadow-2xl animate-in fade-in zoom-in-95 duration-500">
                     <div className="p-6 space-y-6">
                       <div className="flex justify-between items-end mb-2">
                         <div className="flex items-center gap-3 text-primary/60">
@@ -397,8 +397,8 @@ const VideoToGif = () => {
       <Footer />
 
       {/* Mobile Sticky Anchor Ad */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-black/80 backdrop-blur-sm border-t border-white/10 py-2 h-[66px] overflow-hidden">
-        <AdBox height={50} label="320x50 ANCHOR AD" className="w-full" />
+      <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-black/80 backdrop-blur-sm border-t border-white/10 py-2 h-[66px] overflow-x-clip">
+        <AdBox adFormat="horizontal" height={50} label="320x50 ANCHOR AD" className="w-full" />
       </div>
     </div>
   );

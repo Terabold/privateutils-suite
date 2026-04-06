@@ -88,7 +88,7 @@ const LoremGenerator = () => {
   const paraCount = output.split("\n\n").filter(Boolean).length;
 
   return (
-    <div className="min-h-screen bg-background text-foreground theme-utility transition-colors duration-500 overflow-x-hidden">
+    <div className="min-h-screen bg-background text-foreground theme-utility transition-colors duration-500 ">
       <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
       
       <div className="flex justify-center items-start w-full relative">
@@ -114,7 +114,7 @@ const LoremGenerator = () => {
 
             {/* Mobile Inline Ad */}
             <div className="flex min-[1600px]:hidden justify-center mb-8 w-full">
-              <AdBox height={250} label="300x250 AD" className="w-full max-w-[400px]" />
+              <AdBox adFormat="horizontal" height={250} label="300x250 AD" className="w-full max-w-[400px]" />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8 items-start overflow-visible">
@@ -209,7 +209,7 @@ const LoremGenerator = () => {
               </div>
 
               <aside className="space-y-6 lg:sticky lg:top-24 h-fit">
-                <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl bg-card border-2 border-primary/5">
+                <Card className="glass-morphism border-primary/10 rounded-2xl overflow-x-clip shadow-xl bg-card border-2 border-primary/5">
                   <div className="bg-primary/5 p-5 border-b border-primary/10">
                     <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary italic leading-none">Acoustic Metrics</h3>
                   </div>
@@ -259,8 +259,8 @@ const LoremGenerator = () => {
       <Footer />
     
       {/* Mobile Sticky Anchor Ad */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-black/80 backdrop-blur-sm border-t border-white/10 py-2 h-[66px] overflow-hidden">
-        <AdBox height={50} label="320x50 ANCHOR AD" className="w-full" />
+      <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-black/80 backdrop-blur-sm border-t border-white/10 py-2 h-[66px] overflow-x-clip">
+        <AdBox adFormat="horizontal" height={50} label="320x50 ANCHOR AD" className="w-full" />
       </div>
     </div>
   );

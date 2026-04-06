@@ -68,7 +68,7 @@ const QrForge = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground theme-privacy transition-all duration-500 overflow-x-hidden">
+    <div className="min-h-screen bg-background text-foreground theme-privacy transition-all duration-500 ">
       <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
 
       <div className="flex justify-center items-start w-full relative">
@@ -94,12 +94,12 @@ const QrForge = () => {
 
             {/* Mobile Inline Ad */}
             <div className="flex min-[1600px]:hidden justify-center mb-8 w-full">
-              <AdBox height={250} label="300x250 AD" className="w-full max-w-[400px]" />
+              <AdBox adFormat="horizontal" height={250} label="300x250 AD" className="w-full max-w-[400px]" />
             </div>
 
             <div className="grid grid-cols-1 xl:grid-cols-[1fr_400px] gap-12 items-start">
               <div className="space-y-12 animate-in fade-in slide-in-from-bottom-6 duration-700">
-                <Card className="glass-morphism border-primary/10 p-10 rounded-2xl bg-zinc-950/50 shadow-2xl relative group overflow-hidden border-2 border-primary/5">
+                <Card className="glass-morphism border-primary/10 p-10 rounded-2xl bg-zinc-950/50 shadow-2xl relative group overflow-x-clip border-2 border-primary/5">
                   <div className="absolute top-0 right-0 p-8 opacity-[0.03] scale-150 rotate-12 pointer-events-none transition-opacity group-hover:opacity-[0.05]">
                     <Smartphone className="h-24 w-24" />
                   </div>
@@ -131,7 +131,7 @@ const QrForge = () => {
 
                 {input && (
                   <div className="flex flex-col items-center gap-8 animate-in zoom-in-95 duration-700">
-                    <div className="bg-white p-8 rounded-2xl shadow-2xl border-8 border-white/10 group-hover:scale-[1.02] transition-transform duration-500 overflow-hidden">
+                    <div className="bg-white p-8 rounded-2xl shadow-2xl border-8 border-white/10 group-hover:scale-[1.02] transition-transform duration-500 overflow-x-clip">
                       {qrUrl ? (
                         <img src={qrUrl} className="w-64 h-64 object-contain mx-auto" alt="QR Artifact" />
                       ) : (
@@ -152,7 +152,7 @@ const QrForge = () => {
               </div>
 
               <aside className="space-y-8 lg:sticky lg:top-24 h-fit">
-                <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl">
+                <Card className="glass-morphism border-primary/10 rounded-2xl overflow-x-clip shadow-xl">
                   <div className="bg-primary/5 h-[56px] px-6 border-b border-primary/10 flex items-center justify-between">
                     <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Styling Matrix</h3>
                     {input && (
@@ -257,8 +257,8 @@ const QrForge = () => {
       <Footer />
 
       {/* Mobile Sticky Anchor Ad */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-black/80 backdrop-blur-sm border-t border-white/10 py-2 h-[66px] overflow-hidden">
-        <AdBox height={50} label="320x50 ANCHOR AD" className="w-full" />
+      <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-black/80 backdrop-blur-sm border-t border-white/10 py-2 h-[66px] overflow-x-clip">
+        <AdBox adFormat="horizontal" height={50} label="320x50 ANCHOR AD" className="w-full" />
       </div>
     </div>
   );

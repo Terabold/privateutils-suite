@@ -323,7 +323,7 @@ const UniversalMediaConverter = () => {
 
       const mimeMap: Record<string, string> = {
         'mp4': 'video/mp4', 'webm': 'video/webm', 'mkv': 'video/x-matroska',
-        'avi': 'video/x-msvideo', 'ts': 'video/mp2t', 'mov': 'video/quicktime',
+        'ts': 'video/mp2t', 'mov': 'video/quicktime',
         'mp3': 'audio/mpeg', 'wav': 'audio/wav', 'flac': 'audio/flac',
         'm4a': 'audio/mp4', 'aac': 'audio/aac', 'ogg': 'audio/ogg'
       };
@@ -398,7 +398,7 @@ const UniversalMediaConverter = () => {
   );
 
   return (
-    <div className="min-h-screen bg-background text-foreground transition-all duration-300 theme-video overflow-x-hidden">
+    <div className="min-h-screen bg-background text-foreground transition-all duration-300 theme-video ">
       <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
 
       <div className="flex justify-center items-start w-full relative">
@@ -421,12 +421,12 @@ const UniversalMediaConverter = () => {
             </header>
 
             <div className="flex min-[1600px]:hidden justify-center mb-8 w-full">
-              <AdBox height={250} label="300x250 AD" className="w-full max-w-[400px]" />
+              <AdBox adFormat="horizontal" height={250} label="300x250 AD" className="w-full max-w-[400px]" />
             </div>
 
             <div className="flex flex-col lg:flex-row gap-12 items-start animate-in fade-in slide-in-from-bottom-8 duration-700">
               <div className={`w-full transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] space-y-8 ${file ? 'lg:w-[58.333%]' : 'lg:w-[66.666%]'}`}>
-                <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-2xl relative group bg-card">
+                <Card className="glass-morphism border-primary/10 rounded-2xl overflow-x-clip shadow-2xl relative group bg-card">
                   <div className="bg-primary/5 p-5 border-b border-primary/10 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <Activity className="h-4 w-4 text-primary" />
@@ -481,7 +481,7 @@ const UniversalMediaConverter = () => {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                         transition={{ duration: 0.4 }}
-                        className="relative group w-full bg-background/40 p-10 rounded-2xl border border-primary/10 shadow-inner overflow-hidden min-h-[450px] flex flex-col items-center justify-center studio-gradient backdrop-blur-3xl"
+                        className="relative group w-full bg-background/40 p-10 rounded-2xl border border-primary/10 shadow-inner overflow-x-clip min-h-[450px] flex flex-col items-center justify-center studio-gradient backdrop-blur-3xl"
                       >
                         {processing ? (
                           <div className="flex flex-col items-center justify-center text-center animate-in fade-in zoom-in-95 duration-500">
@@ -562,7 +562,7 @@ const UniversalMediaConverter = () => {
               </div>
 
               <aside className={`w-full transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] space-y-4 lg:sticky lg:top-24 h-fit ${file ? 'lg:w-[41.666%]' : 'lg:w-[33.333%]'}`}>
-                <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl border-b-2 border-r-2 bg-card">
+                <Card className="glass-morphism border-primary/10 rounded-2xl overflow-x-clip shadow-xl border-b-2 border-r-2 bg-card">
                   {resultUrl && (
                     <div className="bg-primary/10 border-b border-primary/10 animate-in fade-in slide-in-from-top-4 duration-500 backdrop-blur-3xl">
                       <div className="p-4 flex items-center justify-between border-b border-primary/5">
@@ -659,8 +659,8 @@ const UniversalMediaConverter = () => {
       </div>
       <Footer />
 
-      <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-black/80 backdrop-blur-sm border-t border-white/10 py-2 h-[66px] overflow-hidden">
-        <AdBox height={50} label="320x50 ANCHOR AD" className="w-full" />
+      <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-black/80 backdrop-blur-sm border-t border-white/10 py-2 h-[66px] overflow-x-clip">
+        <AdBox adFormat="horizontal" height={50} label="320x50 ANCHOR AD" className="w-full" />
       </div>
     </div>
   );

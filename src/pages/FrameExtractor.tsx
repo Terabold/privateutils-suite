@@ -213,7 +213,7 @@ const FrameExtractor = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground theme-video transition-all duration-300 overflow-x-clip">
+    <div className="min-h-screen bg-background text-foreground theme-video transition-all duration-300 ">
       <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
 
       <div className="flex justify-center items-start w-full relative">
@@ -239,14 +239,14 @@ const FrameExtractor = () => {
 
             {/* Mobile Inline Ad */}
             <div className="flex min-[1600px]:hidden justify-center mb-8 w-full">
-              <AdBox height={250} label="300x250 AD" className="w-full max-w-[400px]" />
+              <AdBox adFormat="horizontal" height={250} label="300x250 AD" className="w-full max-w-[400px]" />
             </div>
 
             <motion.div layout className={`flex flex-col lg:flex-row items-start w-full gap-8 ${!file ? 'justify-center' : 'justify-start'}`}>
               <motion.div 
                 layout 
                 transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                className={`glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-2xl bg-card flex flex-col relative w-full ${!file ? 'max-w-3xl' : 'lg:w-[55%]'}`}
+                className={`glass-morphism border-primary/10 rounded-2xl overflow-x-clip shadow-2xl bg-card flex flex-col relative w-full ${!file ? 'max-w-3xl' : 'lg:w-[55%]'}`}
               >
                 <AnimatePresence mode="popLayout" initial={false}>
                   {!file ? (
@@ -308,7 +308,7 @@ const FrameExtractor = () => {
                         )}
                         <CardContent className={`flex flex-col items-center w-full ${isFullscreen ? 'p-0' : 'p-6 space-y-6'}`}>
                       <div ref={containerRef} className={cn(
-                        "w-full rounded-2xl overflow-hidden shadow-2xl relative border-2 border-primary/10 bg-black aspect-video flex items-center justify-center studio-gradient focus-within:ring-2 focus-within:ring-primary/20 group/video",
+                        "w-full rounded-2xl overflow-x-clip shadow-2xl relative border-2 border-primary/10 bg-black aspect-video flex items-center justify-center studio-gradient focus-within:ring-2 focus-within:ring-primary/20 group/video",
                         isFullscreen && "rounded-none border-0"
                       )}>
                         <video
@@ -368,7 +368,7 @@ const FrameExtractor = () => {
                               <Button
                                 onClick={captureFrame}
                                 disabled={processing}
-                                className="flex-1 max-w-[200px] h-11 rounded-xl bg-secondary text-secondary-foreground font-bold italic uppercase tracking-tighter shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all gap-3 border-b-2 active:border-b-0 active:translate-y-0.5 relative overflow-hidden group/btn px-4"
+                                className="flex-1 max-w-[200px] h-11 rounded-xl bg-secondary text-secondary-foreground font-bold italic uppercase tracking-tighter shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all gap-3 border-b-2 active:border-b-0 active:translate-y-0.5 relative overflow-x-clip group/btn px-4"
                               >
                                 <Camera className={`h-4 w-4 relative z-10 ${processing ? "animate-spin" : ""}`} />
                                 <span className="relative z-10">Capture Instance</span>
@@ -412,7 +412,7 @@ const FrameExtractor = () => {
                     transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
                     className="w-full lg:w-[45%] space-y-6"
                   >
-                      <Card className="w-full rounded-2xl overflow-hidden shadow-2xl relative border border-white/5 bg-card max-h-[38vh] aspect-video flex items-center justify-center group/latest">
+                      <Card className="w-full rounded-2xl overflow-x-clip shadow-2xl relative border border-white/5 bg-card max-h-[38vh] aspect-video flex items-center justify-center group/latest">
                         {frames.length > 0 ? (
                           <div className="relative w-full h-full animate-in fade-in zoom-in-95 duration-500">
                             <img
@@ -484,7 +484,7 @@ const FrameExtractor = () => {
 
                       <div
                         onClick={() => setShowGallery(true)}
-                        className="bg-background/40 rounded-2xl border border-border/50 p-4 min-h-[160px] relative overflow-hidden group studio-gradient shadow-2xl cursor-pointer hover:border-primary/40 transition-all flex flex-col"
+                        className="bg-background/40 rounded-2xl border border-border/50 p-4 min-h-[160px] relative overflow-x-clip group studio-gradient shadow-2xl cursor-pointer hover:border-primary/40 transition-all flex flex-col"
                       >
                         <header className="mb-3 flex items-center justify-between px-1">
                           <div className="flex items-center gap-3">
@@ -511,7 +511,7 @@ const FrameExtractor = () => {
                         ) : (
                           <div className="grid grid-cols-4 gap-2 flex-1 auto-rows-fr">
                             {frames.slice(0, 8).map((frame) => (
-                              <div key={frame.id} className="relative rounded-2xl overflow-hidden border border-white/5 opacity-80 hover:opacity-100 transition-opacity shadow-sm bg-background/40">
+                              <div key={frame.id} className="relative rounded-2xl overflow-x-clip border border-white/5 opacity-80 hover:opacity-100 transition-opacity shadow-sm bg-background/40">
                                 <img src={frame.url} className="w-full h-full object-cover aspect-video" alt="History Thumb" />
                               </div>
                             ))}
@@ -525,7 +525,7 @@ const FrameExtractor = () => {
 
             {/* GALLERY MODAL */}
             <Dialog modal={false} open={showGallery} onOpenChange={setShowGallery}>
-              <DialogContent className="max-w-6xl h-[85vh] flex flex-col p-0 glass-morphism border-primary/20 bg-card transition-all overflow-hidden studio-gradient shadow-[0_0_100px_rgba(0,0,0,0.8)] theme-video outline-none rounded-2xl z-[200] top-[5vh] translate-y-0">
+              <DialogContent className="max-w-6xl h-[85vh] flex flex-col p-0 glass-morphism border-primary/20 bg-card transition-all overflow-x-clip studio-gradient shadow-[0_0_100px_rgba(0,0,0,0.8)] theme-video outline-none rounded-2xl z-[200] top-[5vh] translate-y-0">
                 <DialogHeader className="p-10 border-b border-white/5 shrink-0 bg-background/40 backdrop-blur-3xl rounded-t-[40px]">
                   <div className="flex flex-col md:flex-row items-center justify-between gap-8">
                     <div className="space-y-1">
@@ -568,8 +568,8 @@ const FrameExtractor = () => {
                   ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                       {frames.map((frame) => (
-                        <Card key={frame.id} className="relative group/card overflow-hidden bg-card border border-white/5 hover:border-primary/50 transition-all shadow-2xl rounded-2xl flex flex-col h-full hover:scale-[1.02] duration-300">
-                          <div className="aspect-video relative overflow-hidden shrink-0">
+                        <Card key={frame.id} className="relative group/card overflow-x-clip bg-card border border-white/5 hover:border-primary/50 transition-all shadow-2xl rounded-2xl flex flex-col h-full hover:scale-[1.02] duration-300">
+                          <div className="aspect-video relative overflow-x-clip shrink-0">
                             <img src={frame.url} className="w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-110" alt={`Capture at ${frame.time}s`} />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover/card:opacity-100 transition-opacity" />
 
@@ -641,8 +641,8 @@ const FrameExtractor = () => {
       <Footer />
 
       {/* Mobile Sticky Anchor Ad */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-black/80 backdrop-blur-sm border-t border-white/10 py-2 h-[66px] overflow-hidden">
-        <AdBox height={50} label="320x50 ANCHOR AD" className="w-full" />
+      <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-black/80 backdrop-blur-sm border-t border-white/10 py-2 h-[66px] overflow-x-clip">
+        <AdBox adFormat="horizontal" height={50} label="320x50 ANCHOR AD" className="w-full" />
       </div>
     </div>
   );

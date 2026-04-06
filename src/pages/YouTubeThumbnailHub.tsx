@@ -78,7 +78,7 @@ const YouTubeThumbnailHub = () => {
   const getOtherThumb = (i: number) => RANDOM_THUMBNAILS[i % RANDOM_THUMBNAILS.length];
 
   return (
-    <div className="min-h-screen bg-background text-foreground theme-video transition-all duration-300 overflow-x-hidden">
+    <div className="min-h-screen bg-background text-foreground theme-video transition-all duration-300 ">
       <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
 
       <div className="flex justify-center items-start w-full relative">
@@ -162,7 +162,7 @@ const YouTubeThumbnailHub = () => {
 
             {/* Mobile Inline Ad */}
             <div className="flex min-[1600px]:hidden justify-center mb-8 w-full">
-              <AdBox height={250} label="300x250 AD" className="w-full max-w-[400px]" />
+              <AdBox adFormat="horizontal" height={250} label="300x250 AD" className="w-full max-w-[400px]" />
             </div>
 
             {!image ? (
@@ -171,7 +171,7 @@ const YouTubeThumbnailHub = () => {
                   onClick={() => inputRef.current?.click()}
                   onDragOver={(e) => e.preventDefault()}
                   onDrop={(e) => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); }}
-                  className="w-full max-w-4xl aspect-video flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/20 text-center transition-all cursor-pointer bg-card hover:border-primary/40 hover:bg-primary/5 shadow-2xl group relative overflow-hidden"
+                  className="w-full max-w-4xl aspect-video flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/20 text-center transition-all cursor-pointer bg-card hover:border-primary/40 hover:bg-primary/5 shadow-2xl group relative overflow-x-clip"
                 >
                   <div className="h-20 w-20 bg-primary/10 rounded-2xl flex items-center justify-center mb-8 shadow-inner group-hover:scale-110 transition-transform duration-300">
                     <CloudUpload className="h-10 w-10 text-primary" />
@@ -196,7 +196,7 @@ const YouTubeThumbnailHub = () => {
                     >
                       <div ref={watchRef} className={`grid grid-cols-1 xl:grid-cols-12 gap-10 p-8 rounded-2xl transition-all duration-300 shadow-2xl ${ytTheme === 'dark' ? 'bg-[#0f0f0f] border border-white/5 text-white' : 'bg-[#f9f9f9] border border-zinc-200 text-black'}`}>
                         <div className="xl:col-span-8 space-y-6">
-                          <div className="relative aspect-video w-full bg-black rounded-2xl overflow-hidden shadow-2xl border border-white/5 group select-none">
+                          <div className="relative aspect-video w-full bg-black rounded-2xl overflow-x-clip shadow-2xl border border-white/5 group select-none">
                             <img
                               crossOrigin="anonymous"
                               src={image}
@@ -209,7 +209,7 @@ const YouTubeThumbnailHub = () => {
                             <div className="absolute inset-x-0 bottom-0 p-6 bg-gradient-to-t from-black/80 to-transparent flex flex-col gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
                               <div className="flex items-center gap-4">
                                 <Play className="h-6 w-6 text-white fill-white shrink-0" />
-                                <div className="h-1 w-full bg-white/30 rounded-full overflow-hidden">
+                                <div className="h-1 w-full bg-white/30 rounded-full overflow-x-clip">
                                   <div className="h-full bg-red-600 w-[45%]" />
                                 </div>
                                 <span className="text-[11px] font-bold text-white font-mono">10:24 / 23:15</span>
@@ -245,7 +245,7 @@ const YouTubeThumbnailHub = () => {
                         <div className="xl:col-span-4 space-y-4 relative">
                           {[1, 2, 3, 4, 5, 6].map((i) => (
                             <div key={i} className={`flex gap-2 group cursor-pointer border-t py-3 first:border-0 first:pt-0 ${ytTheme === 'dark' ? 'border-white/5' : 'border-zinc-200'}`}>
-                              <div className={`w-[168px] aspect-video rounded-2xl overflow-hidden shrink-0 relative border ${ytTheme === 'dark' ? 'bg-[#272727] border-white/5' : 'bg-zinc-100 border-zinc-200'}`}>
+                              <div className={`w-[168px] aspect-video rounded-2xl overflow-x-clip shrink-0 relative border ${ytTheme === 'dark' ? 'bg-[#272727] border-white/5' : 'bg-zinc-100 border-zinc-200'}`}>
                                 <img
                                   crossOrigin="anonymous"
                                   src={i === 1 ? (image || "") : getOtherThumb(i)}
@@ -259,7 +259,7 @@ const YouTubeThumbnailHub = () => {
                                   <Star className="h-2.5 w-2.5 text-white fill-white shrink-0" />
                                 </div>
                               </div>
-                              <div className="space-y-1 py-0.5 overflow-hidden">
+                              <div className="space-y-1 py-0.5 overflow-x-clip">
                                 <h4 className={`text-sm font-black leading-snug line-clamp-2 pr-4 overflow-visible transition-colors duration-300 ${ytTheme === 'dark' ? 'text-white/90 group-hover:text-primary' : 'text-zinc-900 group-hover:text-primary'}`}>{i === 1 ? title : getOtherTitle(i)}</h4>
                                 <p className={`text-[10px] mt-1 font-black uppercase tracking-widest ${ytTheme === 'dark' ? 'text-white/40' : 'text-zinc-500'}`}>{i === 1 ? 'PrivateUtils Labs' : `Casual YouTuber ${i}`}</p>
                               </div>
@@ -281,7 +281,7 @@ const YouTubeThumbnailHub = () => {
                       <div ref={homeRef} className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-8 rounded-2xl transition-all duration-300 shadow-2xl ${ytTheme === 'dark' ? 'bg-[#0f0f0f] border border-white/5 text-white' : 'bg-[#f9f9f9] border border-zinc-200 text-black'}`}>
                         {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(i => (
                           <div key={i} className={`flex flex-col gap-3 group cursor-pointer transition-all duration-300 ${i === 1 ? 'order-first' : ''}`}>
-                            <div className={`relative aspect-video w-full rounded-xl overflow-hidden border shadow-lg transition-all duration-300 ${ytTheme === 'dark' ? 'bg-[#272727] border-white/5' : 'bg-zinc-100 border-zinc-200'}`}>
+                            <div className={`relative aspect-video w-full rounded-xl overflow-x-clip border shadow-lg transition-all duration-300 ${ytTheme === 'dark' ? 'bg-[#272727] border-white/5' : 'bg-zinc-100 border-zinc-200'}`}>
                               <img
                                 crossOrigin="anonymous"
                                 src={i === 1 ? (image || "") : getOtherThumb(i)}
@@ -324,7 +324,7 @@ const YouTubeThumbnailHub = () => {
                         <div className="space-y-6">
                           {[1, 2, 3, 4, 5, 6].map(i => (
                             <div key={i} className={`flex flex-col sm:flex-row gap-6 group cursor-pointer transition-all duration-300 ${i === 1 ? 'order-first' : ''}`}>
-                              <div className={`w-full sm:w-[360px] aspect-video rounded-xl overflow-hidden shrink-0 relative border shadow-xl transition-all duration-300 ${ytTheme === 'dark' ? 'bg-[#272727] border-white/5' : 'bg-zinc-100 border-zinc-200'}`}>
+                              <div className={`w-full sm:w-[360px] aspect-video rounded-xl overflow-x-clip shrink-0 relative border shadow-xl transition-all duration-300 ${ytTheme === 'dark' ? 'bg-[#272727] border-white/5' : 'bg-zinc-100 border-zinc-200'}`}>
                                 <img
                                   crossOrigin="anonymous"
                                   src={i === 1 ? (image || "") : getOtherThumb(i)}
@@ -387,8 +387,8 @@ const YouTubeThumbnailHub = () => {
       <input ref={inputRef} type="file" className="hidden" accept="image/*" onChange={(e) => handleFile(e.target.files?.[0])} />
 
       {/* Mobile Sticky Anchor Ad */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-black/80 backdrop-blur-sm border-t border-white/10 py-2 h-[66px] overflow-hidden">
-        <AdBox height={50} label="320x50 ANCHOR AD" className="w-full" />
+      <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-black/80 backdrop-blur-sm border-t border-white/10 py-2 h-[66px] overflow-x-clip">
+        <AdBox adFormat="horizontal" height={50} label="320x50 ANCHOR AD" className="w-full" />
       </div>
     </div>
   );

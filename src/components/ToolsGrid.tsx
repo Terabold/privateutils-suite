@@ -1,8 +1,9 @@
 import { Volume2, Type, Pipette, Video, Layers, Layout, Scissors, Music, ShieldX, ImageIcon, ShieldCheck, Wrench, Sparkles, Camera, Code, QrCode, Zap, ClipboardCopy, KeyRound, Binary, Clock, SearchCode, FileText, Palette, Fingerprint, Ruler, FileJson, FileStack, Monitor, RefreshCw, Database } from "lucide-react";
 import ToolCard from "./ToolCard";
 import { Button } from "@/components/ui/button";
+import toolsMetadata from "@/data/toolsMetadata.json";
 
-export const tools = [
+const toolsData = [
   {
     title: "Media Converter",
     description: "The ultimate tool to convert video and image formats using Native Browser engines",
@@ -27,7 +28,6 @@ export const tools = [
     category: "Image Studio",
     tags: ["3D", "WYSIWYG"]
   },
-
   {
     title: "Privacy Scrubber",
     description: "Absolute metadata destruction: strip GPS, camera info, and device ID from photos",
@@ -269,6 +269,15 @@ export const tools = [
     tags: ["COMPRESS", "WEB"]
   },
 ];
+
+export const tools = toolsData.map(tool => {
+  const meta = toolsMetadata.find(m => m.to === tool.to);
+  return {
+    ...tool,
+    seoTitle: meta?.seoTitle || `${tool.title} | PrivateUtils`,
+    seoDescription: meta?.seoDescription || tool.description
+  };
+});
 
 import { categoryConfig } from "@/config/categories";
 

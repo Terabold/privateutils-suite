@@ -388,13 +388,13 @@ const SpriteStudio = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground theme-image transition-colors duration-500 overflow-x-hidden">
+    <div className="min-h-screen bg-background text-foreground theme-image transition-colors duration-500 ">
       <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
 
       <div className="flex justify-center items-start w-full relative">
         <SponsorSidebars position="left" />
 
-        <main className="container mx-auto max-w-[1800px] px-6 py-12 grow overflow-hidden">
+        <main className="container mx-auto max-w-[1800px] px-6 py-12 grow overflow-x-clip">
           <div className="flex flex-col gap-10">
             <header className="flex items-center gap-6 animate-in fade-in slide-in-from-top-4 duration-500">
               <Link to="/">
@@ -412,7 +412,7 @@ const SpriteStudio = () => {
 
             {/* Mobile Inline Ad */}
             <div className="flex min-[1600px]:hidden justify-center mb-8 w-full">
-              <AdBox height={250} label="300x250 AD" className="w-full max-w-[400px]" />
+              <AdBox adFormat="horizontal" height={250} label="300x250 AD" className="w-full max-w-[400px]" />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] xl:grid-cols-[1fr_340px_280px] gap-8 items-start">
@@ -467,7 +467,7 @@ const SpriteStudio = () => {
                   onMouseLeave={handleMouseUp}
                   onContextMenu={(e) => e.preventDefault()}
                   ref={containerRef}
-                  className="glass-morphism border-primary/10 overflow-hidden h-[calc(70vh-68px)] min-h-[500px] flex flex-col items-center justify-center relative bg-card rounded-2xl select-none shadow-2xl group/canvas p-0"
+                  className="glass-morphism border-primary/10 overflow-x-clip h-[calc(70vh-68px)] min-h-[500px] flex flex-col items-center justify-center relative bg-card rounded-2xl select-none shadow-2xl group/canvas p-0"
                   style={{
                     backgroundImage: `linear-gradient(45deg, var(--checker-color) 25%, transparent 25%), 
                                      linear-gradient(-45deg, var(--checker-color) 25%, transparent 25%), 
@@ -581,7 +581,7 @@ const SpriteStudio = () => {
 
               <aside className="lg:sticky lg:top-24 h-[70vh] min-h-[550px]">
                 {/* Card 1: Master Studio Controls */}
-                <Card className="glass-morphism border-primary/20 rounded-2xl shadow-2xl overflow-hidden bg-card backdrop-blur-3xl h-full flex flex-col">
+                <Card className="glass-morphism border-primary/20 rounded-2xl shadow-2xl overflow-x-clip bg-card backdrop-blur-3xl h-full flex flex-col">
                   {/* Drafting Section (Top - Scrollable) */}
                   <div className="flex flex-col grow min-h-0">
                     <div className="bg-primary/5 p-4 border-b border-primary/10 flex items-center justify-between shrink-0">
@@ -664,7 +664,7 @@ const SpriteStudio = () => {
 
               {/* Column 3: Partition Stack Section */}
               <aside className="lg:sticky lg:top-24 h-[70vh] min-h-[500px] flex flex-col">
-                <Card className="glass-morphism border-primary/10 rounded-2xl shadow-xl overflow-hidden flex flex-col h-full bg-card">
+                <Card className="glass-morphism border-primary/10 rounded-2xl shadow-xl overflow-x-clip flex flex-col h-full bg-card">
                   <div className="bg-primary/5 p-4 border-b border-primary/10 flex items-center justify-between shrink-0">
                     <div className="flex items-center gap-2">
                       <Layers className="h-3 w-3 text-primary" />
@@ -692,7 +692,7 @@ const SpriteStudio = () => {
                             onClick={() => setActiveId(slice.id)}
                             className={`p-3 px-4 flex items-center justify-between transition-none cursor-default z-10 ${activeId === slice.id ? "bg-primary/20 shadow-inner" : "hover:bg-primary/10 bg-transparent"}`}
                           >
-                            <div className="flex items-center gap-3 overflow-hidden pointer-events-none">
+                            <div className="flex items-center gap-3 overflow-x-clip pointer-events-none">
                               <GripVertical className="h-3 w-3 text-muted-foreground/30 cursor-grab active:cursor-grabbing pointer-events-auto" />
                               <span className="text-[9px] font-black text-primary/80 italic">#{String(idx + 1).padStart(2, '0')}</span>
                               <span className="text-[9px] font-black uppercase tracking-tighter truncate max-w-[100px] text-foreground">{slice.name}</span>
@@ -726,8 +726,8 @@ const SpriteStudio = () => {
       <Footer />
 
       {/* Mobile Sticky Anchor Ad */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-black/80 backdrop-blur-sm border-t border-white/10 py-2 h-[66px] overflow-hidden">
-        <AdBox height={50} label="320x50 ANCHOR AD" className="w-full" />
+      <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-black/80 backdrop-blur-sm border-t border-white/10 py-2 h-[66px] overflow-x-clip">
+        <AdBox adFormat="horizontal" height={50} label="320x50 ANCHOR AD" className="w-full" />
       </div>
     </div>
   );

@@ -1,0 +1,167 @@
+[
+  {
+    "to": "/universal-media-converter",
+    "seoTitle": "In-Browser Video & Audio Converter - Privacy-First & Zero Uploads",
+    "seoDescription": "Convert MP4, WebM, and MOV formats entirely client-side. 100% private processing with zero server uploads using FFmpeg WASM."
+  },
+  {
+    "to": "/youtube-thumbnail-hub",
+    "seoTitle": "Private YouTube Thumbnail Preview - In-Browser Studio",
+    "seoDescription": "Simulate YouTube thumbnails with live overlays and safe-zone checks. 100% client-side tool with zero tracking or data leakage."
+  },
+  {
+    "to": "/perspective-tilter",
+    "seoTitle": "Client-Side 3D Image Perspective & Cinematic Mockups",
+    "seoDescription": "Create 3D angled thumbnails and cinematic perspective mockups in-browser. Zero-upload processing ensures your creative assets stay private."
+  },
+  {
+    "to": "/metadata-scrubber",
+    "seoTitle": "Absolute Metadata Scrubber - In-Browser EXIF Destruction",
+    "seoDescription": "Strip GPS, camera info, and device ID from photos entirely client-side. Absolute privacy with zero server persistence."
+  },
+  {
+    "to": "/sprite-studio",
+    "seoTitle": "In-Browser Image Splitter & Sprite Extractor",
+    "seoDescription": "Extract sprites and split images with accurate edge logic. 100% client-side processing with zero data uploads."
+  },
+  {
+    "to": "/audio-trimmer",
+    "seoTitle": "Private Audio Trimmer - In-Browser Waveform Clipping",
+    "seoDescription": "Clip and slice audio samples with high-fidelity local processing. Zero-upload audio editing for maximum privacy."
+  },
+  {
+    "to": "/universal-volume-booster",
+    "seoTitle": "In-Browser Volume Booster - Privacy-First Audio Gain",
+    "seoDescription": "Adjust volume levels for audio and video files entirely client-side. Zero server uploads, 100% private browser processing."
+  },
+  {
+    "to": "/image-color-extractor",
+    "seoTitle": "In-Browser Color Palette Extractor - Client-Side Design Tool",
+    "seoDescription": "Extract professional hex codes and color palettes from images locally. 100% private with zero data leakage."
+  },
+  {
+    "to": "/video-to-gif",
+    "seoTitle": "In-Browser Video to GIF Converter - Private & High-Quality",
+    "seoDescription": "Render optimized GIFs from any video entirely client-side. Zero-upload processing with precise range control."
+  },
+  {
+    "to": "/frame-extractor",
+    "seoTitle": "In-Browser Video Frame Extractor - Lossless PNG Extraction",
+    "seoDescription": "Capture high-resolution PNG frames from video streams locally. 100% client-side with zero server uploads."
+  },
+  {
+    "to": "/video-aspect-studio",
+    "seoTitle": "In-Browser Video Aspect Ratio Mapper - Privacy-First Resizing",
+    "seoDescription": "Professional aspect ratio remapping for social media entirely client-side. Zero-upload tool with Pad and Crop modes."
+  },
+  {
+    "to": "/json-studio",
+    "seoTitle": "Private JSON Editor & Validator - In-Browser Developer Tool",
+    "seoDescription": "Format, validate, and architect JSON structures locally. 100% client-side with zero data server persistence."
+  },
+  {
+    "to": "/data-transformer",
+    "seoTitle": "In-Browser CSV to JSON Converter - Client-Side Data Forge",
+    "seoDescription": "Bi-directional CSV and JSON conversion with smart header parsing. 100% private processing with zero server uploads."
+  },
+  {
+    "to": "/qr-forge",
+    "seoTitle": "Private QR Code Generator - In-Browser & Secure",
+    "seoDescription": "Generate QR codes for links and sensitive data entirely client-side. Zero-upload tool ensuring your data stays private."
+  },
+  {
+    "to": "/pii-masker",
+    "seoTitle": "In-Browser PII Masker - Forensic Image Redaction",
+    "seoDescription": "Physically blur and redact sensitive info from images locally. 100% client-side with absolute privacy."
+  },
+  {
+    "to": "/svg-optimizer",
+    "seoTitle": "In-Browser SVG Optimizer - Client-Side Vector Minifier",
+    "seoDescription": "Purge metadata and minify SVG files entirely in-browser. Fast, secure, and zero-upload processing."
+  },
+  {
+    "to": "/text-case-formatter",
+    "seoTitle": "Quick In-Browser Text Case Converter - Privacy-First",
+    "seoDescription": "Transform text cases for code or content lists locally. 100% client-side with zero data leakage."
+  },
+  {
+    "to": "/quick-clipboard",
+    "seoTitle": "Private Clipboard-to-Disk Extractor - In-Browser",
+    "seoDescription": "Extract clipboard artifacts to disk immediately. 100% client-side tool with zero server persistence."
+  },
+  {
+    "to": "/jwt-decoder",
+    "seoTitle": "In-Browser JWT Decoder - Private & Local Token Inspector",
+    "seoDescription": "Decode and inspect JWT tokens locally without server-side processing. 100% private developer tool."
+  },
+  {
+    "to": "/encoder-decoder",
+    "seoTitle": "In-Browser Base64 & URL Encoder/Decoder - Private Tool",
+    "seoDescription": "Convert between Base64, Hex, and URL encoding locally. 100% client-side with zero data uploads."
+  },
+  {
+    "to": "/timestamp-converter",
+    "seoTitle": "Private Unix Timestamp Converter - In-Browser Utility",
+    "seoDescription": "Transform timestamps and dates across timezones locally. 100% client-side with zero server persistence."
+  },
+  {
+    "to": "/regex-playground",
+    "seoTitle": "In-Browser Regex Tester - Private & Live Pattern Matching",
+    "seoDescription": "Test and debug regular expressions locally with live highlighting. 100% client-side developer tool."
+  },
+  {
+    "to": "/lorem-generator",
+    "seoTitle": "In-Browser Lorem Ipsum Generator - Privacy-First Content Tool",
+    "seoDescription": "Generate placeholder text in various styles locally. 100% client-side with zero tracking."
+  },
+  {
+    "to": "/password-generator",
+    "seoTitle": "In-Browser Secure Password Generator - Hardware-Backed",
+    "seoDescription": "Generate high-entropy passwords locally using hardware-backed logic. 100% private and secure."
+  },
+  {
+    "to": "/palette-studio",
+    "seoTitle": "In-Browser Color Harmony Generator - Client-Side Design",
+    "seoDescription": "Generate professional color palettes and harmonies locally. 100% private designer tool."
+  },
+  {
+    "to": "/hash-lab",
+    "seoTitle": "In-Browser Cryptographic Hash Generator - Secure & Local",
+    "seoDescription": "Generate SHA-256 and SHA-512 checksums entirely client-side. 100% private file integrity verification."
+  },
+  {
+    "to": "/unit-converter",
+    "seoTitle": "In-Browser Unit Converter - Fast & Private Measurement Tool",
+    "seoDescription": "High-precision measurement transformations across global standards locally. 100% client-side utility."
+  },
+  {
+    "to": "/base64-image",
+    "seoTitle": "In-Browser Image to Base64 Converter - Private Dev Tool",
+    "seoDescription": "Convert images to memory strings locally for creative logic. 100% client-side with zero data uploads."
+  },
+  {
+    "to": "/reverse-audio",
+    "seoTitle": "In-Browser Reverse Audio Tool - Private Temporal Phase Flip",
+    "seoDescription": "Flip audio buffers backward locally with zero-latency. 100% client-side and zero-upload."
+  },
+  {
+    "to": "/binary-to-audio",
+    "seoTitle": "In-Browser Binary-to-Audio Data Bender - Private Glitch Art",
+    "seoDescription": "Interpret any raw file bitstream as audio PCM data locally. Experimental 100% client-side tool."
+  },
+  {
+    "to": "/audio-mono-stereo",
+    "seoTitle": "In-Browser Audio Channel Mapper - Private Stereo Mixing",
+    "seoDescription": "Remap audio channels (Mono to Stereo / mix Stereo to Mono) locally. 100% client-side and zero-upload."
+  },
+  {
+    "to": "/audio-bass-booster",
+    "seoTitle": "In-Browser Bass Booster - Private Audio EQ Studio",
+    "seoDescription": "Amplify low-end frequencies of audio files entirely client-side. Zero server uploads, 100% private gain control."
+  },
+  {
+    "to": "/image-compressor",
+    "seoTitle": "In-Browser Image Compressor - Privacy-First Size Reduction",
+    "seoDescription": "Reduce image file sizes locally by up to 90% without loss. Fast, secure, and zero-upload."
+  }
+]

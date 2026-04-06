@@ -206,13 +206,13 @@ const ImageCompressor = () => {
 
             {/* Mobile Inline Ad */}
             <div className="flex min-[1600px]:hidden justify-center mb-8 w-full">
-              <AdBox height={250} label="300x250 AD" className="w-full max-w-[400px]" />
+              <AdBox adFormat="horizontal" height={250} label="300x250 AD" className="w-full max-w-[400px]" />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-8 items-start relative animate-in fade-in slide-in-from-bottom-8 duration-700">
               {/* STAGE AREA - CENTER COLUMN */}
               <div className="relative flex flex-col min-h-0 w-full">
-                <Card className="glass-morphism border-primary/40 rounded-xl overflow-hidden shadow-2xl relative group bg-card flex items-center justify-center p-1 border-b-[8px] border-primary/50 transition-all duration-700 min-h-[500px]">
+                <Card className="glass-morphism border-primary/40 rounded-xl overflow-x-clip shadow-2xl relative group bg-card flex items-center justify-center p-1 border-b-[8px] border-primary/50 transition-all duration-700 min-h-[500px]">
                   {!file ? (
                     <div
                       onDragOver={(e) => e.preventDefault()}
@@ -233,7 +233,7 @@ const ImageCompressor = () => {
                       {compressedUrl ? (
                         <div className="relative w-full h-full flex items-center justify-center group/result px-4 py-12">
                           <div
-                            className="relative w-full h-full flex items-center justify-center overflow-hidden cursor-crosshair active:cursor-grabbing select-none"
+                            className="relative w-full h-full flex items-center justify-center overflow-x-clip cursor-crosshair active:cursor-grabbing select-none"
                             onMouseDown={(e) => {
                               if (e.button === 0 || e.button === 2) {
                                 setIsPanning(true);
@@ -266,7 +266,7 @@ const ImageCompressor = () => {
                         </div>
                       ) : (
                         <div className="flex flex-col items-center gap-8 text-center animate-in zoom-in-95 duration-500">
-                          <div className="h-20 w-20 bg-primary/20 rounded-2xl flex items-center justify-center relative border border-primary/40 shadow-2xl overflow-hidden">
+                          <div className="h-20 w-20 bg-primary/20 rounded-2xl flex items-center justify-center relative border border-primary/40 shadow-2xl overflow-x-clip">
                             <RefreshCw className="h-10 w-10 text-primary animate-spin" />
                           </div>
                           <div className="space-y-2">
@@ -298,7 +298,7 @@ const ImageCompressor = () => {
 
               {/* SIDEBAR TOOLS - RIGHT COLUMN */}
               <aside className="lg:sticky lg:top-24 h-fit animate-in slide-in-from-right-8 duration-700">
-                <Card className="glass-morphism border-primary/30 rounded-xl overflow-hidden shadow-2xl bg-card flex flex-col border-b-4 border-l-4 border-white/5">
+                <Card className="glass-morphism border-primary/30 rounded-xl overflow-x-clip shadow-2xl bg-card flex flex-col border-b-4 border-l-4 border-white/5">
                   <div className="bg-primary/20 p-5 border-b border-primary/30 flex items-center justify-between shrink-0 h-14">
                     <div className="flex items-center gap-4">
                       <Settings2 className="h-5 w-5 text-primary" />
@@ -391,7 +391,7 @@ const ImageCompressor = () => {
                       </div>
 
                       <div className="space-y-3 pb-1">
-                        <div className={`h-12 flex items-center justify-center bg-card border border-white/10 rounded-xl shadow-inner px-6 overflow-hidden transition-all duration-700 ${targetFormat === 'png' ? 'border-primary bg-primary/10 shadow-[0_0_20px_rgba(var(--primary),0.1)]' : ''}`}>
+                        <div className={`h-12 flex items-center justify-center bg-card border border-white/10 rounded-xl shadow-inner px-6 overflow-x-clip transition-all duration-700 ${targetFormat === 'png' ? 'border-primary bg-primary/10 shadow-[0_0_20px_rgba(var(--primary),0.1)]' : ''}`}>
                           <div className="flex items-center gap-3">
                             <Zap className="h-4 w-4 text-primary" />
                             <span className="text-[10px] font-black text-foreground/80 uppercase tracking-[0.2em] whitespace-nowrap italic leading-none">
@@ -421,7 +421,7 @@ const ImageCompressor = () => {
                         </div>
 
                         <Button
-                          className="w-full gap-4 h-16 text-xl font-black rounded-2xl shadow-[0_15px_40px_rgba(var(--primary),0.3)] hover:scale-[1.02] active:scale-[0.98] transition-all uppercase italic border-b-4 border-primary-foreground/20 group/download bg-primary text-white relative overflow-hidden"
+                          className="w-full gap-4 h-16 text-xl font-black rounded-2xl shadow-[0_15px_40px_rgba(var(--primary),0.3)] hover:scale-[1.02] active:scale-[0.98] transition-all uppercase italic border-b-4 border-primary-foreground/20 group/download bg-primary text-white relative overflow-x-clip"
                           onClick={() => {
                             if (!compressedUrlRef.current) return;
                             const a = document.createElement("a");
@@ -468,8 +468,8 @@ const ImageCompressor = () => {
       <input ref={inputRef} type="file" className="hidden" accept="image/*" onChange={(e) => handleFile(e.target.files?.[0])} />
 
       {/* Mobile Sticky Anchor Ad */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-black/80 backdrop-blur-sm border-t border-white/10 py-2 h-[66px] overflow-hidden">
-        <AdBox height={50} label="320x50 ANCHOR AD" className="w-full" />
+      <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-black/80 backdrop-blur-sm border-t border-white/10 py-2 h-[66px] overflow-x-clip">
+        <AdBox adFormat="horizontal" height={50} label="320x50 ANCHOR AD" className="w-full" />
       </div>
     </div>
   );

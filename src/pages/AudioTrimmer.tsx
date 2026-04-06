@@ -288,7 +288,7 @@ const AudioTrimmer = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground theme-audio transition-all duration-500 overflow-x-hidden">
+    <div className="min-h-screen bg-background text-foreground theme-audio transition-all duration-500 ">
       <style>{`
         input[type="number"].emerald-arrows::-webkit-inner-spin-button, 
         input[type="number"].emerald-arrows::-webkit-outer-spin-button {
@@ -320,12 +320,12 @@ const AudioTrimmer = () => {
 
             {/* Mobile Inline Ad */}
             <div className="flex min-[1600px]:hidden justify-center mb-8 w-full">
-              <AdBox height={250} label="300x250 AD" className="w-full max-w-[400px]" />
+              <AdBox adFormat="horizontal" height={250} label="300x250 AD" className="w-full max-w-[400px]" />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start animate-in fade-in slide-in-from-bottom-8 duration-700">
               <div className="lg:col-span-8 space-y-8">
-                <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl transition-all duration-700 hover:border-primary/30 group relative bg-card">
+                <Card className="glass-morphism border-primary/10 rounded-2xl overflow-x-clip shadow-xl transition-all duration-700 hover:border-primary/30 group relative bg-card">
                   <div className="bg-primary/5 p-5 border-b border-primary/10 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <Scissors className="h-4 w-4 text-primary" />
@@ -476,7 +476,7 @@ const AudioTrimmer = () => {
                               </Button>
                               <button
                                 onClick={playPreview}
-                                className="h-20 w-20 rounded-2xl bg-primary flex items-center justify-center text-primary-foreground hover:scale-110 transition-transform shadow-xl shadow-primary/20 relative group overflow-hidden"
+                                className="h-20 w-20 rounded-2xl bg-primary flex items-center justify-center text-primary-foreground hover:scale-110 transition-transform shadow-xl shadow-primary/20 relative group overflow-x-clip"
                               >
                                 <div className="absolute inset-0 bg-gradient-to-tr from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                                 {isPlaying ? <Pause className="h-8 w-8" /> : <Play className="h-8 w-8 fill-current" />}
@@ -506,7 +506,7 @@ const AudioTrimmer = () => {
               </div>
 
               <aside className="lg:col-span-4 space-y-6 lg:sticky lg:top-24 h-fit">
-                <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl bg-card">
+                <Card className="glass-morphism border-primary/10 rounded-2xl overflow-x-clip shadow-xl bg-card">
                   <div className="bg-primary/5 p-5 border-b border-primary/10 flex items-center gap-3">
                     <RefreshCw className="h-4 w-4 text-primary" />
                     <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Export Parameters</h3>
@@ -567,8 +567,8 @@ const AudioTrimmer = () => {
       <Footer />
 
       {/* Mobile Sticky Anchor Ad */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-black/80 backdrop-blur-sm border-t border-white/10 py-2 h-[66px] overflow-hidden">
-        <AdBox height={50} label="320x50 ANCHOR AD" className="w-full" />
+      <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-black/80 backdrop-blur-sm border-t border-white/10 py-2 h-[66px] overflow-x-clip">
+        <AdBox adFormat="horizontal" height={50} label="320x50 ANCHOR AD" className="w-full" />
       </div>
     </div>
   );

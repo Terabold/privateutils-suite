@@ -177,7 +177,7 @@ const VideoAspectStudio = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground transition-all duration-300 theme-video overflow-x-hidden">
+    <div className="min-h-screen bg-background text-foreground transition-all duration-300 theme-video ">
       <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
 
       <div className="flex justify-center items-start w-full relative">
@@ -201,13 +201,13 @@ const VideoAspectStudio = () => {
 
             {/* Mobile Inline Ad */}
             <div className="flex min-[1600px]:hidden justify-center mb-8 w-full">
-              <AdBox height={250} label="300x250 AD" className="w-full max-w-[400px]" />
+              <AdBox adFormat="horizontal" height={250} label="300x250 AD" className="w-full max-w-[400px]" />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
               <div className="lg:col-span-8 space-y-8 flex flex-col items-center w-full">
                 {!file ? (
-                  <Card className="glass-morphism border-primary/10 overflow-hidden min-h-[500px] w-full flex flex-col items-center justify-center relative bg-card rounded-2xl shadow-2xl p-10 select-none animate-in fade-in zoom-in-95 duration-500">
+                  <Card className="glass-morphism border-primary/10 overflow-x-clip min-h-[500px] w-full flex flex-col items-center justify-center relative bg-card rounded-2xl shadow-2xl p-10 select-none animate-in fade-in zoom-in-95 duration-500">
                     <div
                       onDragOver={(e) => e.preventDefault()}
                       onDrop={(e) => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); }}
@@ -230,7 +230,7 @@ const VideoAspectStudio = () => {
                   </Card>
                 ) : (
                   <div className="space-y-8 w-full flex flex-col items-center animate-in fade-in slide-in-from-bottom-6 duration-300">
-                    <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden bg-black shadow-2xl relative border-border/50 w-full max-w-4xl flex items-center justify-center p-3 min-h-[40vh]">
+                    <Card className="glass-morphism border-primary/10 rounded-2xl overflow-x-clip bg-black shadow-2xl relative border-border/50 w-full max-w-4xl flex items-center justify-center p-3 min-h-[40vh]">
                       <div className="relative w-full h-full flex items-center justify-center cursor-crosshair active:cursor-grabbing">
                         {/* Reset Stage Button - Integrated with Frame Container */}
                         <div className="absolute top-8 right-8 z-20 flex gap-2 p-2 bg-background/40 backdrop-blur-md rounded-2xl border border-white/10 shadow-2xl animate-in fade-in slide-in-from-top-4 duration-500">
@@ -244,7 +244,7 @@ const VideoAspectStudio = () => {
                           </Button>
                         </div>
 
-                        <div className="w-full h-full flex items-center justify-center overflow-hidden transition-all duration-500 rounded-2xl shadow-[0_0_100px_rgba(0,0,0,0.8)] border border-white/5"
+                        <div className="w-full h-full flex items-center justify-center overflow-x-clip transition-all duration-500 rounded-2xl shadow-[0_0_100px_rgba(0,0,0,0.8)] border border-white/5"
                           style={{
                             aspectRatio: `${currentRatio.w} / ${currentRatio.h}`,
                             maxHeight: '45vh',
@@ -324,7 +324,7 @@ const VideoAspectStudio = () => {
               </div>
 
               <aside className="lg:col-span-4 space-y-6 lg:sticky lg:top-24 h-fit">
-                <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl border-border/20 bg-card">
+                <Card className="glass-morphism border-primary/10 rounded-2xl overflow-x-clip shadow-xl border-border/20 bg-card">
                   <div className="bg-primary/5 p-6 border-b border-primary/10 flex items-center justify-between">
                     <h2 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary italic leading-none">Mapping System</h2>
                   </div>
@@ -413,7 +413,7 @@ const VideoAspectStudio = () => {
                           >
                             <Button
                               onClick={processVideo}
-                              className="w-full h-16 text-lg font-black rounded-2xl gap-3 shadow-xl shadow-primary/10 italic uppercase bg-primary text-primary-foreground border-b-4 border-primary-foreground/20 active:border-b-0 active:translate-y-1 transition-all hover:scale-[1.01] relative overflow-hidden group/btn"
+                              className="w-full h-16 text-lg font-black rounded-2xl gap-3 shadow-xl shadow-primary/10 italic uppercase bg-primary text-primary-foreground border-b-4 border-primary-foreground/20 active:border-b-0 active:translate-y-1 transition-all hover:scale-[1.01] relative overflow-x-clip group/btn"
                             >
                               <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent opacity-0 group-hover/btn:opacity-100 transition-opacity" />
                               <RefreshCw className="h-5 w-5 relative z-10" />
@@ -444,8 +444,8 @@ const VideoAspectStudio = () => {
       <Footer />
     
       {/* Mobile Sticky Anchor Ad */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-black/80 backdrop-blur-sm border-t border-white/10 py-2 h-[66px] overflow-hidden">
-        <AdBox height={50} label="320x50 ANCHOR AD" className="w-full" />
+      <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-black/80 backdrop-blur-sm border-t border-white/10 py-2 h-[66px] overflow-x-clip">
+        <AdBox adFormat="horizontal" height={50} label="320x50 ANCHOR AD" className="w-full" />
       </div>
     </div>
   );

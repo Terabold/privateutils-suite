@@ -91,29 +91,61 @@ const Navbar = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Dynamic Browser Tab Title Management
+  // Dynamic Browser Tab Title and Metadata Management
   useEffect(() => {
+    let title = "PrivateUtils — 100% Private, In-Browser Utility Suite (Zero Uploads)";
+    let description = "A professional collection of client-side privacy tools. Process video, images, and sensitive data entirely in your browser. No server uploads, no tracking, 100% private.";
+    let ogImage = "/favicon.svg";
+
     if (isHomePage) {
       if (selectedCategory) {
-        document.title = `${selectedCategory} | PrivateUtils`;
+        title = `${selectedCategory} | PrivateUtils`;
       } else if (searchQuery) {
-        document.title = `Search: ${searchQuery} | PrivateUtils`;
-      } else {
-        document.title = "PrivateUtils | Studio";
+        title = `Search: ${searchQuery} | PrivateUtils`;
       }
     } else {
+      // @ts-ignore - Indexing tools via current path
       const tool = tools.find(t => t.to === location.pathname);
       if (tool) {
-        document.title = `${tool.title} | PrivateUtils`;
-      } else {
-        document.title = "PrivateUtils | Studio";
+        // @ts-ignore
+        title = tool.seoTitle || `${tool.title} | PrivateUtils`;
+        // @ts-ignore
+        description = tool.seoDescription || tool.description;
       }
     }
+
+    // Apply Title
+    document.title = title;
+    
+    // Update Meta Tags (Standard)
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) metaDescription.setAttribute("content", description);
+
+    // Update OpenGraph Tags
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) ogTitle.setAttribute("content", title);
+
+    const ogDesc = document.querySelector('meta[property="og:description"]');
+    if (ogDesc) ogDesc.setAttribute("content", description);
+
+    const ogImg = document.querySelector('meta[property="og:image"]');
+    if (ogImg) ogImg.setAttribute("content", ogImage);
+
+    // Update Twitter Tags
+    const twTitle = document.querySelector('meta[name="twitter:title"]');
+    if (twTitle) twTitle.setAttribute("content", title);
+
+    const twDesc = document.querySelector('meta[name="twitter:description"]');
+    if (twDesc) twDesc.setAttribute("content", description);
+
+    const twImg = document.querySelector('meta[name="twitter:image"]');
+    if (twImg) twImg.setAttribute("content", ogImage);
+
   }, [location.pathname, isHomePage, selectedCategory, searchQuery]);
 
   return (
-    <header className="sticky top-0 z-[100] border-b border-white/5 bg-background/80 backdrop-blur-xl py-4 w-full transition-theme shadow-lg shadow-black/20 overflow-visible">
-      <div className="container mx-auto px-4 lg:px-8 flex flex-wrap lg:flex-nowrap h-auto lg:h-[115px] items-center justify-between lg:justify-start gap-y-4 lg:gap-x-12 max-w-[1500px] w-full transition-theme py-2 lg:py-0">
+    <header className="sticky top-0 z-[100] border-b border-white/5 bg-background/80 backdrop-blur-xl py-1 w-full transition-theme shadow-lg shadow-black/20 overflow-visible">
+      <div className="container mx-auto px-4 lg:px-8 flex flex-wrap lg:flex-nowrap h-auto lg:h-[90px] items-center justify-between lg:justify-start gap-y-4 lg:gap-x-12 max-w-[1500px] w-full transition-theme lg:py-0">
 
         {/* 1. Logo Row - Persistent Logic */}
         <div className="flex w-full lg:w-auto items-center justify-between lg:justify-start gap-6 lg:shrink-0 lg:min-w-[240px]">
@@ -122,15 +154,15 @@ const Navbar = ({
             className="group flex items-center justify-start gap-3 cursor-pointer select-none no-underline outline-none"
           >
             <div
-              className="h-10 w-10 md:h-11 md:w-11 rounded-lg flex items-center justify-center text-white shadow-2xl transition-theme group-hover:scale-105 shrink-0 overflow-hidden"
+              className="h-9 w-9 md:h-10 md:w-10 rounded-lg flex items-center justify-center text-white shadow-2xl transition-theme group-hover:scale-105 shrink-0 overflow-hidden"
               style={{ backgroundColor: `hsl(${activeTheme?.hsl || 'var(--primary)'})` }}
             >
               <svg viewBox="0 0 24 24" fill="currentColor" className="w-[55%] h-[55%] pointer-events-none">
                 <path d="M5 4h9a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-4v6H5V4zm5 7h4a2 2 0 0 0 0-4h-4v4z" />
               </svg>
             </div>
-            <div className="flex h-10 md:h-11 items-center gap-2">
-              <span className="text-[24px] md:text-[28px] font-black tracking-tighter text-foreground font-display uppercase italic transition-theme group-hover:text-shadow-glow flex items-center leading-none">
+            <div className="flex h-9 md:h-10 items-center gap-2">
+              <span className="text-[20px] md:text-[24px] font-black tracking-tighter text-foreground font-display uppercase italic transition-theme group-hover:text-shadow-glow flex items-center leading-none">
                 Private<span className="not-italic logo-text-transition" style={{ color: `hsl(${activeTheme?.hsl || 'var(--primary)'})` }}>Utils</span>
               </span>
               <div className="px-2 py-0.5 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0 group/wip relative">
@@ -156,7 +188,7 @@ const Navbar = ({
         </div>
 
         {/* 2. Unified Search + Categories Column (Fluid and Centered) */}
-        <div className="flex flex-col flex-1 w-full lg:max-w-2xl mx-auto gap-3 relative transition-theme items-center lg:items-stretch">
+        <div className="flex flex-col flex-1 w-full lg:max-w-2xl mx-auto gap-1.5 relative transition-theme items-center lg:items-stretch h-full justify-center">
           <div ref={searchRef} className="relative group mx-auto lg:mx-0 w-full max-w-lg lg:max-w-none">
             <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
               <Search className="h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
@@ -174,7 +206,7 @@ const Navbar = ({
                 }
                 setShowSearchOverlay(true);
               }}
-              className="h-10 md:h-11 pl-11 pr-10 text-sm font-semibold bg-zinc-100 dark:bg-white/5 border-zinc-200/50 dark:border-transparent text-muted-foreground placeholder:text-muted-foreground/40 rounded-2xl focus-visible:ring-primary/20 transition-theme shadow-sm"
+              className="h-9 md:h-10 pl-11 pr-10 text-sm font-semibold bg-zinc-100 dark:bg-white/5 border-zinc-200/50 dark:border-transparent text-muted-foreground placeholder:text-muted-foreground/40 rounded-xl focus-visible:ring-primary/20 transition-theme shadow-sm"
             />
             {showSearchOverlay && filteredSearchResults.length > 0 && (
               <div className="absolute top-12 left-0 right-0 bg-card/95 backdrop-blur-2xl border border-white/10 rounded-2xl overflow-hidden shadow-2xl animate-in fade-in slide-in-from-top-2 duration-300 z-[110]">
@@ -207,8 +239,8 @@ const Navbar = ({
           </div>
 
           {/* 3. Category pills - DYNAMIC Scaling (Paddings and Font size shrink with viewport) */}
-          <div className="w-full overflow-x-auto no-scrollbar py-4 -my-4">
-            <div className="flex flex-nowrap items-center gap-[clamp(4px,1vw,8px)] justify-center w-max min-w-full px-2 md:px-4 py-2">
+          <div className="w-full overflow-x-auto no-scrollbar py-2 -my-2">
+            <div className="flex flex-nowrap items-center gap-[clamp(4px,1vw,8px)] justify-center w-max min-w-full px-2 md:px-4 py-1">
               {Object.keys(categoryConfig).filter(k => k !== "All").map((category) => {
                 const theme = categoryConfig[category];
                 const Icon = theme.icon;
@@ -224,7 +256,7 @@ const Navbar = ({
                           "--border-glow": `hsl(${theme.hsl} / 0.2)`,
                           backgroundColor: isActive ? `hsl(${theme.hsl})` : undefined
                         } as React.CSSProperties}
-                        className={`px-[clamp(6px,1.2vw,24px)] py-1.5 md:py-2.5 rounded-2xl font-bold md:font-semibold text-[clamp(8px,1vw,14px)] transition-all flex items-center gap-[clamp(2px,0.8vw,10px)] border whitespace-nowrap shrink transition-theme ${isActive
+                        className={`px-[clamp(6px,1.2vw,20px)] py-1 md:py-1.5 rounded-xl font-bold md:font-semibold text-[clamp(8px,0.9vw,13px)] transition-all flex items-center gap-[clamp(2px,0.8vw,8px)] border whitespace-nowrap shrink transition-theme ${isActive
                           ? "text-white shadow-lg scale-105 border-white/20"
                           : "text-muted-foreground hover:text-foreground bg-zinc-100 dark:bg-white/5 border-zinc-200/50 dark:border-transparent hover:border-[var(--border-glow)] hover:shadow-[0_0_20px_var(--glow-color)] shadow-sm"
                           }`}

@@ -91,7 +91,7 @@ const Index = () => {
   const isFiltering = searchQuery.length > 0 || selectedCategory !== null;
 
   return (
-    <div className="min-h-screen bg-background font-sans selection:bg-primary/20 relative overflow-x-clip">
+    <div className="min-h-screen bg-background font-sans selection:bg-primary/20 relative ">
       <Navbar 
         darkMode={darkMode} 
         onToggleDark={toggleDark}
@@ -124,7 +124,7 @@ const Index = () => {
 
           {/* Mobile Inline Ad */}
           <div className="flex min-[1600px]:hidden justify-center mb-10 w-full">
-            <AdBox height={250} label="300x250 AD" className="w-full max-w-[400px]" />
+            <AdBox adFormat="horizontal" adFormat="horizontal" height={250} label="300x250 AD" className="w-full max-w-[400px]" />
           </div>
 
           {/* Tools Section */}
@@ -138,13 +138,13 @@ const Index = () => {
 
           {/* Integrated Ad Break */}
           <div className="flex flex-col md:flex-row items-center justify-center gap-8 mb-32 opacity-60">
-             <AdBox height={250} label="300x250 AD" className="w-full max-w-[400px]" />
+             <AdBox adFormat="horizontal" adFormat="horizontal" height={250} label="300x250 AD" className="w-full max-w-[400px]" />
              <div className="hidden md:block h-12 w-[1px] bg-border" />
-             <AdBox height={250} label="300x250 AD" className="w-full max-w-[400px]" />
+             <AdBox adFormat="horizontal" adFormat="horizontal" height={250} label="300x250 AD" className="w-full max-w-[400px]" />
           </div>
 
           {/* Privacy Manifesto Section (Universal Focal Point) */}
-          <section className="py-28 px-12 rounded-[2rem] bg-zinc-950 text-white dark:bg-black border border-primary/20 shadow-[0_0_100px_-20px_rgba(var(--primary),0.15)] relative overflow-hidden group mb-32 hover-glow transition-all duration-700">
+          <section className="py-28 px-12 rounded-[2rem] bg-zinc-950 text-white dark:bg-black border border-primary/20 shadow-[0_0_100px_-20px_rgba(var(--primary),0.15)] relative overflow-x-clip group mb-32 hover-glow transition-all duration-700">
              <div className="absolute top-0 right-0 p-12 opacity-5 scale-150 rotate-12 group-hover:scale-[2] transition-transform duration-1000">
                 <ShieldCheck className="h-60 w-60" />
               </div>
@@ -212,8 +212,8 @@ const Index = () => {
       <Footer />
 
       {/* Mobile Sticky Anchor Ad */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-black/80 backdrop-blur-sm border-t border-white/10 py-2 h-[66px] overflow-hidden">
-        <AdBox height={50} label="320x50 ANCHOR AD" className="w-full" />
+      <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-black/80 backdrop-blur-sm border-t border-white/10 py-2 h-[66px] overflow-x-clip">
+        <AdBox adFormat="horizontal" adFormat="horizontal" height={50} label="320x50 ANCHOR AD" className="w-full" />
       </div>
     </div>
   );
