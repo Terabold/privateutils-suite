@@ -24,6 +24,18 @@ class ErrorBoundary extends Component<Props, State> {
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error("Uncaught artifact error:", error, errorInfo);
+    
+    // Self-healing for production chunk failures (MIME type / Module fetch errors)
+    const errorString = error?.toString() || "";
+    if (
+      errorString.includes("Failed to fetch dynamically imported module") ||
+      errorString.includes("Expected a JavaScript-or-Wasm module script")
+    ) {
+      console.warn("Stale chunk detected. Triggering Forge Re-initialization...");
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
+    }
   }
 
   public render() {
