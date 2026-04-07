@@ -1,7 +1,7 @@
 import { i as __toESM } from "./chunk-YKewjYmz.js";
 import { t as require_react } from "./react.js";
-import { t as require_jsx_runtime } from "./jsx-runtime-DCCSln3Q.js";
-import { t as Primitive } from "./dist-KwnA3S23.js";
+import { t as require_jsx_runtime } from "./jsx-runtime-BZEYXbvP.js";
+import { t as Primitive } from "./dist-8LYDAKKy.js";
 //#region node_modules/@radix-ui/react-visually-hidden/dist/index.mjs
 var import_react = /* @__PURE__ */ __toESM(require_react(), 1);
 var import_jsx_runtime = require_jsx_runtime();
@@ -33,4 +33,4 @@ var Root = VisuallyHidden;
 //#endregion
 export { VisuallyHidden as n, Root as t };
 
-//# sourceMappingURL=dist-DXzQnm0Z.js.map
+//# sourceMappingURL=dist-DJkBLXQQ.js.map

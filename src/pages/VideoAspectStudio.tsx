@@ -225,7 +225,7 @@ const VideoAspectStudio = () => {
                         <p className="text-[11px] text-muted-foreground font-black uppercase tracking-[0.2em] opacity-40 italic mt-2">MP4, MOV, WebM Artifacts Supported</p>
                       </div>
                       <label htmlFor="aspect-upload-input" className="sr-only">Upload Video for Aspect Remapping</label>
-                      <input id="aspect-upload-input" name="aspect-upload-input" ref={inputRef} type="file" className="hidden" accept="video/*" onChange={(e) => handleFile(e.target.files?.[0])} />
+                      <input id="aspect-upload-input" name="aspect-upload-input" ref={inputRef} type="file" className="hidden" accept="video/*" onChange={(e) => { handleFile(e.target.files?.[0]); e.target.value = ""; }} />
                     </div>
                   </Card>
                 ) : (

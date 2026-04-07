@@ -129,15 +129,15 @@ const SvgOptimizer = () => {
             </div>
 
             <div className="grid grid-cols-1 xl:grid-cols-[1fr_400px] gap-12 items-start">
-              <div className="space-y-12 animate-in fade-in slide-in-from-bottom-6 duration-700">
-                <Card className="glass-morphism border-border dark:border-primary/10 overflow-hidden relative bg-zinc-100 dark:bg-[#0a0a0a] shadow-lg dark:shadow-2xl rounded-2xl group flex flex-col min-h-[500px]">
+              <div className="space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-700">
+                <Card className="glass-morphism border-border dark:border-primary/10 overflow-hidden relative bg-zinc-100 dark:bg-[#0a0a0a] shadow-lg dark:shadow-2xl rounded-2xl group flex flex-col h-[600px]">
 
                   {/* VS Code Style Header */}
                   <div className="px-4 pt-3 border-b border-border dark:border-white/5 flex items-end justify-between relative z-10">
                     <div className="flex items-center gap-3">
-                      <div className="flex gap-1.5 items-center bg-white dark:bg-[#111111] px-4 py-2 rounded-t-lg border-x border-t border-border dark:border-white/5 relative z-10 -mb-[1px] transition-all hover:bg-zinc-50 dark:hover:bg-[#151515]">
-                        <FileCode className="h-3.5 w-3.5 text-orange-600 dark:text-orange-400" />
-                        <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground dark:text-zinc-400">source.svg</span>
+                      <div className="flex gap-1.5 items-center bg-white dark:bg-[#0e0e0e] px-5 py-2.5 rounded-t-xl border-x border-t border-border dark:border-white/10 relative z-20 -mb-[1px] transition-all hover:bg-zinc-50 dark:hover:bg-[#151515] shadow-[0_-5px_15px_rgba(0,0,0,0.1)]">
+                        <FileCode className="h-4 w-4 text-orange-600 dark:text-orange-400" />
+                        <span className="text-[11px] font-black uppercase tracking-widest text-muted-foreground dark:text-zinc-400">source.svg</span>
                       </div>
                     </div>
 
@@ -176,9 +176,9 @@ const SvgOptimizer = () => {
                     {/* VS Code Style Header */}
                     <div className="px-4 pt-3 border-b border-border dark:border-white/5 flex items-end justify-between font-sans relative z-10">
                       <div className="flex items-center gap-3">
-                        <div className="flex gap-1.5 items-center bg-white dark:bg-[#111111] px-4 py-2 rounded-t-lg border-x border-t border-border dark:border-white/5 relative z-10 -mb-[1px] transition-all hover:bg-zinc-50 dark:hover:bg-[#151515]">
-                          <Sparkles className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-500" />
-                          <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground dark:text-zinc-400">optimized.svg</span>
+                        <div className="flex gap-1.5 items-center bg-white dark:bg-[#0e0e0e] px-5 py-2.5 rounded-t-xl border-x border-t border-border dark:border-white/10 relative z-20 -mb-[1px] transition-all hover:bg-zinc-50 dark:hover:bg-[#151515] shadow-[0_-5px_15px_rgba(0,0,0,0.1)]">
+                          <Sparkles className="h-4 w-4 text-emerald-600 dark:text-emerald-500" />
+                          <span className="text-[11px] font-black uppercase tracking-widest text-muted-foreground dark:text-zinc-400">optimized.svg</span>
                         </div>
                       </div>
                       <div className="flex items-center mb-2">
@@ -200,11 +200,11 @@ const SvgOptimizer = () => {
                   </Card>
                 )}
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <Button onClick={optimizeSvg} className="h-20 text-lg font-black rounded-2xl gap-3 shadow-xl dark:shadow-2xl shadow-primary/10 dark:shadow-primary/20 italic uppercase tracking-tight text-white">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 -mt-2">
+                  <Button onClick={optimizeSvg} className="h-16 text-lg font-black rounded-2xl gap-3 shadow-xl dark:shadow-2xl shadow-primary/10 dark:shadow-primary/20 italic uppercase tracking-tight text-white">
                     <Zap className="h-6 w-6" /> Minify SVG Code
                   </Button>
-                  <Button onClick={downloadSvg} disabled={!optimized} variant="secondary" className="h-20 text-lg font-black rounded-2xl gap-3 italic uppercase border border-border/50 dark:border-white/10 bg-secondary/50 dark:bg-secondary text-secondary-foreground hover:bg-secondary/80">
+                  <Button onClick={downloadSvg} disabled={!optimized} variant="secondary" className="h-16 text-lg font-black rounded-2xl gap-3 italic uppercase border border-border/50 dark:border-white/10 bg-secondary/50 dark:bg-secondary text-secondary-foreground hover:bg-secondary/80">
                     <Download className="h-6 w-6" /> Download .SVG File
                   </Button>
                 </div>
@@ -214,16 +214,6 @@ const SvgOptimizer = () => {
                 <Card className="glass-morphism border-border dark:border-primary/10 rounded-2xl overflow-hidden shadow-lg dark:shadow-xl bg-card">
                   <div className="bg-primary/5 dark:bg-primary/10 p-5 border-b border-border dark:border-primary/10 flex items-center justify-between">
                     <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Performance Metrics</h3>
-                    {input && (
-                      <Button
-                        onClick={() => { setInput(""); setOptimized(""); setStats(null); }}
-                        variant="ghost"
-                        size="sm"
-                        className="h-8 px-3 text-[9px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-xl transition-all"
-                      >
-                        Reset Stage
-                      </Button>
-                    )}
                   </div>
                   <CardContent className="p-8 space-y-10">
                     {stats && (

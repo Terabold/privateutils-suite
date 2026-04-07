@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Copy, Check, Key, ShieldCheck, AlertTriangle, Clock } from "lucide-react";
+import { ArrowLeft, Copy, Check, Key, ShieldCheck, AlertTriangle, Clock, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Navbar from "@/components/Navbar";
@@ -144,13 +144,26 @@ const JwtDecoder = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8 items-start overflow-visible">
               <div className="space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-700">
-                <Card className="glass-morphism border-primary/10 rounded-2xl shadow-2xl bg-card p-8 overflow-hidden">
-                  <CardContent className="p-0 space-y-4">
+                <Card className="glass-morphism border-primary/10 rounded-2xl shadow-2xl bg-card overflow-hidden">
+                  <div className="bg-primary/5 px-5 h-[60px] border-b border-primary/10 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <Key className="h-4 w-4 text-primary" />
+                      <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary italic leading-none">Studio Workbench</h3>
+                    </div>
+                    {token && (
+                      <Button
+                        onClick={() => { setToken(""); setResult(null); setError(""); }}
+                        variant="destructive"
+                        size="sm"
+                        className="h-8 px-4 text-[9px] font-black uppercase tracking-widest rounded-xl shadow-2xl hover:scale-105 active:scale-95 transition-all flex items-center gap-2"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                        <span>Delete Asset</span>
+                      </Button>
+                    )}
+                  </div>
+                  <CardContent className="p-8 space-y-4">
                     <div className="flex items-center justify-between">
-                      <div className="flex flex-col gap-1">
-                        <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 opacity-60 italic">Paste Your JWT</p>
-                        <KbdShortcut />
-                      </div>
                       <Button
                         variant="ghost"
                         size="sm"
@@ -187,59 +200,56 @@ const JwtDecoder = () => {
                       </div>
                     )}
 
-                    {/* Header */}
-                    <Card className="glass-morphism border-primary/10 rounded-2xl shadow-xl bg-card overflow-hidden">
-                      <div className="bg-primary/5 p-5 border-b border-primary/10 flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className="h-7 w-7 rounded-2xl bg-primary/10 flex items-center justify-center">
-                            <Key className="h-3.5 w-3.5 text-primary" />
+                    {/* 3-Panel Compact Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      {/* Header */}
+                      <Card className="glass-morphism border-primary/10 rounded-2xl shadow-xl bg-card overflow-hidden">
+                        <div className="bg-primary/5 p-4 border-b border-primary/10 flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <Key className="h-3 w-3 text-primary" />
+                            <h3 className="text-[9px] font-black uppercase tracking-[0.2em] text-primary">Header</h3>
                           </div>
-                          <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Header</h3>
+                          <Button variant="ghost" size="icon" className="h-6 w-6 rounded-lg text-primary hover:bg-primary/10" onClick={() => copy(JSON.stringify(result.header, null, 2), "header")}>
+                            {copiedKey === "header" ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
+                          </Button>
                         </div>
-                        <Button variant="ghost" size="sm" className="h-8 px-3 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-primary/10 text-primary border border-primary/10" onClick={() => copy(JSON.stringify(result.header, null, 2), "header")}>
-                          {copiedKey === "header" ? <><Check className="h-3 w-3 mr-1" />Copied</> : <><Copy className="h-3 w-3 mr-1" />Copy</>}
-                        </Button>
-                      </div>
-                      <CardContent className="p-6">
-                        <JsonBlock data={result.header} />
-                      </CardContent>
-                    </Card>
+                        <CardContent className="p-4">
+                          <JsonBlock data={result.header} />
+                        </CardContent>
+                      </Card>
 
-                    {/* Payload */}
-                    <Card className="glass-morphism border-primary/10 rounded-2xl shadow-xl bg-card overflow-hidden">
-                      <div className="bg-primary/5 p-5 border-b border-primary/10 flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className="h-7 w-7 rounded-2xl bg-primary/10 flex items-center justify-center">
-                            <ShieldCheck className="h-3.5 w-3.5 text-primary" />
+                      {/* Payload */}
+                      <Card className="glass-morphism border-primary/10 rounded-2xl shadow-xl bg-card overflow-hidden">
+                        <div className="bg-primary/5 p-4 border-b border-primary/10 flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <ShieldCheck className="h-3 w-3 text-primary" />
+                            <h3 className="text-[9px] font-black uppercase tracking-[0.2em] text-primary">Payload</h3>
                           </div>
-                          <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Payload</h3>
+                          <Button variant="ghost" size="icon" className="h-6 w-6 rounded-lg text-primary hover:bg-primary/10" onClick={() => copy(JSON.stringify(result.payload, null, 2), "payload")}>
+                            {copiedKey === "payload" ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
+                          </Button>
                         </div>
-                        <Button variant="ghost" size="sm" className="h-8 px-3 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-primary/10 text-primary border border-primary/10" onClick={() => copy(JSON.stringify(result.payload, null, 2), "payload")}>
-                          {copiedKey === "payload" ? <><Check className="h-3 w-3 mr-1" />Copied</> : <><Copy className="h-3 w-3 mr-1" />Copy</>}
-                        </Button>
-                      </div>
-                      <CardContent className="p-6">
-                        <JsonBlock data={result.payload} />
-                      </CardContent>
-                    </Card>
+                        <CardContent className="p-4">
+                          <JsonBlock data={result.payload} />
+                        </CardContent>
+                      </Card>
 
-                    {/* Signature */}
-                    <Card className="glass-morphism border-primary/10 rounded-2xl shadow-xl bg-card overflow-hidden">
-                      <div className="bg-primary/5 p-5 border-b border-primary/10 flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className="h-7 w-7 rounded-2xl bg-primary/10 flex items-center justify-center">
-                            <Key className="h-3.5 w-3.5 text-primary" />
+                      {/* Signature */}
+                      <Card className="glass-morphism border-primary/10 rounded-2xl shadow-xl bg-card overflow-hidden">
+                        <div className="bg-primary/5 p-4 border-b border-primary/10 flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <Key className="h-3 w-3 text-primary" />
+                            <h3 className="text-[9px] font-black uppercase tracking-[0.2em] text-primary">Signature</h3>
                           </div>
-                          <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Signature</h3>
+                          <Button variant="ghost" size="icon" className="h-6 w-6 rounded-lg text-primary hover:bg-primary/10" onClick={() => copy(result.signature, "sig")}>
+                            {copiedKey === "sig" ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
+                          </Button>
                         </div>
-                        <Button variant="ghost" size="sm" className="h-8 px-3 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-primary/10 text-primary border border-primary/10" onClick={() => copy(result.signature, "sig")}>
-                          {copiedKey === "sig" ? <><Check className="h-3 w-3 mr-1" />Copied</> : <><Copy className="h-3 w-3 mr-1" />Copy</>}
-                        </Button>
-                      </div>
-                      <CardContent className="p-6">
-                        <p className="text-xs font-mono break-all text-foreground/60 bg-background/20 p-4 rounded-xl border border-border/40 shadow-inner">{result.signature}</p>
-                      </CardContent>
-                    </Card>
+                        <CardContent className="p-4">
+                          <p className="text-[10px] font-mono break-all text-foreground/60 bg-background/20 p-3 rounded-xl border border-border/40 shadow-inner h-full min-h-[100px]">{result.signature}</p>
+                        </CardContent>
+                      </Card>
+                    </div>
                   </div>
                 )}
               </div>
@@ -248,11 +258,6 @@ const JwtDecoder = () => {
                 <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl bg-card border-2 border-primary/5">
                   <div className="bg-primary/5 p-5 border-b border-primary/10 flex items-center justify-between">
                     <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary italic">Token Stats</h3>
-                    {token && (
-                      <Button onClick={() => { setToken(""); setResult(null); setError(""); }} variant="ghost" size="sm" className="h-8 px-3 text-[9px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-2xl transition-all">
-                        Reset
-                      </Button>
-                    )}
                   </div>
                   <CardContent className="p-8 space-y-6">
                     {result ? (

@@ -24,10 +24,12 @@ const TextDiffChecker = () => {
   const [original, setOriginal] = useState("");
   const [modified, setModified] = useState("");
   const [diffMode, setDiffMode] = useState<"lines" | "words" | "chars">("lines");
-  const [liveMode, setLiveMode] = useState(true);
+  const [liveMode, setLiveMode] = useState(false);
   const [showResult, setShowResult] = useState(false);
 
   const resultRef = useRef<HTMLDivElement>(null);
+
+
 
   const toggleDark = useCallback(() => {
     const next = !darkMode;
@@ -48,6 +50,26 @@ const TextDiffChecker = () => {
       return Diff.diffChars(original, modified);
     }
   }, [original, modified, diffMode]);
+
+  const diffLines = useMemo(() => {
+    const lines: { parts: { value: string; added?: boolean; removed?: boolean }[] }[] = [];
+    let currentLine: { parts: { value: string; added?: boolean; removed?: boolean }[] } = { parts: [] };
+
+    diffResult.forEach((part) => {
+      const partLines = part.value.split("\n");
+      partLines.forEach((content, i) => {
+        if (i > 0) {
+          lines.push(currentLine);
+          currentLine = { parts: [] };
+        }
+        if (content || (i === 0 && content === "" && partLines.length > 1)) {
+          currentLine.parts.push({ value: content, added: part.added, removed: part.removed });
+        }
+      });
+    });
+    if (currentLine.parts.length > 0) lines.push(currentLine);
+    return lines;
+  }, [diffResult]);
 
   // Improved stats: count actual changes
   const stats = useMemo(() => {
@@ -233,16 +255,27 @@ const TextDiffChecker = () => {
                           </span>
                         </div>
 
-                        <DropdownMenu>
+                        <DropdownMenu modal={false}>
                           <DropdownMenuTrigger asChild>
-                            <Button variant="outline" className="capitalize text-xs font-bold px-4">
-                              {diffMode} <ChevronDown className="ml-2 h-3 w-3" />
+                            <Button
+                              variant="outline"
+                              className="bg-zinc-950/40 border border-primary/10 rounded-2xl px-4 h-11 text-[10px] font-black uppercase tracking-tighter flex items-center justify-between hover:bg-zinc-900/60 shadow-inner min-w-[120px]"
+                            >
+                              <span className="truncate">{diffMode}</span>
+                              <ChevronDown className="h-4 w-4 opacity-50 ml-2" />
                             </Button>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
+                          <DropdownMenuContent
+                            align="end"
+                            className="glass-morphism border-primary/20 min-w-[120px] bg-background/95 backdrop-blur-xl shadow-2xl rounded-2xl"
+                          >
                             {["lines", "words", "chars"].map((mode) => (
-                              <DropdownMenuItem key={mode} onClick={() => setDiffMode(mode as any)}>
-                                {mode.charAt(0).toUpperCase() + mode.slice(1)}
+                              <DropdownMenuItem
+                                key={mode}
+                                onClick={() => setDiffMode(mode as any)}
+                                className="text-[10px] font-black uppercase tracking-widest focus:bg-accent focus:text-accent-foreground cursor-pointer py-3 transition-colors"
+                              >
+                                {mode}
                               </DropdownMenuItem>
                             ))}
                           </DropdownMenuContent>
@@ -263,27 +296,48 @@ const TextDiffChecker = () => {
                       </div>
                     </div>
 
-                    <div className="p-8 font-mono text-[14px] leading-[1.75] bg-white dark:bg-black min-h-[320px] max-h-[720px] overflow-auto custom-scrollbar">
-                      {diffResult.length === 0 ? (
-                        <div className="text-center text-muted-foreground py-12">
-                          No differences detected
+                    <div className="flex flex-col font-mono text-[13px] bg-white dark:bg-[#050505] min-h-[400px] max-h-[720px] overflow-auto custom-scrollbar border border-border dark:border-white/5 rounded-xl shadow-inner divide-y divide-border/5">
+                      {diffLines.length === 0 ? (
+                        <div className="text-center text-muted-foreground py-20 flex flex-col items-center gap-4">
+                          <Check className="h-8 w-8 opacity-20" />
+                          <span className="text-[10px] font-black uppercase tracking-widest opacity-40">No Forensic Deviations Detected</span>
                         </div>
                       ) : (
-                        diffResult.map((part, index) => {
-                          let className = "transition-all duration-200";
-
-                          if (part.added) {
-                            className += " bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 px-1 rounded";
-                          } else if (part.removed) {
-                            className += " bg-red-500/15 text-red-700 dark:text-red-400 line-through decoration-wavy px-1 rounded";
-                          } else {
-                            className += " text-foreground/80 dark:text-zinc-300";
-                          }
+                        diffLines.map((line, lineIdx) => {
+                          const hasAdded = line.parts.some(p => p.added);
+                          const hasRemoved = line.parts.some(p => p.removed);
 
                           return (
-                            <span key={index} className={className}>
-                              {part.value}
-                            </span>
+                            <div 
+                              key={lineIdx} 
+                              className={`group flex items-start transition-colors min-h-[28px] ${
+                                hasAdded && !hasRemoved ? "bg-emerald-500/10 hover:bg-emerald-500/15" : 
+                                hasRemoved && !hasAdded ? "bg-red-500/10 hover:bg-red-500/15" : 
+                                hasAdded && hasRemoved ? "bg-yellow-500/5 hover:bg-yellow-500/10" :
+                                "hover:bg-muted/30"
+                              }`}
+                            >
+                              <div className={`w-12 shrink-0 flex items-center justify-center border-r border-border/10 text-[10px] font-black select-none opacity-40 mt-[7px] ${
+                                hasAdded && !hasRemoved ? "text-emerald-500" : hasRemoved ? "text-red-500" : "text-muted-foreground"
+                              }`}>
+                                {hasAdded && !hasRemoved ? "+" : hasRemoved ? "-" : " "}
+                              </div>
+                              <div className="pl-6 pr-4 whitespace-pre-wrap break-all leading-[28px] flex flex-wrap">
+                                {line.parts.map((part, partIdx) => (
+                                  <span 
+                                    key={partIdx}
+                                    className={`${
+                                      part.added ? "bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold px-0.5 rounded" : 
+                                      part.removed ? "bg-red-500/20 text-red-600 dark:text-red-400 line-through opacity-80 px-0.5 rounded ml-1 mr-1" : 
+                                      "text-foreground/80 dark:text-zinc-300"
+                                    }`}
+                                  >
+                                    {part.value}
+                                  </span>
+                                ))}
+                                {line.parts.length === 0 && <span className="opacity-0"> </span>}
+                              </div>
+                            </div>
                           );
                         })
                       )}

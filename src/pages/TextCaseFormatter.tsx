@@ -73,133 +73,133 @@ const TextCaseFormatter = () => {
         <SponsorSidebars position="left" />
 
         <main className="w-full max-w-[1800px] mx-auto px-6 py-12 grow overflow-visible">
-        <div className="flex flex-col gap-10">
-          <header className="flex items-center justify-between flex-wrap gap-8">
-            <div className="flex items-center gap-6">
-              <Link to="/">
-                <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-border/50 hover:bg-primary/5 transition-all group/back">
-                  <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
-                </Button>
-              </Link>
-              <div>
-                <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow">
-                  Text Case <span className="text-primary italic">Formatter</span>
-                </h1>
-                <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">Professional String Transformation Lab</p>
+          <div className="flex flex-col gap-10">
+            <header className="flex items-center justify-between flex-wrap gap-8">
+              <div className="flex items-center gap-6">
+                <Link to="/">
+                  <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-border/50 hover:bg-primary/5 transition-all group/back">
+                    <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
+                  </Button>
+                </Link>
+                <div>
+                  <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow">
+                    Text Case <span className="text-primary italic">Formatter</span>
+                  </h1>
+                  <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">Professional String Transformation Lab</p>
+                </div>
               </div>
-            </div>
-          </header>
+            </header>
 
             {/* Mobile Inline Ad */}
             <div className="flex min-[1600px]:hidden justify-center mb-8 w-full">
               <AdBox adFormat="horizontal" height={250} label="300x250 AD" className="w-full max-w-[400px]" />
             </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-12 items-start w-full">
-            <div className="w-full space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-700">
-              <Card className="glass-morphism border-primary/10 rounded-2xl shadow-2xl bg-muted/5 p-8 md:p-10">
-                <CardContent className="p-0">
-                  <textarea
-                    value={text}
-                    onChange={(e) => setText(e.target.value)}
-                    placeholder="Paste your content, script, or code list here…"
-                    className="min-h-[400px] w-full resize-none bg-transparent border-none text-base text-foreground placeholder:text-muted-foreground/30 focus:outline-none focus:ring-0 font-medium leading-relaxed custom-scrollbar"
-                  />
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-12 items-start w-full">
+              <div className="w-full space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-700">
+                <Card className="glass-morphism border-primary/10 rounded-2xl shadow-2xl bg-muted/5 p-8 md:p-10">
+                  <CardContent className="p-0">
+                    <textarea
+                      value={text}
+                      onChange={(e) => setText(e.target.value)}
+                      placeholder="Paste your content, script, or code list here…"
+                      className="min-h-[360px] w-full resize-none bg-transparent border-none text-base text-foreground placeholder:text-muted-foreground/30 focus:outline-none focus:ring-0 font-medium leading-relaxed custom-scrollbar"
+                    />
 
-                  <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-3">
-                    <Button variant="secondary" className="font-bold rounded-2xl h-12 hover:bg-primary/10 hover:text-primary transition-all border border-transparent hover:border-primary/20" onClick={() => setText(text.toUpperCase())}>
-                      UPPERCASE
+                    <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-3">
+                      <Button variant="secondary" className="font-bold rounded-2xl h-12 hover:bg-primary/10 hover:text-primary transition-all border border-transparent hover:border-primary/20" onClick={() => setText(text.toUpperCase())}>
+                        UPPERCASE
+                      </Button>
+                      <Button variant="secondary" className="font-bold rounded-2xl h-12 hover:bg-primary/10 hover:text-primary transition-all border border-transparent hover:border-primary/20" onClick={() => setText(text.toLowerCase())}>
+                        lowercase
+                      </Button>
+                      <Button variant="secondary" className="font-bold rounded-2xl h-12 hover:bg-primary/10 hover:text-primary transition-all border border-transparent hover:border-primary/20" onClick={() => setText(toTitleCase(text))}>
+                        Title Case
+                      </Button>
+                      <Button variant="secondary" className="font-bold rounded-2xl h-12 hover:bg-primary/10 hover:text-primary transition-all border border-transparent hover:border-primary/20" onClick={() => setText(toSentenceCase(text))}>
+                        Sentence
+                      </Button>
+                    </div>
+
+                    <div className="mt-4 pt-4 border-t border-border/50 grid grid-cols-1 md:grid-cols-3 gap-3">
+                      <Button variant="outline" className="gap-2 font-mono text-xs rounded-2xl h-10 border-primary/10 bg-primary/5 text-primary hover:bg-primary/20" onClick={() => setText(toSnakeCase(text))}>
+                        <Terminal className="h-3.5 w-3.5" /> snake_case
+                      </Button>
+                      <Button variant="outline" className="gap-2 font-mono text-xs rounded-2xl h-10 border-primary/10 bg-primary/5 text-primary hover:bg-primary/20" onClick={() => setText(toKebabCase(text))}>
+                        <Hash className="h-3.5 w-3.5" /> kebab-case
+                      </Button>
+                      <Button variant="outline" className="gap-2 font-mono text-xs rounded-2xl h-10 border-primary/10 bg-primary/5 text-primary hover:bg-primary/20" onClick={() => setText(toConstantCase(text))}>
+                        <Terminal className="h-3.5 w-3.5" /> CONSTANT_CASE
+                      </Button>
+                    </div>
+
+                    <Button
+                      className={`mt-8 w-full gap-3 h-16 text-lg font-bold rounded-2xl shadow-xl transition-all duration-300 ${copied ? 'bg-green-600 hover:bg-green-700 shadow-green-600/20' : 'shadow-primary/30 hover:scale-[1.01]'}`}
+                      onClick={copy}
+                      disabled={!text}
+                    >
+                      {copied ? <Check className="h-6 w-6" /> : <Copy className="h-6 w-6" />}
+                      {copied ? "Text Copied!" : "Copy to Clipboard"}
                     </Button>
-                    <Button variant="secondary" className="font-bold rounded-2xl h-12 hover:bg-primary/10 hover:text-primary transition-all border border-transparent hover:border-primary/20" onClick={() => setText(text.toLowerCase())}>
-                      lowercase
-                    </Button>
-                    <Button variant="secondary" className="font-bold rounded-2xl h-12 hover:bg-primary/10 hover:text-primary transition-all border border-transparent hover:border-primary/20" onClick={() => setText(toTitleCase(text))}>
-                      Title Case
-                    </Button>
-                    <Button variant="secondary" className="font-bold rounded-2xl h-12 hover:bg-primary/10 hover:text-primary transition-all border border-transparent hover:border-primary/20" onClick={() => setText(toSentenceCase(text))}>
-                      Sentence
-                    </Button>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <aside className="space-y-6 lg:sticky lg:top-24 h-fit">
+                <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl">
+                  <div className="bg-primary/5 p-5 border-b border-primary/10 flex items-center justify-between">
+                    <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Text Analysis</h3>
+                    {text && (
+                      <Button
+                        onClick={() => setText("")}
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 px-3 text-[9px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-2xl transition-all"
+                      >
+                        Reset Stage
+                      </Button>
+                    )}
                   </div>
+                  <CardContent className="p-8 space-y-10">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="bg-muted/5 p-5 rounded-2xl border border-primary/10 transition-colors hover:border-primary/30">
+                        <p className="text-[10px] font-black uppercase tracking-widest opacity-40 mb-2 leading-none italic">Entropy (Words)</p>
+                        <p className="text-3xl font-black italic tracking-tighter text-primary">{text.trim() ? text.trim().split(/\s+/).length : 0}</p>
+                      </div>
+                      <div className="bg-muted/5 p-5 rounded-2xl border border-primary/10 transition-colors hover:border-primary/30">
+                        <p className="text-[10px] font-black uppercase tracking-widest opacity-40 mb-2 leading-none italic">Weight (Chars)</p>
+                        <p className="text-3xl font-black italic tracking-tighter text-primary">{text.length}</p>
+                      </div>
+                    </div>
+                    <p className="text-[9px] text-center text-muted-foreground font-black uppercase tracking-widest opacity-30 italic">Local computation • CONSTANT_CASE for env vars • kebab-case for URLs</p>
+                  </CardContent>
+                </Card>
+              </aside>
 
-                  <div className="mt-4 pt-4 border-t border-border/50 grid grid-cols-1 md:grid-cols-3 gap-3">
-                    <Button variant="outline" className="gap-2 font-mono text-xs rounded-2xl h-10 border-primary/10 bg-primary/5 text-primary hover:bg-primary/20" onClick={() => setText(toSnakeCase(text))}>
-                      <Terminal className="h-3.5 w-3.5" /> snake_case
-                    </Button>
-                    <Button variant="outline" className="gap-2 font-mono text-xs rounded-2xl h-10 border-primary/10 bg-primary/5 text-primary hover:bg-primary/20" onClick={() => setText(toKebabCase(text))}>
-                      <Hash className="h-3.5 w-3.5" /> kebab-case
-                    </Button>
-                    <Button variant="outline" className="gap-2 font-mono text-xs rounded-2xl h-10 border-primary/10 bg-primary/5 text-primary hover:bg-primary/20" onClick={() => setText(toConstantCase(text))}>
-                      <Terminal className="h-3.5 w-3.5" /> CONSTANT_CASE
-                    </Button>
-                  </div>
-
-                  <Button
-                    className={`mt-8 w-full gap-3 h-16 text-lg font-bold rounded-2xl shadow-xl transition-all duration-300 ${copied ? 'bg-green-600 hover:bg-green-700 shadow-green-600/20' : 'shadow-primary/30 hover:scale-[1.01]'}`}
-                    onClick={copy}
-                    disabled={!text}
-                  >
-                    {copied ? <Check className="h-6 w-6" /> : <Copy className="h-6 w-6" />}
-                    {copied ? "Text Copied!" : "Copy to Clipboard"}
-                  </Button>
-                </CardContent>
-              </Card>
             </div>
 
-            <aside className="space-y-6 lg:sticky lg:top-24 h-fit">
-              <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl">
-                <div className="bg-primary/5 p-5 border-b border-primary/10 flex items-center justify-between">
-                  <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Text Analysis</h3>
-                  {text && (
-                    <Button
-                      onClick={() => setText("")}
-                      variant="ghost"
-                      size="sm"
-                      className="h-8 px-3 text-[9px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-2xl transition-all"
-                    >
-                      Reset Stage
-                    </Button>
-                  )}
-                </div>
-                <CardContent className="p-8 space-y-10">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-muted/5 p-5 rounded-2xl border border-primary/10 transition-colors hover:border-primary/30">
-                      <p className="text-[10px] font-black uppercase tracking-widest opacity-40 mb-2 leading-none italic">Entropy (Words)</p>
-                      <p className="text-3xl font-black italic tracking-tighter text-primary">{text.trim() ? text.trim().split(/\s+/).length : 0}</p>
-                    </div>
-                    <div className="bg-muted/5 p-5 rounded-2xl border border-primary/10 transition-colors hover:border-primary/30">
-                      <p className="text-[10px] font-black uppercase tracking-widest opacity-40 mb-2 leading-none italic">Weight (Chars)</p>
-                      <p className="text-3xl font-black italic tracking-tighter text-primary">{text.length}</p>
-                    </div>
-                  </div>
-                  <p className="text-[9px] text-center text-muted-foreground font-black uppercase tracking-widest opacity-30 italic">Local computation • CONSTANT_CASE for env vars • kebab-case for URLs</p>
-                </CardContent>
-              </Card>
-            </aside>
-
+            {/* SEO & Tool Guide Section */}
+            <div className="max-w-[1240px] w-full mt-10">
+              <ToolExpertSection
+                title="Professional Text Case Transformation Lab"
+                description="The Text Case Formatter is a high-speed string manipulation utility designed for developers, copywriters, and data analysts to standardize text formats across different naming conventions."
+                transparency="Our formatter executes all transformations using local JavaScript string methods (regex and mapping). Whether you are converting a list of variables to 'snake_case' for a database or formatting a paragraph to 'Sentence Case' for a blog post, the logic runs entirely in your browser's local thread. Your text inputs are never transmitted to our servers, ensuring your sensitive scripts and drafts remain private."
+                limitations="While our 'Sentence Case' and 'Title Case' engines are highly accurate, they rely on standard linguistic patterns. Complex proper nouns or specialized technical acronyms may require manual review after the initial transformation."
+                accent="indigo"
+              />
+            </div>
           </div>
-
-          {/* SEO & Tool Guide Section */}
-          <div className="max-w-[1240px] w-full mt-10">
-            <ToolExpertSection
-              title="Professional Text Case Transformation Lab"
-              description="The Text Case Formatter is a high-speed string manipulation utility designed for developers, copywriters, and data analysts to standardize text formats across different naming conventions."
-              transparency="Our formatter executes all transformations using local JavaScript string methods (regex and mapping). Whether you are converting a list of variables to 'snake_case' for a database or formatting a paragraph to 'Sentence Case' for a blog post, the logic runs entirely in your browser's local thread. Your text inputs are never transmitted to our servers, ensuring your sensitive scripts and drafts remain private."
-              limitations="While our 'Sentence Case' and 'Title Case' engines are highly accurate, they rely on standard linguistic patterns. Complex proper nouns or specialized technical acronyms may require manual review after the initial transformation."
-              accent="indigo"
-            />
-          </div>
-        </div>
-      </main>
+        </main>
 
         <SponsorSidebars position="right" />
       </div>
       <Footer />
-    
+
       {/* Mobile Sticky Anchor Ad */}
       <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-black/80 backdrop-blur-sm border-t border-white/10 py-2 h-[66px] overflow-x-clip">
         <AdBox adFormat="horizontal" height={50} label="320x50 ANCHOR AD" className="w-full" />
       </div>
-      </div>
+    </div>
   );
 };
 

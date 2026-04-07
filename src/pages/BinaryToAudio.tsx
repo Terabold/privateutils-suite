@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, RefreshCw, Download, Play, Pause, Binary, Zap, CloudUpload, Radio, RotateCcw } from "lucide-react";
+import { ArrowLeft, RefreshCw, Download, Play, Pause, Binary, Zap, CloudUpload, Radio, RotateCcw, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
@@ -331,28 +331,54 @@ const BinaryToAudio = () => {
                         <p className="mt-4 text-[10px] text-muted-foreground font-black uppercase tracking-widest opacity-20 text-center">Interprets 16-bit Signed Integers as PCM Waves</p>
                       </div>
                       <label htmlFor="binary-audio-upload" className="sr-only">Upload Binary for Audio Conversion</label>
-                      <input id="binary-audio-upload" name="binary-audio-upload" ref={inputRef} type="file" className="hidden" onChange={(e) => handleFile(e.target.files?.[0])} />
+                      <input id="binary-audio-upload" name="binary-audio-upload" ref={inputRef} type="file" className="hidden" onChange={(e) => { handleFile(e.target.files?.[0]); e.target.value = ""; }} />
                     </div>
                   </Card>
                 ) : (
                   <div className="animate-in fade-in slide-in-from-bottom-8 duration-700">
-                    <Card className="glass-morphism border-primary/10 p-10 rounded-2xl shadow-2xl bg-card overflow-hidden group relative">
-                      <div className="space-y-10">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3">
-                            <div className="h-10 w-10 rounded-2xl bg-primary/20 flex items-center justify-center text-primary">
-                              <Radio className="h-5 w-5" />
-                            </div>
-                            <div>
-                              <p className="text-[10px] font-black uppercase tracking-widest opacity-40 text-foreground">Sampling Matrix</p>
-                              <p className="text-2xl font-black italic tracking-tight text-primary uppercase">{sampleRate} Hz Engine</p>
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <p className="text-[10px] font-black uppercase tracking-widest opacity-20 text-foreground">Active Buffer</p>
-                            <p className="text-xs font-black text-foreground truncate max-w-[200px] italic">{file.name}</p>
-                          </div>
+                    <Card className="glass-morphism border-primary/10 p-0 rounded-2xl shadow-2xl bg-card overflow-hidden group relative">
+                      <div className="bg-primary/5 p-5 border-b border-primary/10 flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <Binary className="h-4 w-4 text-primary" />
+                          <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary italic leading-none">Studio Workbench</h3>
                         </div>
+                        {file && (
+                          <Button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              resetPlayback();
+                              setFile(null);
+                              setAudioBuffer(null);
+                              setObjectUrl(null);
+                              setProcessedUrl(null);
+                            }}
+                            variant="destructive"
+                            size="sm"
+                            className="h-8 px-4 text-[9px] font-black uppercase tracking-widest rounded-xl shadow-2xl hover:scale-105 active:scale-95 transition-all flex items-center gap-2"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                            <span>Delete Asset</span>
+                          </Button>
+                        )}
+                      </div>
+                      <CardContent className="p-10">
+                        <div className="space-y-10">
+                          <div className="flex items-center justify-between gap-8">
+                            <div className="flex items-center gap-3 shrink-0">
+                              <div className="h-10 w-10 rounded-2xl bg-primary/20 flex items-center justify-center text-primary">
+                                <Radio className="h-5 w-5" />
+                              </div>
+                              <div>
+                                <p className="text-[10px] font-black uppercase tracking-widest opacity-40 text-foreground">Sampling Matrix</p>
+                                <p className="text-2xl font-black italic tracking-tight text-primary uppercase">{sampleRate} Hz Engine</p>
+                              </div>
+                            </div>
+                            <div className="text-right min-w-0">
+                              <p className="text-[10px] font-black uppercase tracking-widest opacity-20 text-foreground">Active Buffer</p>
+                              <p className="text-xs font-black text-foreground truncate italic">{file.name}</p>
+                            </div>
+                          </div>
 
                         <div className="pt-6 border-t border-primary/10 flex flex-col items-center gap-6">
                           <div
@@ -404,20 +430,10 @@ const BinaryToAudio = () => {
                           <audio ref={audioRef} src={objectUrl || ""} className="hidden" />
                         </div>
                       </div>
-
-                      <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-                        <Button
-                          onClick={() => { setFile(null); setAudioBuffer(null); setObjectUrl(null); setProcessedUrl(null); }}
-                          variant="destructive"
-                          size="sm"
-                          className="h-8 px-4 text-[9px] font-black uppercase tracking-widest rounded-xl shadow-2xl hover:scale-105 active:scale-95 transition-all"
-                        >
-                          Reset Stage
-                        </Button>
-                      </div>
-                    </Card>
-                  </div>
-                )}
+                    </CardContent>
+                  </Card>
+                </div>
+              )}
               </div>
 
               <aside className="lg:col-span-4 space-y-6 lg:sticky lg:top-24 h-fit">

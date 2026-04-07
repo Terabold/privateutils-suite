@@ -384,7 +384,7 @@ const YouTubeThumbnailHub = () => {
         <SponsorSidebars position="right" />
       </div>
       <Footer />
-      <input ref={inputRef} type="file" className="hidden" accept="image/*" onChange={(e) => handleFile(e.target.files?.[0])} />
+      <input ref={inputRef} type="file" className="hidden" accept="image/*" onChange={(e) => { handleFile(e.target.files?.[0]); e.target.value = ""; }} />
 
       {/* Mobile Sticky Anchor Ad */}
       <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-black/80 backdrop-blur-sm border-t border-white/10 py-2 h-[66px] overflow-x-clip">

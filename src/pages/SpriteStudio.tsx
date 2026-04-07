@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Upload, Download, Scissors, Maximize2, Move, ZoomIn, ZoomOut, RotateCcw, Image as ImageIcon, Plus, Check, RefreshCw, Layers, Sparkles, CloudUpload, Grid3X3, Trash2, Square, Settings2, FolderArchive, MousePointer2, GripVertical } from "lucide-react";
+import { ArrowLeft, Upload, Download, Scissors, Maximize2, Move, ZoomIn, ZoomOut, RotateCcw, Image as ImageIcon, Plus, Check, RefreshCw, Layers, Sparkles, CloudUpload, Grid3X3, Trash2, Square, Settings2, FolderArchive, MousePointer2, GripVertical, Activity } from "lucide-react";
 import { motion, Reorder, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -52,6 +52,7 @@ const SpriteStudio = () => {
     gapY: 0
   });
   const [isPanning, setIsPanning] = useState(false);
+  const [showGrid, setShowGrid] = useState(false);
   const [processing, setProcessing] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -108,7 +109,7 @@ const SpriteStudio = () => {
       const factor = e.deltaY > 0 ? 0.9 : 1.11;
 
       setZoom(prevZoom => {
-        const nextZoom = Math.max(0.1, Math.min(prevZoom * factor, 40));
+        const nextZoom = Math.max(0.01, Math.min(prevZoom * factor, 100));
 
         const rect = el.getBoundingClientRect();
         const mouseX = e.clientX - (rect.left + el.clientLeft);
@@ -443,10 +444,20 @@ const SpriteStudio = () => {
                     </Button>
                     <div className="w-[1px] h-4 bg-white/5" />
                     <Button
+                      onClick={() => setShowGrid(!showGrid)}
+                      disabled={!image}
+                      variant="outline"
+                      size="sm"
+                      className={`h-8 px-4 rounded-xl font-black text-[8px] uppercase gap-2 transition-all tracking-wider ${showGrid ? "bg-primary text-white border-primary shadow-glow" : "border-primary/10 bg-primary/5 hover:bg-primary/20"}`}
+                    >
+                      <Grid3X3 className="h-3 w-3" /> Grid {showGrid ? "ON" : "OFF"}
+                    </Button>
+                    <div className="w-[1px] h-4 bg-white/5" />
+                    <Button
                       onClick={() => {
                         const viewportW = containerRef.current?.clientWidth || 800;
                         const viewportH = containerRef.current?.clientHeight || 800;
-                        const newScale = Math.min((viewportW - 80) / imgSize.w, (viewportH - 80) / imgSize.h, 40);
+                        const newScale = Math.min((viewportW - 80) / imgSize.w, (viewportH - 80) / imgSize.h, 100);
                         setScale(newScale);
                         setPan({ x: (viewportW - (imgSize.w * newScale)) / 2, y: (viewportH - (imgSize.h * newScale)) / 2 });
                         setZoom(1);
@@ -467,7 +478,7 @@ const SpriteStudio = () => {
                   onMouseLeave={handleMouseUp}
                   onContextMenu={(e) => e.preventDefault()}
                   ref={containerRef}
-                  className="glass-morphism border-primary/10 overflow-x-clip h-[calc(70vh-68px)] min-h-[500px] flex flex-col items-center justify-center relative bg-card rounded-2xl select-none shadow-2xl group/canvas p-0"
+                  className="glass-morphism border-primary/10 overflow-hidden h-[calc(70vh-68px)] min-h-[500px] flex flex-col items-center justify-center relative bg-card rounded-2xl select-none shadow-2xl group/canvas p-0"
                   style={{
                     backgroundImage: `linear-gradient(45deg, var(--checker-color) 25%, transparent 25%), 
                                      linear-gradient(-45deg, var(--checker-color) 25%, transparent 25%), 
@@ -530,6 +541,16 @@ const SpriteStudio = () => {
                           viewBox={`0 0 ${imgSize.w || 1} ${imgSize.h || 1}`}
                           style={{ imageRendering: 'pixelated' }}
                         >
+                          {showGrid && (zoom * scale) > 4 && (
+                            <defs>
+                              <pattern id="pixel-grid-sprite" width="1" height="1" patternUnits="userSpaceOnUse">
+                                <path d="M 1 0 L 0 0 0 1" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="0.1" />
+                              </pattern>
+                            </defs>
+                          )}
+                          {showGrid && (zoom * scale) > 4 && (
+                            <rect width="100%" height="100%" fill="url(#pixel-grid-sprite)" />
+                          )}
                           {slices.map((slice) => {
                             const nx = slice.w < 0 ? slice.x + slice.w : slice.x;
                             const ny = slice.h < 0 ? slice.y + slice.h : slice.y;
@@ -586,8 +607,8 @@ const SpriteStudio = () => {
                   <div className="flex flex-col grow min-h-0">
                     <div className="bg-primary/5 p-4 border-b border-primary/10 flex items-center justify-between shrink-0">
                       <div className="flex items-center gap-2.5">
-                        <Settings2 className="h-3.5 w-3.5 text-primary" />
-                        <h3 className="text-[9px] font-black uppercase tracking-[0.2em] text-primary italic leading-none">Drafting Master</h3>
+                        <Activity className="h-3.5 w-3.5 text-primary" />
+                        <h3 className="text-[9px] font-black uppercase tracking-[0.2em] text-primary italic leading-none">Studio Workbench</h3>
                       </div>
                     </div>
 
@@ -603,7 +624,7 @@ const SpriteStudio = () => {
                             <Label className="text-[8px] font-black uppercase tracking-widest text-muted-foreground italic">Zoom</Label>
                             <span className="text-sm font-black text-primary italic tracking-tighter">{Math.round(zoom * 100)}%</span>
                           </div>
-                          <input type="range" min="0.2" max="25" step="0.1" value={zoom} onChange={(e) => setZoom(parseFloat(e.target.value))} className="w-full h-1 bg-primary/20 rounded-2xl appearance-none cursor-pointer accent-primary shadow-inner" />
+                          <input type="range" min="0.01" max="100" step="0.01" value={zoom} onChange={(e) => setZoom(parseFloat(e.target.value))} className="w-full h-1 bg-primary/20 rounded-2xl appearance-none cursor-pointer accent-primary shadow-inner" />
                         </div>
 
                         {mode === "grid" && (

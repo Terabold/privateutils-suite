@@ -1,7 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Download, RefreshCw, Terminal, CloudUpload, Activity, ShieldCheck, Settings2, FileType, ChevronDown } from "lucide-react";
+import { ArrowLeft, Download, RefreshCw, Terminal, CloudUpload, Activity, ShieldCheck, Settings2, FileType, ChevronDown, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -444,9 +444,10 @@ const UniversalMediaConverter = () => {
                         }}
                         variant="destructive"
                         size="sm"
-                        className="h-8 px-4 text-[9px] font-black uppercase tracking-widest rounded-xl shadow-2xl hover:scale-105 active:scale-95 transition-all"
+                        className="h-8 px-4 text-[9px] font-black uppercase tracking-widest rounded-xl shadow-2xl hover:scale-105 active:scale-95 transition-all flex items-center gap-2"
                       >
-                        Delete File
+                        <Trash2 className="h-3.5 w-3.5" />
+                        <span>Delete File</span>
                       </Button>
                     )}
                   </div>
@@ -472,7 +473,7 @@ const UniversalMediaConverter = () => {
                           <p className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.2em] opacity-50">Drag master or click</p>
                           <p className="text-[9px] font-black uppercase tracking-widest text-primary/60 italic pt-2">Max video size: 500MB</p>
                         </div>
-                        <input ref={inputRef} type="file" accept="video/*,image/*,audio/*,.mov,.mkv,.ts,.m2ts" className="hidden" onChange={(e) => handleFile(e.target.files?.[0])} />
+                        <input ref={inputRef} type="file" accept="video/*,image/*,audio/*,.mov,.mkv,.ts,.m2ts" className="hidden" onChange={(e) => { handleFile(e.target.files?.[0]); e.target.value = ""; }} />
                       </motion.div>
                     ) : (
                       <motion.div

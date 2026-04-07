@@ -1,6 +1,6 @@
 import { i as __toESM } from "./chunk-YKewjYmz.js";
 import { t as require_react } from "./react.js";
-import { t as require_react_dom } from "./react-dom-PNx-7w4U.js";
+import { t as require_react_dom } from "./react-dom-DcUlUArw.js";
 //#region node_modules/@remix-run/router/dist/router.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_react_dom = /* @__PURE__ */ __toESM(require_react_dom());

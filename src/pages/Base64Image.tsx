@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Copy, Check, Image as ImageIcon, FileCode, Zap, Trash2, ShieldCheck, FileStack } from "lucide-react";
+import { ArrowLeft, Copy, Check, Image as ImageIcon, FileCode, Zap, Trash2, ShieldCheck, FileStack, Activity } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Navbar from "@/components/Navbar";
@@ -85,30 +85,40 @@ const Base64Image = () => {
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-12 items-start animate-in fade-in slide-in-from-bottom-8 duration-700 overflow-visible">
               <div className="space-y-8">
                 <Card
-                  className={`glass-morphism border-primary/10 rounded-2xl shadow-xl bg-card border-2 border-dashed flex items-center justify-center gap-4 group hover:border-primary/30 transition-all cursor-pointer relative overflow-x-clip ${base64 ? "p-4 py-6" : "p-12"}`}
+                  className="glass-morphism border-primary/10 rounded-2xl shadow-xl bg-card border-2 border-dashed flex flex-col group hover:border-primary/30 transition-all cursor-pointer relative overflow-hidden"
                   onDragOver={(e) => e.preventDefault()}
                   onDrop={handleDrop}
                   onClick={() => document.getElementById('base64-file-input')?.click()}
                 >
-                  <label htmlFor="base64-file-input" className="sr-only">Upload Image for Base64 Encoding</label>
-                  <input
-                    id="base64-file-input"
-                    name="base64-file-input"
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])}
-                  />
+                  <div className="bg-primary/5 p-4 border-b border-primary/10 flex items-center gap-3 w-full relative z-20">
+                    <Activity className="h-4 w-4 text-primary" />
+                    <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary italic leading-none">Studio Workbench</h3>
+                  </div>
 
-                  {base64 ? (
-                    <div className="flex items-center justify-between w-full px-4 animate-in fade-in slide-in-from-top-2 duration-300">
+                  <div className={`flex flex-col items-center justify-center w-full relative ${base64 ? "py-4 pt-4 pb-4" : "py-12 p-12"}`}>
+                    <label htmlFor="base64-file-input" className="sr-only">Upload Image for Base64 Encoding</label>
+                    <input
+                      id="base64-file-input"
+                      name="base64-file-input"
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) handleFile(file);
+                        e.target.value = "";
+                      }}
+                    />
+
+                    {base64 ? (
+                    <div className="flex items-center justify-between w-full px-6 animate-in fade-in slide-in-from-top-2 duration-300">
                       <div className="flex items-center gap-5">
-                        <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary shadow-inner border border-primary/20">
-                          <ImageIcon className="h-6 w-6" />
+                        <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shadow-inner border border-primary/20">
+                          <ImageIcon className="h-5 w-5" />
                         </div>
                         <div>
-                          <p className="text-[10px] font-black uppercase tracking-widest text-primary leading-none mb-1 italic">Active Artifact : Detected</p>
-                          <p className="text-sm font-black text-foreground uppercase tracking-tighter truncate max-w-[300px]">{fileName}</p>
+                          <p className="text-[10px] font-black uppercase tracking-widest text-primary leading-none mb-1 italic">Active Artifact</p>
+                          <p className="text-xs font-black text-foreground uppercase tracking-tighter truncate max-w-[200px]">{fileName}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-4">
@@ -121,17 +131,18 @@ const Base64Image = () => {
                       </div>
                     </div>
                   ) : (
-                    <div className="flex flex-col items-center">
-                      <div className="h-14 w-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform duration-500 shadow-inner">
-                        <FileStack className="h-6 w-6" />
+                    <div className="flex flex-col items-center py-6">
+                      <div className="h-20 w-20 bg-primary/10 rounded-2xl flex items-center justify-center text-primary group-hover:scale-125 transition-transform duration-500 shadow-inner border border-primary/20">
+                        <FileStack className="h-10 w-10" />
                       </div>
-                      <div className="text-center group-hover:scale-105 transition-transform duration-500 mt-4">
-                        <h2 className="text-xl font-black uppercase tracking-widest mb-1 italic text-shadow-glow">Deploy Hub</h2>
+                      <div className="text-center group-hover:scale-105 transition-transform duration-500 mt-6">
+                        <h2 className="text-2xl font-black uppercase tracking-widest mb-1 italic text-shadow-glow">Deploy Hub</h2>
                         <p className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground/60 font-black">Click to Browse · Ctrl+V to paste artifact</p>
                         <KbdShortcut />
                       </div>
                     </div>
                   )}
+                  </div>
                 </Card>
 
                 {base64 && (
@@ -147,8 +158,8 @@ const Base64Image = () => {
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
-                      <CardContent className="p-8 flex items-center justify-center bg-background/40 min-h-[250px]">
-                        <img src={preview} alt="Preview" className="max-h-[200px] object-contain rounded-2xl shadow-2xl border border-white/5" />
+                      <CardContent className="p-8 flex items-center justify-center bg-background/40 min-h-[400px]">
+                        <img src={preview} alt="Preview" className="max-h-[350px] object-contain rounded-2xl shadow-2xl border border-white/5" />
                       </CardContent>
                     </Card>
 
@@ -171,7 +182,7 @@ const Base64Image = () => {
                         <textarea
                           readOnly
                           value={base64}
-                          className="w-full h-[250px] bg-background/20 p-8 text-[11px] font-mono text-foreground/70 border-none resize-none focus:outline-none custom-scrollbar break-all leading-relaxed shadow-inner"
+                          className="w-full h-[400px] bg-background/20 p-8 text-[11px] font-mono text-foreground/70 border-none resize-none focus:outline-none custom-scrollbar break-all leading-relaxed shadow-inner"
                         />
                       </CardContent>
                     </Card>

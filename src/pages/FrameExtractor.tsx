@@ -293,7 +293,7 @@ const FrameExtractor = () => {
                           <p className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.2em] opacity-40 italic">Drag master or click</p>
                         </div>
                         <label htmlFor="frame-upload-input" className="sr-only">Upload Video for Extraction</label>
-                        <input id="frame-upload-input" name="frame-upload-input" ref={inputRef} type="file" className="hidden" accept="video/*" onChange={(e) => handleFile(e.target.files?.[0])} />
+                        <input id="frame-upload-input" name="frame-upload-input" ref={inputRef} type="file" className="hidden" accept="video/*" onChange={(e) => { handleFile(e.target.files?.[0]); e.target.value = ""; }} />
                       </div>
                     </motion.div>
                   ) : (<motion.div

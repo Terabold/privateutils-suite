@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Copy, Check, Code2, RefreshCw, AlertTriangle } from "lucide-react";
+import { ArrowLeft, Copy, Check, Code2, RefreshCw, AlertTriangle, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Navbar from "@/components/Navbar";
@@ -47,7 +47,7 @@ function hexDecode(s: string) {
    const cleanHex = s.trim().replace(/\s+/g, "");
    if (!/^[0-9a-fA-F]*$/.test(cleanHex)) throw new Error("Invalid hex characters detected. Use 0-9 and A-F.");
    if (cleanHex.length % 2 !== 0) throw new Error("Hex string must have an even length (2 chars per byte).");
-   
+
    const bytes = [];
    for (let i = 0; i < cleanHex.length; i += 2) {
       bytes.push(parseInt(cleanHex.substring(i, 2), 16));
@@ -170,31 +170,39 @@ const EncoderDecoder = () => {
                         {/* Input / Output */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                            <Card className="glass-morphism border-primary/10 rounded-2xl shadow-2xl bg-card p-6">
-                                <CardContent className="p-0 space-y-3">
-                                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Input</p>
-                                <textarea
-                                    value={input}
-                                    onChange={(e) => setInput(e.target.value)}
-                                    placeholder="Paste your text here…"
-                                    className="min-h-[280px] w-full resize-none bg-background/20 border border-border/30 rounded-xl p-4 text-sm text-foreground placeholder:text-muted-foreground/30 focus:outline-none focus:border-primary/40 font-mono leading-relaxed custom-scrollbar shadow-inner"
-                                />
-                                <Button variant="ghost" size="sm" onClick={() => setInput("")} className="text-[9px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-xl h-8 px-3">
-                                    Clear
-                                </Button>
-                                </CardContent>
+                               <CardContent className="p-0 space-y-3 relative">
+                                  <div className="flex items-center justify-between">
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Input</p>
+                                    <Button 
+                                      variant="ghost" 
+                                      size="sm" 
+                                      onClick={() => setInput("")} 
+                                      className="h-8 w-8 p-0 text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-xl transition-all flex items-center justify-center"
+                                      title="Clear Artifact"
+                                    >
+                                       <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                  </div>
+                                  <textarea
+                                     value={input}
+                                     onChange={(e) => setInput(e.target.value)}
+                                     placeholder="Paste your text here…"
+                                     className="min-h-[320px] w-full resize-none bg-background/20 border border-border/30 rounded-xl p-4 text-sm text-foreground placeholder:text-muted-foreground/30 focus:outline-none focus:border-primary/40 font-mono leading-relaxed custom-scrollbar shadow-inner"
+                                  />
+                               </CardContent>
                            </Card>
 
                            <Card className="glass-morphism border-primary/10 rounded-2xl shadow-2xl bg-card p-6">
                               <CardContent className="p-0 space-y-3">
                                  <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Output</p>
                                  {error ? (
-                                    <div className="flex items-start gap-3 p-4 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-sm font-medium min-h-[280px]">
+                                    <div className="flex items-start gap-3 p-4 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-sm font-medium min-h-[320px]">
                                        <AlertTriangle className="h-4 w-4 mt-0.5 shrink-0" />
                                        {error}
                                     </div>
                                  ) : (
                                     <div className="relative">
-                                       <pre className="min-h-[280px] w-full text-sm font-mono leading-relaxed whitespace-pre-wrap break-all text-foreground/80 bg-background/20 border border-border/30 rounded-xl p-4 custom-scrollbar overflow-auto shadow-inner">
+                                       <pre className="min-h-[320px] w-full text-sm font-mono leading-relaxed whitespace-pre-wrap break-all text-foreground/80 bg-background/20 border border-border/30 rounded-xl p-4 custom-scrollbar overflow-auto shadow-inner">
                                           {output || <span className="text-muted-foreground/30">Result will appear here…</span>}
                                        </pre>
                                     </div>

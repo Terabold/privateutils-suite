@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Zap, Download, Copy, Smartphone, ChevronDown } from "lucide-react";
+import { ArrowLeft, Copy, Check, QrCode, Download, Smartphone, Copy as CopyIcon, Trash2, Settings2, Palette, ShieldCheck, Zap, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -106,7 +106,18 @@ const QrForge = () => {
 
                   <div className="relative z-10 space-y-8">
                     <div className="space-y-4">
-                      <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary italic px-1">Source Payload</label>
+                      <div className="flex justify-between items-end px-1">
+                        <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary italic">Source Payload</label>
+                        {input && (
+                          <button
+                            onClick={() => setInput("")}
+                            className="text-[9px] font-black uppercase tracking-widest text-destructive/50 hover:text-destructive flex items-center gap-1.5 transition-colors mb-1"
+                          >
+                            <Trash2 className="h-3 w-3" />
+                            Clear Payload
+                          </button>
+                        )}
+                      </div>
                       <input
                         type="text"
                         value={input}
@@ -114,17 +125,7 @@ const QrForge = () => {
                         placeholder="Enter secret protocol or URL artifact..."
                         className="w-full h-14 bg-background/50 border-2 border-white/5 rounded-2xl px-6 text-sm font-medium outline-none focus:border-primary/50 transition-all shadow-inner font-mono"
                       />
-                      <div className="flex justify-between items-center px-1">
-                        <p className="text-[9px] font-black uppercase tracking-widest opacity-20 italic">AES-Level Content Sandbox</p>
-                        {input && (
-                          <button
-                            onClick={() => setInput("")}
-                            className="text-[9px] font-black uppercase tracking-widest text-destructive/50 hover:text-destructive flex items-center gap-1.5 transition-colors"
-                          >
-                            Clear Payload
-                          </button>
-                        )}
-                      </div>
+                      <p className="text-[9px] font-black uppercase tracking-widest opacity-20 italic px-1">AES-Level Content Sandbox</p>
                     </div>
                   </div>
                 </Card>

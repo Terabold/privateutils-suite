@@ -325,12 +325,12 @@ const SvgToImage = () => {
 
             <div className="grid grid-cols-1 xl:grid-cols-[1fr_300px] gap-4 items-start">
               <div className="space-y-12 animate-in fade-in slide-in-from-bottom-6 duration-700">
-                <Card className="glass-morphism border-border dark:border-primary/10 overflow-hidden relative bg-zinc-100 dark:bg-[#0a0a0a] shadow-lg dark:shadow-2xl rounded-2xl group flex flex-col min-h-[500px]">
-                  <div className="bg-white/50 dark:bg-[#111] border-b border-border dark:border-white/10 px-6 py-2 flex items-center justify-between">
+                <Card className="glass-morphism border-border dark:border-primary/10 overflow-hidden relative bg-zinc-100 dark:bg-[#0a0a0a] shadow-lg dark:shadow-2xl rounded-2xl group flex flex-col h-[600px]">
+                  <div className="bg-white/50 dark:bg-[#111] border-b border-border dark:border-white/10 px-4 pt-4 flex items-end justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="flex gap-1.5 items-center bg-white dark:bg-[#111111] px-4 py-1.5 rounded-t-lg border-x border-t border-border dark:border-white/5 relative z-10 -mb-[1px] transition-all hover:bg-zinc-50 dark:hover:bg-[#151515]">
-                        <FileCode className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
-                        <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground dark:text-zinc-400">Vector Workspace</span>
+                      <div className="flex gap-1.5 items-center bg-white dark:bg-[#111111] px-5 py-2.5 rounded-t-xl border-x border-t border-border dark:border-white/10 relative z-10 -mb-[1px] transition-all hover:bg-zinc-50 dark:hover:bg-[#151515] shadow-[0_-5px_15px_rgba(0,0,0,0.1)]">
+                        <FileCode className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                        <span className="text-[11px] font-black uppercase tracking-widest text-muted-foreground dark:text-zinc-400">Vector Workspace</span>
                       </div>
                     </div>
                     <div className="flex items-center gap-2 mb-1.5 relative z-20">
@@ -341,7 +341,7 @@ const SvgToImage = () => {
                       >
                         <label className="cursor-pointer">
                           <ImageIcon className="h-3.5 w-3.5" /> Upload SVG
-                          <input type="file" accept=".svg" className="hidden" onChange={(e) => handleFile(e.target.files?.[0])} />
+                          <input type="file" accept=".svg" className="hidden" onChange={(e) => { handleFile(e.target.files?.[0]); e.target.value = ""; }} />
                         </label>
                       </Button>
                       <div className="w-px h-6 bg-border dark:bg-white/10 mx-1" />

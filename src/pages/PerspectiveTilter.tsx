@@ -1,7 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { toPng } from "html-to-image";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Download, CloudUpload, Eye, EyeOff, RefreshCw, Scale } from "lucide-react";
+import { ArrowLeft, Download, CloudUpload, Eye, EyeOff, RefreshCw, Scale, RotateCcw, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
@@ -262,36 +262,62 @@ const PerspectiveTilter = () => {
                   )}
                   {image && (
                     <div className="absolute top-6 right-6 z-50 flex gap-2">
-                       <Button 
-                        onClick={() => setImage(null)} 
-                        variant="ghost" 
-                        size="sm" 
-                        className="h-9 px-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:bg-primary/10 bg-black/20 hover:bg-black/40 backdrop-blur-md border border-white/10 rounded-xl transition-all shadow-xl active:scale-95 group"
-                      >
-                        <CloudUpload className="h-3.5 w-3.5 mr-2 opacity-60 group-hover:opacity-100 transition-opacity" />
-                        Change Image
-                      </Button>
-
-                      <Button 
-                        onClick={resetTilt} 
-                        variant="ghost" 
-                        size="sm" 
-                        className="h-9 px-4 text-[10px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 bg-black/20 hover:bg-black/40 backdrop-blur-md border border-destructive/20 rounded-xl transition-all shadow-xl active:scale-95 group"
-                      >
-                        <RefreshCw className="h-3.5 w-3.5 mr-2 group-hover:rotate-180 transition-transform duration-500" />
-                        Reset Calibration
-                      </Button>
+                       {/* Floating buttons removed as they are now in the Calibration sidebar header */}
                     </div>
                   )}
-                  <input ref={inputRef} type="file" className="hidden" accept="image/*" onChange={(e) => handleFile(e.target.files?.[0])} />
+                  <input 
+                    ref={inputRef} 
+                    type="file" 
+                    className="hidden" 
+                    accept="image/*" 
+                    onChange={(e) => {
+                      handleFile(e.target.files?.[0]);
+                      e.target.value = '';
+                    }} 
+                  />
                 </Card>
               </div>
 
               {/* Settings Sidebar */}
               <aside className="space-y-8 h-fit">
                 <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl">
-                  <div className="bg-primary/5 p-4 border-b border-primary/10">
+                  <div className="bg-primary/5 p-4 border-b border-primary/10 flex items-center justify-between gap-4">
                     <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Capture Calibration</h3>
+                    {image && (
+                      <div className="flex items-center gap-1.5 min-w-0">
+                        <Button 
+                          onClick={() => inputRef.current?.click()} 
+                          variant="ghost" 
+                          size="sm" 
+                          className="h-7 px-2 text-[8px] font-black uppercase tracking-widest text-muted-foreground hover:bg-primary/10 rounded-lg group"
+                          title="Change Image"
+                        >
+                          <RefreshCw className="h-3 w-3 mr-1 opacity-60 group-hover:opacity-100 transition-all" />
+                          Change
+                        </Button>
+                        <Button 
+                          onClick={resetTilt} 
+                          variant="ghost" 
+                          size="sm" 
+                          className="h-7 px-2 text-[8px] font-black uppercase tracking-widest text-primary hover:bg-primary/10 rounded-lg group"
+                          title="Reset Tilt"
+                        >
+                          <RotateCcw className="h-3 w-3 mr-1 opacity-60 group-hover:opacity-100 group-hover:rotate-[-120deg] transition-all" />
+                          Reset
+                        </Button>
+                        <div className="w-[1px] h-3 bg-primary/20 mx-0.5" />
+                        <Button 
+                          onClick={() => setImage(null)} 
+                          variant="ghost" 
+                          size="sm" 
+                          className="h-7 px-2 text-[8px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 rounded-lg group"
+                          title="Delete Artifact"
+                        >
+                          <Trash2 className="h-3 w-3 mr-1 opacity-60 group-hover:opacity-100" />
+                          Delete
+                        </Button>
+                      </div>
+                    )}
                   </div>
                   <CardContent className="p-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-shadow-none">

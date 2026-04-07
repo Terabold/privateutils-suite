@@ -1,6 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Upload, Copy, Check, Pipette, Search, ZoomIn, ZoomOut, Maximize2, MousePointer2, CloudUpload, RefreshCw } from "lucide-react";
+import { ArrowLeft, Copy, Check, Pipette, ZoomIn, ZoomOut, Maximize2, CloudUpload, Trash2, Activity } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
@@ -23,6 +24,7 @@ const ImageColorExtractor = () => {
   });
   const [copied, setCopied] = useState(false);
   const [zoom, setZoom] = useState(1);
+  const [fitZoom, setFitZoom] = useState(1);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [isPanning, setIsPanning] = useState(false);
   const [startPan, setStartPan] = useState({ x: 0, y: 0 });
@@ -75,6 +77,21 @@ const ImageColorExtractor = () => {
 
   usePasteFile(handleFile);
 
+  const autoFit = useCallback(() => {
+    const container = containerRef.current;
+    const img = imgRef.current;
+    if (container && img && img.naturalWidth) {
+      const pad = 20;
+      const availableW = container.clientWidth - pad;
+      const availableH = container.clientHeight - pad;
+      if (availableW <= 0 || availableH <= 0) return;
+      const calculatedFitZoom = Math.min(availableW / img.naturalWidth, availableH / img.naturalHeight);
+      setZoom(calculatedFitZoom);
+      setFitZoom(calculatedFitZoom);
+      setOffset({ x: 0, y: 0 });
+    }
+  }, []);
+
   const handleImageLoad = () => {
     const img = imgRef.current;
     const canvas = canvasRef.current;
@@ -83,19 +100,40 @@ const ImageColorExtractor = () => {
     canvas.height = img.naturalHeight;
     const ctx = canvas.getContext("2d")!;
     ctx.drawImage(img, 0, 0);
+    setTimeout(autoFit, 100);
   };
+
+  useEffect(() => {
+    if (imgSrc) {
+      window.addEventListener('resize', autoFit);
+      return () => window.removeEventListener('resize', autoFit);
+    }
+  }, [imgSrc, autoFit]);
 
   // NATIVE wheel listener for non-passive prevention of site scroll
   useEffect(() => {
     const el = containerRef.current;
-    if (!el) return;
+    if (!el || !imgSrc) return;
 
     const handleWheelNative = (e: WheelEvent) => {
-      if (!imgSrc) return;
       e.preventDefault();
-
       const factor = e.deltaY > 0 ? 0.9 : 1.1;
-      setZoom(prev => Math.min(50, Math.max(1, prev * factor)));
+      
+      setZoom(prevZoom => {
+        const newZoom = Math.min(100, Math.max(0.01, prevZoom * factor));
+        const rect = el.getBoundingClientRect();
+        
+        // Mouse position relative to center of container
+        const mouseRelCenterX = e.clientX - rect.left - rect.width / 2;
+        const mouseRelCenterY = e.clientY - rect.top - rect.height / 2;
+
+        setOffset(prevOffset => ({
+          x: mouseRelCenterX - (mouseRelCenterX - prevOffset.x) * (newZoom / prevZoom),
+          y: mouseRelCenterY - (mouseRelCenterY - prevOffset.y) * (newZoom / prevZoom)
+        }));
+
+        return newZoom;
+      });
     };
 
     el.addEventListener("wheel", handleWheelNative, { passive: false });
@@ -169,28 +207,30 @@ const ImageColorExtractor = () => {
 
         <main className="container mx-auto max-w-[1240px] px-6 py-12 grow overflow-visible">
           <div className="flex flex-col gap-10">
-            <header className="flex items-center gap-6 animate-in fade-in slide-in-from-top-4 duration-500">
-              <Link to="/">
-                <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-white/20 hover:bg-primary/20 transition-all group/back bg-black/60 shadow-2xl">
-                  <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
-                </Button>
-              </Link>
-              <div>
-                <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow text-white">
-                  Color <span className="text-primary italic">Extractor</span>
-                </h1>
-                <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">
-                  Neural Color Palette Analysis • Precision Sampling Engine
-                </p>
-              </div>
-            </header>
+            {!imgSrc && (
+              <header className="flex items-center gap-6 animate-in fade-in slide-in-from-top-4 duration-500">
+                <Link to="/">
+                  <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-white/20 hover:bg-primary/20 transition-all group/back bg-black/60 shadow-2xl">
+                    <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
+                  </Button>
+                </Link>
+                <div>
+                  <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow text-white">
+                    Color <span className="text-primary italic">Extractor</span>
+                  </h1>
+                  <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">
+                    Neural Color Palette Analysis • Precision Sampling Engine
+                  </p>
+                </div>
+              </header>
+            )}
 
             {/* Mobile Inline Ad */}
             <div className="flex min-[1600px]:hidden justify-center mb-8 w-full">
               <AdBox adFormat="horizontal" height={250} label="300x250 AD" className="w-full max-w-[400px]" />
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-12 items-start overflow-visible">
+            <div className={`grid grid-cols-1 ${imgSrc ? 'lg:grid-cols-[minmax(0,1fr)_340px]' : 'lg:grid-cols-1'} gap-12 items-start overflow-visible`}>
               <div className="space-y-8 animate-in fade-in slide-in-from-bottom-6 duration-700">
                 <Card
                   onMouseDown={handleMouseDown}
@@ -199,86 +239,112 @@ const ImageColorExtractor = () => {
                   onMouseLeave={handleMouseUp}
                   onContextMenu={(e) => e.preventDefault()}
                   ref={containerRef}
-                  className="glass-morphism border-primary/10 h-[650px] flex flex-col items-center justify-center relative bg-card rounded-2xl shadow-inner select-none overflow-hidden p-10"
+                  className="glass-morphism border-primary/10 h-[520px] flex flex-col relative bg-card rounded-2xl shadow-xl overflow-hidden"
                 >
-                  {!imgSrc ? (
-                    <div
-                      onDragOver={(e) => e.preventDefault()}
-                      onDrop={(e) => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); }}
-                      onClick={() => inputRef.current?.click()}
-                      className="relative w-full h-full flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/20 text-center transition-all cursor-pointer bg-background/40 hover:border-primary/40 hover:bg-primary/5 shadow-inner"
-                    >
-                      <div className="h-20 w-20 bg-primary/10 rounded-2xl flex items-center justify-center mb-10 shadow-inner group-hover:scale-110 transition-transform">
-                        <CloudUpload className="h-10 w-10 text-primary" />
-                      </div>
-                      <div className="px-6 space-y-2">
-                        <p className="text-4xl font-black text-foreground uppercase tracking-tighter italic leading-none text-shadow-glow">Deploy Hub Artifact</p>
-                        <p className="text-xs text-muted-foreground font-black uppercase tracking-[0.2em] opacity-40">Drag master or click to browse</p>
-                        <KbdShortcut />
-                        <p className="mt-6 text-[10px] text-muted-foreground font-black uppercase tracking-widest opacity-20 italic">Sample Palette from High-Res Masters</p>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="relative w-full h-full flex items-center justify-center cursor-crosshair active:cursor-grabbing">
-
-                      <div className="absolute top-8 right-8 z-20 flex gap-2 p-2 bg-black/40 backdrop-blur-md rounded-2xl border border-white/10 shadow-2xl animate-in fade-in slide-in-from-top-4 duration-500">
-                        {imgSrc && (
-                          <Button
-                            onClick={() => { setImgSrc(null); setColor(null); }}
-                            variant="ghost"
-                            size="icon"
-                            className="h-10 w-10 text-destructive hover:bg-destructive/10 rounded-xl transition-all"
-                          >
-                            <RefreshCw className="h-5 w-5" />
-                          </Button>
-                        )}
-                        <div className="w-[1px] h-6 bg-white/10 self-center mx-1" />
-                        <Button size="icon" variant="ghost" className="h-10 w-10 text-white hover:bg-white/10 rounded-xl transition-all" onClick={() => {
-                          setZoom(prevZoom => Math.min(50, prevZoom * 0.9));
-                        }}>
-                          <ZoomOut className="h-5 w-5" />
-                        </Button>
-                        <Button size="icon" variant="ghost" className="h-10 w-10 text-white hover:bg-white/10 rounded-xl transition-all" onClick={() => {
-                          setZoom(prevZoom => Math.min(50, prevZoom * 1.1));
-                        }}>
-                          <ZoomIn className="h-5 w-5" />
-                        </Button>
-                        <Button size="icon" variant="ghost" className="h-10 w-10 text-white hover:bg-white/10 rounded-xl transition-all" onClick={() => { setZoom(1); setOffset({ x: 0, y: 0 }); }}>
-                          <Maximize2 className="h-5 w-5" />
-                        </Button>
-                      </div>
-
-                      <div className="w-full h-full flex items-center justify-center overflow-x-clip">
-                        <img
-                          ref={imgRef}
-                          src={imgSrc}
-                          alt="Local Source"
-                          crossOrigin="anonymous"
-                          onLoad={handleImageLoad}
-                          onClick={handleClick}
-                          onDragStart={(e) => e.preventDefault()}
-                          className="transition-transform duration-75 ease-out origin-center shadow-[0_50px_100px_-20px_rgba(0,0,0,0.6)] border-4 border-white/10 rounded-xl"
-                          style={{
-                            transform: `translate3d(${offset.x}px, ${offset.y}px, 0) scale(${zoom})`,
-                            imageRendering: zoom > 2 ? "pixelated" : "auto",
-                            maxWidth: 'calc(100% - 60px)',
-                            maxHeight: 'calc(100% - 60px)'
-                          }}
-                        />
-                      </div>
+                  {!imgSrc && (
+                    <div className="bg-card p-4 border-b border-primary/10 flex items-center gap-3 relative z-30">
+                      <Activity className="h-4 w-4 text-primary" />
+                      <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground italic leading-none">Studio Workbench</h3>
                     </div>
                   )}
-                  <input ref={inputRef} type="file" className="hidden" accept="image/*" onChange={(e) => handleFile(e.target.files?.[0])} />
+                  <div className={`flex-1 flex flex-col items-center justify-center ${imgSrc ? "p-0" : "p-10"} select-none relative bg-background/50 rounded-b-2xl overflow-hidden`}>
+                    <AnimatePresence mode="wait">
+                      {!imgSrc ? (
+                        <motion.div
+                          key="dropzone"
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -10 }}
+                          onDragOver={(e) => e.preventDefault()}
+                          onDrop={(e) => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); }}
+                          onClick={() => inputRef.current?.click()}
+                          className="relative w-full h-full flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/20 text-center transition-all cursor-pointer bg-background/40 hover:border-primary/40 hover:bg-primary/5 shadow-inner"
+                        >
+                          <div className="h-20 w-20 bg-primary/10 rounded-2xl flex items-center justify-center mb-10 shadow-inner group-hover:scale-110 transition-transform">
+                            <CloudUpload className="h-10 w-10 text-primary" />
+                          </div>
+                          <div className="px-6 space-y-2">
+                            <p className="text-4xl font-black text-foreground uppercase tracking-tighter italic leading-none text-shadow-glow">Deploy Hub Artifact</p>
+                            <p className="text-xs text-muted-foreground font-black uppercase tracking-[0.2em] opacity-40">Drag master or click to browse</p>
+                            <KbdShortcut />
+                            <p className="mt-6 text-[10px] text-muted-foreground font-black uppercase tracking-widest opacity-20 italic">Sample Palette from High-Res Masters</p>
+                          </div>
+                        </motion.div>
+                      ) : (
+                        <motion.div
+                          key="workbench"
+                          initial={{ opacity: 0, scale: 0.95 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 1.05 }}
+                          className="absolute inset-0 flex items-center justify-center cursor-crosshair active:cursor-grabbing overflow-hidden"
+                        >
+                          <div className="relative w-full h-full flex items-center justify-center overflow-visible">
+                            <img
+                              ref={imgRef}
+                              src={imgSrc}
+                              alt="Local Source"
+                              crossOrigin="anonymous"
+                              onLoad={handleImageLoad}
+                              onClick={handleClick}
+                              onDragStart={(e) => e.preventDefault()}
+                              className="transition-transform duration-75 ease-out origin-center rounded-xl border border-white/10 shadow-2xl"
+                              style={{
+                                transform: `translate3d(${offset.x}px, ${offset.y}px, 0) scale(${zoom})`,
+                                imageRendering: zoom > 2 ? "pixelated" : "auto",
+                                width: 'auto',
+                                height: 'auto',
+                                maxWidth: 'none',
+                                maxHeight: 'none'
+                              }}
+                            />
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                  <input 
+                    ref={inputRef} 
+                    type="file" 
+                    className="hidden" 
+                    accept="image/*" 
+                    onChange={(e) => {
+                      handleFile(e.target.files?.[0]);
+                      e.target.value = "";
+                    }} 
+                  />
                   <canvas ref={canvasRef} className="hidden" />
                 </Card>
 
                 <p className="text-[9px] text-center text-muted-foreground font-black uppercase tracking-widest opacity-30 italic px-4">Sub-pixel sampling • Scroll to zoom 1000% • Right-click drag to pan</p>
               </div>
 
-              <aside className="space-y-6 lg:sticky lg:top-24 h-fit">
+              {imgSrc && (
+                <aside className="space-y-6 lg:sticky lg:top-24 h-fit animate-in fade-in slide-in-from-right-4 duration-500">
                 <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl bg-card border-2 border-primary/5">
                   <div className="bg-primary/5 p-5 border-b border-primary/10 flex items-center justify-between">
                     <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Extraction Logic</h3>
+                    {imgSrc && (
+                      <div className="flex items-center gap-1">
+                        <Button size="icon" variant="ghost" className="h-8 w-8 text-white hover:bg-white/10 rounded-xl transition-all" onClick={() => { setZoom(prevZoom => Math.min(50, prevZoom * 0.9)); }}>
+                          <ZoomOut className="h-4 w-4" />
+                        </Button>
+                        <Button size="icon" variant="ghost" className="h-8 w-8 text-white hover:bg-white/10 rounded-xl transition-all" onClick={() => { setZoom(prevZoom => Math.min(50, prevZoom * 1.1)); }}>
+                          <ZoomIn className="h-4 w-4" />
+                        </Button>
+                        <Button size="icon" variant="ghost" className="h-8 w-8 text-white hover:bg-white/10 rounded-xl transition-all" onClick={() => { setZoom(1); setOffset({ x: 0, y: 0 }); }}>
+                          <Maximize2 className="h-4 w-4" />
+                        </Button>
+                        <div className="w-[1px] h-4 bg-white/10 mx-1" />
+                        <Button
+                          onClick={() => { setImgSrc(null); setColor(null); }}
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-destructive hover:bg-destructive/10 rounded-xl transition-all"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    )}
                   </div>
                   <CardContent className="p-5 space-y-6">
                     <div className="space-y-4">
@@ -351,22 +417,36 @@ const ImageColorExtractor = () => {
                     <div className="space-y-4 pt-6 border-t border-primary/5">
                       <div className="flex justify-between items-center px-1">
                         <label className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60">Zoom</label>
-                        <span className="text-[10px] font-black text-primary">{zoom.toFixed(1)}x</span>
+                        <span className="text-[10px] font-black text-primary italic font-mono whitespace-nowrap">
+                          {Math.round((zoom / fitZoom) * 100)}%
+                        </span>
                       </div>
-                      <Slider
-                        defaultValue={[1]}
-                        value={[zoom]}
-                        min={1}
-                        max={50}
-                        step={0.5}
-                        onValueChange={([v]) => setZoom(v)}
-                        disabled={!imgSrc}
-                        className="py-1"
-                      />
+                      <div className="flex items-center gap-3">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => { setZoom(fitZoom); setOffset({ x: 0, y: 0 }); }}
+                          className={`h-7 w-7 rounded-lg shrink-0 ${zoom === fitZoom ? "text-primary bg-primary/20" : "text-muted-foreground opacity-40 hover:bg-primary/20"}`}
+                          title="Reset Fit"
+                        >
+                          <Maximize2 className="h-3 w-3" />
+                        </Button>
+                        <Slider
+                          defaultValue={[1]}
+                          value={[zoom]}
+                          min={0.01}
+                          max={100}
+                          step={0.01}
+                          onValueChange={([v]) => setZoom(v)}
+                          disabled={!imgSrc}
+                          className="py-1"
+                        />
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
               </aside>
+              )}
             </div>
             {/* SEO & Tool Guide Section */}
             <ToolExpertSection

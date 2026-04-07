@@ -241,7 +241,7 @@ const VideoToGif = () => {
                         <KbdShortcut />
                       </div>
                       <label htmlFor="gif-upload-input" className="sr-only">Upload Video for GIF</label>
-                      <input id="gif-upload-input" name="gif-upload-input" ref={inputRef} type="file" className="hidden" accept="video/*" onChange={(e) => handleFile(e.target.files?.[0])} />
+                      <input id="gif-upload-input" name="gif-upload-input" ref={inputRef} type="file" className="hidden" accept="video/*" onChange={(e) => { handleFile(e.target.files?.[0]); e.target.value = ""; }} />
                     </div>
                   </Card>
                 ) : (
@@ -259,17 +259,7 @@ const VideoToGif = () => {
                         crossOrigin="anonymous"
                       />
 
-                      {/* Reset Button */}
-                      <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-                        <Button
-                          onClick={() => { setFile(null); setVideoUrl(null); }}
-                          variant="destructive"
-                          size="sm"
-                          className="h-8 px-4 text-[9px] font-black uppercase tracking-widest rounded-xl shadow-2xl"
-                        >
-                          Reset Stage
-                        </Button>
-                      </div>
+                      {/* Removed from video overlay */}
                     </Card>
 
                     <div className="space-y-6">
@@ -325,8 +315,18 @@ const VideoToGif = () => {
 
               <aside className="lg:col-span-4 space-y-6 lg:sticky lg:top-24 h-fit">
                 <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl border-border/20 bg-card">
-                  <div className="bg-primary/5 p-8 border-b border-primary/10">
+                  <div className="bg-primary/5 p-8 border-b border-primary/10 flex items-center justify-between">
                     <h2 className="text-xs font-bold uppercase tracking-[0.2em] text-primary">Configuration Master</h2>
+                    {file && (
+                      <Button
+                        onClick={() => { setFile(null); setVideoUrl(null); }}
+                        variant="destructive"
+                        size="sm"
+                        className="h-8 px-4 text-[9px] font-black uppercase tracking-widest rounded-xl shadow-2xl hover:scale-105 active:scale-95 transition-all"
+                      >
+                        Delete Artifact
+                      </Button>
+                    )}
                   </div>
                   <CardContent className="p-8 space-y-8">
                     <div className="space-y-6">

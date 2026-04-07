@@ -38,6 +38,7 @@ const PiiMasker = () => {
   const [blurStrength, setBlurStrength] = useState(50);
   const [processing, setProcessing] = useState(false);
   const [zoom, setZoom] = useState(1);
+  const [fitZoom, setFitZoom] = useState(1);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [isPanning, setIsPanning] = useState(false);
   const [startPan, setStartPan] = useState({ x: 0, y: 0 });
@@ -100,19 +101,24 @@ const PiiMasker = () => {
 
       if (availableW <= 0 || availableH <= 0) return;
 
-      const fitZoom = Math.min(availableW / image.width, availableH / image.height, 1);
-      setZoom(fitZoom);
+      const calculatedFitZoom = Math.min(availableW / image.width, availableH / image.height, 1);
+      setZoom(calculatedFitZoom);
+      setFitZoom(calculatedFitZoom);
       setOffset({ x: 0, y: 0 });
     }
   }, [image]);
 
   useEffect(() => {
     if (image) {
-      // Default to 100% (1:1) as requested.
-      setZoom(1);
-      setOffset({ x: 0, y: 0 });
+      // Small delay to ensure the container has reached its final layout dimensions
+      const timer = setTimeout(autoFit, 100);
+      window.addEventListener('resize', autoFit);
+      return () => {
+        clearTimeout(timer);
+        window.removeEventListener('resize', autoFit);
+      };
     }
-  }, [image]);
+  }, [image, autoFit]);
 
   usePasteFile(handleFile);
 
@@ -182,7 +188,22 @@ const PiiMasker = () => {
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault();
       const factor = e.deltaY > 0 ? 0.9 : 1.1;
-      setZoom(prev => Math.min(50, Math.max(0.1, prev * factor)));
+      
+      setZoom(prevZoom => {
+        const newZoom = Math.min(50, Math.max(0.01, prevZoom * factor));
+        const rect = el.getBoundingClientRect();
+        
+        // Mouse position relative to center of container
+        const mouseRelCenterX = e.clientX - rect.left - rect.width / 2;
+        const mouseRelCenterY = e.clientY - rect.top - rect.height / 2;
+
+        setOffset(prevOffset => ({
+          x: mouseRelCenterX - (mouseRelCenterX - prevOffset.x) * (newZoom / prevZoom),
+          y: mouseRelCenterY - (mouseRelCenterY - prevOffset.y) * (newZoom / prevZoom)
+        }));
+
+        return newZoom;
+      });
     };
 
     el.addEventListener("wheel", handleWheel, { passive: false });
@@ -377,7 +398,7 @@ const PiiMasker = () => {
                             <ZoomOut className="h-3 w-3 lg:h-4 lg:w-4" />
                           </Button>
                           <span className="text-[10px] lg:text-xl font-black text-foreground italic min-w-[35px] lg:min-w-[60px] text-center">
-                            {Math.round(zoom * 100)}%
+                            {Math.round((zoom / fitZoom) * 100)}%
                           </span>
                           <Button
                             size="icon"
@@ -391,9 +412,9 @@ const PiiMasker = () => {
                           <Button
                             size="icon"
                             variant="ghost"
-                            onClick={() => { setZoom(1); setOffset({ x: 0, y: 0 }); }}
-                            className={`h-7 md:h-8 lg:h-10 w-7 md:w-8 lg:w-10 rounded-xl transition-all ${zoom === 1 ? "text-primary bg-primary/20" : "text-muted-foreground opacity-40 hover:bg-white/10"}`}
-                            title="Reset 1:1"
+                            onClick={() => { setZoom(fitZoom); setOffset({ x: 0, y: 0 }); }}
+                            className={`h-7 md:h-8 lg:h-10 w-7 md:w-8 lg:w-10 rounded-xl transition-all ${zoom === fitZoom ? "text-primary bg-primary/20 shadow-glow" : "text-muted-foreground opacity-40 hover:bg-white/10"}`}
+                            title="Reset Fit (100%)"
                           >
                             <Maximize2 className="h-3 w-3 lg:h-4 lg:w-4" />
                           </Button>
@@ -465,7 +486,7 @@ const PiiMasker = () => {
                         <p className="text-[11px] text-muted-foreground font-black uppercase tracking-[0.3em] opacity-40">Drag or click to browse</p>
                         <KbdShortcut />
                       </div>
-                      <input ref={inputRef} type="file" className="hidden" accept="image/*,text/plain,.md,.log" onChange={(e) => handleFile(e.target.files?.[0])} />
+                      <input ref={inputRef} type="file" className="hidden" accept="image/*,text/plain,.md,.log" onChange={(e) => { handleFile(e.target.files?.[0]); e.target.value = ""; }} />
                     </div>
                   </Card>
                 </motion.div>
@@ -500,7 +521,7 @@ const PiiMasker = () => {
                 </motion.div>
               ) : (
                 <motion.div layout initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-4 w-full max-w-full">
-                  <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-2xl bg-zinc-950 p-4 relative group lg:h-[660px] flex flex-col items-center justify-center w-full max-w-full">
+                  <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-2xl bg-zinc-950 p-3 lg:p-4 relative group lg:h-[540px] flex flex-col items-center justify-center w-full max-w-full">
                     <div
                       ref={containerRef}
                       className="w-full h-full relative overflow-hidden flex items-center justify-center bg-[#050505] rounded-xl select-none shadow-2xl group/canvas"
@@ -514,12 +535,10 @@ const PiiMasker = () => {
                       }}
                     >
                       <div
-                        className="relative shadow-2xl ring-1 ring-white/10 pointer-events-none origin-center"
+                        className="relative shadow-2xl ring-1 ring-white/10 pointer-events-none origin-center flex items-center justify-center"
                         style={{
                           transform: `translate3d(${offset.x}px, ${offset.y}px, 0) scale(${zoom})`,
                           imageRendering: zoom > 2 ? 'pixelated' : 'auto',
-                          width: image?.width || 'auto',
-                          height: image?.height || 'auto',
                           transition: isPanning ? 'none' : 'transform 75ms ease-out'
                         }}
                       >
@@ -532,7 +551,7 @@ const PiiMasker = () => {
                           className="absolute inset-0 w-full h-full pointer-events-none overflow-visible"
                           shapeRendering="crispEdges"
                         >
-                          {showGrid && zoom > 4 && (
+                          {showGrid && (zoom / fitZoom) > 4 && (
                             <defs>
                               <pattern id="pixel-grid-pii" width="1" height="1" patternUnits="userSpaceOnUse">
                                 <path d="M 1 0 L 0 0 0 1" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="0.1" />

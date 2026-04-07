@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Download, RefreshCw, Zap, Activity, ShieldCheck, CloudUpload, ChevronDown, AlertTriangle, Trash2, ZoomIn } from "lucide-react";
+import { ArrowLeft, Download, RefreshCw, Zap, Activity, ShieldCheck, CloudUpload, ChevronDown, AlertTriangle, Trash2, Maximize2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
@@ -29,6 +29,7 @@ const ImageCompressor = () => {
   const ffmpegRef = useRef(new FFmpeg());
   const inputRef = useRef<HTMLInputElement>(null);
   const [zoom, setZoom] = useState(1);
+  const [fitZoom, setFitZoom] = useState(1);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [isPanning, setIsPanning] = useState(false);
   const [startPan, setStartPan] = useState({ x: 0, y: 0 });
@@ -71,6 +72,31 @@ const ImageCompressor = () => {
     reader.readAsDataURL(f);
     if (inputRef.current) inputRef.current.value = "";
   };
+
+  const autoFit = useCallback(() => {
+    const container = stageRef.current;
+    if (container && originalImage) {
+      const pad = 120;
+      const availableW = container.clientWidth - pad;
+      const availableH = container.clientHeight - pad;
+      if (availableW <= 0 || availableH <= 0) return;
+      const calculatedFitZoom = Math.min(availableW / originalImage.width, availableH / originalImage.height, 1);
+      setZoom(calculatedFitZoom);
+      setFitZoom(calculatedFitZoom);
+      setOffset({ x: 0, y: 0 });
+    }
+  }, [originalImage]);
+
+  useEffect(() => {
+    if (originalImage) {
+      const timer = setTimeout(autoFit, 100);
+      window.addEventListener('resize', autoFit);
+      return () => {
+        clearTimeout(timer);
+        window.removeEventListener('resize', autoFit);
+      };
+    }
+  }, [originalImage, autoFit]);
 
   usePasteFile(handleFile);
 
@@ -149,13 +175,29 @@ const ImageCompressor = () => {
 
   useEffect(() => {
     const el = stageRef.current;
-    if (!el) return;
+    if (!el || !compressedUrl) return;
+
     const handleWheel = (e: WheelEvent) => {
-      if (compressedUrl) {
-        e.preventDefault();
-        setZoom(prev => Math.min(10, Math.max(1, prev + (e.deltaY > 0 ? -0.1 : 0.1))));
-      }
+      e.preventDefault();
+      const factor = e.deltaY > 0 ? 0.9 : 1.1;
+      
+      setZoom(prevZoom => {
+        const newZoom = Math.min(50, Math.max(0.01, prevZoom * factor));
+        const rect = el.getBoundingClientRect();
+        
+        // Mouse position relative to center of container
+        const mouseRelCenterX = e.clientX - rect.left - rect.width / 2;
+        const mouseRelCenterY = e.clientY - rect.top - rect.height / 2;
+
+        setOffset(prevOffset => ({
+          x: mouseRelCenterX - (mouseRelCenterX - prevOffset.x) * (newZoom / prevZoom),
+          y: mouseRelCenterY - (mouseRelCenterY - prevOffset.y) * (newZoom / prevZoom)
+        }));
+
+        return newZoom;
+      });
     };
+
     el.addEventListener("wheel", handleWheel, { passive: false });
     return () => el.removeEventListener("wheel", handleWheel);
   }, [compressedUrl]);
@@ -166,6 +208,7 @@ const ImageCompressor = () => {
     setCompressedUrl(null);
     setCompressedSize(0);
     setZoom(1);
+    setFitZoom(1);
     setOffset({ x: 0, y: 0 });
   };
 
@@ -209,13 +252,13 @@ const ImageCompressor = () => {
                 <div className="flex flex-col lg:flex-row items-center gap-4 w-full">
                   <div className="flex items-center gap-2 md:gap-4 flex-wrap lg:flex-nowrap w-full lg:w-auto justify-center lg:justify-start">
                     {/* Quality slider label */}
-                    <div className="flex items-center gap-3 shrink-0 lg:scale-110 lg:origin-left">
+                    <div className="flex items-center gap-3 shrink-0 lg:origin-left lg:mr-4">
                       <div className="h-8 w-8 lg:h-10 lg:w-10 bg-primary/10 rounded-xl flex items-center justify-center border border-primary/20">
                         <Activity className="h-4 w-4 lg:h-5 lg:w-5 text-primary" />
                       </div>
                       <div className="shrink-0">
-                        <p className="text-[10px] lg:text-xs font-black uppercase tracking-[0.2em] text-primary italic leading-none">Intensity</p>
-                        <p className="text-[8px] lg:text-[9px] font-black text-muted-foreground uppercase opacity-40 leading-none mt-1.5 lg:mt-2">Compression</p>
+                        <h3 className="text-[10px] lg:text-xs font-black uppercase tracking-[0.2em] text-primary italic leading-none">Studio Workbench</h3>
+                        <p className="text-[8px] lg:text-[9px] font-black text-muted-foreground uppercase opacity-40 leading-none mt-1.5 lg:mt-2">Intensity Optimization</p>
                       </div>
                     </div>
 
@@ -232,7 +275,7 @@ const ImageCompressor = () => {
                       />
                     </div>
 
-                    <span className="text-[10px] md:text-xs lg:text-2xl font-black text-primary italic tracking-widest font-mono shrink-0 min-w-[35px] lg:min-w-[60px] text-right">
+                    <span className="text-[10px] md:text-xs lg:text-2xl font-black text-primary italic tracking-widest font-mono shrink-0 min-w-[45px] lg:min-w-[80px] text-right">
                       {Math.round(quality * 100)}%
                     </span>
 
@@ -355,13 +398,8 @@ const ImageCompressor = () => {
             </Card>
 
             {/* ── IMAGE CANVAS (16:9, max ~520px tall) ── */}
-            <Card className="glass-morphism border-primary/20 rounded-2xl bg-black/40 shadow-2xl overflow-hidden group/card animate-in fade-in slide-in-from-bottom-8 duration-700">
-              {/*
-                aspect-video = 16:9. We also cap with max-h-[520px] so it doesn't
-                get too tall on very wide screens. The inner content is absolutely
-                positioned so any image ratio sits fully contained (object-contain).
-              */}
-              <div className="relative w-full" style={{ aspectRatio: "16/9", maxHeight: "520px" }}>
+            <Card className="glass-morphism border-primary/20 rounded-2xl bg-black/40 shadow-2xl overflow-hidden group/card animate-in fade-in slide-in-from-bottom-8 duration-700 p-3 lg:p-4">
+              <div className="relative w-full bg-black rounded-xl overflow-hidden shadow-inner border border-white/5" style={{ aspectRatio: "16/9", maxHeight: "500px" }}>
 
                 {!file ? (
                   /* ── Drop zone ── */
@@ -388,7 +426,7 @@ const ImageCompressor = () => {
                   /* ── Zoomable image stage ── */
                   <div
                     ref={stageRef}
-                    className="absolute inset-0 flex items-center justify-center overflow-hidden cursor-crosshair active:cursor-grabbing select-none"
+                    className="absolute inset-0 flex items-center justify-center overflow-hidden cursor-crosshair active:cursor-grabbing select-none p-12"
                     onMouseDown={(e) => {
                       if (e.button === 0 || e.button === 2) {
                         setIsPanning(true);
@@ -404,11 +442,13 @@ const ImageCompressor = () => {
                     <img
                       src={compressedUrl}
                       alt="Compressed"
-                      className="max-w-full max-h-full object-contain rounded-xl shadow-[0_30px_80px_rgba(0,0,0,0.9)] border border-white/5"
+                      className="object-contain rounded-xl border border-white/5 shadow-2xl"
                       style={{
                         imageRendering: zoom > 1 ? "pixelated" : "auto",
                         transform: `translate3d(${offset.x}px,${offset.y}px,0) scale(${zoom})`,
                         transition: isPanning ? "none" : "transform 0.075s ease-out",
+                        width: 'auto',
+                        height: 'auto'
                       }}
                     />
                   </div>
@@ -429,27 +469,28 @@ const ImageCompressor = () => {
                 )}
 
                 {/* Reset View — top-left, visible on card hover when zoomed/panned */}
-                {file && compressedUrl && (zoom > 1 || offset.x !== 0 || offset.y !== 0) && (
+                {file && compressedUrl && (zoom !== fitZoom || offset.x !== 0 || offset.y !== 0) && (
                   <div className="absolute top-3 left-3 opacity-0 group-hover/card:opacity-100 transition-all duration-300 z-20">
                     <Button
-                      onClick={() => { setZoom(1); setOffset({ x: 0, y: 0 }); }}
+                      onClick={() => { setZoom(fitZoom); setOffset({ x: 0, y: 0 }); }}
                       variant="outline"
                       size="sm"
                       className="h-8 px-3 text-[10px] font-black uppercase tracking-widest rounded-xl bg-black/70 border-white/20 text-white shadow-xl hover:scale-105 hover:bg-black/90 transition-all backdrop-blur-sm gap-1.5"
                     >
-                      <ZoomIn className="h-3 w-3" />
-                      Reset View
+                      <Maximize2 className="h-3 w-3" />
+                      Reset Fit
                     </Button>
                   </div>
                 )}
 
                 {/* Zoom indicator — bottom-right */}
-                {zoom > 1 && (
+                {(zoom !== fitZoom || offset.x !== 0 || offset.y !== 0) && (
                   <div className="absolute bottom-3 right-3 z-20 bg-black/70 backdrop-blur-sm border border-white/10 rounded-xl px-3 py-1.5">
-                    <p className="text-[9px] font-black text-primary uppercase tracking-widest font-mono">{zoom.toFixed(1)}×</p>
+                    <p className="text-[10px] font-black font-mono text-primary italic leading-none">
+                      {Math.round((zoom / fitZoom) * 100)}%
+                    </p>
                   </div>
                 )}
-
               </div>
             </Card>
 
@@ -468,7 +509,7 @@ const ImageCompressor = () => {
       </div>
       <Footer />
 
-      <input ref={inputRef} type="file" className="hidden" accept="image/*" onChange={(e) => handleFile(e.target.files?.[0])} />
+      <input ref={inputRef} type="file" className="hidden" accept="image/*" onChange={(e) => { handleFile(e.target.files?.[0]); e.target.value = ""; }} />
 
       {/* Mobile Sticky Anchor Ad */}
       <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-black/80 backdrop-blur-sm border-t border-white/10 py-2 h-[66px] overflow-x-clip">

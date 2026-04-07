@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Volume2, Download, Music, Zap, Play, Pause, RotateCcw, CloudUpload, RefreshCw } from "lucide-react";
+import { ArrowLeft, Volume2, Download, Music, Zap, Play, Pause, RotateCcw, CloudUpload, RefreshCw, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Card, CardContent } from "@/components/ui/card";
@@ -380,7 +380,7 @@ const UniversalVolumeBooster = () => {
                         <p className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.2em] opacity-40">Drag master or click</p>
                         <p className="mt-4 text-[10px] text-muted-foreground font-black uppercase tracking-widest opacity-20 text-center">MP3, WAV, OGG, & MP4 Audio Streams Supported • 32-bit Core</p>
                       </div>
-                      <input ref={inputRef} type="file" className="hidden" accept="audio/*,video/*" onChange={(e) => handleFile(e.target.files?.[0])} disabled={processing} />
+                      <input ref={inputRef} type="file" className="hidden" accept="audio/*,video/*" onChange={(e) => { handleFile(e.target.files?.[0]); e.target.value = ""; }} disabled={processing} />
                     </div>
                   </Card>
                 ) : (
@@ -389,8 +389,26 @@ const UniversalVolumeBooster = () => {
                       <div className="bg-primary/5 p-5 border-b border-primary/10 flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <Volume2 className="h-4 w-4 text-primary" />
-                          <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Wave Stage</h3>
+                          <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary italic leading-none">Studio Workbench</h3>
                         </div>
+                        {file && (
+                          <Button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              resetPlayback();
+                              setFile(null);
+                              setAudioBuffer(null);
+                              setObjectUrl(null);
+                            }}
+                            variant="destructive"
+                            size="sm"
+                            className="h-8 px-4 text-[9px] font-black uppercase tracking-widest rounded-xl shadow-2xl hover:scale-105 active:scale-95 transition-all flex items-center gap-2"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                            <span>Delete Asset</span>
+                          </Button>
+                        )}
                       </div>
                       <CardContent className="p-10">
                         <div className="space-y-10">
@@ -478,16 +496,6 @@ const UniversalVolumeBooster = () => {
                         </div>
                       </CardContent>
 
-                      <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-                        <Button
-                          onClick={() => { setFile(null); setAudioBuffer(null); setObjectUrl(null); }}
-                          variant="destructive"
-                          size="sm"
-                          className="h-8 px-4 text-[9px] font-black uppercase tracking-widest rounded-xl shadow-2xl hover:scale-105 active:scale-95 transition-all"
-                        >
-                          Reset Stage
-                        </Button>
-                      </div>
                     </Card>
                   </div>
                 )}
