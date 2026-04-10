@@ -165,11 +165,11 @@ const Index = () => {
                  
                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-12">
                     <div className="space-y-4 border-l-2 border-primary/30 pl-8 transition-colors hover:border-primary">
-                       <h4 className="text-base font-black uppercase tracking-widest text-primary">Air-Gapped Processing</h4>
+                       <h3 className="text-base font-black uppercase tracking-widest text-primary">Air-Gapped Processing</h3>
                        <p className="text-sm text-muted-foreground font-medium leading-relaxed">Parallel rendering and complex logic happen entirely in your local RAM sandbox. Our site could be disconnected from the internet and still function.</p>
                     </div>
                     <div className="space-y-4 border-l-2 border-primary/30 pl-8 transition-colors hover:border-primary">
-                       <h4 className="text-base font-black uppercase tracking-widest text-primary">Universal Compliance</h4>
+                       <h3 className="text-base font-black uppercase tracking-widest text-primary">Universal Compliance</h3>
                        <p className="text-sm text-muted-foreground font-medium leading-relaxed">Stay compliant with enterprise security standards. Since no data is transmitted, you are inherently protected from standard man-in-the-middle liabilities.</p>
                     </div>
                  </div>
