@@ -188,11 +188,11 @@ const PiiMasker = () => {
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault();
       const factor = e.deltaY > 0 ? 0.9 : 1.1;
-      
+
       setZoom(prevZoom => {
         const newZoom = Math.min(50, Math.max(0.01, prevZoom * factor));
         const rect = el.getBoundingClientRect();
-        
+
         // Mouse position relative to center of container
         const mouseRelCenterX = e.clientX - rect.left - rect.width / 2;
         const mouseRelCenterY = e.clientY - rect.top - rect.height / 2;

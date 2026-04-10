@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Download, FileCode, Trash2, Copy, ImageIcon, Sliders } from "lucide-react";
+import { ArrowLeft, Download, FileCode, Trash2, Copy, ImageIcon, Sliders, ShieldAlert, Info, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -10,8 +10,14 @@ import Footer from "@/components/Footer";
 import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
 import AdBox from "@/components/AdBox";
+import StickyAnchorAd from "@/components/StickyAnchorAd";
 import { toast } from "sonner";
 import { usePasteFile } from "@/hooks/usePasteFile";
+
+// ── Constants ──────────────────────────────────────────────────────────────────
+const MAX_STRING_LENGTH = 1000000; // ~1MB text limit to prevent textarea freezes
+const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB file limit
+const MAX_CANVAS_AREA = 8000 * 8000; // Hardware memory limit for canvas (Standardized)
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -57,9 +63,11 @@ const inlineExternalImages = async (svgEl: Element): Promise<void> => {
 };
 
 /**
- * Improved dimension resolver — handles missing dimensions, em/rem, and complex content
+ * Improved dimension resolver — handles missing dimensions, em/rem, and complex content.
+ * @param svgEl The SVG element to inspect
+ * @param fast If true, avoids expensive getBBox() and DOM manipulation (ideal for typing/preview)
  */
-const resolveSvgDimensions = (svgEl: Element): { w: number; h: number } => {
+const resolveSvgDimensions = (svgEl: Element, fast = false): { w: number; h: number } => {
   // 1. viewBox is best
   const viewBox = svgEl.getAttribute("viewBox");
   if (viewBox) {
@@ -89,8 +97,9 @@ const resolveSvgDimensions = (svgEl: Element): { w: number; h: number } => {
   let h = parseLength(heightAttr);
 
   if (w && h) return { w: Math.ceil(w), h: Math.ceil(h) };
+  if (fast) return { w: w || 800, h: h || 600 };
 
-  // 3. Robust fallback using getBBox()
+  // 3. Robust fallback using getBBox() - ONLY for export
   const container = document.createElement("div");
   container.style.position = "absolute";
   container.style.left = "-99999px";
@@ -108,8 +117,8 @@ const resolveSvgDimensions = (svgEl: Element): { w: number; h: number } => {
 
   container.appendChild(clone);
 
-  let finalW = 800;
-  let finalH = 600;
+  let finalW = w || 800;
+  let finalH = h || 600;
 
   try {
     const bbox = clone.getBBox();
@@ -137,7 +146,8 @@ const SvgToImage = () => {
   const [scale, setScale] = useState(2);
   const [isProcessing, setIsProcessing] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [processedInput, setProcessedInput] = useState("");
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [renderError, setRenderError] = useState<string | null>(null);
 
   const toggleDark = useCallback(() => {
     const next = !darkMode;
@@ -152,9 +162,30 @@ const SvgToImage = () => {
       toast.error("Format mismatch. Deploy SVG artifact only.");
       return;
     }
+    
+    if (file.size > MAX_FILE_SIZE) {
+      setInput(""); // Clear input so preview unmounts
+      setPreviewUrl(null);
+      setRenderError("FILE_TOO_LARGE"); // Trigger UI
+      toast.error("File exceeds 2MB limit.");
+      return;
+    }
+
     const reader = new FileReader();
     reader.onload = (e) => {
       const content = e.target?.result as string;
+      
+      // Security Gate: Billion Laughs Protection
+      if (content.toLowerCase().includes("<!entity")) {
+        toast.error("Security risk: XML Entities (Billion Laughs) detected. Artifact rejected.");
+        return;
+      }
+
+      if (content.length > MAX_STRING_LENGTH) {
+        setRenderError("FILE_TOO_LARGE");
+        toast.error("Payload too large. Parsing aborted.");
+        return;
+      }
       setInput(content);
       toast.success("SVG Artifact Staged");
     };
@@ -163,39 +194,89 @@ const SvgToImage = () => {
 
   usePasteFile(handleFile);
 
-  // ── PREVIEW ENGINE ──────────────────────────────────────────────────────────
+  // ── PREVIEW ENGINE (Unified "WYSIWYG" Path) ───────────────────
   useEffect(() => {
-    if (!input.trim()) {
-      setProcessedInput("");
+    const trimmed = input.trim();
+    if (!trimmed) {
+      setPreviewUrl(null);
+      // Only clear the error if it's NOT a file size block or memory limit
+      setRenderError(prev => (prev === "FILE_TOO_LARGE" || prev === "MEMORY_LIMIT" ? prev : null));
       return;
     }
 
-    try {
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(input.trim(), "image/svg+xml");
-      const svgEl = doc.querySelector("svg");
-      if (!svgEl) return;
-
-      if (!svgEl.getAttribute("xmlns")) {
-        svgEl.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+    const timer = setTimeout(() => {
+      const lowerInput = trimmed.toLowerCase();
+      // 1. SECURITY CHECK: Intercept Exponential Reference Attacks
+      if (lowerInput.includes("<!entity")) {
+        setRenderError("SECURITY_ENTITY");
+        toast.error("Security risk: XML Entities (Billion Laughs) detected. Artifact rejected.");
+        return;
       }
 
-      // Resolve dimensions and ensure viewBox exists
-      const { w, h } = resolveSvgDimensions(svgEl);
-      if (!svgEl.getAttribute("viewBox")) {
-        svgEl.setAttribute("viewBox", `0 0 ${w} ${h}`);
+      const useTagCount = (trimmed.match(/<use\b/gi) || []).length;
+      if (useTagCount > 50) {
+        setRenderError("SECURITY_USE_TAGS");
+        toast.error("Security risk: Excessive <use> tags detected.");
+        return;
       }
 
-      // Consistent preview sizing
-      svgEl.setAttribute("width", "100%");
-      svgEl.setAttribute("height", "100%");
-      svgEl.setAttribute("preserveAspectRatio", "xMidYMid meet");
+      // 2. UNIFIED REPAIR & RENDER PATH
+      try {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(trimmed, "image/svg+xml");
+        const svgEl = doc.querySelector("svg");
+        
+        if (!svgEl || doc.querySelector("parsererror")) {
+          setRenderError("INVALID_XML");
+          return;
+        }
 
-      setProcessedInput(new XMLSerializer().serializeToString(svgEl));
-    } catch (err) {
-      console.error("Preview sanitization failed:", err);
-    }
+        if (!svgEl.getAttribute("xmlns")) {
+          svgEl.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+        }
+
+        const { w: finalW, h: finalH } = resolveSvgDimensions(svgEl, true);
+        
+        // Safety Gate: Dimensional Coordinate Limit (8000px)
+        if (finalW > 8000 || finalH > 8000) {
+          setRenderError("MEMORY_LIMIT");
+          toast.error(`Dimension threshold exceeded: ${finalW}x${finalH} exceeds 8000px hardware limit.`);
+          return;
+        }
+        
+        if (!svgEl.getAttribute("viewBox")) {
+          svgEl.setAttribute("viewBox", `0 0 ${finalW} ${finalH}`);
+        }
+
+        svgEl.setAttribute("width", finalW.toString());
+        svgEl.setAttribute("height", finalH.toString());
+
+        const svgString = new XMLSerializer().serializeToString(svgEl);
+        const blob = new Blob([svgString], { type: "image/svg+xml;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        
+        setPreviewUrl(prev => {
+          if (prev) URL.revokeObjectURL(prev);
+          return url;
+        });
+        setRenderError(null);
+      } catch (err) {
+        console.error("Preview sanitization failed:", err);
+        setRenderError("INVALID_XML");
+      }
+    }, 400);
+
+    return () => {
+      clearTimeout(timer);
+    };
   }, [input]);
+
+  // Handle final cleanup
+  useEffect(() => {
+    return () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+    };
+  }, [previewUrl]);
 
   // ── EXPORT ──────────────────────────────────────────────────────────────────
   const convertAndDownload = async () => {
@@ -242,8 +323,19 @@ const SvgToImage = () => {
           const canvas = canvasRef.current;
           if (!canvas) throw new Error("Canvas element not found");
 
-          canvas.width = finalW * scale;
-          canvas.height = finalH * scale;
+          const requestedWidth = finalW * scale;
+          const requestedHeight = finalH * scale;
+
+          // MEMORY CHECK: Prevent canvas allocation crashes (OOM protection)
+          if ((requestedWidth * requestedHeight) > MAX_CANVAS_AREA) {
+            setRenderError("MEMORY_LIMIT"); // Trigger UI
+            toast.error("Resulting resolution is too high for device memory. Reduce scale.");
+            setIsProcessing(false);
+            return;
+          }
+
+          canvas.width = requestedWidth;
+          canvas.height = requestedHeight;
 
           const ctx = canvas.getContext("2d", { alpha: exportFormat === "png" });
           if (!ctx) throw new Error("Failed to initialize canvas context");
@@ -272,6 +364,7 @@ const SvgToImage = () => {
           toast.success(`SVG Converted to ${exportFormat.toUpperCase()}`);
         } catch (err) {
           console.error(err);
+          setRenderError("RENDER_FAULT");
           toast.error("Render failed. Try simplifying the SVG.");
         } finally {
           URL.revokeObjectURL(url);
@@ -282,6 +375,7 @@ const SvgToImage = () => {
       img.onerror = () => {
         URL.revokeObjectURL(url);
         setIsProcessing(false);
+        setRenderError("LOAD_FAULT");
         toast.error("Failed to load SVG for rendering.");
       };
 
@@ -294,7 +388,7 @@ const SvgToImage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground theme-image transition-all duration-500">
+    <div className="min-h-screen bg-background text-foreground transition-all duration-500">
       <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
 
       <div className="flex justify-center items-start w-full relative">
@@ -326,18 +420,18 @@ const SvgToImage = () => {
             <div className="grid grid-cols-1 xl:grid-cols-[1fr_300px] gap-4 items-start">
               <div className="space-y-12 animate-in fade-in slide-in-from-bottom-6 duration-700">
                 <Card className="glass-morphism border-border dark:border-primary/10 overflow-hidden relative bg-zinc-100 dark:bg-[#0a0a0a] shadow-lg dark:shadow-2xl rounded-2xl group flex flex-col h-[600px]">
-                  <div className="bg-white/50 dark:bg-[#111] border-b border-border dark:border-white/10 px-4 pt-4 flex items-end justify-between">
+                  <div className="bg-white/50 dark:bg-[#111] border-b border-border dark:border-white/10 px-4 pt-4 flex flex-wrap sm:flex-nowrap items-end justify-between gap-y-4 shrink-0">
                     <div className="flex items-center gap-3">
                       <div className="flex gap-1.5 items-center bg-white dark:bg-[#111111] px-5 py-2.5 rounded-t-xl border-x border-t border-border dark:border-white/10 relative z-10 -mb-[1px] transition-all hover:bg-zinc-50 dark:hover:bg-[#151515] shadow-[0_-5px_15px_rgba(0,0,0,0.1)]">
                         <FileCode className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                         <span className="text-[11px] font-black uppercase tracking-widest text-muted-foreground dark:text-zinc-400">Vector Workspace</span>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 mb-1.5 relative z-20">
+                    <div className="flex items-center gap-2 mb-1.5 relative z-40">
                       <Button
                         asChild
                         variant="ghost"
-                        className={`h-11 px-4 text-[10px] font-black rounded-xl gap-2 italic uppercase tracking-widest transition-all duration-700 border border-emerald-500/20 shadow-none hover:shadow-[0_0_20px_rgba(16,185,129,0.3)] ${!input ? 'bg-emerald-600 text-white shadow-[0_0_25px_rgba(5,150,105,0.4)] hover:bg-emerald-700 hover:shadow-[0_0_35px_rgba(5,150,105,0.6)] animate-pulse duration-[4000ms] border-emerald-500' : 'text-emerald-600 hover:bg-emerald-500/10 hover:text-emerald-500 hover:border-emerald-500/40'}`}
+                        className={`h-11 px-3 sm:px-4 text-[10px] font-black rounded-xl gap-2 italic uppercase tracking-widest transition-all duration-700 border border-emerald-500/20 shadow-none hover:shadow-[0_0_20px_rgba(16,185,129,0.3)] ${!input ? 'bg-emerald-600 text-white shadow-[0_0_25px_rgba(5,150,105,0.4)] hover:bg-emerald-700 hover:shadow-[0_0_35px_rgba(5,150,105,0.6)] animate-pulse duration-[time:4000ms] border-emerald-500' : 'text-emerald-600 hover:bg-emerald-500/10 hover:text-emerald-500 hover:border-emerald-500/40'}`}
                       >
                         <label className="cursor-pointer">
                           <ImageIcon className="h-3.5 w-3.5" /> Upload SVG
@@ -354,12 +448,20 @@ const SvgToImage = () => {
                     </div>
                   </div>
 
-                  <div className="flex-1 flex flex-col md:flex-row bg-white dark:bg-black min-h-[550px]">
+                  <div className="flex-1 flex flex-col md:flex-row bg-white dark:bg-black overflow-hidden">
                     {/* Textarea Input */}
                     <div className="flex-1 border-b md:border-b-0 md:border-r border-border dark:border-white/5 flex flex-col">
                       <textarea
                         value={input}
-                        onChange={(e) => setInput(e.target.value)}
+                        onChange={(e) => {
+                          if (renderError) setRenderError(null); 
+                          if (e.target.value.length > MAX_STRING_LENGTH) {
+                            setRenderError("FILE_TOO_LARGE");
+                            toast.error("Input too large. Please use the upload button instead.");
+                            return;
+                          }
+                          setInput(e.target.value);
+                        }}
                         placeholder='Paste SVG code or upload a file...'
                         className="flex-1 w-full p-6 font-mono text-xs text-blue-700 dark:text-blue-400 bg-transparent resize-none outline-none selection:bg-primary/20 leading-relaxed custom-scrollbar whitespace-pre-wrap break-words"
                         spellCheck={false}
@@ -373,19 +475,71 @@ const SvgToImage = () => {
                         <span className="text-[8px] font-black uppercase tracking-[0.2em]">Real-time Render</span>
                       </div>
 
-                      {processedInput ? (
-                        <div
-                          className="relative w-full h-full flex items-center justify-center p-6 bg-transparent transition-transform duration-500 [&>svg]:max-w-full [&>svg]:max-h-full"
-                          dangerouslySetInnerHTML={{ __html: processedInput }}
-                        />
-                      ) : (
-                        <div className="flex flex-col items-center gap-4 text-muted-foreground/30 text-center animate-pulse">
-                          <div className="h-16 w-16 rounded-2xl border-2 border-dashed border-current flex items-center justify-center">
-                            <FileCode className="h-8 w-8" />
+                      {previewUrl && !renderError ? (
+                        <div className="relative w-full h-full flex items-center justify-center p-6 transition-transform duration-500 overflow-hidden">
+                          <img
+                            src={previewUrl}
+                            className="max-w-full max-h-full object-contain shadow-2xl rounded-sm"
+                            alt="Vector Hub Preview"
+                          />
+                        </div>
+                      ) : renderError === "SECURITY_ENTITY" || renderError === "SECURITY_USE_TAGS" || renderError === "FILE_TOO_LARGE" || renderError === "MEMORY_LIMIT" || renderError === "RENDER_FAULT" || renderError === "LOAD_FAULT" ? (
+                        <div className="flex flex-col items-center gap-6 text-center w-full max-w-[280px] animate-in slide-in-from-bottom-4 fade-in duration-500 relative z-10">
+                          {/* Animated Warning Icon */}
+                          <div className="relative">
+                            <div className="absolute inset-0 bg-primary/20 rounded-full animate-ping opacity-75"></div>
+                            <div className="relative h-16 w-16 rounded-2xl border-2 border-primary/50 flex items-center justify-center bg-primary/10 text-primary shadow-[0_0_30px_rgba(var(--primary-rgb),0.15)]">
+                              <ShieldAlert className="h-8 w-8 animate-[pulse_2s_ease-in-out_infinite]" />
+                            </div>
+                          </div>
+
+                          {/* Header */}
+                          <div>
+                            <p className="text-[11px] font-black uppercase tracking-widest text-primary mb-1">Render Aborted</p>
+                            <p className="text-[12px] font-bold text-foreground">
+                              {renderError === "SECURITY_USE_TAGS" ? "Security Risk Detected" : renderError === "RENDER_FAULT" || renderError === "LOAD_FAULT" ? "Engine Fault" : "Hardware Limit Exceeded"}
+                            </p>
+                          </div>
+
+                          {/* Persistent Tip Box (Staggered slide-in) */}
+                          <div className="w-full bg-primary/5 dark:bg-primary/10 border border-primary/20 rounded-xl p-4 text-left flex gap-3 animate-in slide-in-from-bottom-4 fade-in duration-700 delay-300 fill-mode-both">
+                            <Info className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                            <div className="space-y-1.5">
+                              <p className="text-[9px] font-black uppercase tracking-wider text-primary">Engine Tip</p>
+                              <p className="text-[10px] text-muted-foreground leading-relaxed font-medium">
+                                {renderError === "SECURITY_USE_TAGS" && "Excessive <use> tags detected. This indicates an 'Exponential Reference' exploit, which forces the renderer into an infinite loop and crashes the browser."}
+                                {renderError === "SECURITY_ENTITY" && "XML Entities (<!ENTITY) detected. This pattern indicates a potential 'Billion Laughs' expansion attack and has been blocked."}
+                                {renderError === "FILE_TOO_LARGE" && "The payload exceeds safety thresholds. Parsing massive DOM trees can exhaust browser heap memory and cause a critical crash."}
+                                {renderError === "MEMORY_LIMIT" && "The requested export scale or intrinsic SVG dimensions exceed maximum canvas allocation. Please reduce scale or simplify coordinates."}
+                                {(renderError === "RENDER_FAULT" || renderError === "LOAD_FAULT") && "The vector contains unsupported logic (like complex foreignObjects or external CSS) that the Canvas API cannot safely rasterize. Try simplifying the SVG."}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      ) : renderError === "INVALID_XML" ? (
+                        <div className="flex flex-col items-center gap-4 text-destructive/50 text-center animate-in fade-in zoom-in duration-300">
+                          <div className="h-16 w-16 rounded-2xl border-2 border-dashed border-current flex items-center justify-center bg-destructive/5">
+                            <Trash2 className="h-8 w-8" />
                           </div>
                           <div>
-                            <p className="text-[10px] font-black uppercase tracking-widest">No Content Staged</p>
-                            <p className="text-[8px] font-medium mt-1">Upload or Paste SVG to start conversion</p>
+                            <p className="text-[10px] font-black uppercase tracking-widest text-destructive">Deploy Error: Non-SVG Payload</p>
+                            <p className="text-[8px] font-medium mt-1 text-muted-foreground">The renderer detected source code or broken XML.</p>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center gap-4 text-muted-foreground/30 text-center">
+                          <div className="h-16 w-16 rounded-2xl border-2 border-dashed border-current flex items-center justify-center opacity-40">
+                             {input.trim() ? <AlertCircle className="h-8 w-8 text-primary" /> : <FileCode className="h-8 w-8" />}
+                          </div>
+                          <div className="max-w-[200px]">
+                            <p className="text-[10px] font-black uppercase tracking-widest leading-tight">
+                                {input.trim() ? "Preview Unavailable" : "No Content Staged"}
+                            </p>
+                            <p className="text-[8px] font-medium mt-1.5 text-muted-foreground leading-relaxed italic px-2">
+                                {input.trim() 
+                                    ? "Source detected but render engine failed to initiate. Ensure valid SVG/XML syntax or check for unsupported external references." 
+                                    : "Upload or Paste SVG code to initiate real-time vector rendering."}
+                            </p>
                           </div>
                         </div>
                       )}
@@ -395,7 +549,7 @@ const SvgToImage = () => {
               </div>
 
               {/* Sidebar Controls */}
-              <aside className="space-y-8 lg:sticky lg:top-24 h-fit">
+              <aside className="space-y-8 lg:sticky lg:top-28 h-fit">
                 <Card className="glass-morphism border-border dark:border-primary/10 rounded-2xl overflow-hidden shadow-lg dark:shadow-xl bg-card">
                   <div className="bg-primary/5 dark:bg-primary/10 p-5 border-b border-border dark:border-primary/10 flex items-center justify-between">
                     <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary flex items-center gap-2">
@@ -425,7 +579,14 @@ const SvgToImage = () => {
                         <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground opacity-70">Scale Multiplier</Label>
                         <span className="text-[10px] font-black italic tracking-tighter text-primary">{scale}x</span>
                       </div>
-                      <Slider value={[scale]} onValueChange={(val) => setScale(val[0])} max={8} min={1} step={0.5} className="py-4" />
+                      <Slider 
+                        value={[scale]} 
+                        onValueChange={(val) => {
+                          setScale(val[0]);
+                          if (renderError === "MEMORY_LIMIT") setRenderError(null); 
+                        }} 
+                        max={8} min={1} step={0.5} className="py-4" 
+                      />
                       <p className="text-[11px] text-muted-foreground italic font-black uppercase tracking-tighter opacity-80 leading-snug text-center">Increasing scale produces higher resolution raster output from the vector source.</p>
                     </div>
 
@@ -465,11 +626,7 @@ const SvgToImage = () => {
       <canvas ref={canvasRef} className="hidden" />
 
       <Footer />
-
-      {/* Mobile Sticky Anchor Ad */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-background/80 dark:bg-black/80 backdrop-blur-sm border-t border-border dark:border-white/10 py-2 h-[66px] overflow-x-clip">
-        <AdBox adFormat="horizontal" height={50} label="320x50 ANCHOR AD" className="w-full" />
-      </div>
+      <StickyAnchorAd />
     </div>
   );
 };

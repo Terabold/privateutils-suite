@@ -20,7 +20,7 @@ console.log(`[PRERENDER] Generating ${toolsMetadata.length} static routes...`);
 
 toolsMetadata.forEach(tool => {
   const routePath = path.join(distPath, tool.to.replace(/^\//, ''));
-  
+
   // Ensure directory exists
   if (!fs.existsSync(routePath)) {
     fs.mkdirSync(routePath, { recursive: true });

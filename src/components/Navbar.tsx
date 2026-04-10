@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useRef } from "react";
-import { Moon, Sun, Search, X, Video, ImageIcon, Music, ShieldCheck, Wrench, Sparkles, Command, ChevronRight } from "lucide-react";
+import { Moon, Sun, Search, X, Video, ImageIcon, Music, ShieldCheck, Wrench, Sparkles, Command, ChevronRight, Terminal, Type, Zap } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -52,6 +52,10 @@ const Navbar = ({
   // Determine Logo and Accent colors
   const activeTheme = useMemo(() => {
     if (activeSection) {
+      // Map specialized content sections to existing themes
+      if (activeSection === "privacy-manifesto") return categoryConfig["Privacy Belt"];
+      if (activeSection === "hero" || activeSection === "benefits" || activeSection === "search-results") return categoryConfig["All"];
+
       const sectionName = Object.keys(categoryConfig).find(
         key => key.replace(/\s+/g, '-').toLowerCase() === activeSection
       );
@@ -116,7 +120,7 @@ const Navbar = ({
 
     // Apply Title
     document.title = title;
-    
+
     // Update Meta Tags (Standard)
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) metaDescription.setAttribute("content", description);
@@ -145,10 +149,10 @@ const Navbar = ({
 
   return (
     <header className="sticky top-0 z-[100] border-b border-white/5 bg-background/80 backdrop-blur-xl py-1 w-full transition-theme shadow-lg shadow-black/20 overflow-visible">
-      <div className="container mx-auto px-4 lg:px-8 flex flex-wrap lg:flex-nowrap h-auto lg:h-[90px] items-center justify-between lg:justify-start gap-y-4 lg:gap-x-12 max-w-[1500px] w-full transition-theme lg:py-0">
+      <div className="container mx-auto px-4 lg:px-8 flex flex-wrap lg:flex-nowrap h-auto lg:h-[90px] items-center justify-between gap-y-4 lg:gap-x-8 max-w-[1500px] w-full transition-theme lg:py-0">
 
         {/* 1. Logo Row - Persistent Logic */}
-        <div className="flex w-full lg:w-auto items-center justify-between lg:justify-start gap-6 lg:shrink-0 lg:min-w-[240px]">
+        <div className="flex w-full lg:w-auto items-center justify-between gap-6 shrink-0">
           <Link
             to="/"
             className="group flex items-center justify-start gap-3 cursor-pointer select-none no-underline outline-none"
@@ -193,8 +197,8 @@ const Navbar = ({
         </div>
 
         {/* 2. Unified Search + Categories Column (Fluid and Centered) */}
-        <div className="flex flex-col flex-1 w-full lg:max-w-2xl mx-auto gap-1.5 relative transition-theme items-center lg:items-stretch h-full justify-center">
-          <div ref={searchRef} className="relative group mx-auto lg:mx-0 w-full max-w-lg lg:max-w-none">
+        <div className="flex flex-col flex-1 w-full lg:max-w-4xl mx-auto gap-1.5 relative transition-theme items-center lg:items-center h-full justify-center">
+          <div ref={searchRef} className="relative group mx-auto w-full max-w-lg lg:max-w-xl">
             <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
               <Search className="h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
             </div>
@@ -244,8 +248,8 @@ const Navbar = ({
           </div>
 
           {/* 3. Category pills - DYNAMIC Scaling (Paddings and Font size shrink with viewport) */}
-          <div className="w-full overflow-x-auto no-scrollbar py-2 -my-2">
-            <div className="flex flex-nowrap items-center gap-[clamp(4px,1vw,8px)] justify-center w-max min-w-full px-2 md:px-4 py-1">
+          <div className="w-full overflow-x-auto no-scrollbar scroll-smooth">
+            <div className="flex flex-nowrap items-center gap-1.5 md:gap-2 mx-auto w-max px-8 py-2">
               {Object.keys(categoryConfig).filter(k => k !== "All").map((category) => {
                 const theme = categoryConfig[category];
                 const Icon = theme.icon;
@@ -317,7 +321,7 @@ const Navbar = ({
         </div>
 
         {/* 4. Actions (Desktop only Row 1 Right) */}
-        <div className="hidden lg:flex items-center gap-3 shrink-0 lg:min-w-[140px] justify-end">
+        <div className="hidden lg:flex items-center gap-3 shrink-0 justify-end">
           <Button
             variant="ghost"
             size="icon"

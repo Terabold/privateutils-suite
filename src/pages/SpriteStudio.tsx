@@ -14,6 +14,7 @@ import ToolExpertSection from "@/components/ToolExpertSection";
 
 import SponsorSidebars from "@/components/SponsorSidebars";
 import AdBox from "@/components/AdBox";
+import StickyAnchorAd from "@/components/StickyAnchorAd";
 
 import JSZip from "jszip";
 import { usePasteFile } from "@/hooks/usePasteFile";
@@ -27,6 +28,42 @@ interface Slice {
   h: number;
   name: string;
 }
+
+const SliceItem = ({ slice, idx, active, onClick, onDelete }: {
+  slice: Slice;
+  idx: number;
+  active: boolean;
+  onClick: () => void;
+  onDelete: () => void;
+}) => {
+  useEffect(() => {
+    return () => {
+      // Cleanup for blob URLs if the slice had a preview
+      if ((slice as any).previewUrl) {
+        URL.revokeObjectURL((slice as any).previewUrl);
+      }
+    };
+  }, [slice]);
+
+  return (
+    <div
+      onClick={onClick}
+      className={`p-3 px-4 flex items-center justify-between transition-none cursor-default z-10 ${active ? "bg-primary/20 shadow-inner" : "hover:bg-primary/10 bg-transparent"}`}
+    >
+      <div className="flex items-center gap-3 overflow-x-clip pointer-events-none">
+        <GripVertical className="h-3 w-3 text-muted-foreground/30 cursor-grab active:cursor-grabbing pointer-events-auto" />
+        <span className="text-[9px] font-black text-primary/80 italic">#{String(idx + 1).padStart(2, '0')}</span>
+        <span className="text-[9px] font-black uppercase tracking-tighter truncate max-w-[100px] text-foreground">{slice.name}</span>
+      </div>
+      <div className="flex items-center gap-2 pointer-events-none">
+        <span className="text-[8px] font-black text-muted-foreground italic">{slice.w}x{slice.h}</span>
+        <Button size="icon" variant="ghost" onClick={(e) => { e.stopPropagation(); onDelete(); }} className="h-6 w-6 text-destructive opacity-40 hover:opacity-100 transition-opacity hover:bg-destructive/10 rounded-2xl pointer-events-auto">
+          <Trash2 className="h-3 w-3" />
+        </Button>
+      </div>
+    </div>
+  );
+};
 
 const SpriteStudio = () => {
   const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
@@ -68,8 +105,8 @@ const SpriteStudio = () => {
 
   const handleFile = (f: File | undefined) => {
     if (!f) return;
-    setSlices([]);
     if (image) URL.revokeObjectURL(image);
+    setSlices([]);
     const url = URL.createObjectURL(f);
     setImage(url);
   };
@@ -77,7 +114,22 @@ const SpriteStudio = () => {
   usePasteFile((file) => handleFile(file));
 
   const onImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
-    const { naturalWidth, naturalHeight } = e.currentTarget;
+    let { naturalWidth, naturalHeight } = e.currentTarget;
+
+    // Safety check for hardware canvas limits (usually 16,384px)
+    const MAX_CANVAS = 16384;
+    if (naturalWidth > MAX_CANVAS || naturalHeight > MAX_CANVAS) {
+      toast.warning("Artifact exceeds hardware limits. Applying safety downscale to 16k master.");
+      const ratio = naturalWidth / naturalHeight;
+      if (naturalWidth > naturalHeight) {
+        naturalWidth = MAX_CANVAS;
+        naturalHeight = Math.floor(MAX_CANVAS / ratio);
+      } else {
+        naturalHeight = MAX_CANVAS;
+        naturalWidth = Math.floor(MAX_CANVAS * ratio);
+      }
+    }
+
     setImgSize({ w: naturalWidth, h: naturalHeight });
 
     // Auto-scale to fill common viewports, maximizing pixel art scale up to 40x
@@ -389,30 +441,30 @@ const SpriteStudio = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground theme-image transition-colors duration-500 ">
+    <div className="min-h-screen bg-background text-foreground transition-colors duration-500 ">
       <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
 
       <div className="flex justify-center items-start w-full relative">
         <SponsorSidebars position="left" />
 
-        <main className="container mx-auto max-w-[1800px] px-6 py-12 grow overflow-x-clip">
-          <div className="flex flex-col gap-10">
-            <header className="flex items-center gap-6 animate-in fade-in slide-in-from-top-4 duration-500">
+        <main className="container mx-auto max-w-[1800px] px-6 py-6 grow overflow-x-clip">
+          <div className="flex flex-col gap-6">
+            <header className="flex items-center gap-4 animate-in fade-in slide-in-from-top-4 duration-500">
               <Link to="/">
-                <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-white/20 hover:bg-primary/20 transition-all group/back bg-black/60 shadow-2xl">
-                  <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
+                <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border border-white/20 hover:bg-primary/20 transition-all group/back bg-black/60 shadow-2xl">
+                  <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
                 </Button>
               </Link>
               <div>
-                <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow text-white">
+                <h1 className="text-3xl md:text-4xl font-black tracking-tighter font-display uppercase italic text-shadow-glow text-white leading-tight">
                   Sprite <span className="text-primary italic">Studio</span>
                 </h1>
-                <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">Professional Pixel Partitioning Engine • Batch Asset Slicing</p>
+                <p className="text-muted-foreground mt-1 font-black uppercase tracking-[0.2em] opacity-40 text-[9px]">Professional Pixel Partitioning Engine • Batch Asset Slicing</p>
               </div>
             </header>
 
             {/* Mobile Inline Ad */}
-            <div className="flex min-[1600px]:hidden justify-center mb-8 w-full">
+            <div className="flex min-[1600px]:hidden justify-center mb-4 w-full">
               <AdBox adFormat="horizontal" height={250} label="300x250 AD" className="w-full max-w-[400px]" />
             </div>
 
@@ -478,7 +530,7 @@ const SpriteStudio = () => {
                   onMouseLeave={handleMouseUp}
                   onContextMenu={(e) => e.preventDefault()}
                   ref={containerRef}
-                  className="glass-morphism border-primary/10 overflow-hidden h-[calc(70vh-68px)] min-h-[500px] flex flex-col items-center justify-center relative bg-card rounded-2xl select-none shadow-2xl group/canvas p-0"
+                  className="glass-morphism border-primary/10 overflow-hidden h-[calc(75vh-80px)] min-h-[500px] flex flex-col items-center justify-center relative bg-card rounded-2xl select-none shadow-2xl group/canvas p-0"
                   style={{
                     backgroundImage: `linear-gradient(45deg, var(--checker-color) 25%, transparent 25%), 
                                      linear-gradient(-45deg, var(--checker-color) 25%, transparent 25%), 
@@ -491,10 +543,10 @@ const SpriteStudio = () => {
                 >
                   {!image ? (
                     <div
-                      onClick={() => inputRef.current?.click()}
                       onDragOver={(e) => e.preventDefault()}
                       onDrop={(e) => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); }}
-                      className="absolute inset-8 flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/20 text-center transition-all cursor-pointer bg-background hover:border-primary/40 hover:bg-primary/5 shadow-inner group/dropzone"
+                      onClick={() => inputRef.current?.click()}
+                      className="absolute inset-8 flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/20 text-center transition-all cursor-pointer bg-primary/5 hover:bg-primary/10 hover:border-primary/40 hover:scale-[1.02] shadow-inner duration-300 group/upload"
                     >
                       <div className="flex flex-col items-center justify-center space-y-6">
                         <div className="h-20 w-20 bg-primary/10 rounded-2xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
@@ -529,7 +581,7 @@ const SpriteStudio = () => {
                           style={{
                             imageRendering: "pixelated",
                             // @ts-ignore
-                            ["-ms-interpolation-mode"]: "nearest-neighbor",
+                            msInterpolationMode: "nearest-neighbor",
                             maxWidth: '100%',
                             maxHeight: '100%',
                             willChange: "transform"
@@ -600,22 +652,22 @@ const SpriteStudio = () => {
                 />
               </div>
 
-              <aside className="lg:sticky lg:top-24 h-[70vh] min-h-[550px]">
+              <aside className="lg:sticky lg:top-28 h-[65vh] min-h-[400px]">
                 {/* Card 1: Master Studio Controls */}
                 <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-2xl bg-card border-x border-t border-white/5 h-full flex flex-col">
                   {/* Drafting Section (Top - Scrollable) */}
                   <div className="flex flex-col grow min-h-0">
                     <div className="bg-primary/5 p-4 border-b border-primary/10 flex items-center justify-between shrink-0">
-                      <div className="flex items-center gap-2.5">
+                      <div className="flex items-center gap-2">
                         <Activity className="h-3.5 w-3.5 text-primary" />
                         <h3 className="text-[9px] font-black uppercase tracking-[0.2em] text-primary italic leading-none">Studio Workbench</h3>
                       </div>
                     </div>
 
                     <div className="p-5 pb-5 overflow-y-auto custom-scrollbar grow">
-                      <div className="flex bg-primary/5 backdrop-blur-md p-2 rounded-xl border border-primary/10 gap-2 shadow-inner mb-6">
-                        <button onClick={() => setMode("manual")} className={`flex-1 py-4 text-xs font-black uppercase tracking-widest rounded-2xl transition-all ${mode === "manual" ? "bg-primary text-white shadow-xl" : "text-muted-foreground hover:bg-primary/10"}`}>Manual</button>
-                        <button onClick={() => setMode("grid")} className={`flex-1 py-4 text-xs font-black uppercase tracking-widest rounded-2xl transition-all ${mode === "grid" ? "bg-primary text-white shadow-xl" : "text-muted-foreground hover:bg-primary/10"}`}>Grid</button>
+                      <div className="flex bg-primary/5 backdrop-blur-md p-2 rounded-xl border border-primary/10 gap-2 shadow-inner mb-4">
+                        <button onClick={() => setMode("manual")} className={`flex-1 py-3 text-xs font-black uppercase tracking-widest rounded-2xl transition-all ${mode === "manual" ? "bg-primary text-white shadow-xl" : "text-muted-foreground hover:bg-primary/10"}`}>Manual</button>
+                        <button onClick={() => setMode("grid")} className={`flex-1 py-3 text-xs font-black uppercase tracking-widest rounded-2xl transition-all ${mode === "grid" ? "bg-primary text-white shadow-xl" : "text-muted-foreground hover:bg-primary/10"}`}>Grid</button>
                       </div>
 
                       <div className="space-y-6">
@@ -628,7 +680,7 @@ const SpriteStudio = () => {
                         </div>
 
                         {mode === "grid" && (
-                          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6 animate-in slide-in-from-top-4 duration-500">
+                          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4 animate-in slide-in-from-top-4 duration-500">
                             <div className="flex bg-primary/5 backdrop-blur-md p-1.5 rounded-xl border border-primary/10 shadow-inner mb-2">
                               <button onClick={() => setGridMode("count")} className={`flex-1 py-1.5 text-[9px] font-black uppercase tracking-[0.2em] rounded-2xl transition-all ${gridMode === "count" ? "bg-primary text-white shadow-md font-bold" : "text-muted-foreground hover:text-primary"}`}>Fixed</button>
                               <button onClick={() => setGridMode("pixel")} className={`flex-1 py-1.5 text-[9px] font-black uppercase tracking-[0.2em] rounded-2xl transition-all ${gridMode === "pixel" ? "bg-primary text-white shadow-md font-bold" : "text-muted-foreground hover:text-primary"}`}>Pixel</button>
@@ -666,7 +718,7 @@ const SpriteStudio = () => {
                   </div>
 
                   {/* Export Section (Bottom - Pinned) */}
-                  <div className="bg-primary/5 p-5 border-t border-primary/10 studio-gradient shrink-0">
+                  <div className="bg-card p-5 border-t border-primary/10 shadow-[0_-4px_20px_rgba(0,0,0,0.1)] shrink-0">
                     <div className="flex items-center gap-3 mb-4">
                       <div className="h-8 w-8 bg-primary/20 rounded-xl flex items-center justify-center shadow-inner">
                         <FolderArchive className="h-4 w-4 text-primary" />
@@ -684,7 +736,7 @@ const SpriteStudio = () => {
               </aside>
 
               {/* Column 3: Partition Stack Section */}
-              <aside className="lg:sticky lg:top-24 h-[70vh] min-h-[500px] flex flex-col">
+              <aside className="lg:sticky lg:top-28 h-[65vh] min-h-[400px] flex flex-col">
                 <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-2xl relative bg-card h-full flex flex-col">
                   <div className="bg-primary/5 p-4 border-b border-primary/10 flex items-center justify-between shrink-0">
                     <div className="flex items-center gap-2">
@@ -710,18 +762,15 @@ const SpriteStudio = () => {
                             layout
                             dragElastic={0}
                             dragTransition={{ power: 0 }}
-                            onClick={() => setActiveId(slice.id)}
-                            className={`p-3 px-4 flex items-center justify-between transition-none cursor-default z-10 ${activeId === slice.id ? "bg-primary/20 shadow-inner" : "hover:bg-primary/10 bg-transparent"}`}
+                            className="bg-transparent border-none p-0 overflow-visible"
                           >
-                            <div className="flex items-center gap-3 overflow-x-clip pointer-events-none">
-                              <GripVertical className="h-3 w-3 text-muted-foreground/30 cursor-grab active:cursor-grabbing pointer-events-auto" />
-                              <span className="text-[9px] font-black text-primary/80 italic">#{String(idx + 1).padStart(2, '0')}</span>
-                              <span className="text-[9px] font-black uppercase tracking-tighter truncate max-w-[100px] text-foreground">{slice.name}</span>
-                            </div>
-                            <div className="flex items-center gap-2 pointer-events-none">
-                              <span className="text-[8px] font-black text-muted-foreground italic">{slice.w}x{slice.h}</span>
-                              <Button size="icon" variant="ghost" onClick={(e) => { e.stopPropagation(); deleteSlice(slice.id); }} className="h-6 w-6 text-destructive opacity-40 hover:opacity-100 transition-opacity hover:bg-destructive/10 rounded-2xl pointer-events-auto"><Trash2 className="h-3 w-3" /></Button>
-                            </div>
+                            <SliceItem
+                              slice={slice}
+                              idx={idx}
+                              active={activeId === slice.id}
+                              onClick={() => setActiveId(slice.id)}
+                              onDelete={() => deleteSlice(slice.id)}
+                            />
                           </Reorder.Item>
                         ))}
                       </Reorder.Group>
@@ -745,11 +794,7 @@ const SpriteStudio = () => {
 
       </div>
       <Footer />
-
-      {/* Mobile Sticky Anchor Ad */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-black/80 backdrop-blur-sm border-t border-white/10 py-2 h-[66px] overflow-x-clip">
-        <AdBox adFormat="horizontal" height={50} label="320x50 ANCHOR AD" className="w-full" />
-      </div>
+      <StickyAnchorAd />
     </div>
   );
 };

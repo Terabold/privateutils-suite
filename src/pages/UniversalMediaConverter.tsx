@@ -11,6 +11,7 @@ import Footer from "@/components/Footer";
 import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
 import AdBox from "@/components/AdBox";
+import StickyAnchorAd from "@/components/StickyAnchorAd";
 import { usePasteFile } from "@/hooks/usePasteFile";
 import { toast } from "sonner";
 import { fetchFile } from "@ffmpeg/util";
@@ -45,7 +46,6 @@ const UniversalMediaConverter = () => {
     const ext = f.name.split('.').pop()?.toLowerCase();
     const isTs = ext === 'ts' || ext === 'm2ts';
     if (isTs && !f.type.startsWith('video/')) {
-      // browser misdetects .ts as text/javascript — treat as video
       f = new File([f], f.name, { type: 'video/mp2t' });
     }
 
@@ -76,7 +76,6 @@ const UniversalMediaConverter = () => {
   usePasteFile(handleFile);
 
   const convertToWebmNative = async (file: File): Promise<Blob> => {
-    // Step 1: record via MediaRecorder
     const rawBlob = await new Promise<Blob>((resolve, reject) => {
       const video = document.createElement("video");
       video.src = URL.createObjectURL(file);
@@ -104,11 +103,10 @@ const UniversalMediaConverter = () => {
       video.onerror = reject;
     });
 
-    // Step 2: remux through ffmpeg to fix duration/seekability
     toast.info("Fixing WebM duration metadata...");
     setProgress(50);
     const ffmpeg = await getFFmpeg();
-    if (!ffmpeg) return rawBlob; // fallback to raw if engine unavailable
+    if (!ffmpeg) return rawBlob;
     const inputData = new Uint8Array(await rawBlob.arrayBuffer());
     await ffmpeg.writeFile('webm_raw.webm', inputData);
     try {
@@ -137,7 +135,6 @@ const UniversalMediaConverter = () => {
     const imageFormats = ['png', 'jpg', 'webp', 'bmp'];
     const isNativeImage = imageFormats.includes(targetFormat);
 
-    // Native canvas pipeline for images
     if (isNativeImage) {
       try {
         const reader = new FileReader();
@@ -185,7 +182,6 @@ const UniversalMediaConverter = () => {
       }
     }
 
-    // FFmpeg multi-threaded pipeline for video/audio
     if (targetFormat === 'webm') {
       try {
         const blob = await convertToWebmNative(file);
@@ -212,23 +208,25 @@ const UniversalMediaConverter = () => {
       const ffmpeg = await getFFmpeg();
       if (!ffmpeg) throw new Error("Failed to load processing engine.");
       inputName = `input_${file.name.replace(/\s+/g, '_')}`;
-      outputName = `output.${targetFormat}`;
+      // Switch 'aac' to 'm4a' container (still using AAC codec) to provide a seekable index for browsers
+      const actualOutputFormat = targetFormat === 'aac' ? 'm4a' : targetFormat;
+      outputName = `output.${actualOutputFormat}`;
 
-      let args = ['-i', inputName];
+      // Use deep probing to ensure source headers are perfectly understood by the WASM engine
+      let args = ['-analyzeduration', '100M', '-probesize', '100M', '-i', inputName];
 
       const isVideoFile = file.type.startsWith('video/');
-      const isAudioFile = file.type.startsWith('audio/');
-
       const srcExt = file.name.split('.').pop()?.toLowerCase();
+      // TS conversion is sensitive to timestamps; disabling stream copy for TS to force a clean re-encode with generated PTS
       const canStreamCopy =
-        (srcExt === 'mp4' && ['mkv', 'mov', 'ts'].includes(targetFormat)) ||
+        (srcExt === 'mp4' && ['mkv', 'mov'].includes(targetFormat)) ||
         (srcExt === 'mkv' && ['mp4', 'mov'].includes(targetFormat)) ||
         (srcExt === 'mov' && ['mp4', 'mkv'].includes(targetFormat)) ||
         (srcExt === 'ts' && ['mp4', 'mkv'].includes(targetFormat)) ||
         (srcExt === 'm2ts' && ['mp4', 'mkv'].includes(targetFormat));
 
       if (canStreamCopy) {
-        args.push('-c:v', 'copy', '-c:a', 'copy');
+        args.push('-c:v', 'copy', '-c:a', 'copy', '-copyts', '-avoid_negative_ts', 'make_zero');
         if (targetFormat === 'ts') args.push('-f', 'mpegts');
       } else {
         switch (targetFormat) {
@@ -242,7 +240,8 @@ const UniversalMediaConverter = () => {
             args.push('-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-f', 'mov');
             break;
           case 'ts':
-            args.push('-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-f', 'mpegts');
+            // High sync flags: genpts, global headers, and eliminate B-frames (-bf 0) for stable duration
+            args.push('-fflags', '+genpts', '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-copyts', '-avoid_negative_ts', 'make_zero', '-flags', '+global_header', '-bf', '0', '-f', 'mpegts');
             break;
           case 'mp3':
             args.push('-c:a', 'libmp3lame', '-ab', '192k');
@@ -258,7 +257,9 @@ const UniversalMediaConverter = () => {
             break;
           case 'aac':
           case 'm4a':
-            args.push('-c:a', 'aac', '-b:a', '192k');
+            // Added -fflags +genpts and explicit sample rate to prevent duration drift
+            args.splice(0, 0, '-fflags', '+genpts');
+            args.push('-c:a', 'aac', '-b:a', '192k', '-ar', '44100', '-movflags', '+faststart', '-write_id3v1', '1');
             break;
         }
       }
@@ -294,15 +295,9 @@ const UniversalMediaConverter = () => {
 
       if (code !== 0) {
         if (requiresPadding && isVideoFile) {
-          console.log("[Auto-Correct] Injecting padding filter...");
           const padFilter = "pad=ceil(iw/2)*2:ceil(ih/2)*2";
-          const vfIndex = args.indexOf('-filter:v');
-          if (vfIndex !== -1) {
-            args[vfIndex + 1] = args[vfIndex + 1] + "," + padFilter;
-          } else {
-            const outIdx = args.indexOf(outputName);
-            args.splice(outIdx, 0, '-filter:v', padFilter);
-          }
+          const outIdx = args.indexOf(outputName);
+          args.splice(outIdx, 0, '-filter:v', padFilter);
           try {
             code = await ffmpeg.exec(args);
           } catch (execErr: any) {
@@ -311,7 +306,6 @@ const UniversalMediaConverter = () => {
             code = 0;
           }
         }
-
       }
 
       let data: any;
@@ -329,8 +323,6 @@ const UniversalMediaConverter = () => {
       };
 
       const blob = new Blob([data as any], { type: mimeMap[targetFormat] || 'application/octet-stream' });
-
-      // revoke previous result to free memory
       if (resultUrl) URL.revokeObjectURL(resultUrl);
       setResultUrl(URL.createObjectURL(blob));
       setResultSize(blob.size);
@@ -387,7 +379,7 @@ const UniversalMediaConverter = () => {
       isImage ? ["png", "jpg", "webp", "bmp"] : [];
 
   const filteredFormats = formats.filter(f => f !== srcExt && f !== 'gif');
-  
+
   const isWebmNative = targetFormat === 'webm' && file?.type.startsWith('video/');
   const willStreamCopy = !isWebmNative && (
     (srcExt === 'mp4' && ['mkv', 'mov', 'ts'].includes(targetFormat)) ||
@@ -398,34 +390,32 @@ const UniversalMediaConverter = () => {
   );
 
   return (
-    <div className="min-h-screen bg-background text-foreground transition-all duration-300 theme-video ">
+    <div className="min-h-screen bg-background text-foreground transition-all duration-300 ">
       <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
 
       <div className="flex justify-center items-start w-full relative">
         <SponsorSidebars position="left" />
 
-        <main className="container mx-auto max-w-[1240px] px-6 py-12 grow overflow-visible">
-          <div className="flex flex-col gap-10">
+        <main className="container mx-auto max-w-[1240px] px-6 py-6 grow overflow-visible">
+          <div className="flex flex-col gap-6">
             <header className="flex items-center gap-6 animate-in fade-in slide-in-from-top-4 duration-500">
               <Link to="/">
-                <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-white/20 hover:bg-primary/20 transition-all group/back bg-black/60 shadow-2xl">
-                  <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
+                <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border border-white/20 hover:bg-primary/20 transition-all group/back bg-black/60 shadow-2xl">
+                  <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
                 </Button>
               </Link>
               <div>
-                <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow text-white">
+                <h1 className="text-3xl md:text-4xl font-black tracking-tighter font-display uppercase italic text-shadow-glow text-white">
                   Media <span className="text-primary italic">Converter</span>
                 </h1>
-                <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">High-Efficiency Browser-Native Conversion Engine</p>
+                <p className="text-muted-foreground mt-1 font-black uppercase tracking-[0.2em] opacity-40 text-[9px]">High-Efficiency Browser-Native Conversion Engine</p>
               </div>
             </header>
 
-            <div className="flex min-[1600px]:hidden justify-center mb-8 w-full">
-              <AdBox adFormat="horizontal" height={250} label="300x250 AD" className="w-full max-w-[400px]" />
-            </div>
+            {/* Mobile Inline Ad removed for brevity as it is part of StickyAnchorAd below or separate logic */}
 
             <div className="flex flex-col lg:flex-row gap-12 items-start animate-in fade-in slide-in-from-bottom-8 duration-700">
-              <div className={`w-full transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] space-y-8 ${file ? 'lg:w-[58.333%]' : 'lg:w-[66.666%]'}`}>
+              <div className={`w-full transition-all duration-700 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] space-y-8 ${file ? 'lg:w-[58.333%]' : 'lg:w-[66.666%]'}`}>
                 <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-2xl relative bg-card">
                   <div className="bg-primary/5 p-5 border-b border-primary/10 flex items-center justify-between">
                     <div className="flex items-center gap-3">
@@ -447,148 +437,96 @@ const UniversalMediaConverter = () => {
                         className="h-8 px-4 text-[9px] font-black uppercase tracking-widest rounded-xl shadow-2xl hover:scale-105 active:scale-95 transition-all flex items-center gap-2"
                       >
                         <Trash2 className="h-3.5 w-3.5" />
-                        <span>Delete File</span>
+                        <span>Delete Asset</span>
                       </Button>
                     )}
                   </div>
-                  <CardContent className="p-10 relative">
-                    <AnimatePresence mode="popLayout" initial={false}>
-                    {!file ? (
-                      <motion.div
-                        key="upload"
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.95 }}
-                        transition={{ duration: 0.3 }}
-                        onDragOver={(e) => e.preventDefault()}
-                        onDrop={(e) => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); }}
-                        onClick={() => !processing && inputRef.current?.click()}
-                        className="relative w-full h-[450px] flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/20 text-center cursor-pointer bg-background hover:border-primary/40 hover:bg-primary/5 shadow-inner transition-all duration-300 group/upload"
-                      >
-                        <div className="h-20 w-20 bg-primary/10 rounded-2xl flex items-center justify-center mb-8 shadow-inner group-hover/upload:scale-110 transition-all">
-                          <CloudUpload className="h-10 w-10 text-primary" />
-                        </div>
-                        <div className="px-6 space-y-2">
-                          <p className="text-3xl font-black text-foreground uppercase tracking-tighter italic leading-none text-shadow-glow">Deploy Artifact</p>
-                          <p className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.2em] opacity-50">Drag master or click</p>
-                          <p className="text-[9px] font-black uppercase tracking-widest text-primary/60 italic pt-2">Max video size: 500MB</p>
-                        </div>
-                        <input ref={inputRef} type="file" accept="video/*,image/*,audio/*,.mov,.mkv,.ts,.m2ts" className="hidden" onChange={(e) => { handleFile(e.target.files?.[0]); e.target.value = ""; }} />
-                      </motion.div>
-                    ) : (
-                      <motion.div
-                        key="processing"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        transition={{ duration: 0.4 }}
-                        className="relative group w-full bg-background/40 p-10 rounded-2xl border border-primary/10 shadow-inner overflow-x-clip min-h-[450px] flex flex-col items-center justify-center studio-gradient backdrop-blur-3xl"
-                      >
-                        {processing ? (
-                          <div className="flex flex-col items-center justify-center text-center animate-in fade-in zoom-in-95 duration-500">
-                            <div className="h-24 w-24 bg-primary/20 text-primary rounded-2xl flex items-center justify-center mb-8 shadow-2xl border border-primary/20 relative">
-                              <RefreshCw className="h-10 w-10 animate-spin" />
-                              <div className="absolute inset-0 bg-primary/20 blur-xl animate-pulse -z-10 rounded-full" />
+                  <CardContent className="p-6 lg:p-10 relative h-[530px] flex flex-col">
+                    <AnimatePresence mode="wait" initial={false}>
+                      {!file ? (
+                        <>
+                          <motion.div
+                            key="upload"
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            transition={{ duration: 0.3 }}
+                            onDragOver={(e) => e.preventDefault()}
+                            onDrop={(e) => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); }}
+                            onClick={() => !processing && inputRef.current?.click()}
+                            className="relative w-full h-[450px] flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/20 text-center cursor-pointer bg-primary/5 hover:bg-primary/10 hover:border-primary/40 hover:scale-[1.02] shadow-inner transition-all duration-300 group/upload"
+                          >
+                            <div className="h-20 w-20 bg-primary/10 rounded-2xl flex items-center justify-center mb-8 shadow-inner group-hover/upload:scale-110 transition-all">
+                              <CloudUpload className="h-10 w-10 text-primary" />
                             </div>
-                            <div className="space-y-4 max-w-sm">
-                              <p className="text-3xl font-black text-foreground uppercase tracking-tighter italic leading-none text-shadow-glow">Baking Bitstream</p>
-                              {willStreamCopy ? (
-                                <div className="mt-4 px-4 py-2 rounded-xl bg-blue-500/20 border border-blue-500/30 text-blue-400 text-[10px] font-black uppercase tracking-widest text-center shadow-inner">
-                                  ⚡ Instant Migration (Lossless)
+                            <div className="px-6 space-y-2">
+                              <p className="text-3xl font-black text-foreground uppercase tracking-tighter italic leading-none text-shadow-glow">Deploy Artifact</p>
+                              <p className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.2em] opacity-50">Drag master or click</p>
+                              <p className="text-[9px] font-black uppercase tracking-widest text-primary/60 italic pt-2">Max video size: 500MB</p>
+                            </div>
+                          </motion.div>
+                          <input ref={inputRef} type="file" accept="video/*,image/*,audio/*,.mov,.mkv,.ts,.m2ts" className="hidden" onChange={(e) => { handleFile(e.target.files?.[0]); e.target.value = ""; }} />
+                        </>
+                      ) : (
+                        <motion.div
+                          key="processing"
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -20 }}
+                          transition={{ duration: 0.4 }}
+                          className="relative group w-full bg-background/40 p-10 rounded-2xl border border-primary/10 shadow-inner overflow-x-clip min-h-[450px] flex flex-col items-center justify-center studio-gradient backdrop-blur-3xl"
+                        >
+                          {processing ? (
+                            <div className="flex flex-col items-center justify-center text-center animate-in fade-in zoom-in-95 duration-500">
+                              <div className="h-24 w-24 bg-primary/20 text-primary rounded-2xl flex items-center justify-center mb-8 shadow-2xl border border-primary/20 relative">
+                                <RefreshCw className="h-10 w-10 animate-spin" />
+                                <div className="absolute inset-0 bg-primary/20 blur-xl animate-pulse -z-10 rounded-full" />
+                              </div>
+                              <div className="space-y-4 max-w-sm">
+                                <p className="text-3xl font-black text-foreground uppercase tracking-tighter italic leading-none text-shadow-glow">Baking Bitstream</p>
+                                <div className="space-y-4">
+                                  <div className="flex justify-between items-end px-1">
+                                    <span className="text-[9px] font-black text-primary uppercase tracking-widest italic">Temporal capture active</span>
+                                    <span className="text-2xl font-black text-primary tracking-tighter italic leading-none">{progress}%</span>
+                                  </div>
+                                  <Progress value={progress} className="h-2 bg-primary/10 shadow-inner" />
                                 </div>
-                              ) : (
-                                <div className="mt-4 px-4 py-2 rounded-xl bg-orange-500/20 border border-orange-500/30 text-orange-400 text-[10px] font-black uppercase tracking-widest text-center shadow-inner">
-                                  🛠️ Deep Re-encoding (High Compatibility)
-                                </div>
-                              )}
-                              <div className="space-y-4">
-                                <div className="flex justify-between items-end px-1">
-                                  <span className="text-[9px] font-black text-primary uppercase tracking-widest italic">Temporal capture active</span>
-                                  <span className="text-2xl font-black text-primary tracking-tighter italic leading-none">{progress}%</span>
-                                </div>
-                                <Progress value={progress} className="h-2 bg-primary/10 shadow-inner" />
-                                <p className="text-[8px] text-muted-foreground/50 font-black uppercase tracking-widest text-center leading-relaxed">
-                                  Processing occurs entirely on your local device for maximum privacy. <br />
-                                  Large files may take time depending on your hardware. <br />
-                                  You can safely work in other tabs while this finishes.
-                                </p>
                               </div>
                             </div>
-                          </div>
-                        ) : resultUrl ? (
-                          <div className="flex flex-col items-center justify-center text-center animate-in fade-in zoom-in-95 duration-500">
-                            <div className="h-24 w-24 bg-emerald-500/20 text-emerald-500 rounded-2xl flex items-center justify-center mb-8 shadow-2xl border border-emerald-500/20">
-                              <ShieldCheck className="h-10 w-10" />
+                          ) : resultUrl ? (
+                            <div className="flex flex-col items-center justify-center text-center animate-in fade-in zoom-in-95 duration-500">
+                              <div className="h-24 w-24 bg-emerald-500/20 text-emerald-500 rounded-2xl flex items-center justify-center mb-8 shadow-2xl border border-emerald-500/20">
+                                <ShieldCheck className="h-10 w-10" />
+                              </div>
+                              <div className="space-y-2">
+                                <p className="text-3xl font-black text-foreground uppercase tracking-tighter italic leading-none text-shadow-glow">Production Complete</p>
+                                <p className="text-[9px] font-black text-emerald-500 uppercase tracking-widest mt-4">Artifact generated with 1:1 fidelity</p>
+                              </div>
+                              <Button onClick={download} className="mt-8 h-14 px-10 gap-3 text-sm font-black rounded-xl uppercase italic shadow-2xl shadow-emerald-500/20 bg-emerald-600 hover:bg-emerald-500 transition-all hover:scale-105 active:scale-95">
+                                <Download className="h-5 w-5" /> Export Artifact
+                              </Button>
                             </div>
-                            <div className="space-y-2">
-                              <p className="text-3xl font-black text-foreground uppercase tracking-tighter italic leading-none text-shadow-glow">Production Complete</p>
-                              <p className="text-[9px] font-black text-emerald-500 uppercase tracking-widest mt-4">Artifact generated with 1:1 fidelity</p>
+                          ) : (
+                            <div className="flex flex-col items-center justify-center text-center animate-in fade-in zoom-in-95 duration-500">
+                              <div className="h-24 w-24 bg-primary/20 text-primary rounded-2xl flex items-center justify-center mb-8 shadow-2xl border border-primary/20">
+                                <Activity className="h-10 w-10 animate-spin-slow" />
+                              </div>
+                              <div className="space-y-2 max-w-md">
+                                <p className="text-3xl font-black text-foreground uppercase tracking-tighter italic leading-none text-shadow-glow">Artifact Scoped</p>
+                                <p className="text-xs font-black text-primary truncate italic uppercase opacity-80 mt-2">{file.name}</p>
+                                <p className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.2em] mt-4">{(file.size / 1024 / 1024).toFixed(2)} MB • READY FOR DISPATCH</p>
+                              </div>
                             </div>
-                            <Button onClick={download} className="mt-8 h-14 px-10 gap-3 text-sm font-black rounded-xl uppercase italic shadow-2xl shadow-emerald-500/20 bg-emerald-600 hover:bg-emerald-500 transition-all hover:scale-105 active:scale-95">
-                              <Download className="h-5 w-5" /> Export Artifact
-                            </Button>
-                          </div>
-                        ) : (
-                          <div className="flex flex-col items-center justify-center text-center animate-in fade-in zoom-in-95 duration-500">
-                            <div className="h-24 w-24 bg-primary/20 text-primary rounded-2xl flex items-center justify-center mb-8 shadow-2xl border border-primary/20">
-                              <Activity className="h-10 w-10 animate-spin-slow" />
-                            </div>
-                            <div className="space-y-2 max-w-md">
-                              <p className="text-3xl font-black text-foreground uppercase tracking-tighter italic leading-none text-shadow-glow">Artifact Scoped</p>
-                              <p className="text-xs font-black text-primary truncate italic uppercase opacity-80 mt-2">{file.name}</p>
-                              <p className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.2em] mt-4">{(file.size / 1024 / 1024).toFixed(2)} MB • READY FOR DISPATCH</p>
-                              {isLargeFile && (
-                                <div className="mt-6 px-6 py-4 rounded-xl border border-yellow-500/30 bg-yellow-500/10 max-w-sm text-center space-y-2">
-                                  <p className="text-[10px] font-black uppercase tracking-widest text-yellow-400">Large File Detected</p>
-                                  <p className="text-[9px] text-muted-foreground font-black uppercase tracking-wider leading-relaxed">
-                                    Files over 50MB are processed in-browser but may be slow or fail on low-memory devices.
-                                    For best results with large videos, use a desktop tool like HandBrake or FFmpeg CLI.
-                                  </p>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        )}
-
-
-                      </motion.div>
-                    )}
+                          )}
+                        </motion.div>
+                      )}
                     </AnimatePresence>
                   </CardContent>
                 </Card>
-                <div className="space-y-2 pt-2">
-                  <p className="text-[9px] text-center text-muted-foreground font-black uppercase tracking-[0.4em] opacity-30 italic">Native GPU Pipeline • Zero Server Persistence • Studio Integrity</p>
-                  <p className="text-[10px] font-black text-center text-muted-foreground opacity-60">Note: Browser-based conversion relies on available RAM. For massive files, a dedicated server tool is recommended.</p>
-                </div>
               </div>
 
-              <aside className={`w-full transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] space-y-4 lg:sticky lg:top-24 h-fit ${file ? 'lg:w-[41.666%]' : 'lg:w-[33.333%]'}`}>
-                <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl border-b-2 border-r-2 bg-card">
-                  {resultUrl && (
-                    <div className="bg-primary/10 border-b border-primary/10 animate-in fade-in slide-in-from-top-4 duration-500 backdrop-blur-3xl">
-                      <div className="p-4 flex items-center justify-between border-b border-primary/5">
-                        <div className="flex items-center gap-2">
-                          <ShieldCheck className="h-4 w-4 text-emerald-500" />
-                          <h3 className="text-xs font-black uppercase tracking-[0.2em] text-primary italic">Production Integrity</h3>
-                        </div>
-                        <span className="text-[10px] font-black px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-500 uppercase tracking-widest">Verified</span>
-                      </div>
-                      <div className="px-5 py-5 grid grid-cols-2 gap-5 bg-primary/5">
-                        <div className="space-y-1">
-                          <span className="text-[10px] font-black text-muted-foreground/60 uppercase tracking-widest">Weight</span>
-                          <p className="text-lg font-black text-primary italic">{(resultSize / 1024 / 1024).toFixed(2)} MB</p>
-                        </div>
-                        <div className="space-y-1 text-right">
-                          <span className="text-[10px] font-black text-muted-foreground/60 uppercase tracking-widest">Descriptor</span>
-                          <p className="text-lg font-black text-foreground uppercase truncate">{targetFormat}</p>
-                        </div>
-                        <Button onClick={download} size="sm" variant="secondary" className="col-span-2 h-12 gap-2 text-xs font-black rounded-2xl uppercase italic shadow-lg border border-emerald-500/20 text-emerald-500 hover:bg-emerald-500/5 transition-all">
-                          <Download className="h-4 w-4" /> Re-Download Artifact
-                        </Button>
-                      </div>
-                    </div>
-                  )}
-
+              <aside className={`w-full transition-all duration-700 h-fit ${file ? 'lg:w-[41.666%]' : 'lg:w-[33.333%]'}`}>
+                <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl bg-card">
                   <div className="bg-primary/5 p-5 border-b border-primary/10 flex items-center gap-3">
                     <Settings2 className="h-4 w-4 text-primary" />
                     <h3 className="text-xs font-black uppercase tracking-[0.2em] text-primary italic">Process Geometry</h3>
@@ -631,8 +569,6 @@ const UniversalMediaConverter = () => {
                       </div>
                     </div>
 
-
-
                     <Button
                       onClick={convertFile}
                       disabled={!targetFormat || processing || !file}
@@ -645,7 +581,7 @@ const UniversalMediaConverter = () => {
                 </Card>
               </aside>
             </div>
-            {/* SEO & Tool Guide Section */}
+
             <ToolExpertSection
               title="Universal Media Conversion Studio"
               description="The Universal Media Converter is a flagship multimedia engine designed to process video, audio, and image artifacts directly within your browser's local sandbox."
@@ -659,10 +595,7 @@ const UniversalMediaConverter = () => {
         <SponsorSidebars position="right" />
       </div>
       <Footer />
-
-      <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-black/80 backdrop-blur-sm border-t border-white/10 py-2 h-[66px] overflow-x-clip">
-        <AdBox adFormat="horizontal" height={50} label="320x50 ANCHOR AD" className="w-full" />
-      </div>
+      <StickyAnchorAd />
     </div>
   );
 };

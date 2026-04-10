@@ -1,6 +1,6 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Copy, Check, Play, AlertTriangle, Search } from "lucide-react";
+import { ArrowLeft, Copy, Check, Play, AlertTriangle, Search, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Navbar from "@/components/Navbar";
@@ -8,6 +8,8 @@ import Footer from "@/components/Footer";
 import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
 import AdBox from "@/components/AdBox";
+import StickyAnchorAd from "@/components/StickyAnchorAd";
+import { toast } from "sonner";
 
 interface Match {
    index: number;
@@ -15,42 +17,68 @@ interface Match {
    groups: (string | undefined)[];
 }
 
-function runRegex(pattern: string, flags: string, testStr: string): { matches: Match[]; error?: string } {
-   if (!pattern) return { matches: [] };
-   try {
+// Inline Web Worker Code for Background Execution
+const workerBlob = new Blob([`
+  self.onmessage = function(e) {
+    const { pattern, flags, testStr } = e.data;
+    if (!pattern) {
+      self.postMessage({ matches: [] });
+      return;
+    }
+    if (e.data.size > 25 * 1024 * 1024) {
+      self.postMessage({ error: "Artifact density error: " + Math.round(e.data.size / 1024 / 1024) + "MB exceeds 25MB security threshold." });
+      return;
+    }
+    try {
       const safeFlags = (flags.includes("g") ? flags : flags + "g").replace(/[^gimsuy]/g, "");
       const regex = new RegExp(pattern, safeFlags);
-      const matches: Match[] = [];
-      let m: RegExpExecArray | null;
+      const matches = [];
+      let m;
       let safety = 0;
-      while ((m = regex.exec(testStr)) !== null && safety++ < 1000) {
-         matches.push({
-            index: m.index,
-            value: m[0],
-            groups: m.slice(1),
-         });
-         if (!safeFlags.includes("g")) break;
+      // Background thread can still hang, so we use safety limit here too
+      // but the main watchdog will kill the worker if it truly freezes.
+      while ((m = regex.exec(testStr)) !== null && safety++ < 2000) {
+        matches.push({
+          index: m.index,
+          value: m[0],
+          groups: Array.from(m.slice(1)),
+        });
+        if (m[0].length === 0) regex.lastIndex++;
+        if (!safeFlags.includes("g")) break;
       }
-      return { matches };
-   } catch (e: any) {
-      return { matches: [], error: e.message };
-   }
-}
+      self.postMessage({ matches });
+    } catch (err) {
+      self.postMessage({ error: err.message });
+    }
+  };
+`], { type: 'application/javascript' });
 
 function highlightText(text: string, matches: Match[]) {
-   if (matches.length === 0) return [{ text, highlight: false }];
+   if (matches.length === 0) return [{ text, highlight: false, isZeroWidth: false }];
 
-   const parts: { text: string; highlight: boolean; matchIdx: number }[] = [];
+   const parts: { text: string; highlight: boolean; matchIdx: number; isZeroWidth?: boolean }[] = [];
    let pos = 0;
 
-   for (const m of matches) {
+   const cleanMatches = [...matches].sort((a, b) => a.index - b.index);
+
+   for (const m of cleanMatches) {
+      if (m.index < pos && m.value.length > 0) continue;
+
       if (m.index > pos) {
          parts.push({ text: text.slice(pos, m.index), highlight: false, matchIdx: -1 });
       }
-      parts.push({ text: m.value, highlight: true, matchIdx: parts.length });
+
+      const isZero = m.value.length === 0;
+      parts.push({
+         text: m.value,
+         highlight: true,
+         matchIdx: parts.length,
+         isZeroWidth: isZero
+      });
+
       pos = m.index + m.value.length;
-      if (m.value.length === 0) { pos++; } // prevent infinite loop on zero-width matches
    }
+
    if (pos < text.length) {
       parts.push({ text: text.slice(pos), highlight: false, matchIdx: -1 });
    }
@@ -89,6 +117,12 @@ const RegexPlayground = () => {
    const [testStr, setTestStr] = useState(EXAMPLE_TEXT);
    const [copiedKey, setCopiedKey] = useState<string | null>(null);
 
+   const [matches, setMatches] = useState<Match[]>([]);
+   const [error, setError] = useState<string | null>(null);
+   const [isCalculating, setIsCalculating] = useState(false);
+   const workerRef = useRef<Worker | null>(null);
+   const timeoutRef = useRef<number | null>(null);
+
    const toggleDark = useCallback(() => {
       const next = !darkMode;
       setDarkMode(next);
@@ -96,7 +130,52 @@ const RegexPlayground = () => {
       localStorage.setItem("theme", next ? "dark" : "light");
    }, [darkMode]);
 
-   const { matches, error } = useMemo(() => runRegex(pattern, flags, testStr), [pattern, flags, testStr]);
+   // Background Thread Execution with 2s Watchdog
+   useEffect(() => {
+      if (!pattern) {
+         setMatches([]);
+         setError(null);
+         return;
+      }
+
+      setIsCalculating(true);
+
+      // Clean up previous run
+      if (workerRef.current) workerRef.current.terminate();
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+
+      const worker = new Worker(URL.createObjectURL(workerBlob));
+      workerRef.current = worker;
+
+      worker.onmessage = (e) => {
+         if (timeoutRef.current) clearTimeout(timeoutRef.current);
+         setIsCalculating(false);
+         if (e.data.error) {
+            setError(e.data.error);
+            setMatches([]);
+         } else {
+            setError(null);
+            setMatches(e.data.matches);
+         }
+         worker.terminate();
+      };
+
+      worker.postMessage({ pattern, flags, testStr });
+
+      // 2000ms Safety Watchdog (prevents catastrophic backtracking from hanging)
+      timeoutRef.current = window.setTimeout(() => {
+         worker.terminate();
+         setIsCalculating(false);
+         setError("Engine Timeout: Catastrophic backtracking detected. Please optimize your pattern.");
+         toast.error("Regex Performance Warning: Execution terminated to save CPU cycles.");
+      }, 2000);
+
+      return () => {
+         worker.terminate();
+         if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      };
+   }, [pattern, flags, testStr]);
+
    const highlighted = useMemo(() => pattern && !error ? highlightText(testStr, matches) : null, [testStr, matches, pattern, error]);
 
    const toggleFlag = (f: string) => {
@@ -110,13 +189,13 @@ const RegexPlayground = () => {
    };
 
    return (
-      <div className="min-h-screen bg-background text-foreground theme-utility transition-colors duration-500">
+      <div className="min-h-screen bg-background text-foreground transition-colors duration-500">
          <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
 
          <div className="flex justify-center items-start w-full relative">
             <SponsorSidebars position="left" />
 
-            <main className="container mx-auto max-w-[1240px] px-6 py-12 grow">
+            <main className="container mx-auto max-w-[1240px] px-6 py-12 grow min-w-0">
                <div className="flex flex-col gap-10">
                   <header className="flex items-center gap-6">
                      <Link to="/">
@@ -129,20 +208,18 @@ const RegexPlayground = () => {
                            Regex <span className="text-primary italic">Playground</span>
                         </h1>
                         <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-60 dark:opacity-40 text-[10px]">
-                           Live Match Highlighting · Groups · 8 Presets
+                           Live Match Highlighting · Groups · Background Architecture
                         </p>
                      </div>
                   </header>
 
-                  {/* Mobile Inline Ad */}
                   <div className="flex min-[1600px]:hidden justify-center mb-8 w-full">
                      <AdBox adFormat="horizontal" height={250} label="300x250 AD" className="w-full max-w-[400px]" />
                   </div>
 
-                  <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8 items-start">
-                     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-700">
+                  <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8 items-start min-w-0">
+                     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-700 min-w-0">
 
-                        {/* Pattern Input */}
                         <Card className="glass-morphism border-border dark:border-primary/10 rounded-2xl shadow-lg dark:shadow-2xl bg-zinc-100 dark:bg-[#0a0a0a] p-8">
                            <CardContent className="p-0 space-y-4">
                               <div className="space-y-2">
@@ -172,7 +249,6 @@ const RegexPlayground = () => {
                                  )}
                               </div>
 
-                              {/* Flags */}
                               <div className="flex flex-wrap gap-2">
                                  {COMMON_FLAGS.map(f => (
                                     <button
@@ -186,7 +262,6 @@ const RegexPlayground = () => {
                                  ))}
                               </div>
 
-                              {/* Presets */}
                               <div className="pt-2">
                                  <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground mb-3">Quick Presets</p>
                                  <div className="flex flex-wrap gap-2">
@@ -204,7 +279,6 @@ const RegexPlayground = () => {
                            </CardContent>
                         </Card>
 
-                        {/* Test String */}
                         <Card className="glass-morphism border-border dark:border-primary/10 rounded-2xl shadow-lg dark:shadow-2xl bg-zinc-100 dark:bg-[#0a0a0a] p-8">
                            <CardContent className="p-0 space-y-4">
                               <div className="flex items-center justify-between">
@@ -227,17 +301,16 @@ const RegexPlayground = () => {
                            </CardContent>
                         </Card>
 
-                        {/* Highlighted Result */}
-                        {highlighted && (
+                        {(highlighted || isCalculating) && (
                            <Card className="glass-morphism border-border dark:border-primary/10 rounded-2xl shadow-lg dark:shadow-xl bg-zinc-100 dark:bg-[#0a0a0a] overflow-hidden">
                               <div className="bg-primary/5 dark:bg-primary/10 p-5 border-b border-border dark:border-primary/10 flex items-center justify-between">
                                  <div className="flex items-center gap-3">
-                                    <Play className="h-4 w-4 text-primary" />
+                                    {isCalculating ? <RefreshCw className="h-4 w-4 text-primary animate-spin" /> : <Play className="h-4 w-4 text-primary" />}
                                     <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">
-                                       {matches.length} Match{matches.length !== 1 ? "es" : ""}
+                                       {isCalculating ? "Calculating Virtual Match..." : `${matches.length} Match${matches.length !== 1 ? "es" : ""}`}
                                     </h3>
                                  </div>
-                                 {matches.length > 0 && (
+                                 {!isCalculating && matches.length > 0 && (
                                     <Button
                                        variant="ghost"
                                        size="sm"
@@ -249,11 +322,18 @@ const RegexPlayground = () => {
                                  )}
                               </div>
                               <CardContent className="p-6">
-                                 <div className="text-sm font-mono leading-7 whitespace-pre-wrap break-all bg-white dark:bg-[#111111] p-5 rounded-xl border border-border dark:border-white/10 custom-scrollbar max-h-80 overflow-auto shadow-inner text-foreground dark:text-white/80">
-                                    {highlighted.map((part, i) =>
+                                 <div className={`text-sm font-mono leading-7 whitespace-pre-wrap break-all bg-white dark:bg-[#111111] p-5 rounded-xl border border-border dark:border-white/10 custom-scrollbar max-h-80 overflow-auto shadow-inner text-foreground dark:text-white/80 transition-opacity ${isCalculating ? "opacity-30 pointer-events-none" : "opacity-100"}`}>
+                                    {highlighted?.map((part, i) =>
                                        part.highlight ? (
-                                          <mark key={i} className="bg-primary/20 dark:bg-primary/30 text-primary dark:text-primary rounded px-1 border border-primary/20 not-italic font-bold">
-                                             {part.text}
+                                          <mark
+                                             key={i}
+                                             className={`relative ${part.isZeroWidth ? "bg-transparent" : "bg-yellow-200 dark:bg-yellow-500/30 text-yellow-950 dark:text-yellow-200 rounded px-0.5 border border-yellow-400/50 dark:border-yellow-500/30"} not-italic font-bold group/match`}
+                                          >
+                                             {part.isZeroWidth ? (
+                                                <span className="inline-block w-[2px] h-4 bg-yellow-500 align-middle mx-[1px] animate-pulse relative">
+                                                   <span className="absolute -top-4 left-1/2 -translate-x-1/2 text-[8px] font-black text-yellow-600 opacity-0 group-hover/match:opacity-100 transition-opacity">EMPTY</span>
+                                                </span>
+                                             ) : part.text}
                                           </mark>
                                        ) : (
                                           <span key={i} className="opacity-80">{part.text}</span>
@@ -261,7 +341,7 @@ const RegexPlayground = () => {
                                     )}
                                  </div>
 
-                                 {matches.length > 0 && (
+                                 {!isCalculating && matches.length > 0 && (
                                     <div className="mt-6 space-y-3">
                                        <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Match List</p>
                                        <div className="space-y-2 max-h-48 overflow-auto custom-scrollbar pr-2">
@@ -284,7 +364,7 @@ const RegexPlayground = () => {
                         )}
                      </div>
 
-                     <aside className="space-y-6 lg:sticky lg:top-24 h-fit">
+                     <aside className="space-y-6 lg:sticky lg:top-28 h-fit">
                         <Card className="glass-morphism border-border dark:border-primary/10 rounded-2xl overflow-hidden shadow-lg dark:shadow-xl bg-card">
                            <div className="bg-primary/5 dark:bg-primary/10 p-5 border-b border-border dark:border-primary/10">
                               <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Match Stats</h3>
@@ -322,18 +402,17 @@ const RegexPlayground = () => {
                                  </div>
                               </div>
                               <p className="text-[9px] text-center text-muted-foreground font-black uppercase tracking-widest dark:opacity-30 italic pt-4 border-t border-border dark:border-white/5">
-                                 Native JS engine · Zero uploads
+                                 Native JS engine · Background Architecture
                               </p>
                            </CardContent>
                         </Card>
                      </aside>
                   </div>
-                  {/* SEO & Tool Guide Section */}
                   <ToolExpertSection
                      title="Professional Regex Playground Studio"
                      description="The Regex Playground is a high-performance Regular Expression evaluator designed for developers and security analysts to test, debug, and optimize complex patterns in real-time."
-                     transparency="Our playground utilizes the browser's native V8 RegExp engine. Unlike server-side regex testers that may log your patterns or test data, our 'Playground' operates in a total air-gap from our servers. Your proprietary patterns, sensitive log files, and data samples never leave your local machine's memory heap."
-                     limitations="While our engine is extremely fast, 'Catastrophic Backtracking'—a common regex pitfall—can still lock up your browser tab if a poorly optimized pattern is run against a large string. For safety, we've implemented a match-limit safety-valve, but we recommend avoiding nested quantifiers on large datasets."
+                     transparency="Our playground utilizes a specialized Web Worker architecture, offloading the V8 RegExp engine to a background thread. This ensures your browser's main UI thread remains fluid even when executing recursive patterns. Every pattern evaluation is shielded by a 2000ms hardware watchdog that terminates execution if catastrophic backtracking is detected."
+                     limitations="While our background architecture prevents browser lockups, poorly optimized patterns can still fail to return results within the security threshold. We recommend avoiding nested quantifiers on large datasets to ensure sub-second evaluation."
                      accent="indigo"
                   />
                </div>
@@ -342,11 +421,7 @@ const RegexPlayground = () => {
             <SponsorSidebars position="right" />
          </div>
          <Footer />
-
-         {/* Mobile Sticky Anchor Ad */}
-         <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-background/80 dark:bg-black/80 backdrop-blur-sm border-t border-border dark:border-white/10 py-2 h-[66px] overflow-x-clip">
-            <AdBox adFormat="horizontal" height={50} label="320x50 ANCHOR AD" className="w-full" />
-         </div>
+         <StickyAnchorAd />
       </div>
    );
 };

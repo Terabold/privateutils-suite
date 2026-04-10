@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
 import AdBox from "@/components/AdBox";
+import StickyAnchorAd from "@/components/StickyAnchorAd";
 import { toast } from "sonner";
 import { usePasteFile } from "@/hooks/usePasteFile";
 
@@ -73,10 +74,23 @@ const ColorPaletteGenerator = () => {
       toast.error("Deploy image artifact to sample colors.");
       return;
     }
+
+    // Safety Gate: 25MB Limit to prevent browser OOM
+    if (file.size > 25 * 1024 * 1024) {
+      toast.error(`Artifact density error: ${Math.round(file.size / 1024 / 1024)}MB exceeds 25MB security threshold.`);
+      return;
+    }
+
     const reader = new FileReader();
     reader.onload = (e) => {
       const img = new Image();
       img.onload = () => {
+        // Safety Gate: Hardware Limit check (8000px)
+        if (img.width > 8000 || img.height > 8000) {
+          toast.error(`Dimension threshold exceeded: ${img.width}x${img.height} exceeds 8000px hardware limit.`);
+          return;
+        }
+
         // Sample center pixel for a quick palette "seed"
         const canvas = document.createElement("canvas");
         canvas.width = img.width;
@@ -125,39 +139,39 @@ const ColorPaletteGenerator = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground theme-image transition-all duration-500 overflow-x-clip">
+    <div className="min-h-screen bg-background text-foreground transition-all duration-500 overflow-x-clip">
       <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
 
       <div className="flex justify-center items-start w-full relative px-4 overflow-x-clip">
         <SponsorSidebars position="left" />
 
-        <main className="container mx-auto max-w-[1100px] px-6 py-12 grow overflow-visible min-w-0">
-          <div className="flex flex-col gap-10">
-            <header className="flex items-center gap-6 animate-in fade-in slide-in-from-top-4 duration-500">
+        <main className="container mx-auto max-w-[1100px] px-6 py-6 grow overflow-visible min-w-0">
+          <div className="flex flex-col gap-6">
+            <header className="flex items-center gap-4 animate-in fade-in slide-in-from-top-4 duration-500">
               <Link to="/">
-                <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-white/20 hover:bg-primary/20 transition-all group/back bg-black/60 shadow-2xl">
-                  <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
+                <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border border-white/20 hover:bg-primary/20 transition-all group/back bg-black/60 shadow-2xl">
+                  <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
                 </Button>
               </Link>
               <div>
-                <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow text-white">
+                <h1 className="text-3xl md:text-4xl font-black tracking-tighter font-display uppercase italic text-shadow-glow text-white leading-tight">
                   Studio <span className="text-primary italic">Palette</span>
                 </h1>
-                <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">
+                <p className="text-muted-foreground mt-1 font-black uppercase tracking-[0.2em] opacity-40 text-[9px]">
                   Professional Color Architect • Harmony Engine
                 </p>
               </div>
             </header>
 
             {/* Mobile Inline Ad */}
-            <div className="flex min-[1600px]:hidden justify-center mb-8 w-full">
+            <div className="flex min-[1600px]:hidden justify-center mb-4 w-full">
               <AdBox adFormat="horizontal" height={250} label="300x250 AD" className="w-full max-w-[400px]" />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-12 items-start animate-in fade-in slide-in-from-bottom-8 duration-700 overflow-visible">
               {/* Left: Palette Preview */}
-              <div className="space-y-8 animate-in fade-in slide-in-from-left-6 duration-700 lg:sticky lg:top-24 min-w-0">
-                <div className="flex flex-col h-[600px] rounded-2xl overflow-hidden shadow-2xl border border-white/10 group bg-card backdrop-blur-3xl">
+              <div className="space-y-8 animate-in fade-in slide-in-from-left-6 duration-700 lg:sticky lg:top-28 min-w-0">
+                <div className="flex flex-col h-[570px] rounded-2xl overflow-hidden shadow-2xl border border-white/10 group bg-card backdrop-blur-3xl">
                   {palette.map((hex, i) => (
                     <div
                       key={i}
@@ -275,11 +289,7 @@ const ColorPaletteGenerator = () => {
         <SponsorSidebars position="right" />
       </div>
       <Footer />
-
-      {/* Mobile Sticky Anchor Ad */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-black/80 backdrop-blur-sm border-t border-white/10 py-2 h-[66px] overflow-x-clip">
-        <AdBox adFormat="horizontal" height={50} label="320x50 ANCHOR AD" className="w-full" />
-      </div>
+      <StickyAnchorAd />
     </div>
   );
 };

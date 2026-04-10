@@ -28,6 +28,6 @@ dist-ssr
 *.sw?
 
 
-LAUNCH_SITE.bat
+dev.bat
 
 package-lock.json

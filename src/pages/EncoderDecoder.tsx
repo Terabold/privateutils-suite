@@ -1,6 +1,6 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Copy, Check, Code2, RefreshCw, AlertTriangle, Trash2 } from "lucide-react";
+import { ArrowLeft, Copy, Check, Code2, RefreshCw, AlertTriangle, Trash2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Navbar from "@/components/Navbar";
@@ -8,6 +8,8 @@ import Footer from "@/components/Footer";
 import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
 import AdBox from "@/components/AdBox";
+import StickyAnchorAd from "@/components/StickyAnchorAd";
+import { toast } from "sonner";
 
 type Mode = "base64-encode" | "base64-decode" | "url-encode" | "url-decode" | "html-encode" | "html-decode" | "hex-encode" | "hex-decode";
 
@@ -44,13 +46,10 @@ function hexEncode(s: string) {
    return Array.from(new TextEncoder().encode(s)).map(b => b.toString(16).padStart(2, "0")).join(" ");
 }
 function hexDecode(s: string) {
-   const cleanHex = s.trim().replace(/\s+/g, "");
-   if (!/^[0-9a-fA-F]*$/.test(cleanHex)) throw new Error("Invalid hex characters detected. Use 0-9 and A-F.");
-   if (cleanHex.length % 2 !== 0) throw new Error("Hex string must have an even length (2 chars per byte).");
-
+   const cleanHex = s.replace(/[^0-9a-fA-F]/g, '');
    const bytes = [];
    for (let i = 0; i < cleanHex.length; i += 2) {
-      bytes.push(parseInt(cleanHex.substring(i, 2), 16));
+      bytes.push(parseInt(cleanHex.substring(i, i + 2), 16));
    }
    return new TextDecoder().decode(new Uint8Array(bytes));
 }
@@ -89,6 +88,9 @@ const EncoderDecoder = () => {
    const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
    const [mode, setMode] = useState<Mode>("base64-encode");
    const [input, setInput] = useState("");
+   const [output, setOutput] = useState("");
+   const [error, setError] = useState<string | null>(null);
+   const [isProcessing, setIsProcessing] = useState(false);
    const [copied, setCopied] = useState(false);
 
    const toggleDark = useCallback(() => {
@@ -98,7 +100,40 @@ const EncoderDecoder = () => {
       localStorage.setItem("theme", next ? "dark" : "light");
    }, [darkMode]);
 
-   const { output, error } = input ? runMode(mode, input) : { output: "", error: undefined };
+   const inputLimit = 5_000_000;
+
+   // Conversion logic moved to debounced effect
+   useEffect(() => {
+      if (!input.trim()) {
+         setOutput("");
+         setError(null);
+         setIsProcessing(false);
+         return;
+      }
+
+      if (input.length >= inputLimit) {
+         setError(`Payload exceeds 5MB security threshold (${input.length.toLocaleString()} characters). Initializing truncation.`);
+         setOutput("");
+         setIsProcessing(false);
+         return;
+      }
+
+      setIsProcessing(true);
+      const timer = setTimeout(() => {
+         const { output: res, error: err } = runMode(mode, input);
+         setOutput(res);
+         setError(err || null);
+         setIsProcessing(false);
+      }, 300);
+
+      return () => clearTimeout(timer);
+   }, [input, mode]);
+
+   useEffect(() => {
+      if (input.length >= inputLimit) {
+         toast.error("Critical Payload Density: Processing suspended to prevent thread-lock.");
+      }
+   }, [input.length]);
 
    const copy = async () => {
       if (!output) return;
@@ -116,22 +151,22 @@ const EncoderDecoder = () => {
    const groups = Array.from(new Set(MODES.map(m => m.group)));
 
    return (
-      <div className="min-h-screen bg-background text-foreground theme-utility transition-colors duration-500 ">
+      <div className="min-h-screen bg-background text-foreground transition-colors duration-500 ">
          <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
 
          <div className="flex justify-center items-start w-full relative">
             <SponsorSidebars position="left" />
 
-            <main className="container mx-auto max-w-[1240px] px-6 py-12 grow overflow-visible">
-               <div className="flex flex-col gap-10">
+            <main className="container mx-auto max-w-[1240px] px-6 py-6 grow overflow-visible">
+               <div className="flex flex-col gap-6">
                   <header className="flex items-center gap-6 animate-in fade-in slide-in-from-top-4 duration-500">
                      <Link to="/">
-                        <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-white/20 hover:bg-primary/20 transition-all group/back bg-black/60 shadow-2xl">
-                           <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
+                        <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border border-white/20 hover:bg-primary/20 transition-all group/back bg-black/60 shadow-2xl">
+                           <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
                         </Button>
                      </Link>
                      <div>
-                        <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow text-white">
+                        <h1 className="text-3xl md:text-4xl font-black tracking-tighter font-display uppercase italic text-shadow-glow text-white">
                            Encode / <span className="text-primary italic">Decode</span>
                         </h1>
                         <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">
@@ -170,26 +205,33 @@ const EncoderDecoder = () => {
                         {/* Input / Output */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                            <Card className="glass-morphism border-primary/10 rounded-2xl shadow-2xl bg-card p-6">
-                               <CardContent className="p-0 space-y-3 relative">
-                                  <div className="flex items-center justify-between">
+                              <CardContent className="p-0 space-y-3 relative">
+                                 <div className="flex items-center justify-between">
                                     <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Input</p>
-                                    <Button 
-                                      variant="ghost" 
-                                      size="sm" 
-                                      onClick={() => setInput("")} 
-                                      className="h-8 w-8 p-0 text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-xl transition-all flex items-center justify-center"
-                                      title="Clear Artifact"
+                                    <Button
+                                       variant="ghost"
+                                       size="sm"
+                                       onClick={() => setInput("")}
+                                       className="h-8 w-8 p-0 text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-xl transition-all flex items-center justify-center"
+                                       title="Clear Artifact"
                                     >
                                        <Trash2 className="h-4 w-4" />
                                     </Button>
-                                  </div>
-                                  <textarea
-                                     value={input}
-                                     onChange={(e) => setInput(e.target.value)}
-                                     placeholder="Paste your text here…"
-                                     className="min-h-[320px] w-full resize-none bg-background/20 border border-border/30 rounded-xl p-4 text-sm text-foreground placeholder:text-muted-foreground/30 focus:outline-none focus:border-primary/40 font-mono leading-relaxed custom-scrollbar shadow-inner"
-                                  />
-                               </CardContent>
+                                 </div>
+                                 <textarea
+                                    value={input}
+                                    onChange={(e) => {
+                                       let val = e.target.value;
+                                       if (val.length > inputLimit + 1000) {
+                                          val = val.substring(0, inputLimit);
+                                          toast.error("Hard Safety Limit: Payload truncated to 5MB to preserve browser stability.");
+                                       }
+                                       setInput(val);
+                                    }}
+                                    placeholder="Paste your text here…"
+                                    className="min-h-[450px] w-full resize-none bg-background/20 border border-border/30 rounded-xl p-4 text-sm text-foreground placeholder:text-muted-foreground/30 focus:outline-none focus:border-primary/40 font-mono leading-relaxed custom-scrollbar shadow-inner"
+                                 />
+                              </CardContent>
                            </Card>
 
                            <Card className="glass-morphism border-primary/10 rounded-2xl shadow-2xl bg-card p-6">
@@ -202,8 +244,16 @@ const EncoderDecoder = () => {
                                     </div>
                                  ) : (
                                     <div className="relative">
-                                       <pre className="min-h-[320px] w-full text-sm font-mono leading-relaxed whitespace-pre-wrap break-all text-foreground/80 bg-background/20 border border-border/30 rounded-xl p-4 custom-scrollbar overflow-auto shadow-inner">
-                                          {output || <span className="text-muted-foreground/30">Result will appear here…</span>}
+                                       <div className="absolute top-3 right-3 z-10">
+                                          {isProcessing && (
+                                             <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary/10 border border-primary/20 animate-pulse">
+                                                <RefreshCw className="h-3 w-3 text-primary animate-spin" />
+                                                <span className="text-[10px] font-black uppercase tracking-widest text-primary italic">Analyzing Bitstream...</span>
+                                             </div>
+                                          )}
+                                       </div>
+                                       <pre className="min-h-[450px] w-full text-sm font-mono leading-relaxed whitespace-pre-wrap break-all text-foreground/80 bg-background/20 border border-border/30 rounded-xl p-4 custom-scrollbar overflow-auto shadow-inner">
+                                          {output || <span className="text-muted-foreground/30">{isProcessing ? "Processing forensic pass..." : "Result will appear here…"}</span>}
                                        </pre>
                                     </div>
                                  )}
@@ -232,7 +282,23 @@ const EncoderDecoder = () => {
                         </div>
                      </div>
 
-                     <aside className="space-y-6 lg:sticky lg:top-24 h-fit">
+                     <aside className="space-y-6 lg:sticky lg:top-28 h-fit animate-in fade-in slide-in-from-right-4 duration-700">
+                        {error && (
+                           <Card className="glass-morphism border-destructive/20 bg-destructive/5 rounded-2xl overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300">
+                              <div className="bg-destructive/10 px-6 py-3 border-b border-destructive/10 flex items-center gap-3">
+                                 <AlertCircle className="h-4 w-4 text-destructive" />
+                                 <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-destructive italic">Refusal Console</h3>
+                              </div>
+                              <CardContent className="p-6">
+                                 <div className="bg-black/20 p-4 rounded-xl border border-destructive/10">
+                                    <p className="text-[11px] font-mono text-destructive dark:text-red-400 break-words leading-relaxed italic">
+                                       {error}
+                                    </p>
+                                 </div>
+                              </CardContent>
+                           </Card>
+                        )}
+
                         <Card className="glass-morphism border-border dark:border-primary/10 overflow-hidden relative bg-zinc-100 dark:bg-[#0a0a0a] shadow-lg dark:shadow-2xl rounded-2xl group flex flex-col min-h-[500px]">
                            <div className="bg-primary/5 p-5 border-b border-primary/10">
                               <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Conversion Stats</h3>
@@ -277,11 +343,7 @@ const EncoderDecoder = () => {
             <SponsorSidebars position="right" />
          </div>
          <Footer />
-
-         {/* Mobile Sticky Anchor Ad */}
-         <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-black/80 backdrop-blur-sm border-t border-white/10 py-2 h-[66px] overflow-x-clip">
-            <AdBox adFormat="horizontal" height={50} label="320x50 ANCHOR AD" className="w-full" />
-         </div>
+         <StickyAnchorAd />
       </div>
    );
 };

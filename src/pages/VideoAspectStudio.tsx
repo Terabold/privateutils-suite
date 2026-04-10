@@ -16,8 +16,8 @@ import { usePasteFile } from "@/hooks/usePasteFile";
 import { KbdShortcut } from "@/components/KbdShortcut";
 import VideoTimeline from "@/components/VideoTimeline";
 import { cn } from "@/lib/utils";
-import { FFmpeg } from "@ffmpeg/ffmpeg";
-import { fetchFile, toBlobURL } from "@ffmpeg/util";
+import { fetchFile } from "@ffmpeg/util";
+import { getFFmpeg } from "@/lib/ffmpegSingleton";
 
 const RATIOS = [
   { id: "16:9", label: "16:9 Desktop", w: 16, h: 9, aspect: 16 / 9 },
@@ -41,31 +41,8 @@ const VideoAspectStudio = () => {
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const ffmpegRef = useRef(new FFmpeg());
-  const loadingRef = useRef(false);
   const rAFRef = useRef<number>();
 
-  const loadFFmpeg = async () => {
-    const ffmpeg = ffmpegRef.current;
-    if (ffmpeg.loaded) return true;
-    if (loadingRef.current) return false;
-
-    loadingRef.current = true;
-    try {
-      const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/esm";
-      await ffmpeg.load({
-        coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, "text/javascript"),
-        wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, "application/wasm"),
-      });
-      return true;
-    } catch (error) {
-      console.error("FFmpeg Load Error:", error);
-      toast.error("WASM Engine failed to initialize.");
-      return false;
-    } finally {
-      loadingRef.current = false;
-    }
-  };
 
   const currentRatio = RATIOS.find(r => r.id === ratioId) || RATIOS[1];
 
@@ -115,20 +92,25 @@ const VideoAspectStudio = () => {
     let inputName = "";
     let outputName = "";
 
+    const progressHandler = ({ progress }: { progress: number }) => {
+      const perc = Math.min(100, Math.round(progress * 100));
+      setProgress(perc);
+    };
+
     try {
-      const loaded = await loadFFmpeg();
-      if (!loaded) return;
-      const ffmpeg = ffmpegRef.current;
+      const ffmpeg = await getFFmpeg();
+      if (!ffmpeg) {
+        toast.error("WASM Engine failed to initialize.");
+        setProcessing(false);
+        return;
+      }
 
       inputName = `input_${file.name.replace(/\s+/g, '_')}`;
       outputName = `output.mp4`;
 
       await ffmpeg.writeFile(inputName, await fetchFile(file));
 
-      ffmpeg.on('progress', ({ progress }) => {
-        const perc = Math.min(100, Math.round(progress * 100));
-        setProgress(perc);
-      });
+      ffmpeg.on('progress', progressHandler);
 
       const targetAspect = currentRatio.aspect;
       let filter = "";
@@ -164,60 +146,61 @@ const VideoAspectStudio = () => {
       console.error(e);
       toast.error("Native remapping failed.");
     } finally {
-      if (ffmpegRef.current && ffmpegRef.current.loaded) {
+      const ffmpeg = await getFFmpeg();
+      if (ffmpeg) {
         try {
-          if (inputName) await ffmpegRef.current.deleteFile(inputName);
-          if (outputName) await ffmpegRef.current.deleteFile(outputName);
+          if (inputName) await ffmpeg.deleteFile(inputName);
+          if (outputName) await ffmpeg.deleteFile(outputName);
         } catch (cleanupErr) {
           console.warn("WASM RAM cleanup suppressed:", cleanupErr);
         }
+        // @ts-ignore
+        ffmpeg.off('progress', progressHandler);
       }
       setProcessing(false);
+      setProgress(0);
     }
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground transition-all duration-300 theme-video ">
+    <div className="min-h-screen bg-background text-foreground transition-all duration-300 ">
       <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
 
       <div className="flex justify-center items-start w-full relative">
         <SponsorSidebars position="left" />
 
-        <main className="container mx-auto max-w-[1240px] px-6 py-12 grow overflow-visible">
-          <div className="flex flex-col gap-10">
-            <header className="flex items-center gap-6 animate-in fade-in slide-in-from-top-4 duration-500">
+        <main className="container mx-auto max-w-[1240px] px-6 py-6 grow overflow-visible">
+          <div className="flex flex-col gap-6">
+            <header className="flex items-center gap-4 animate-in fade-in slide-in-from-top-4 duration-500">
               <Link to="/">
-                <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-white/20 hover:bg-primary/20 transition-all group/back bg-black/60 shadow-2xl">
-                  <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
+                <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border border-white/20 hover:bg-primary/20 transition-all group/back bg-black/60 shadow-2xl">
+                  <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
                 </Button>
               </Link>
               <div>
-                <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow text-white">
+                <h1 className="text-3xl md:text-4xl font-black tracking-tighter font-display uppercase italic text-shadow-glow text-white leading-tight">
                   Aspect <span className="text-primary italic">Studio</span>
                 </h1>
-                <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">Social Media Aspect Ratio Remapping Engine</p>
+                <p className="text-muted-foreground mt-1 font-black uppercase tracking-[0.2em] opacity-40 text-[9px]">Social Media Aspect Ratio Remapping Engine</p>
               </div>
             </header>
 
             {/* Mobile Inline Ad */}
-            <div className="flex min-[1600px]:hidden justify-center mb-8 w-full">
+            <div className="flex min-[1600px]:hidden justify-center mb-4 w-full">
               <AdBox adFormat="horizontal" height={250} label="300x250 AD" className="w-full max-w-[400px]" />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
               <div className="lg:col-span-8 space-y-8 flex flex-col items-center w-full">
                 {!file ? (
-                  <Card className="glass-morphism border-primary/10 overflow-x-clip min-h-[500px] w-full flex flex-col items-center justify-center relative bg-card rounded-2xl shadow-2xl p-10 select-none animate-in fade-in zoom-in-95 duration-500">
+                  <Card className="glass-morphism border-primary/10 overflow-x-clip min-h-[400px] w-full flex flex-col items-center justify-center relative bg-card rounded-2xl shadow-2xl p-6 select-none animate-in fade-in zoom-in-95 duration-500">
                     <div
                       onDragOver={(e) => e.preventDefault()}
                       onDrop={(e) => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); }}
-                      onClick={() => !processing && inputRef.current?.click()}
-                      className={cn(
-                        "relative w-full h-[500px] flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/20 text-center transition-all",
-                        !processing ? "cursor-pointer bg-background hover:border-primary/40 hover:bg-primary/5 shadow-inner" : "opacity-50"
-                      )}
+                      onClick={() => inputRef.current?.click()}
+                      className="relative w-full h-[450px] flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/20 text-center transition-all cursor-pointer bg-primary/5 hover:bg-primary/10 hover:border-primary/40 hover:scale-[1.02] shadow-inner duration-300 group/upload"
                     >
-                      <div className="h-20 w-20 bg-primary/10 rounded-2xl flex items-center justify-center mb-8 shadow-inner group-hover:scale-110 transition-transform">
+                      <div className="h-16 w-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-6 shadow-inner group-hover:scale-110 transition-transform">
                         <CloudUpload className="h-10 w-10 text-primary" />
                       </div>
                       <div className="px-6 space-y-1">
@@ -323,12 +306,12 @@ const VideoAspectStudio = () => {
                 )}
               </div>
 
-              <aside className="lg:col-span-4 space-y-6 lg:sticky lg:top-24 h-fit">
+              <aside className="lg:col-span-4 space-y-6 lg:sticky lg:top-28 h-fit">
                 <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl border-border/20 bg-card">
                   <div className="bg-primary/5 p-6 border-b border-primary/10 flex items-center justify-between">
                     <h2 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary italic leading-none">Mapping System</h2>
                   </div>
-                  <CardContent className="p-8 space-y-8">
+                  <CardContent className="p-6 space-y-6">
                     <div className="space-y-4">
                       <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 leading-none block px-1 italic">Target Aspect Ratio</p>
                       <div className="grid grid-cols-2 gap-2">
@@ -413,10 +396,10 @@ const VideoAspectStudio = () => {
                           >
                             <Button
                               onClick={processVideo}
-                              className="w-full h-16 text-lg font-black rounded-2xl gap-3 shadow-xl shadow-primary/10 italic uppercase bg-primary text-primary-foreground border-b-4 border-primary-foreground/20 active:border-b-0 active:translate-y-1 transition-all hover:scale-[1.01] relative overflow-x-clip group/btn"
+                              className="w-full h-12 text-md font-black rounded-xl gap-3 shadow-xl shadow-primary/10 italic uppercase bg-primary text-primary-foreground border-b-4 border-primary-foreground/20 active:border-b-0 active:translate-y-1 transition-all hover:scale-[1.01] relative overflow-x-clip group/btn"
                             >
                               <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent opacity-0 group-hover/btn:opacity-100 transition-opacity" />
-                              <RefreshCw className="h-5 w-5 relative z-10" />
+                              <RefreshCw className="h-4 w-4 relative z-10" />
                               <span className="relative z-10">Export Asset</span>
                             </Button>
                             <p className="text-[10px] text-center text-muted-foreground font-black uppercase tracking-tight opacity-40 italic">High-precision aspect isolation utilizing native GPU-accelerated drawing buffers.</p>
@@ -442,7 +425,7 @@ const VideoAspectStudio = () => {
         <SponsorSidebars position="right" />
       </div>
       <Footer />
-    
+
       {/* Mobile Sticky Anchor Ad */}
       <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-black/80 backdrop-blur-sm border-t border-white/10 py-2 h-[66px] overflow-x-clip">
         <AdBox adFormat="horizontal" height={50} label="320x50 ANCHOR AD" className="w-full" />

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { cn } from "@/lib/utils";
 
 interface AdBoxProps {
@@ -13,16 +13,26 @@ interface AdBoxProps {
 const AdBox = ({ width, height, label = "AD SPACE", className, isSticky, adFormat }: AdBoxProps) => {
   // Vite מזהה אוטומטית: true כשאתה על המחשב שלך, false כשהאתר באוויר
   const isLocalDev = import.meta.env.DEV;
+  const containerRef = useRef<HTMLDivElement>(null);
+  const initialized = useRef(false);
 
   useEffect(() => {
     // טוען את המודעה של גוגל רק כשהאתר חי באוויר
-    if (!isLocalDev) {
-      try {
-        // @ts-ignore
-        (window.adsbygoogle = window.adsbygoogle || []).push({});
-      } catch (e) {
-        console.error("AdSense error", e);
-      }
+    if (!isLocalDev && containerRef.current && !initialized.current) {
+      const timer = setTimeout(() => {
+        // Check if container is actually visible and has width to prevent "availableWidth=0" AdSense crash
+        if (containerRef.current && containerRef.current.offsetWidth > 0) {
+          try {
+            // @ts-ignore
+            (window.adsbygoogle = window.adsbygoogle || []).push({});
+            initialized.current = true;
+          } catch (e) {
+            console.error("AdSense error", e);
+          }
+        }
+      }, 200); // 200ms delay to allow responsive layouts to settle
+      
+      return () => clearTimeout(timer);
     }
   }, [isLocalDev]);
 
@@ -58,6 +68,7 @@ const AdBox = ({ width, height, label = "AD SPACE", className, isSticky, adForma
         isSticky && "sticky top-24",
         className
       )}
+      ref={containerRef}
       style={{ minHeight: styleParams.height, width: '100%' }}
     >
       <ins

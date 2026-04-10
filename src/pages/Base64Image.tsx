@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
 import AdBox from "@/components/AdBox";
+import StickyAnchorAd from "@/components/StickyAnchorAd";
 import { toast } from "sonner";
 import { usePasteFile } from "@/hooks/usePasteFile";
 import { KbdShortcut } from "@/components/KbdShortcut";
@@ -53,18 +54,18 @@ const Base64Image = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground theme-image transition-all duration-500 ">
+    <div className="min-h-screen bg-background text-foreground transition-all duration-500 ">
       <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
 
       <div className="flex justify-center items-start w-full relative">
         <SponsorSidebars position="left" />
 
-        <main className="container mx-auto max-w-[1240px] px-6 py-12 grow overflow-visible">
-          <div className="flex flex-col gap-10">
+        <main className="container mx-auto max-w-[1240px] px-6 py-6 grow overflow-visible">
+          <div className="flex flex-col gap-6">
             <header className="flex items-center gap-6 animate-in fade-in slide-in-from-top-4 duration-500">
               <Link to="/">
-                <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-white/20 hover:bg-primary/20 transition-all group/back bg-black/60 shadow-2xl">
-                  <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
+                <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border border-white/20 hover:bg-primary/20 transition-all group/back bg-black/60 shadow-2xl">
+                  <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
                 </Button>
               </Link>
               <div>
@@ -85,7 +86,7 @@ const Base64Image = () => {
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-12 items-start animate-in fade-in slide-in-from-bottom-8 duration-700 overflow-visible">
               <div className="space-y-8">
                 <Card
-                  className="glass-morphism border-primary/10 rounded-2xl shadow-xl bg-card border-2 border-dashed flex flex-col group hover:border-primary/30 transition-all cursor-pointer relative overflow-hidden"
+                  className="glass-morphism border-primary/20 rounded-2xl shadow-xl bg-primary/5 border-2 border-dashed flex flex-col group hover:bg-primary/10 hover:border-primary/40 hover:scale-[1.02] transition-all duration-300 cursor-pointer relative overflow-hidden"
                   onDragOver={(e) => e.preventDefault()}
                   onDrop={handleDrop}
                   onClick={() => document.getElementById('base64-file-input')?.click()}
@@ -111,37 +112,37 @@ const Base64Image = () => {
                     />
 
                     {base64 ? (
-                    <div className="flex items-center justify-between w-full px-6 animate-in fade-in slide-in-from-top-2 duration-300">
-                      <div className="flex items-center gap-5">
-                        <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shadow-inner border border-primary/20">
-                          <ImageIcon className="h-5 w-5" />
+                      <div className="flex items-center justify-between w-full px-6 animate-in fade-in slide-in-from-top-2 duration-300">
+                        <div className="flex items-center gap-5">
+                          <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shadow-inner border border-primary/20">
+                            <ImageIcon className="h-5 w-5" />
+                          </div>
+                          <div>
+                            <p className="text-[10px] font-black uppercase tracking-widest text-primary leading-none mb-1 italic">Active Artifact</p>
+                            <p className="text-xs font-black text-foreground uppercase tracking-tighter truncate max-w-[200px]">{fileName}</p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="text-[10px] font-black uppercase tracking-widest text-primary leading-none mb-1 italic">Active Artifact</p>
-                          <p className="text-xs font-black text-foreground uppercase tracking-tighter truncate max-w-[200px]">{fileName}</p>
+                        <div className="flex items-center gap-4">
+                          <div className="hidden md:flex flex-col items-end opacity-40">
+                            <p className="text-[8px] font-black uppercase tracking-[0.2em] leading-none mb-1 italic">Swap Mode Active</p>
+                            <p className="text-[9px] font-black uppercase tracking-widest">Click or Ctrl+V to Exchange</p>
+                          </div>
+                          <div className="h-10 w-[1px] bg-white/5" />
+                          <KbdShortcut />
                         </div>
                       </div>
-                      <div className="flex items-center gap-4">
-                        <div className="hidden md:flex flex-col items-end opacity-40">
-                           <p className="text-[8px] font-black uppercase tracking-[0.2em] leading-none mb-1 italic">Swap Mode Active</p>
-                           <p className="text-[9px] font-black uppercase tracking-widest">Click or Ctrl+V to Exchange</p>
+                    ) : (
+                      <div className="flex flex-col items-center py-6">
+                        <div className="h-20 w-20 bg-primary/10 rounded-2xl flex items-center justify-center text-primary group-hover:scale-125 transition-transform duration-500 shadow-inner border border-primary/20">
+                          <FileStack className="h-10 w-10" />
                         </div>
-                        <div className="h-10 w-[1px] bg-white/5" />
-                        <KbdShortcut />
+                        <div className="text-center group-hover:scale-105 transition-transform duration-500 mt-6">
+                          <h2 className="text-2xl font-black uppercase tracking-widest mb-1 italic text-shadow-glow">Deploy Hub</h2>
+                          <p className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground/60 font-black">Click to Browse · Ctrl+V to paste artifact</p>
+                          <KbdShortcut />
+                        </div>
                       </div>
-                    </div>
-                  ) : (
-                    <div className="flex flex-col items-center py-6">
-                      <div className="h-20 w-20 bg-primary/10 rounded-2xl flex items-center justify-center text-primary group-hover:scale-125 transition-transform duration-500 shadow-inner border border-primary/20">
-                        <FileStack className="h-10 w-10" />
-                      </div>
-                      <div className="text-center group-hover:scale-105 transition-transform duration-500 mt-6">
-                        <h2 className="text-2xl font-black uppercase tracking-widest mb-1 italic text-shadow-glow">Deploy Hub</h2>
-                        <p className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground/60 font-black">Click to Browse · Ctrl+V to paste artifact</p>
-                        <KbdShortcut />
-                      </div>
-                    </div>
-                  )}
+                    )}
                   </div>
                 </Card>
 
@@ -159,7 +160,7 @@ const Base64Image = () => {
                         </Button>
                       </div>
                       <CardContent className="p-8 flex items-center justify-center bg-background/40 min-h-[400px]">
-                        <img src={preview} alt="Preview" className="max-h-[350px] object-contain rounded-2xl shadow-2xl border border-white/5" />
+                        <img src={preview} alt="Preview" className="max-h-[250px] object-contain rounded-2xl shadow-2xl border border-white/5" />
                       </CardContent>
                     </Card>
 
@@ -190,7 +191,7 @@ const Base64Image = () => {
                 )}
               </div>
 
-              <aside className="space-y-6 lg:sticky lg:top-24 h-fit">
+              <aside className="space-y-6 lg:sticky lg:top-28 h-fit">
                 <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl border-2 border-primary/5 bg-card">
                   <div className="bg-primary/10 p-5 border-b border-primary/10 flex items-center gap-3">
                     <Zap className="h-4 w-4 text-primary" />
@@ -209,27 +210,27 @@ const Base64Image = () => {
                     </div>
 
                     <div className="space-y-5">
-                       <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.2em] group">
-                          <div className="h-8 w-8 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-500 transition-transform group-hover:scale-110">
-                            <Zap className="h-4 w-4" />
-                          </div>
-                          <span>Bit-Perfect Mapping</span>
-                       </div>
-                       <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.2em] group">
-                          <div className="h-8 w-8 rounded-2xl bg-primary/10 border border-primary/30 flex items-center justify-center text-primary transition-transform group-hover:scale-110">
-                            <ShieldCheck className="h-4 w-4" />
-                          </div>
-                          <span>Encrypted Local Hub</span>
-                       </div>
+                      <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.2em] group">
+                        <div className="h-8 w-8 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-500 transition-transform group-hover:scale-110">
+                          <Zap className="h-4 w-4" />
+                        </div>
+                        <span>Bit-Perfect Mapping</span>
+                      </div>
+                      <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.2em] group">
+                        <div className="h-8 w-8 rounded-2xl bg-primary/10 border border-primary/30 flex items-center justify-center text-primary transition-transform group-hover:scale-110">
+                          <ShieldCheck className="h-4 w-4" />
+                        </div>
+                        <span>Encrypted Local Hub</span>
+                      </div>
                     </div>
 
                   </CardContent>
                 </Card>
 
                 <div className="px-8 py-2">
-                   <p className="text-[9px] text-center text-muted-foreground font-black uppercase tracking-widest opacity-30 italic leading-relaxed">
-                      Transform images into CSS/JS-ready data strings instantly. No server processing. No data leaks.
-                   </p>
+                  <p className="text-[9px] text-center text-muted-foreground font-black uppercase tracking-widest opacity-30 italic leading-relaxed">
+                    Transform images into CSS/JS-ready data strings instantly. No server processing. No data leaks.
+                  </p>
                 </div>
               </aside>
             </div>
@@ -248,11 +249,7 @@ const Base64Image = () => {
         <SponsorSidebars position="right" />
       </div>
       <Footer />
-    
-      {/* Mobile Sticky Anchor Ad */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-black/80 backdrop-blur-sm border-t border-white/10 py-2 h-[66px] overflow-x-clip">
-        <AdBox adFormat="horizontal" height={50} label="320x50 ANCHOR AD" className="w-full" />
-      </div>
+      <StickyAnchorAd />
     </div>
   );
 };

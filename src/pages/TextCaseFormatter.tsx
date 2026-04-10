@@ -8,6 +8,8 @@ import Footer from "@/components/Footer";
 import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
 import AdBox from "@/components/AdBox";
+import StickyAnchorAd from "@/components/StickyAnchorAd";
+import { toast } from "sonner";
 
 const toTitleCase = (s: string) =>
   s.replace(/\w\S*/g, (w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
@@ -59,14 +61,29 @@ const TextCaseFormatter = () => {
     setTimeout(() => setCopied(false), 1500);
   };
 
+  const handleTextChange = (val: string) => {
+    if (val.length > 10000000) {
+      toast.error("Payload Exceeds 10MB Stability Gate", {
+        description: "Please process smaller segments to prevent browser thread saturation."
+      });
+      return;
+    }
+    if (val.length > 5000000) {
+      toast.warning("Large Payload Detected", {
+        description: "Operations may take several seconds on this volume of text."
+      });
+    }
+    setText(val);
+  };
+
   const stats = {
     chars: text.length,
-    words: text.trim() ? text.trim().split(/\s+/).length : 0,
-    lines: text.trim() ? text.split('\n').length : 0
+    words: text.length > 1000000 ? "..." : (text.trim() ? text.trim().split(/\s+/).length : 0),
+    lines: text.length > 2000000 ? "..." : (text.trim() ? text.split('\n').length : 0)
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground theme-utility transition-colors duration-500">
+    <div className="min-h-screen bg-background text-foreground transition-colors duration-500">
       <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
 
       <div className="flex justify-center items-start w-full relative">
@@ -101,9 +118,9 @@ const TextCaseFormatter = () => {
                   <CardContent className="p-0">
                     <textarea
                       value={text}
-                      onChange={(e) => setText(e.target.value)}
+                      onChange={(e) => handleTextChange(e.target.value)}
                       placeholder="Paste your content, script, or code list here…"
-                      className="min-h-[360px] w-full resize-none bg-transparent border-none text-base text-foreground placeholder:text-muted-foreground/30 focus:outline-none focus:ring-0 font-medium leading-relaxed custom-scrollbar"
+                      className="min-h-[500px] w-full resize-none bg-transparent border-none text-base text-foreground placeholder:text-muted-foreground/30 focus:outline-none focus:ring-0 font-medium leading-relaxed custom-scrollbar"
                     />
 
                     <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -145,7 +162,7 @@ const TextCaseFormatter = () => {
                 </Card>
               </div>
 
-              <aside className="space-y-6 lg:sticky lg:top-24 h-fit">
+              <aside className="space-y-6 lg:sticky lg:top-28 h-fit">
                 <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl">
                   <div className="bg-primary/5 p-5 border-b border-primary/10 flex items-center justify-between">
                     <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Text Analysis</h3>
@@ -164,11 +181,11 @@ const TextCaseFormatter = () => {
                     <div className="grid grid-cols-2 gap-4">
                       <div className="bg-muted/5 p-5 rounded-2xl border border-primary/10 transition-colors hover:border-primary/30">
                         <p className="text-[10px] font-black uppercase tracking-widest opacity-40 mb-2 leading-none italic">Entropy (Words)</p>
-                        <p className="text-3xl font-black italic tracking-tighter text-primary">{text.trim() ? text.trim().split(/\s+/).length : 0}</p>
+                        <p className="text-3xl font-black italic tracking-tighter text-primary">{stats.words}</p>
                       </div>
                       <div className="bg-muted/5 p-5 rounded-2xl border border-primary/10 transition-colors hover:border-primary/30">
                         <p className="text-[10px] font-black uppercase tracking-widest opacity-40 mb-2 leading-none italic">Weight (Chars)</p>
-                        <p className="text-3xl font-black italic tracking-tighter text-primary">{text.length}</p>
+                        <p className="text-3xl font-black italic tracking-tighter text-primary">{stats.chars}</p>
                       </div>
                     </div>
                     <p className="text-[9px] text-center text-muted-foreground font-black uppercase tracking-widest opacity-30 italic">Local computation • CONSTANT_CASE for env vars • kebab-case for URLs</p>
@@ -184,7 +201,7 @@ const TextCaseFormatter = () => {
                 title="Professional Text Case Transformation Lab"
                 description="The Text Case Formatter is a high-speed string manipulation utility designed for developers, copywriters, and data analysts to standardize text formats across different naming conventions."
                 transparency="Our formatter executes all transformations using local JavaScript string methods (regex and mapping). Whether you are converting a list of variables to 'snake_case' for a database or formatting a paragraph to 'Sentence Case' for a blog post, the logic runs entirely in your browser's local thread. Your text inputs are never transmitted to our servers, ensuring your sensitive scripts and drafts remain private."
-                limitations="While our 'Sentence Case' and 'Title Case' engines are highly accurate, they rely on standard linguistic patterns. Complex proper nouns or specialized technical acronyms may require manual review after the initial transformation."
+                limitations="While our 'Sentence Case' and 'Title Case' engines are highly accurate, they rely on standard linguistic patterns. To ensure browser stability, we enforce a 10MB character limit per session."
                 accent="indigo"
               />
             </div>
@@ -194,11 +211,7 @@ const TextCaseFormatter = () => {
         <SponsorSidebars position="right" />
       </div>
       <Footer />
-
-      {/* Mobile Sticky Anchor Ad */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-black/80 backdrop-blur-sm border-t border-white/10 py-2 h-[66px] overflow-x-clip">
-        <AdBox adFormat="horizontal" height={50} label="320x50 ANCHOR AD" className="w-full" />
-      </div>
+      <StickyAnchorAd />
     </div>
   );
 };

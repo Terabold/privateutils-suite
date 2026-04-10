@@ -1,4 +1,4 @@
-import { Video, ImageIcon, Music, ShieldCheck, Wrench, Sparkles } from "lucide-react";
+import { Video, ImageIcon, Music, ShieldCheck, Wrench, Sparkles, Terminal, Type, Zap } from "lucide-react";
 
 export const categoryConfig: Record<string, { icon: any, gradient: string, themeClass: string, tagColor: string, hsl: string }> = {
   "Video Studio": { 
@@ -29,12 +29,26 @@ export const categoryConfig: Record<string, { icon: any, gradient: string, theme
     tagColor: "#10b981",
     hsl: "142.1 76.2% 36.3%"
   },
-  "Utility Belt": { 
-    icon: Wrench, 
-    gradient: "from-amber-400 to-yellow-600", 
-    themeClass: "theme-utility", 
+  "Dev Toolbox": { 
+    icon: Terminal, 
+    gradient: "from-sky-400 to-blue-500", 
+    themeClass: "theme-dev", 
+    tagColor: "#0ea5e9",
+    hsl: "199 89% 48%"
+  },
+  "Text Studio": { 
+    icon: Type, 
+    gradient: "from-amber-400 to-orange-500", 
+    themeClass: "theme-text", 
     tagColor: "#f59e0b",
     hsl: "38 92% 50%"
+  },
+  "Quick Utils": { 
+    icon: Zap, 
+    gradient: "from-rose-400 to-red-500", 
+    themeClass: "theme-quick", 
+    tagColor: "#f43f5e",
+    hsl: "349 89% 60%"
   },
   "All": {
     icon: Sparkles,

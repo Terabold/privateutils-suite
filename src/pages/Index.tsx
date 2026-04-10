@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import { ShieldCheck, Zap, Lock, Play, Pause } from "lucide-react";
 import SponsorSidebars from "@/components/SponsorSidebars";
 import AdBox from "@/components/AdBox";
+import StickyAnchorAd from "@/components/StickyAnchorAd";
 
 
 const Index = () => {
@@ -51,7 +52,7 @@ const Index = () => {
           }
         });
       },
-      { threshold: 0.3, rootMargin: "-10% 0px -70% 0px" }
+      { threshold: 0.2, rootMargin: "-20% 0px -40% 0px" }
     );
 
     const sections = document.querySelectorAll("section[id]");
@@ -111,7 +112,7 @@ const Index = () => {
 
         <main className="container mx-auto max-w-[1240px] px-6 py-10 lg:py-16 grow overflow-visible">
           {/* Static Branding Section (Improved Vertical Density) */}
-          <section className="text-center mb-10 relative animate-in fade-in duration-1000">
+          <section id="hero" className="text-center mb-10 relative animate-in fade-in duration-1000">
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-primary/5 blur-[120px] rounded-full -z-10" />
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tighter text-foreground font-display mb-6 leading-[0.9]">
               Private<span className="text-primary italic">Utils</span> <br className="hidden sm:block" /> <span className="text-2xl md:text-4xl opacity-40 uppercase tracking-widest font-sans not-italic">Coding & Media Tools</span>
@@ -144,8 +145,8 @@ const Index = () => {
           </div>
 
           {/* Privacy Manifesto Section (Universal Focal Point) */}
-          <section className="py-28 px-12 rounded-[2rem] bg-zinc-950 text-white dark:bg-black border border-primary/20 shadow-[0_0_100px_-20px_rgba(var(--primary),0.15)] relative overflow-x-clip group mb-32 hover-glow transition-all duration-700">
-             <div className="absolute top-0 right-0 p-12 opacity-5 scale-150 rotate-12 group-hover:scale-[2] transition-transform duration-1000">
+          <section id="privacy-manifesto" className="py-28 px-12 rounded-[2rem] bg-muted/30 dark:bg-zinc-950 text-foreground border border-primary/20 shadow-[0_0_100px_-20px_rgba(var(--primary),0.15)] relative overflow-hidden group mb-32 hover-glow transition-all duration-700">
+             <div className="absolute top-0 right-0 p-12 opacity-[0.07] dark:opacity-[0.08] scale-150 rotate-12 group-hover:scale-[2] transition-transform duration-1000 text-primary pointer-events-none">
                 <ShieldCheck className="h-60 w-60" />
               </div>
               
@@ -156,28 +157,28 @@ const Index = () => {
                  <h2 className="text-4xl md:text-6xl font-black tracking-tighter mb-10 leading-none">
                     Engineered for your <span className="text-primary italic">eyes only.</span>
                  </h2>
-                 <p className="text-xl text-zinc-400 font-medium mb-16 leading-relaxed max-w-3xl">
+                 <p className="text-xl text-muted-foreground font-medium mb-16 leading-relaxed max-w-3xl">
                     Most online tools are secretly data collection engines. We changed the paradigm. 
                     Your binary strictly stays on your hardware, processed by our **Zero-Trust Compute Core**. 
                     <br /><br />
-                    Using hardware-accelerated WebAssembly, we process sensitive data at wire-speed with <span className="text-white font-bold underline decoration-primary/50 underline-offset-8">Zero Logs. Zero Tracking. Zero Data Leaks.</span>
+                    Using hardware-accelerated WebAssembly, we process sensitive data at wire-speed with <span className="text-foreground font-bold underline decoration-primary/50 underline-offset-8">Zero Logs. Zero Tracking. Zero Data Leaks.</span>
                  </p>
                  
                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-12">
                     <div className="space-y-4 border-l-2 border-primary/30 pl-8 transition-colors hover:border-primary">
                        <h4 className="text-base font-black uppercase tracking-widest text-primary">Air-Gapped Processing</h4>
-                       <p className="text-sm text-zinc-500 font-medium leading-relaxed">Parallel rendering and complex logic happen entirely in your local RAM sandbox. Our site could be disconnected from the internet and still function.</p>
+                       <p className="text-sm text-muted-foreground font-medium leading-relaxed">Parallel rendering and complex logic happen entirely in your local RAM sandbox. Our site could be disconnected from the internet and still function.</p>
                     </div>
                     <div className="space-y-4 border-l-2 border-primary/30 pl-8 transition-colors hover:border-primary">
                        <h4 className="text-base font-black uppercase tracking-widest text-primary">Universal Compliance</h4>
-                       <p className="text-sm text-zinc-500 font-medium leading-relaxed">Stay compliant with enterprise security standards. Since no data is transmitted, you are inherently protected from standard man-in-the-middle liabilities.</p>
+                       <p className="text-sm text-muted-foreground font-medium leading-relaxed">Stay compliant with enterprise security standards. Since no data is transmitted, you are inherently protected from standard man-in-the-middle liabilities.</p>
                     </div>
                  </div>
               </div>
            </section>
 
           {/* Benefits Grid */}
-          <section className="grid grid-cols-1 md:grid-cols-3 gap-12 py-12 mb-16">
+          <section id="benefits" className="grid grid-cols-1 md:grid-cols-3 gap-12 py-12 mb-16">
             <div className="flex flex-col items-center text-center p-6 studio-gradient rounded-2xl hover-glow transition-all duration-300">
               <div className="h-16 w-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mb-8 border border-primary/20">
                 <ShieldCheck className="h-8 w-8" />
@@ -210,11 +211,7 @@ const Index = () => {
       </div>
 
       <Footer />
-
-      {/* Mobile Sticky Anchor Ad */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-black/80 backdrop-blur-sm border-t border-white/10 py-2 h-[66px] overflow-x-clip">
-        <AdBox adFormat="horizontal" height={50} label="320x50 ANCHOR AD" className="w-full" />
-      </div>
+      <StickyAnchorAd />
     </div>
   );
 };

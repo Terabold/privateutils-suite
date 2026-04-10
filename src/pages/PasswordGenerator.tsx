@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
 import AdBox from "@/components/AdBox";
+import StickyAnchorAd from "@/components/StickyAnchorAd";
 
 const CHARS = {
   upper: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
@@ -50,8 +51,9 @@ function calculateStrength(password: string) {
 const PasswordGenerator = () => {
   const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
   const [length, setLength] = useState(16);
+  const [quantity, setQuantity] = useState(1);
   const [options, setOptions] = useState({ upper: true, lower: true, numbers: true, symbols: true });
-  const [password, setPassword] = useState("");
+  const [passwords, setPasswords] = useState<string[]>([]);
   const [showPassword, setShowPassword] = useState(true);
   const [copied, setCopied] = useState(false);
 
@@ -63,32 +65,37 @@ const PasswordGenerator = () => {
   }, [darkMode]);
 
   const generate = useCallback(() => {
-    setPassword(generatePassword(length, options));
-  }, [length, options]);
+    // Safety Gate: 500 quantity cap, 512 length cap
+    const safeQty = Math.min(500, quantity);
+    const safeLen = Math.min(512, length);
+    const results = Array.from({ length: safeQty }, () => generatePassword(safeLen, options));
+    setPasswords(results);
+  }, [length, quantity, options]);
 
   useEffect(() => {
     generate();
   }, [generate]);
 
-  const copy = async () => {
-    await navigator.clipboard.writeText(password);
+  const copy = async (text?: string) => {
+    const target = text || passwords.join("\n");
+    await navigator.clipboard.writeText(target);
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   };
 
-  const strength = calculateStrength(password);
+  const strength = passwords.length > 0 ? calculateStrength(passwords[0]) : 0;
   const strengthLabels = ["Very Weak", "Weak", "Fair", "Strong", "Very Strong", "Unbreakable"];
   const strengthColors = ["bg-destructive", "bg-orange-500", "bg-yellow-500", "bg-lime-500", "bg-emerald-500", "bg-emerald-400 font-bold"];
 
   return (
-    <div className="min-h-screen bg-background text-foreground theme-utility transition-colors duration-500">
+    <div className="min-h-screen bg-background text-foreground transition-colors duration-500">
       <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
 
       <div className="flex justify-center items-start w-full relative">
         <SponsorSidebars position="left" />
 
-        <main className="container mx-auto max-w-[1240px] px-6 py-12 grow">
-          <div className="flex flex-col gap-10">
+        <main className="container mx-auto max-w-[1240px] px-6 py-6 grow">
+          <div className="flex flex-col gap-6">
             <header className="flex items-center gap-6">
               <Link to="/">
                 <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-border/50 hover:bg-primary/5 transition-all group/back">
@@ -114,30 +121,34 @@ const PasswordGenerator = () => {
               <div className="space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-700">
 
                 {/* Output Display */}
-                <Card className="glass-morphism border-primary/10 rounded-2xl shadow-2xl bg-muted/5 p-8 relative overflow-hidden">
+                <Card className="glass-morphism border-primary/10 rounded-2xl shadow-2xl bg-muted/5 p-6 relative overflow-hidden">
                   <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
-                    <ShieldCheck className="h-40 w-40" />
+                    <ShieldCheck className="h-32 w-32" />
                   </div>
-                  <CardContent className="p-0 space-y-6 relative z-10">
+                  <CardContent className="p-0 space-y-4 relative z-10">
                     <div className="flex items-center justify-between">
                       <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Generated Password</p>
                       <div className="flex gap-2">
-                        <Button variant="ghost" size="icon" onClick={() => setShowPassword(!showPassword)} className="h-8 w-8 rounded-xl border border-border/30">
-                          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        <Button variant="ghost" size="icon" onClick={() => setShowPassword(!showPassword)} className="h-7 w-7 rounded-xl border border-border/30">
+                          {showPassword ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
                         </Button>
-                        <Button variant="ghost" size="icon" onClick={generate} className="h-8 w-8 rounded-xl border border-border/30 text-primary">
-                          <RefreshCw className="h-4 w-4" />
+                        <Button variant="ghost" size="icon" onClick={generate} className="h-7 w-7 rounded-xl border border-border/30 text-primary">
+                          <RefreshCw className="h-3.5 w-3.5" />
                         </Button>
                       </div>
                     </div>
 
                     <div className="relative group">
-                      <div className={`w-full min-h-[100px] flex items-center justify-center bg-zinc-950/40 border border-border/30 rounded-2xl p-6 text-3xl md:text-5xl font-mono tracking-wider break-all text-center selection:bg-primary/30 transition-all ${!showPassword ? 'blur-md select-none' : ''}`}>
-                        {password || "••••••••••••••••"}
+                      <div className={`w-full h-[200px] flex flex-col items-center gap-2 bg-zinc-950/40 border border-border/30 rounded-2xl p-4 overflow-y-auto custom-scrollbar transition-all ${!showPassword ? 'blur-md select-none' : ''}`}>
+                        {passwords.length > 0 ? passwords.map((p, i) => (
+                          <div key={i} className="font-mono text-sm md:text-base tracking-wider break-all text-center selection:bg-primary/30 py-2 border-b border-white/5 last:border-0 w-full shrink-0">
+                            {p}
+                          </div>
+                        )) : "••••••••••••••••"}
                       </div>
                       {!showPassword && (
                         <div className="absolute inset-0 flex items-center justify-center">
-                          <Button variant="link" onClick={() => setShowPassword(true)} className="text-primary font-black uppercase tracking-widest text-[10px]">Show Password</Button>
+                          <Button variant="link" onClick={() => setShowPassword(true)} className="text-primary font-black uppercase tracking-widest text-[10px]">Show Passwords</Button>
                         </div>
                       )}
                     </div>
@@ -155,35 +166,47 @@ const PasswordGenerator = () => {
                     </div>
 
                     <Button
-                      onClick={copy}
-                      disabled={!password}
+                      onClick={() => copy()}
+                      disabled={passwords.length === 0}
                       className={`w-full gap-3 h-16 text-lg font-bold rounded-2xl shadow-xl transition-all duration-300 ${copied ? 'bg-green-600 hover:bg-green-700 shadow-green-600/20' : 'bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 hover:scale-[1.01]'}`}
                     >
                       {copied ? <Check className="h-6 w-6" /> : <Copy className="h-6 w-6" />}
-                      {copied ? "Password Copied!" : "Copy to Clipboard"}
+                      {copied ? (passwords.length > 1 ? "All Passwords Copied!" : "Password Copied!") : (passwords.length > 1 ? `Copy all ${passwords.length} Passwords` : "Copy to Clipboard")}
                     </Button>
                   </CardContent>
                 </Card>
 
                 {/* Configuration */}
-                <Card className="glass-morphism border-primary/10 rounded-2xl shadow-xl bg-muted/5 p-8">
-                  <CardContent className="p-0 space-y-8">
+                <Card className="glass-morphism border-primary/10 rounded-2xl shadow-xl bg-muted/5 p-6">
+                  <CardContent className="p-0 space-y-6">
                     <div className="space-y-4">
                       <div className="flex items-center justify-between">
                         <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Length: <span className="text-primary text-sm font-black">{length}</span></p>
+                        <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Quantity: <span className="text-primary text-sm font-black">{quantity}</span></p>
                       </div>
-                      <input
-                        type="range"
-                        min="4"
-                        max="64"
-                        value={length}
-                        onChange={(e) => setLength(parseInt(e.target.value))}
-                        className="w-full accent-primary h-2 bg-muted/30 rounded-full appearance-none cursor-pointer"
-                      />
-                      <div className="flex justify-between text-[8px] font-black opacity-20 uppercase tracking-widest">
-                        <span>Short</span>
-                        <span>Strong</span>
-                        <span>Extreme (64)</span>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <input
+                            type="range"
+                            min="4"
+                            max="64"
+                            value={length}
+                            onChange={(e) => setLength(parseInt(e.target.value))}
+                            className="w-full accent-primary h-2 bg-muted/30 rounded-full appearance-none cursor-pointer"
+                          />
+                          <p className="text-[8px] font-black opacity-20 uppercase tracking-widest text-center">Length Optimizer</p>
+                        </div>
+                        <div className="space-y-2">
+                          <input
+                            type="range"
+                            min="1"
+                            max="500"
+                            value={quantity}
+                            onChange={(e) => setQuantity(Math.min(500, Math.max(1, parseInt(e.target.value) || 1)))}
+                            className="w-full accent-primary h-2 bg-muted/30 rounded-full appearance-none cursor-pointer"
+                          />
+                          <p className="text-[8px] font-black opacity-20 uppercase tracking-widest text-center">Bulk Dispatch (Max 500)</p>
+                        </div>
                       </div>
                     </div>
 
@@ -198,8 +221,8 @@ const PasswordGenerator = () => {
                           key={opt.key}
                           onClick={() => setOptions(prev => ({ ...prev, [opt.key]: !(prev as any)[opt.key] }))}
                           className={`flex items-center justify-between p-4 rounded-2xl border transition-all ${(options as any)[opt.key]
-                              ? 'bg-primary/10 border-primary/30 text-primary'
-                              : 'bg-muted/5 border-border/30 text-muted-foreground opacity-50 grayscale'
+                            ? 'bg-primary/10 border-primary/30 text-primary'
+                            : 'bg-muted/5 border-border/30 text-muted-foreground opacity-50 grayscale'
                             }`}
                         >
                           <div className="flex items-center gap-3">
@@ -226,7 +249,7 @@ const PasswordGenerator = () => {
               </div>
 
               {/* Sidebar Stats */}
-              <aside className="space-y-6 lg:sticky lg:top-24 h-fit">
+              <aside className="space-y-6 lg:sticky lg:top-28 h-fit">
                 <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl">
                   <div className="bg-primary/5 p-5 border-b border-primary/10">
                     <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Security Audit</h3>
@@ -270,7 +293,7 @@ const PasswordGenerator = () => {
               title="High-Entropy Password Studio"
               description="The Secure Password Generator is a cryptographic utility designed to create high-entropy, unpredictable strings for securing your most sensitive digital accounts."
               transparency="Our generator utilizes the browser's hardware-backed 'crypto.getRandomValues()' API, ensuring true cryptographically strong randomness. Because this process happens entirely within your local machine's memory, your generated passwords never travel over the internet, protecting you from intercept-based leaks."
-              limitations="While our passwords are mathematically optimized for strength, their effectiveness depends on your length and complexity settings. We recommend a minimum of 16 characters including symbols and numbers for maximum resistance against brute-force attacks on modern hardware."
+              limitations="While our passwords are mathematically optimized for strength, their effectiveness depends on your length and complexity settings. To maintain system stability during bulk generation, we enforce a 500-password dispatch limit and a 512-character string cap."
               accent="indigo"
             />
           </div>
@@ -279,11 +302,7 @@ const PasswordGenerator = () => {
         <SponsorSidebars position="right" />
       </div>
       <Footer />
-
-      {/* Mobile Sticky Anchor Ad */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-black/80 backdrop-blur-sm border-t border-white/10 py-2 h-[66px] overflow-x-clip">
-        <AdBox adFormat="horizontal" height={50} label="320x50 ANCHOR AD" className="w-full" />
-      </div>
+      <StickyAnchorAd />
     </div>
   );
 };

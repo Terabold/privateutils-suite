@@ -1,4 +1,4 @@
-import { Volume2, Type, Pipette, Video, Layers, Layout, Scissors, Music, ShieldX, ImageIcon, ShieldCheck, Wrench, Sparkles, Camera, Code, QrCode, Zap, ClipboardCopy, KeyRound, Binary, Clock, SearchCode, FileText, Palette, Fingerprint, Ruler, FileJson, FileStack, Monitor, RefreshCw, Database, Split } from "lucide-react";
+import { Volume2, Type, Pipette, Video, Layers, Layout, Scissors, Music, ShieldX, ImageIcon, ShieldCheck, Wrench, Sparkles, Camera, Code, QrCode, Zap, ClipboardCopy, KeyRound, Binary, Clock, SearchCode, FileText, Palette, Fingerprint, Ruler, FileJson, FileStack, Monitor, RefreshCw, Database, Split, Radio, Hash, Eraser, Dices, Terminal, Dices as DiceIcon } from "lucide-react";
 import ToolCard from "./ToolCard";
 import { Button } from "@/components/ui/button";
 import toolsMetadata from "@/data/toolsMetadata.json";
@@ -97,7 +97,7 @@ const toolsData = [
     description: "Professional JSON architect: structural validation, deep formatting, and schema-grade architecture",
     icon: <FileJson className="h-5 w-5" />,
     to: "/json-studio",
-    category: "Utility Belt",
+    category: "Dev Toolbox",
     tags: ["DEV", "JSON", "PRO"]
   },
   {
@@ -105,7 +105,7 @@ const toolsData = [
     description: "Universal data translation: bi-directional CSV and JSON conversion with smart header parsing",
     icon: <Database className="h-5 w-5" />,
     to: "/data-transformer",
-    category: "Utility Belt",
+    category: "Dev Toolbox",
     tags: ["CONVERT", "CSV", "JSON"]
   },
   {
@@ -153,7 +153,7 @@ const toolsData = [
     description: "Professional case transformations for code or content lists",
     icon: <Type className="h-5 w-5" />,
     to: "/text-case-formatter",
-    category: "Utility Belt",
+    category: "Text Studio",
     tags: ["QUICK"]
   },
   {
@@ -161,7 +161,7 @@ const toolsData = [
     description: "Instant clipboard-to-disk extraction: paste any artifact to download it immediately",
     icon: <ClipboardCopy className="h-5 w-5" />,
     to: "/quick-clipboard",
-    category: "Utility Belt",
+    category: "Quick Utils",
     tags: ["EXTRACT", "ZAP"]
   },
   {
@@ -169,7 +169,7 @@ const toolsData = [
     description: "Professional-grade content comparison: visualize additions and deletions side-by-side",
     icon: <Split className="h-5 w-5" />,
     to: "/text-diff-checker",
-    category: "Utility Belt",
+    category: "Text Studio",
     tags: ["COMPARE", "PRO"]
   },
   {
@@ -177,7 +177,7 @@ const toolsData = [
     description: "Instantly decode and inspect JWT tokens: header, payload, expiry, and claims — no server",
     icon: <KeyRound className="h-5 w-5" />,
     to: "/jwt-decoder",
-    category: "Utility Belt",
+    category: "Dev Toolbox",
     tags: ["DEV", "AUTH"]
   },
   {
@@ -185,7 +185,7 @@ const toolsData = [
     description: "Convert between Base64, URL encoding, HTML entities, and Hex in one place",
     icon: <Binary className="h-5 w-5" />,
     to: "/encoder-decoder",
-    category: "Utility Belt",
+    category: "Dev Toolbox",
     tags: ["BASE64", "HEX"]
   },
   {
@@ -193,7 +193,7 @@ const toolsData = [
     description: "Transform Unix timestamps, ISO 8601, and human dates across every format and timezone",
     icon: <Clock className="h-5 w-5" />,
     to: "/timestamp-converter",
-    category: "Utility Belt",
+    category: "Dev Toolbox",
     tags: ["UNIX", "ISO"]
   },
   {
@@ -201,7 +201,7 @@ const toolsData = [
     description: "Live regex testing with match highlighting, flag toggles, 8 presets, and a cheat sheet",
     icon: <SearchCode className="h-5 w-5" />,
     to: "/regex-playground",
-    category: "Utility Belt",
+    category: "Dev Toolbox",
     tags: ["DEV", "LIVE"]
   },
   {
@@ -209,7 +209,7 @@ const toolsData = [
     description: "Generate professional placeholder text in Classic, Buzzword, or Hipster styles",
     icon: <FileText className="h-5 w-5" />,
     to: "/lorem-generator",
-    category: "Utility Belt",
+    category: "Text Studio",
     tags: ["CONTENT", "DEV"]
   },
   {
@@ -217,7 +217,7 @@ const toolsData = [
     description: "Hardware-backed high-entropy password generator with instant audit and local-only logic",
     icon: <ShieldCheck className="h-5 w-5" />,
     to: "/password-generator",
-    category: "Utility Belt",
+    category: "Privacy Belt",
     tags: ["SECURE", "PRIVACY"]
   },
   {
@@ -241,7 +241,7 @@ const toolsData = [
     description: "Fast, high-precision measurement transformation across every global standard",
     icon: <Ruler className="h-5 w-5" />,
     to: "/unit-converter",
-    category: "Utility Belt",
+    category: "Quick Utils",
     tags: ["QUICK", "MATH"]
   },
   {
@@ -291,6 +291,38 @@ const toolsData = [
     to: "/image-compressor",
     category: "Image Studio",
     tags: ["COMPRESS", "WEB"]
+  },
+  {
+    title: "Morse Code Master",
+    description: "Translate text to Morse code and back with real-time web audio beep generation",
+    icon: <Radio className="h-5 w-5" />,
+    to: "/morse-code-master",
+    category: "Text Studio",
+    tags: ["TRANS", "AUDIO"]
+  },
+  {
+    title: "Slug Forge",
+    description: "URL-friendly slug generation from article titles with high-fidelity sanitization",
+    icon: <Hash className="h-5 w-5" />,
+    to: "/slug-forge",
+    category: "Dev Toolbox",
+    tags: ["SEO", "URL"]
+  },
+  {
+    title: "Whitespace Scrubber",
+    description: "Fast ghost-character removal and text sanitization for messy documents",
+    icon: <Eraser className="h-5 w-5" />,
+    to: "/whitespace-scrubber",
+    category: "Text Studio",
+    tags: ["CLEAN", "TEXT"]
+  },
+  {
+    title: "Dice Lab",
+    description: "Secure high-entropy random generation for dice rolls, coin flips, and range-based RNG",
+    icon: <Dices className="h-5 w-5" />,
+    to: "/dice-lab",
+    category: "Quick Utils",
+    tags: ["SECURE", "ROLL"]
   },
 ];
 
@@ -344,7 +376,7 @@ const ToolsGrid = ({ searchQuery = "", selectedCategory = null, onClearFilters }
   return (
     <div className="space-y-32 relative">
       {isFiltering ? (
-        <section className="animate-in fade-in slide-in-from-bottom-8 duration-1000">
+        <section id="search-results" className="animate-in fade-in slide-in-from-bottom-8 duration-1000">
           <div className="flex items-center gap-6 mb-16 px-2">
             <div className={`p-4 rounded-2xl bg-gradient-to-br from-primary to-accent shadow-lg shadow-black/20`}>
               <Sparkles className="h-8 w-8 text-white" />

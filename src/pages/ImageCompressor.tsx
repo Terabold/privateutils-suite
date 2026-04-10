@@ -76,7 +76,7 @@ const ImageCompressor = () => {
   const autoFit = useCallback(() => {
     const container = stageRef.current;
     if (container && originalImage) {
-      const pad = 120;
+      const pad = 80;
       const availableW = container.clientWidth - pad;
       const availableH = container.clientHeight - pad;
       if (availableW <= 0 || availableH <= 0) return;
@@ -180,11 +180,11 @@ const ImageCompressor = () => {
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault();
       const factor = e.deltaY > 0 ? 0.9 : 1.1;
-      
+
       setZoom(prevZoom => {
         const newZoom = Math.min(50, Math.max(0.01, prevZoom * factor));
         const rect = el.getBoundingClientRect();
-        
+
         // Mouse position relative to center of container
         const mouseRelCenterX = e.clientX - rect.left - rect.width / 2;
         const mouseRelCenterY = e.clientY - rect.top - rect.height / 2;
@@ -225,7 +225,7 @@ const ImageCompressor = () => {
             {/* ── HEADER ── */}
             <header className="flex items-center gap-6 animate-in fade-in slide-in-from-top-4 duration-500">
               <Link to="/">
-                <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-white/20 hover:bg-primary/20 transition-all group/back bg-black/60 shadow-2xl">
+                <Button variant="outline" size="icon" aria-label="Back to home" className="h-12 w-12 rounded-2xl border border-white/20 hover:bg-primary/20 transition-all group/back bg-black/60 shadow-2xl">
                   <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
                 </Button>
               </Link>
@@ -342,6 +342,7 @@ const ImageCompressor = () => {
                       variant="ghost"
                       size="sm"
                       onClick={resetStage}
+                      aria-label="Delete image artifact"
                       className="h-7 md:h-8 lg:h-10 flex items-center gap-1 px-1.5 md:px-3 lg:px-5 rounded-xl border border-red-500/20 bg-red-500/5 text-red-400 hover:bg-red-500/15 hover:text-red-300 transition-all text-[7px] md:text-[9px] lg:text-[10px] font-black uppercase tracking-widest shrink-0"
                     >
                       <Trash2 className="h-3 w-3 lg:h-4 lg:w-4" />
@@ -383,7 +384,8 @@ const ImageCompressor = () => {
                           if (!compressedUrlRef.current) return;
                           const a = document.createElement("a");
                           a.href = compressedUrlRef.current;
-                          a.download = `${file?.name.replace(/\.[^.]+$/, "")}_optimized.${targetFormat}`;
+                          const prefix = file?.name.replace(/\.[^.]+$/, "") || "artifact";
+                          a.download = `${prefix}_optimized.${targetFormat}`;
                           a.click();
                         }}
                       >
@@ -397,9 +399,9 @@ const ImageCompressor = () => {
               </CardContent>
             </Card>
 
-            {/* ── IMAGE CANVAS (16:9, max ~520px tall) ── */}
-            <Card className="glass-morphism border-primary/20 rounded-2xl bg-black/40 shadow-2xl overflow-hidden group/card animate-in fade-in slide-in-from-bottom-8 duration-700 p-3 lg:p-4">
-              <div className="relative w-full bg-black rounded-xl overflow-hidden shadow-inner border border-white/5" style={{ aspectRatio: "16/9", maxHeight: "500px" }}>
+            {/* ── IMAGE CANVAS (max ~540px tall) ── */}
+            <Card className="glass-morphism border-primary/20 rounded-2xl bg-black/40 shadow-2xl overflow-hidden group/card animate-in fade-in slide-in-from-bottom-8 duration-700 p-3 lg:p-4 relative lg:h-[540px] flex flex-col items-center justify-center w-full max-w-full">
+              <div ref={stageRef} className="relative w-full h-full bg-[#050505] rounded-xl overflow-hidden shadow-inner border border-white/5 flex items-center justify-center select-none">
 
                 {!file ? (
                   /* ── Drop zone ── */
@@ -425,8 +427,7 @@ const ImageCompressor = () => {
                 ) : compressedUrl ? (
                   /* ── Zoomable image stage ── */
                   <div
-                    ref={stageRef}
-                    className="absolute inset-0 flex items-center justify-center overflow-hidden cursor-crosshair active:cursor-grabbing select-none p-12"
+                    className="absolute inset-0 flex items-center justify-center overflow-hidden cursor-crosshair active:cursor-grabbing select-none"
                     onMouseDown={(e) => {
                       if (e.button === 0 || e.button === 2) {
                         setIsPanning(true);
@@ -439,18 +440,25 @@ const ImageCompressor = () => {
                     onMouseLeave={() => setIsPanning(false)}
                     onContextMenu={(e) => e.preventDefault()}
                   >
-                    <img
-                      src={compressedUrl}
-                      alt="Compressed"
-                      className="object-contain rounded-xl border border-white/5 shadow-2xl"
+                    <div
+                      className="relative shadow-2xl ring-1 ring-white/10 pointer-events-none origin-center flex items-center justify-center"
                       style={{
-                        imageRendering: zoom > 1 ? "pixelated" : "auto",
-                        transform: `translate3d(${offset.x}px,${offset.y}px,0) scale(${zoom})`,
-                        transition: isPanning ? "none" : "transform 0.075s ease-out",
-                        width: 'auto',
-                        height: 'auto'
+                        transform: `translate3d(${offset.x}px, ${offset.y}px, 0) scale(${zoom})`,
+                        imageRendering: zoom > 2 ? 'pixelated' : 'auto',
+                        transition: isPanning ? 'none' : 'transform 75ms ease-out'
                       }}
-                    />
+                    >
+                      <img
+                        src={compressedUrl}
+                        alt="Compressed"
+                        className="block rounded-xl border border-white/5 shadow-2xl"
+                        style={{
+                          width: originalImage?.width,
+                          height: originalImage?.height,
+                          maxWidth: 'none'
+                        }}
+                      />
+                    </div>
                   </div>
 
                 ) : (
@@ -475,6 +483,7 @@ const ImageCompressor = () => {
                       onClick={() => { setZoom(fitZoom); setOffset({ x: 0, y: 0 }); }}
                       variant="outline"
                       size="sm"
+                      aria-label="Reset fit"
                       className="h-8 px-3 text-[10px] font-black uppercase tracking-widest rounded-xl bg-black/70 border-white/20 text-white shadow-xl hover:scale-105 hover:bg-black/90 transition-all backdrop-blur-sm gap-1.5"
                     >
                       <Maximize2 className="h-3 w-3" />

@@ -1,5 +1,5 @@
 import { t as __commonJSMin } from "./chunk-YKewjYmz.js";
-import { t as require_react_dom } from "./react-dom-DcUlUArw.js";
+import { t as require_react_dom } from "./react-dom-_oY_XGvi.js";
 //#region node_modules/react-dom/client.js
 var require_client = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var m = require_react_dom();

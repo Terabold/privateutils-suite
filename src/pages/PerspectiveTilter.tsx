@@ -12,6 +12,7 @@ import Footer from "@/components/Footer";
 import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
 import AdBox from "@/components/AdBox";
+import StickyAnchorAd from "@/components/StickyAnchorAd";
 import { toast } from "sonner";
 import { usePasteFile } from "@/hooks/usePasteFile";
 import { KbdShortcut } from "@/components/KbdShortcut";
@@ -137,7 +138,7 @@ const PerspectiveTilter = () => {
       link.download = `localtools-3d-tilt-${Date.now()}.png`;
       link.href = dataUrl;
       link.click();
-      
+
       setProcessing(false);
       toast.success("3D Artifact Captured Successfully");
     } catch (err) {
@@ -148,16 +149,16 @@ const PerspectiveTilter = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground theme-image transition-all duration-500">
+    <div className="min-h-screen bg-background text-foreground transition-all duration-500">
       <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
 
       <div className="flex justify-center items-start w-full relative">
         <SponsorSidebars position="left" />
 
-        <main className="container mx-auto max-w-[1700px] px-6 py-12 grow">
-          <div className="flex flex-col gap-10">
-            <header className="flex items-center justify-between flex-wrap gap-8">
-              <div className="flex items-center gap-6">
+        <main className="container mx-auto max-w-[1400px] px-6 py-6 grow">
+          <div className="flex flex-col gap-6">
+            <header className="flex items-center justify-between flex-wrap gap-4">
+              <div className="flex items-center gap-4">
                 <Link to="/">
                   <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-border/50 hover:bg-primary/5 transition-all group/back">
                     <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
@@ -177,7 +178,7 @@ const PerspectiveTilter = () => {
               <AdBox adFormat="horizontal" height={250} label="300x250 AD" className="w-full max-w-[400px]" />
             </div>
 
-            <div className="grid grid-cols-1 xl:grid-cols-[1fr_450px] gap-8 items-start">
+            <div className="grid grid-cols-1 xl:grid-cols-[1fr_420px] gap-8 items-start">
               {/* Main Stage */}
               <div className="flex flex-col gap-8">
                 <Card className={`glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-2xl transition-all duration-700 ${!image ? 'hover:border-primary/30 p-10' : ''}`}>
@@ -186,7 +187,7 @@ const PerspectiveTilter = () => {
                       onClick={() => inputRef.current?.click()}
                       onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}
                       onDrop={(e) => { e.preventDefault(); e.stopPropagation(); handleFile(e.dataTransfer.files[0]); }}
-                      className="relative w-full aspect-video flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/20 text-center transition-all cursor-pointer bg-background/50 hover:border-primary/40 hover:bg-primary/5 shadow-inner group"
+                      className="relative w-full aspect-video flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/20 text-center transition-all duration-300 cursor-pointer bg-primary/5 hover:border-primary/40 hover:bg-primary/10 hover:scale-[1.02] shadow-inner group"
                     >
                       <div className="h-20 w-20 bg-primary/10 rounded-2xl flex items-center justify-center mb-8 shadow-inner group-hover:scale-110 transition-transform">
                         <CloudUpload className="h-10 w-10 text-primary" />
@@ -202,78 +203,78 @@ const PerspectiveTilter = () => {
                     <div
                       ref={stageRef}
                       className="w-full aspect-video relative flex items-center justify-center select-none bg-muted/5 rounded-2xl border-2 border-border/20 overflow-visible transition-all hover:bg-muted/10 studio-gradient-dark shadow-2xl"
-                      style={{ 
+                      style={{
                         background: stageColor,
-                        padding: '12%', // Internal "Safe Zone"
+                        padding: '10%', // Internal "Safe Zone" improved
                       }}
                     >
-                        <div 
-                          className="w-full h-full preserve-3d flex items-center justify-center" 
-                          style={{ 
-                            perspective: `${perspective}px`,
-                            left: `${percentX}%`,
-                            top: `${percentY}%`,
-                            position: 'absolute',
-                            transform: 'translate(-50%, -50%)'
+                      <div
+                        className="w-full h-full preserve-3d flex items-center justify-center"
+                        style={{
+                          perspective: `${perspective}px`,
+                          left: `${percentX}%`,
+                          top: `${percentY}%`,
+                          position: 'absolute',
+                          transform: 'translate(-50%, -50%)'
+                        }}
+                      >
+                        <div
+                          className="preserve-3d flex items-center justify-center p-4"
+                          style={{
+                            transform: `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(${scale})`,
+                            // Ensure this rotated container doesn't clip its own shadow
+                            overflow: 'visible'
                           }}
                         >
                           <div
-                            className="preserve-3d flex items-center justify-center p-4"
+                            className="transition-all duration-300"
                             style={{
-                              transform: `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(${scale})`,
-                              // Ensure this rotated container doesn't clip its own shadow
-                              overflow: 'visible' 
+                              boxShadow: enableShadow ? `0px ${shadowBlur / 2}px ${shadowBlur}px rgba(0,0,0, 0.5)` : 'none',
+                              border: `${borderWidth}px ${borderStyle} ${borderColor}`,
+                              borderRadius: `${borderRadius}px`,
+                              // overflow: 'hidden' is critical if the user has borderRadius
+                              overflow: 'hidden',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              background: 'transparent'
                             }}
                           >
-                            <div
-                              className="transition-all duration-300"
+                            <img
+                              onLoad={() => setProcessing(false)}
+                              src={image}
+                              alt="Tilting Artifact"
                               style={{
-                                boxShadow: enableShadow ? `0px ${shadowBlur / 2}px ${shadowBlur}px rgba(0,0,0, 0.5)` : 'none',
-                                border: `${borderWidth}px ${borderStyle} ${borderColor}`,
-                                borderRadius: `${borderRadius}px`,
-                                // overflow: 'hidden' is critical if the user has borderRadius
-                                overflow: 'hidden', 
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                background: 'transparent'
+                                maxWidth: '100%',
+                                maxHeight: '100%',
+                                objectFit: 'contain',
+                                display: 'block'
                               }}
-                            >
-                              <img
-                                onLoad={() => setProcessing(false)}
-                                src={image}
-                                alt="Tilting Artifact"
-                                style={{
-                                  maxWidth: '100%',
-                                  maxHeight: '100%',
-                                  objectFit: 'contain',
-                                  display: 'block'
-                                }}
-                              />
-                            </div>
+                            />
                           </div>
                         </div>
+                      </div>
 
-                        {/* Interactive Dimension Label */}
-                    <div className="absolute -top-12 left-0 px-4 py-2 bg-black/60 backdrop-blur-xl border border-white/10 rounded-xl text-[10px] font-black text-white uppercase tracking-[0.2em] shadow-2xl transition-opacity animate-in fade-in duration-1000">
-                       {renderWidth} × {renderHeight} <span className="text-primary opacity-60 ml-2">Final Output Preview</span>
+                      {/* Interactive Dimension Label */}
+                      <div className="absolute -top-12 left-0 px-4 py-2 bg-black/60 backdrop-blur-xl border border-white/10 rounded-xl text-[10px] font-black text-white uppercase tracking-[0.2em] shadow-2xl transition-opacity animate-in fade-in duration-1000">
+                        {renderWidth} × {renderHeight} <span className="text-primary opacity-60 ml-2">Final Output Preview</span>
+                      </div>
                     </div>
-                  </div>
                   )}
                   {image && (
                     <div className="absolute top-6 right-6 z-50 flex gap-2">
-                       {/* Floating buttons removed as they are now in the Calibration sidebar header */}
+                      {/* Floating buttons removed as they are now in the Calibration sidebar header */}
                     </div>
                   )}
-                  <input 
-                    ref={inputRef} 
-                    type="file" 
-                    className="hidden" 
-                    accept="image/*" 
+                  <input
+                    ref={inputRef}
+                    type="file"
+                    className="hidden"
+                    accept="image/*"
                     onChange={(e) => {
                       handleFile(e.target.files?.[0]);
                       e.target.value = '';
-                    }} 
+                    }}
                   />
                 </Card>
               </div>
@@ -285,20 +286,20 @@ const PerspectiveTilter = () => {
                     <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Capture Calibration</h3>
                     {image && (
                       <div className="flex items-center gap-1.5 min-w-0">
-                        <Button 
-                          onClick={() => inputRef.current?.click()} 
-                          variant="ghost" 
-                          size="sm" 
+                        <Button
+                          onClick={() => inputRef.current?.click()}
+                          variant="ghost"
+                          size="sm"
                           className="h-7 px-2 text-[8px] font-black uppercase tracking-widest text-muted-foreground hover:bg-primary/10 rounded-lg group"
                           title="Change Image"
                         >
                           <RefreshCw className="h-3 w-3 mr-1 opacity-60 group-hover:opacity-100 transition-all" />
                           Change
                         </Button>
-                        <Button 
-                          onClick={resetTilt} 
-                          variant="ghost" 
-                          size="sm" 
+                        <Button
+                          onClick={resetTilt}
+                          variant="ghost"
+                          size="sm"
                           className="h-7 px-2 text-[8px] font-black uppercase tracking-widest text-primary hover:bg-primary/10 rounded-lg group"
                           title="Reset Tilt"
                         >
@@ -306,10 +307,10 @@ const PerspectiveTilter = () => {
                           Reset
                         </Button>
                         <div className="w-[1px] h-3 bg-primary/20 mx-0.5" />
-                        <Button 
-                          onClick={() => setImage(null)} 
-                          variant="ghost" 
-                          size="sm" 
+                        <Button
+                          onClick={() => setImage(null)}
+                          variant="ghost"
+                          size="sm"
                           className="h-7 px-2 text-[8px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 rounded-lg group"
                           title="Delete Artifact"
                         >
@@ -327,11 +328,11 @@ const PerspectiveTilter = () => {
                           <label className="text-[10px] font-black uppercase tracking-widest text-primary leading-none block mb-1.5 italic">Output Resolution</label>
                           <div className="bg-primary/5 border border-primary/10 rounded-2xl p-3 flex items-center justify-between shadow-inner">
                             <div className="space-y-1">
-                               <p className="text-[8px] font-black uppercase opacity-40 text-muted-foreground">Target Extraction</p>
-                               <p className="text-sm font-display font-black italic tracking-tight">{renderWidth} × {renderHeight}</p>
+                              <p className="text-[8px] font-black uppercase opacity-40 text-muted-foreground">Target Extraction</p>
+                              <p className="text-sm font-display font-black italic tracking-tight">{renderWidth} × {renderHeight}</p>
                             </div>
                             <div className="h-9 w-9 bg-primary/10 rounded-xl flex items-center justify-center">
-                               <Scale className="h-4 w-4 text-primary opacity-60" />
+                              <Scale className="h-4 w-4 text-primary opacity-60" />
                             </div>
                           </div>
                           <p className="text-[9px] text-muted-foreground/60 font-black uppercase tracking-widest leading-tight">
@@ -348,7 +349,7 @@ const PerspectiveTilter = () => {
                             </div>
                             <Slider min={-90} max={90} step={1} value={[rotateX]} onValueChange={([v]) => setRotateX(v)} className="py-1" />
                           </div>
-                          
+
                           <div>
                             <div className="flex justify-between items-end w-full mb-0.5 gap-4">
                               <label className="text-[10px] uppercase font-black tracking-widest text-muted-foreground/60 whitespace-nowrap">Yaw (Y)</label>
@@ -407,13 +408,13 @@ const PerspectiveTilter = () => {
                         <div className="space-y-3 border-t border-primary/5 pt-1.5">
                           <div className="flex justify-between items-center bg-primary/5 p-2 rounded-xl border border-primary/10">
                             <div className="space-y-0.5">
-                                <label className="text-[10px] font-black uppercase tracking-widest text-primary leading-none">Enable Shadow</label>
-                                <p className="text-[8px] text-muted-foreground font-black uppercase opacity-40">Shadow Engine</p>
+                              <label className="text-[10px] font-black uppercase tracking-widest text-primary leading-none">Enable Shadow</label>
+                              <p className="text-[8px] text-muted-foreground font-black uppercase opacity-40">Shadow Engine</p>
                             </div>
-                            <Switch 
-                                checked={enableShadow} 
-                                onCheckedChange={setEnableShadow} 
-                                className="data-[state=checked]:bg-primary scale-90"
+                            <Switch
+                              checked={enableShadow}
+                              onCheckedChange={setEnableShadow}
+                              className="data-[state=checked]:bg-primary scale-90"
                             />
                           </div>
 
@@ -479,12 +480,8 @@ const PerspectiveTilter = () => {
       </div>
 
       <Footer />
-    
-      {/* Mobile Sticky Anchor Ad */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-black/80 backdrop-blur-sm border-t border-white/10 py-2 h-[66px] overflow-x-clip">
-        <AdBox adFormat="horizontal" height={50} label="320x50 ANCHOR AD" className="w-full" />
-      </div>
-      </div>
+      <StickyAnchorAd />
+    </div>
   );
 };
 

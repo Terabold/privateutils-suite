@@ -9,6 +9,7 @@ import Footer from "@/components/Footer";
 import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
 import AdBox from "@/components/AdBox";
+import StickyAnchorAd from "@/components/StickyAnchorAd";
 
 const CATEGORIES = [
   {
@@ -82,7 +83,7 @@ const UnitConverter = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground theme-utility transition-colors duration-500 ">
+    <div className="min-h-screen bg-background text-foreground transition-colors duration-500 ">
       <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
 
       <div className="flex justify-center items-start w-full relative">
@@ -201,7 +202,7 @@ const UnitConverter = () => {
                 </div>
               </div>
 
-              <aside className="space-y-6 lg:sticky lg:top-24 h-fit">
+              <aside className="space-y-6 lg:sticky lg:top-28 h-fit">
                 <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden shadow-xl border-2 border-primary/5">
                   <div className="bg-primary/10 p-5 border-b border-primary/10 flex items-center gap-3">
                     <Zap className="h-4 w-4 text-primary" />
@@ -249,11 +250,7 @@ const UnitConverter = () => {
         <SponsorSidebars position="right" />
       </div>
       <Footer />
-
-      {/* Mobile Sticky Anchor Ad */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-black/80 backdrop-blur-sm border-t border-white/10 py-2 h-[66px] overflow-x-clip">
-        <AdBox adFormat="horizontal" height={50} label="320x50 ANCHOR AD" className="w-full" />
-      </div>
+      <StickyAnchorAd />
     </div>
   );
 };

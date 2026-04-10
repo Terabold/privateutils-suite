@@ -28,6 +28,7 @@ import Footer from "@/components/Footer";
 import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
 import AdBox from "@/components/AdBox";
+import StickyAnchorAd from "@/components/StickyAnchorAd";
 import {
   Dialog,
   DialogContent,
@@ -145,7 +146,7 @@ const ImageToPdf = () => {
 
           const x = (pageWidth - width) / 2;
           const y = (pageHeight - height) / 2;
-          pdf.addImage(imgData, "JPEG", x, y, width, height, undefined, 'FAST');
+          pdf.addImage(imgData, "JPEG", x, y, width, height, undefined, 'MEDIUM');
         }
 
         const blob = pdf.output('blob');
@@ -173,7 +174,8 @@ const ImageToPdf = () => {
       const pdf = new jsPDF({
         orientation: "p",
         unit: "mm",
-        format: pageSize === "fit" ? "a4" : pageSize
+        format: pageSize === "fit" ? "a4" : pageSize,
+        compress: true
       });
 
       for (let i = 0; i < images.length; i++) {
@@ -200,7 +202,7 @@ const ImageToPdf = () => {
 
         const x = (pageWidth - width) / 2;
         const y = (pageHeight - height) / 2;
-        pdf.addImage(imgData, "JPEG", x, y, width, height);
+        pdf.addImage(imgData, "JPEG", x, y, width, height, undefined, 'MEDIUM');
       }
 
       pdf.save(`${pdfName || "converted"}.pdf`);
@@ -257,27 +259,27 @@ const ImageToPdf = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground theme-image transition-all duration-500 overflow-x-clip">
+    <div className="min-h-screen bg-background text-foreground transition-all duration-500 overflow-x-clip">
       <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
 
       <div className="flex justify-center items-start w-full relative px-4 overflow-x-clip">
         <SponsorSidebars position="left" className="shrink-0" />
 
-        <main className="container mx-auto max-w-[1300px] px-6 py-6 grow overflow-visible min-w-0">
+        <main className="container mx-auto max-w-[1300px] px-6 py-10 grow overflow-visible min-w-0">
           <div className="w-full flex flex-col gap-6">
             {/* ── HEADER ── */}
             <header className="flex items-center justify-between flex-wrap gap-4 mb-1 animate-in fade-in slide-in-from-top-4 duration-500">
               <div className="flex items-center gap-6">
                 <Link to="/">
-                  <Button variant="outline" size="icon" className="h-14 w-14 rounded-2xl border-border hover:bg-primary/20 transition-all group/back bg-background/80 shadow-xl border-2">
-                    <ArrowLeft className="h-6 w-6 group-hover:-translate-x-1 transition-transform" />
+                  <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border-border hover:bg-primary/20 transition-all group/back bg-background/80 shadow-xl border-2">
+                    <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
                   </Button>
                 </Link>
                 <div>
-                  <h1 className="text-4xl md:text-5xl font-black tracking-tighter uppercase italic text-shadow-glow leading-none">
+                  <h1 className="text-3xl md:text-4xl font-black tracking-tighter uppercase italic text-shadow-glow leading-none">
                     Image to <span className="text-primary italic">PDF</span>
                   </h1>
-                  <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.35em] opacity-40 text-[9px] ml-1">
+                  <p className="text-muted-foreground mt-1 font-black uppercase tracking-[0.35em] opacity-40 text-[8px] ml-1">
                     Secure Multi-Page Artifact Compiler
                   </p>
                 </div>
@@ -297,7 +299,7 @@ const ImageToPdf = () => {
                     <Input
                       value={pdfName}
                       onChange={(e) => setPdfName(e.target.value)}
-                      className="bg-black/40 h-11 pr-14 font-black uppercase tracking-tighter border-primary/20 focus:border-primary/50 transition-all rounded-xl text-[clamp(9px,1vw,11px)]"
+                      className="bg-black/40 h-11 pr-14 font-black uppercase tracking-tighter border-primary/20 focus:border-primary/50 transition-all rounded-xl text-[clamp(10px,1vw,13px)]"
                     />
                     <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] font-black text-primary opacity-30">.PDF</span>
                   </div>
@@ -319,7 +321,7 @@ const ImageToPdf = () => {
                       <Button
                         key={page.id}
                         variant={pageSize === page.id ? "default" : "outline"}
-                        className={`h-9 px-4 text-[clamp(8px,1vw,10px)] font-black uppercase tracking-widest rounded-lg transition-all border-0 shadow-none
+                        className={`h-9 px-4 text-[clamp(10px,1vw,12px)] font-black uppercase tracking-widest rounded-lg transition-all border-0 shadow-none
                           ${pageSize === page.id
                             ? 'bg-primary text-white shadow-glow shadow-primary/20'
                             : 'bg-transparent text-muted-foreground hover:bg-white/5 hover:text-white'}`}
@@ -340,8 +342,8 @@ const ImageToPdf = () => {
                     <p className="text-[9px] font-black text-muted-foreground uppercase opacity-60 leading-none mt-1.5">Registry</p>
                   </div>
                   <div className="flex gap-2">
-                    <Button variant="outline" size="icon" onClick={() => setImages([])} disabled={images.length === 0} className="h-11 w-11 rounded-xl border-border/50 text-destructive hover:bg-destructive/10 transition-all shadow-sm">
-                      <Trash2 className="h-5 w-5" />
+                    <Button variant="outline" size="icon" onClick={() => setImages([])} disabled={images.length === 0} className="h-10 w-10 rounded-xl border-border/50 text-destructive hover:bg-destructive/10 transition-all shadow-sm">
+                      <Trash2 className="h-4.5 w-4.5" />
                     </Button>
                   </div>
                 </div>
@@ -353,7 +355,7 @@ const ImageToPdf = () => {
                   <Button
                     onClick={generateAndDownload}
                     disabled={images.length === 0 || isProcessing}
-                    className="h-12 w-full rounded-2xl font-black uppercase italic tracking-widest shadow-glow shadow-primary/20 text-[clamp(9px,1vw,11px)] group relative overflow-hidden active:scale-95 transition-all bg-primary text-white hover:opacity-90"
+                    className="h-10 w-full rounded-xl font-black uppercase italic tracking-widest shadow-glow shadow-primary/20 text-[clamp(10px,1vw,13px)] group relative overflow-hidden active:scale-95 transition-all bg-primary text-white hover:opacity-90"
                   >
                     {isProcessing ? (
                       <span className="flex items-center justify-center gap-2 animate-pulse">
@@ -373,7 +375,7 @@ const ImageToPdf = () => {
             <div className="grid grid-cols-1 lg:grid-cols-[450px_1fr] gap-6 items-stretch animate-in fade-in slide-in-from-bottom-8 duration-700">
               {/* Management Column (Strict 3-Row Limit) */}
               <div className="flex flex-col gap-6 h-full">
-                <Card className="glass-morphism border-dashed border-2 border-primary/20 bg-primary/5 hover:bg-primary/10 transition-all cursor-pointer relative group overflow-hidden h-[90px] flex items-center justify-center rounded-2xl shrink-0">
+                <Card className="glass-morphism border-dashed border-2 border-primary/20 bg-primary/5 hover:bg-primary/10 hover:border-primary/40 hover:scale-[1.05] transition-all duration-300 cursor-pointer relative group overflow-hidden h-[80px] flex items-center justify-center rounded-2xl shrink-0">
                   <input
                     type="file"
                     multiple
@@ -393,7 +395,7 @@ const ImageToPdf = () => {
                 </Card>
 
                 {/* Artifact Registry Thumbs (Strictly Enforced 3x2 Grid) */}
-                <div className="h-[500px] glass-morphism border-primary/20 rounded-2xl flex flex-col group transition-all shadow-2xl relative border-2 border-primary/10 overflow-hidden">
+                <div className="h-[440px] glass-morphism border-primary/20 rounded-2xl flex flex-col group transition-all shadow-2xl relative border-2 border-primary/10 overflow-hidden">
                   <header
                     onClick={() => setShowGallery(true)}
                     className="h-[50px] px-5 flex items-center justify-between shrink-0 border-b border-primary/10 cursor-pointer hover:bg-primary/10 transition-all bg-muted/40"
@@ -463,7 +465,7 @@ const ImageToPdf = () => {
               </div>
 
               {/* Discovery Preview Lab (Leveled with Sidebar) */}
-              <div className="w-full flex flex-col h-[614px] overflow-hidden">
+              <div className="w-full flex flex-col h-[544px] overflow-hidden">
                 <Card className="flex-1 glass-morphism border-primary/20 rounded-2xl overflow-hidden relative shadow-2xl border-2 border-primary/10 group/preview">
                   {!previewUrl ? (
                     <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center bg-muted/5">
@@ -493,7 +495,7 @@ const ImageToPdf = () => {
 
           {/* ── ARTIFACT REGISTRY OVERLAY (Manual Drag-to-Swap Console) ── */}
           <Dialog open={showGallery} onOpenChange={setShowGallery} modal={false}>
-            <DialogContent className="max-w-[1300px] h-[85vh] glass-morphism p-0 overflow-hidden rounded-2xl flex flex-col bg-card border-2 border-primary/10 z-[9999] [&>button]:hidden theme-image studio-gradient backdrop-blur-3xl shadow-2xl">
+            <DialogContent className="max-w-[1300px] h-[85vh] glass-morphism p-0 overflow-hidden rounded-2xl flex flex-col bg-card border-2 border-primary/10 z-[9999] [&>button]:hidden studio-gradient backdrop-blur-3xl shadow-2xl">
               <div className="p-10 border-b border-white/5 flex items-center justify-between bg-background/40 shrink-0 backdrop-blur-3xl">
                 <div className="flex items-center gap-8">
                   <div className="h-16 w-16 bg-primary/20 rounded-2xl flex items-center justify-center text-primary shadow-[0_0_40px_rgba(249,115,22,0.2)] ring-2 ring-primary/40">
@@ -608,10 +610,7 @@ const ImageToPdf = () => {
       </div>
 
       <Footer />
-
-      <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-background/80 dark:bg-black/80 backdrop-blur-sm border-t border-border/10 py-2 h-[66px]">
-        <AdBox adFormat="horizontal" height={50} label="ANCHOR AD" className="w-full" />
-      </div>
+      <StickyAnchorAd />
     </div>
   );
 };

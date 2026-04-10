@@ -1,7 +1,8 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { ShieldCheck, Lock, Eye, Cookie, Info } from "lucide-react";
+import { ShieldCheck, Lock, Eye, Cookie, Info, ArrowLeft } from "lucide-react";
 import { motion } from "framer-motion";
 
 const PrivacyPolicy = () => {
@@ -30,6 +31,11 @@ const PrivacyPolicy = () => {
           className="space-y-12"
         >
           {/* Header */}
+          <Link to="/" className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors group mb-8">
+            <ArrowLeft className="h-3 w-3 transition-transform group-hover:-translate-x-1" />
+            Back to Home
+          </Link>
+
           <header className="space-y-6 text-center md:text-left">
             <div className="inline-flex items-center justify-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-[10px] font-black uppercase tracking-widest mb-4">
               <ShieldCheck className="h-3 w-3" />

@@ -16,6 +16,7 @@ import Footer from "@/components/Footer";
 import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
 import AdBox from "@/components/AdBox";
+import StickyAnchorAd from "@/components/StickyAnchorAd";
 import { toast } from "sonner";
 import * as Diff from "diff";
 
@@ -38,18 +39,29 @@ const TextDiffChecker = () => {
     localStorage.setItem("theme", next ? "dark" : "light");
   }, [darkMode]);
 
-  // Debounced diff for live mode
+  // Debounced inputs for expensive diff calculation
+  const [debouncedOriginal, setDebouncedOriginal] = useState(original);
+  const [debouncedModified, setDebouncedModified] = useState(modified);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedOriginal(original);
+      setDebouncedModified(modified);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [original, modified]);
+
   const diffResult = useMemo(() => {
-    if (!original && !modified) return [];
+    if (!debouncedOriginal && !debouncedModified) return [];
 
     if (diffMode === "lines") {
-      return Diff.diffLines(original, modified, { newlineIsToken: true });
+      return Diff.diffLines(debouncedOriginal, debouncedModified, { newlineIsToken: true });
     } else if (diffMode === "words") {
-      return Diff.diffWords(original, modified);
+      return Diff.diffWords(debouncedOriginal, debouncedModified);
     } else {
-      return Diff.diffChars(original, modified);
+      return Diff.diffChars(debouncedOriginal, debouncedModified);
     }
-  }, [original, modified, diffMode]);
+  }, [debouncedOriginal, debouncedModified, diffMode]);
 
   const diffLines = useMemo(() => {
     const lines: { parts: { value: string; added?: boolean; removed?: boolean }[] }[] = [];
@@ -133,7 +145,7 @@ const TextDiffChecker = () => {
   const totalModifiedLines = modified.split(/\r\n|\r|\n/).length;
 
   return (
-    <div className="min-h-screen bg-background text-foreground theme-image transition-all duration-500">
+    <div className="min-h-screen bg-background text-foreground transition-all duration-500">
       <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
 
       <div className="flex justify-center items-start w-full relative">
@@ -361,10 +373,7 @@ const TextDiffChecker = () => {
       </div>
 
       <Footer />
-
-      <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-background/80 dark:bg-black/80 backdrop-blur-sm border-t border-border dark:border-white/10 py-2 h-[66px]">
-        <AdBox adFormat="horizontal" height={50} label="320x50 ANCHOR AD" className="w-full" />
-      </div>
+      <StickyAnchorAd />
     </div>
   );
 };

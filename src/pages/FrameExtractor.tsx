@@ -10,6 +10,7 @@ import ToolExpertSection from "@/components/ToolExpertSection";
 
 import SponsorSidebars from "@/components/SponsorSidebars";
 import AdBox from "@/components/AdBox";
+import StickyAnchorAd from "@/components/StickyAnchorAd";
 
 import { toast } from "sonner";
 import { usePasteFile } from "@/hooks/usePasteFile";
@@ -23,7 +24,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Copy, Eye, FileArchive, Check, Maximize } from "lucide-react";
+import { Copy, Eye, FileArchive, Check, Maximize, Scan } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface CapturedFrame {
@@ -109,13 +110,18 @@ const FrameExtractor = () => {
     localStorage.setItem("theme", next ? "dark" : "light");
   }, [darkMode]);
 
+  const clearFrames = useCallback(() => {
+    frames.forEach(f => URL.revokeObjectURL(f.url));
+    setFrames([]);
+  }, [frames]);
+
   const handleFile = (f: File | undefined) => {
     if (!f) return;
     if (videoUrl) URL.revokeObjectURL(videoUrl);
+    clearFrames();
     setFile(f);
     const url = URL.createObjectURL(f);
     setVideoUrl(url);
-    setFrames([]);
     setCurrentTime(0);
     setDisplayTime(0);
     toast.success("Ready for Instance Capture");
@@ -234,32 +240,32 @@ const FrameExtractor = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground theme-video transition-all duration-300 ">
+    <div className="min-h-screen bg-background text-foreground transition-all duration-300 ">
       <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
 
       <div className="flex justify-center items-start w-full relative">
         <SponsorSidebars position="left" />
 
-        <main className="grow container mx-auto max-w-[1240px] px-6 py-12">
-          <div className="flex flex-col gap-10">
-            <header className="flex items-center gap-6 animate-in fade-in slide-in-from-top-4 duration-500">
+        <main className="grow container mx-auto max-w-[1240px] px-6 py-6">
+          <div className="flex flex-col gap-6">
+            <header className="flex items-center gap-4 animate-in fade-in slide-in-from-top-4 duration-500">
               <Link to="/">
-                <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-white/20 hover:bg-primary/20 transition-all group/back bg-black/60 shadow-2xl">
-                  <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
+                <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border border-white/20 hover:bg-primary/20 transition-all group/back bg-black/60 shadow-2xl">
+                  <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
                 </Button>
               </Link>
               <div>
-                <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow text-white">
+                <h1 className="text-3xl md:text-4xl font-black tracking-tighter font-display uppercase italic text-shadow-glow text-white leading-tight">
                   Frame <span className="text-primary italic">Extractor</span>
                 </h1>
-                <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">
+                <p className="text-muted-foreground mt-1 font-black uppercase tracking-[0.2em] opacity-40 text-[9px]">
                   High-Resolution Instance Recovery Studio • Precision Frame Export
                 </p>
               </div>
             </header>
 
             {/* Mobile Inline Ad */}
-            <div className="flex min-[1600px]:hidden justify-center mb-8 w-full">
+            <div className="flex min-[1600px]:hidden justify-center mb-4 w-full">
               <AdBox adFormat="horizontal" height={250} label="300x250 AD" className="w-full max-w-[400px]" />
             </div>
 
@@ -267,7 +273,7 @@ const FrameExtractor = () => {
               <motion.div
                 layout
                 transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                className={`glass-morphism border-primary/20 rounded-2xl bg-black/40 shadow-2xl relative overflow-hidden group/card min-h-[500px] flex flex-col w-full ${!file ? 'max-w-3xl' : 'lg:w-[55%]'}`}
+                className={`glass-morphism border-primary/20 rounded-2xl bg-black/40 shadow-2xl relative overflow-hidden group/card min-h-[400px] flex flex-col w-full ${!file ? 'max-w-3xl' : 'lg:w-[55%]'}`}
               >
                 <AnimatePresence mode="popLayout" initial={false}>
                   {!file ? (
@@ -277,24 +283,26 @@ const FrameExtractor = () => {
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.95 }}
                       transition={{ duration: 0.4 }}
-                      className="w-full h-full flex-1 flex flex-col p-10 min-h-[500px]"
+                      className="w-full h-full flex-1 flex flex-col p-6 min-h-[400px]"
                     >
-                      <div
-                        onDragOver={(e) => e.preventDefault()}
-                        onDrop={(e) => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); }}
-                        onClick={() => inputRef.current?.click()}
-                        className="relative w-full h-full flex-1 flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/20 text-center transition-all cursor-pointer bg-background/40 hover:border-primary/40 hover:bg-primary/5 shadow-inner"
-                      >
-                        <div className="h-20 w-20 bg-primary/10 rounded-2xl flex items-center justify-center mb-8 shadow-inner group-hover:scale-110 transition-transform">
-                          <CloudUpload className="h-10 w-10 text-primary" />
+                      <>
+                        <div
+                          onDragOver={(e) => e.preventDefault()}
+                          onDrop={(e) => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); }}
+                          onClick={() => inputRef.current?.click()}
+                          className="relative w-full h-full flex-1 flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/20 text-center transition-all duration-300 cursor-pointer bg-primary/5 hover:border-primary/40 hover:bg-primary/10 hover:scale-[1.02] shadow-inner"
+                        >
+                          <div className="h-16 w-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-6 shadow-inner group-hover:scale-110 transition-transform">
+                            <CloudUpload className="h-8 w-8 text-primary" />
+                          </div>
+                          <div className="px-6 space-y-1">
+                            <p className="text-3xl font-black text-foreground uppercase tracking-tighter italic leading-none text-shadow-glow">Deploy Artifact</p>
+                            <p className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.2em] opacity-40 italic">Drag master or click</p>
+                          </div>
+                          <label htmlFor="frame-upload-input" className="sr-only">Upload Video for Extraction</label>
                         </div>
-                        <div className="px-6 space-y-1">
-                          <p className="text-3xl font-black text-foreground uppercase tracking-tighter italic leading-none text-shadow-glow">Deploy Artifact</p>
-                          <p className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.2em] opacity-40 italic">Drag master or click</p>
-                        </div>
-                        <label htmlFor="frame-upload-input" className="sr-only">Upload Video for Extraction</label>
                         <input id="frame-upload-input" name="frame-upload-input" ref={inputRef} type="file" className="hidden" accept="video/*" onChange={(e) => { handleFile(e.target.files?.[0]); e.target.value = ""; }} />
-                      </div>
+                      </>
                     </motion.div>
                   ) : (<motion.div
                     key="editor"
@@ -306,17 +314,17 @@ const FrameExtractor = () => {
                   >
                     {!isFullscreen && (
                       <div className="bg-primary/5 p-5 border-b border-primary/10 flex items-center justify-between shrink-0">
-                        <div className="flex items-center gap-3">
-                          <Activity className="h-4 w-4 text-primary" />
-                          <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary italic leading-none">Video Preview</h3>
+                        <div className="flex items-center gap-2">
+                          <Activity className="h-3.5 w-3.5 text-primary" />
+                          <h3 className="text-[9px] font-black uppercase tracking-[0.2em] text-primary italic leading-none">Video Preview</h3>
                         </div>
                         <Button
                           onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
+                            clearFrames();
                             setFile(null);
                             setVideoUrl(null);
-                            setFrames([]);
                             setCurrentTime(0);
                           }}
                           variant="destructive"
@@ -391,7 +399,7 @@ const FrameExtractor = () => {
                                 disabled={processing}
                                 className="flex-1 max-w-[200px] h-11 rounded-xl bg-secondary text-secondary-foreground font-bold italic uppercase tracking-tighter shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all gap-3 border-b-2 active:border-b-0 active:translate-y-0.5 relative overflow-x-clip group/btn px-4"
                               >
-                                <Camera className={`h-4 w-4 relative z-10 ${processing ? "animate-spin" : ""}`} />
+                                <Scan className={`h-4 w-4 relative z-10 ${processing ? "animate-spin" : ""}`} />
                                 <span className="relative z-10">Capture Instance</span>
                                 <span className="absolute right-3 opacity-40 text-[8px] font-black border border-white/20 px-1.5 py-0.5 rounded-md group-hover/btn:opacity-100 transition-opacity">F</span>
                               </Button>
@@ -434,7 +442,7 @@ const FrameExtractor = () => {
                     transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
                     className="w-full lg:w-[45%] space-y-6"
                   >
-                    <Card className="w-full rounded-2xl overflow-x-clip shadow-2xl relative border border-white/5 bg-card max-h-[38vh] aspect-video flex items-center justify-center group/latest">
+                    <Card className="w-full rounded-2xl overflow-x-clip shadow-2xl relative border border-white/5 bg-card max-h-[30vh] aspect-video flex items-center justify-center group/latest">
                       {frames.length > 0 ? (
                         <div className="relative w-full h-full animate-in fade-in zoom-in-95 duration-500">
                           <img
@@ -547,11 +555,11 @@ const FrameExtractor = () => {
 
             {/* GALLERY MODAL */}
             <Dialog modal={false} open={showGallery} onOpenChange={setShowGallery}>
-              <DialogContent className="max-w-6xl h-[85vh] flex flex-col p-0 glass-morphism border-primary/20 bg-card transition-all overflow-x-clip studio-gradient shadow-[0_0_100px_rgba(0,0,0,0.8)] theme-video outline-none rounded-2xl z-[200] top-[5vh] translate-y-0">
+              <DialogContent className="max-w-6xl h-[85vh] flex flex-col p-0 glass-morphism border-primary/20 bg-card transition-all overflow-x-clip studio-gradient shadow-[0_0_100px_rgba(0,0,0,0.8)] outline-none rounded-2xl z-[200] top-[5vh] translate-y-0">
                 <DialogHeader className="p-10 border-b border-white/5 shrink-0 bg-background/40 backdrop-blur-3xl rounded-t-[40px]">
                   <div className="flex flex-col md:flex-row items-center justify-between gap-8">
                     <div className="space-y-1">
-                      <DialogTitle className="text-5xl font-bold italic tracking-tighter uppercase text-shadow-glow">Capture <span className="text-primary italic">Registry</span></DialogTitle>
+                      <DialogTitle className="text-3xl font-bold italic tracking-tighter uppercase text-shadow-glow">Capture <span className="text-primary italic">Registry</span></DialogTitle>
                       <div className="flex items-center gap-3">
                         <div className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
                         <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-primary/60 italic leading-none">Recovered Temporal Sandbox • {frames.length} Active Artifacts</p>
@@ -593,7 +601,7 @@ const FrameExtractor = () => {
                         <Card key={frame.id} className="relative group/card overflow-x-clip bg-card border border-white/5 hover:border-primary/50 transition-all shadow-2xl rounded-2xl flex flex-col h-full hover:scale-[1.02] duration-300">
                           <div className="aspect-video relative overflow-x-clip shrink-0">
                             <img src={frame.url} className="w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-110" alt={`Capture at ${frame.time}s`} />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover/card:opacity-100 transition-opacity" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover/card:opacity-100 transition-opacity pointer-events-none" />
 
                             <div className="absolute top-4 left-4 px-3 py-1 bg-background/60 rounded-2xl border border-white/10 backdrop-blur-md">
                               <span className="text-[10px] font-bold text-primary italic tracking-widest">{frame.time.toFixed(3)}s</span>
@@ -661,11 +669,7 @@ const FrameExtractor = () => {
         <SponsorSidebars position="right" />
       </div>
       <Footer />
-
-      {/* Mobile Sticky Anchor Ad */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-black/80 backdrop-blur-sm border-t border-white/10 py-2 h-[66px] overflow-x-clip">
-        <AdBox adFormat="horizontal" height={50} label="320x50 ANCHOR AD" className="w-full" />
-      </div>
+      <StickyAnchorAd />
     </div>
   );
 };

@@ -28,11 +28,12 @@ const NotFound = () => {
       >
         {/* Hardware Error Icon */}
         <div className="relative inline-flex items-center justify-center">
-            <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full scale-110 animate-pulse" />
-            <div className="h-28 w-28 rounded-2xl bg-card border-2 border-primary/20 flex items-center justify-center shadow-2xl relative">
+            <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full scale-110 animate-pulse pointer-events-none" />
+            <div className="h-28 w-28 rounded-2xl bg-card border-2 border-primary/20 flex items-center justify-center shadow-2xl relative overflow-hidden group/container">
                <ShieldAlert className="h-12 w-12 text-primary" />
+               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover/container:opacity-100 transition-opacity pointer-events-none rounded-2xl" />
             </div>
-            <div className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full border-2 border-background shadow-lg">
+            <div className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full border-2 border-background shadow-lg pointer-events-none">
                 ERR: 404
             </div>
         </div>

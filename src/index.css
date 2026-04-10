@@ -1,4 +1,95 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+/* ── Local Fonts ───────────────────────────────────────────────────────────── */
+
+/* Outfit (Branding & Global UI) */
+@font-face {
+  font-family: 'Outfit';
+  src: url('/fonts/outfit-400.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Outfit';
+  src: url('/fonts/outfit-500.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Outfit';
+  src: url('/fonts/outfit-600.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Outfit';
+  src: url('/fonts/outfit-700.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Outfit';
+  src: url('/fonts/outfit-900.woff2') format('woff2');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Inter (Secondary Sans-Serif) */
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/inter-400.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/inter-500.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/inter-600.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/inter-700.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* JetBrains Mono (Developer Tools & Editors) */
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/jetbrains-mono-400.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/jetbrains-mono-700.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
 
 @tailwind base;
 @tailwind components;
@@ -107,6 +198,24 @@
     --primary-foreground: 38 92% 10%;
     --accent: 38 90% 95%;
     --ring: 38 92% 50%;
+  }
+
+  .theme-dev {
+    --primary: 199 89% 48%;
+    --accent: 199 89% 95%;
+    --ring: 199 89% 48%;
+  }
+
+  .theme-text {
+    --primary: 38 92% 50%;
+    --accent: 38 90% 95%;
+    --ring: 38 92% 50%;
+  }
+
+  .theme-quick {
+    --primary: 349 89% 60%;
+    --accent: 349 89% 95%;
+    --ring: 349 89% 60%;
   }
 }
 
@@ -359,4 +468,55 @@ div:has(> ins.adsbygoogle[data-ad-status="unfilled"]) {
   min-height: 0 !important;
   margin: 0 !important;
   padding: 0 !important;
+}
+
+/* ── 3D & Animation Engine (Dice Lab) ───────────────────────────────────── */
+
+@keyframes rolling {
+  0% { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+  25% { transform: rotateX(180deg) rotateY(90deg) rotateZ(45deg); }
+  50% { transform: rotateX(360deg) rotateY(180deg) rotateZ(-90deg); }
+  75% { transform: rotateX(540deg) rotateY(450deg) rotateZ(135deg); }
+  100% { transform: rotateX(720deg) rotateY(720deg) rotateZ(360deg); }
+}
+
+.animate-rolling {
+  animation: rolling 2s cubic-bezier(0.15, 1, 0.3, 1) infinite;
+}
+
+@keyframes coin-flip {
+  0% { transform: translateZ(0) rotateY(0) translateY(0); }
+  20% { transform: translateZ(50px) rotateY(360deg) translateY(-80px); }
+  40% { transform: translateZ(100px) rotateY(720deg) translateY(-120px); }
+  60% { transform: translateZ(100px) rotateY(1080deg) translateY(-120px); }
+  80% { transform: translateZ(50px) rotateY(1440deg) translateY(-80px); }
+  100% { transform: translateZ(0) rotateY(1800deg) translateY(0); }
+}
+
+.animate-coin-flip {
+  animation: coin-flip 0.8s ease-in-out;
+}
+
+@keyframes odometer {
+  0% { transform: translateY(0); filter: blur(0px); }
+  20% { filter: blur(1px); }
+  50% { transform: translateY(-50%); filter: blur(2px); }
+  80% { filter: blur(1px); }
+  100% { transform: translateY(-100%); filter: blur(0px); }
+}
+
+.animate-odometer {
+  animation: odometer 0.15s linear infinite;
+}
+
+@keyframes rolling-hex {
+  0% { transform: rotate(0deg) scale(1); filter: blur(0px); }
+  25% { transform: rotate(90deg) scale(1.1); filter: blur(2px); }
+  50% { transform: rotate(180deg) scale(1); filter: blur(4px); }
+  75% { transform: rotate(270deg) scale(1.1); filter: blur(2px); }
+  100% { transform: rotate(360deg) scale(1); filter: blur(0px); }
+}
+
+.animate-rolling-hex {
+  animation: rolling-hex 0.3s linear infinite;
 }
