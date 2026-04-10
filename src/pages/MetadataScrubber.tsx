@@ -135,7 +135,7 @@ const MetadataScrubber = () => {
               </Link>
               <div>
                 <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow text-white leading-none">
-                  Privacy <span className="text-primary italic">Scrubber</span>
+                  EXIF Metadata <span className="text-primary italic">Studio</span>
                 </h1>
                 <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">Absolute Metadata Destruction Studio</p>
               </div>
@@ -360,11 +360,11 @@ const MetadataScrubber = () => {
             </div>
             {/* SEO & Tool Guide Section */}
             <ToolExpertSection
-              title="Privacy Metadata Scrubber"
+              title="EXIF Metadata Studio"
               description="The Metadata Scrubber is a forensic-grade sanitization tool designed to strip hidden identification layers—such as GPS coordinates, camera serial numbers, and software signatures—from your digital images."
               transparency="Our scrubbing pipeline uses a 'Bit-Draw' bypass method: we render your image to an off-screen HTML5 canvas and re-export the raw pixels as a new JPEG/PNG. This forcefully discards all EXIF, XMP, and IPTC metadata blocks. Since this happens entirely in your browser's local memory, your original, sensitive files are never exposed to any server."
               limitations="While extremely effective for privacy, this process will strip all metadata, including useful information like color profiles or orientation tags. For multi-thousand image batch processing, a dedicated desktop privacy suite may offer faster parallel execution."
-              accent="rose"
+              accent="emerald"
             />
           </div>
         </main>

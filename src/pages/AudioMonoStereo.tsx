@@ -249,7 +249,7 @@ const AudioMonoStereo = () => {
               </Link>
               <div>
                 <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow text-white">
-                  Mono / <span className="text-primary italic">Stereo</span>
+                  Mono / <span className="text-primary italic">Stereo Audio Lab</span>
                 </h1>
                 <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">
                   Professional Channel Remapping Studio • Stereo Field Control
@@ -441,11 +441,11 @@ const AudioMonoStereo = () => {
             </div>
 
             <ToolExpertSection
-              title="Audio Mono/Stereo Remapper"
+              title="Mono / Stereo Audio Lab"
               description="The Mono/Stereo Channel Remapper is a secure, client-side utility designed to handle professional audio channel manipulation. Unlike standard converters that upload your potentially sensitive audio files to a remote server, this tool operates autonomously right in your local browser environment."
               transparency="The entire channel remapping matrix—whether copying a single mono channel into a dual-channel stereo output, or flattening a rich stereo field down to a tight mono mix—is executed natively using the Web Audio API. Because this utility harnesses your local machine's system memory (RAM), your workflow remains fully air-gapped, guaranteeing zero data leakage."
               limitations="However, please be aware that for massive audio files (e.g., lengthy lossless WAV masters exceeding hundreds of megabytes), your browser may struggle with RAM allocation. If you experience memory heap errors or tab crashes, we recommend utilizing a dedicated desktop DAW, as client-side memory budgets are strictly enforced by modern browsers."
-              accent="purple"
+              accent="blue"
             />
           </div>
         </main>

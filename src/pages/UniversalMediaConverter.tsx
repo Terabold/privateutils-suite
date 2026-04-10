@@ -405,7 +405,7 @@ const UniversalMediaConverter = () => {
               </Link>
               <div>
                 <h1 className="text-3xl md:text-4xl font-black tracking-tighter font-display uppercase italic text-shadow-glow text-white">
-                  Media <span className="text-primary italic">Converter</span>
+                  Universal Media <span className="text-primary italic">Engine</span>
                 </h1>
                 <p className="text-muted-foreground mt-1 font-black uppercase tracking-[0.2em] opacity-40 text-[9px]">High-Efficiency Browser-Native Conversion Engine</p>
               </div>
@@ -582,7 +582,7 @@ const UniversalMediaConverter = () => {
             </div>
 
             <ToolExpertSection
-              title="Universal Media Conversion Studio"
+              title="Universal Media Engine"
               description="The Universal Media Converter is a flagship multimedia engine designed to process video, audio, and image artifacts directly within your browser's local sandbox."
               transparency="Our studio utilizes a dual-engine pipeline: a native Canvas/MediaRecorder bridge for lightweight formats and a multi-threaded FFmpeg.WASM instance for professional-grade transcoding. By leveraging WebAssembly, we perform bitstream manipulation entirely on your local hardware. Your private videos, sensitive recordings, and proprietary assets never touch a remote server, ensuring absolute data sovereignty and air-gapped privacy."
               limitations="The browser's V8 engine and WASM memory heap have a physical limit (typically ~2-4GB of RAM). While we support video files up to 500MB, extremely long or high-bitrate 4K files may exceed these boundaries. For massive production render-tasks, we recommend a dedicated CLI environment."

@@ -224,7 +224,7 @@ const HashLab = () => {
               </Link>
               <div>
                 <h1 className="text-3xl md:text-4xl font-black tracking-tighter font-display uppercase italic text-shadow-glow text-white">
-                  Hash <span className="text-primary italic">Lab</span>
+                  Cryptographic <span className="text-primary italic">Hash Lab</span>
                 </h1>
                 <p className="text-muted-foreground mt-1 font-black uppercase tracking-[0.2em] opacity-40 text-[9px]">
                   Worker-Threaded • Extreme Density Streams • Forensic Checksums
@@ -328,11 +328,11 @@ const HashLab = () => {
               </aside>
             </div>
             <ToolExpertSection
-              title="Hash Lab Forge"
+              title="Cryptographic Hash Lab"
               description="The Hash Lab is a cryptographic utility designed to generate one-way digital fingerprints (hashes) using NIST-compliant algorithms."
               transparency="Every calculation is performed locally via the Streams API. This means that large files are read in small chunks (64KB at a time) and piped into a background-safe JS hashing engine. Your data never touches the network, and the browser memory heap remains stable regardless of file size."
               limitations="Hashing is a one-way mathematical function and cannot be reversed. While our custom SHA-256 engine is memory-efficient, calculating hashes for multi-gigabyte files can be CPU-intensive. We prioritize SHA-256 for the streaming pipeline due to its balance of security and local performance."
-              accent="rose"
+              accent="violet"
             />
           </div>
         </main>

@@ -238,7 +238,7 @@ const ImageColorExtractor = () => {
               </Link>
               <div>
                 <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow text-white">
-                  Color <span className="text-primary italic">Extractor</span>
+                  Image Color <span className="text-primary italic">Palette Extractor</span>
                 </h1>
                 <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">
                   Neural Color Palette Analysis • Precision Sampling Engine
@@ -518,11 +518,11 @@ const ImageColorExtractor = () => {
             </div>
             {/* SEO & Tool Guide Section */}
             <ToolExpertSection
-              title="Precision Color Extractor"
-              description="The Color Extractor is a high-fidelity sampling engine designed for digital artists and front-end developers to isolate sub-pixel color values from any source image."
+              title="Image Color Palette Extractor"
+              description="The Image Color Palette Extractor is a high-fidelity sampling engine designed for digital artists and front-end developers to isolate sub-pixel color values from any source image."
               transparency="Our extraction logic utilizes the HTML5 Canvas API to sample RGBA data directly from your local hardware buffer. This process is 100% private—your source images never leave your device, ensuring total security for unreleased design assets."
               limitations="While the tool supports zooming up to 5000% for precision sampling, loading extremely high-resolution RAW photographs (e.g., 100MB+ DSLR shots) may cause temporary memory spikes in your browser. We recommend using web-optimized JPG/PNG files for the smoothest performance."
-              accent="blue"
+              accent="orange"
             />
           </div>
         </main>

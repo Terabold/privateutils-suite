@@ -166,7 +166,7 @@ const PerspectiveTilter = () => {
                 </Link>
                 <div>
                   <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow">
-                    Perspective <span className="text-primary italic">Tilter</span>
+                    3D Perspective <span className="text-primary italic">Tilter</span>
                   </h1>
                   <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">3D Transformation & Depth Engine</p>
                 </div>
@@ -465,11 +465,11 @@ const PerspectiveTilter = () => {
             </div>
             {/* SEO & Tool Guide Section */}
             <ToolExpertSection
-              title="3D Image Perspective Studio"
-              description="The Perspective Tilter is a high-fidelity 3D transformation engine designed to give your screenshots and UI designs depth by applying realistic Pitch, Yaw, and Perspective projections."
+              title="3D Perspective Tilter"
+              description="The 3D Perspective Tilt is a high-fidelity 3D transformation engine designed to give your screenshots and UI designs depth by applying realistic Pitch, Yaw, and Perspective projections."
               transparency="Our 3D engine leverages the browser's native CSS3 Transform-3D matrix and the 'html-to-image' library to capture your result at high resolutions. Every transformation and render happens in your local browser sandbox—your proprietary design assets never leave your device."
               limitations="While the tool is optimized for modern browsers, rendering extremely large images (4K+) with complex shadows and high-degree tilts can be memory-intensive. For the crispest results, we recommend using an output resolution that is within 2x of your source image."
-              accent="blue"
+              accent="emerald"
             />
           </div>
         </main>

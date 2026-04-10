@@ -180,7 +180,7 @@ const VideoAspectStudio = () => {
               </Link>
               <div>
                 <h1 className="text-3xl md:text-4xl font-black tracking-tighter font-display uppercase italic text-shadow-glow text-white leading-tight">
-                  Aspect <span className="text-primary italic">Studio</span>
+                  Video Aspect <span className="text-primary italic">Ratio Studio</span>
                 </h1>
                 <p className="text-muted-foreground mt-1 font-black uppercase tracking-[0.2em] opacity-40 text-[9px]">Social Media Aspect Ratio Remapping Engine</p>
               </div>
@@ -412,11 +412,11 @@ const VideoAspectStudio = () => {
             </div>
             {/* SEO & Tool Guide Section */}
             <ToolExpertSection
-              title="Social Media Aspect Remapping Studio"
+              title="Video Aspect Ratio Studio"
               description="The Video Aspect Studio is a specialized utility for reformatting video content for platforms like TikTik, Instagram Reels, and YouTube Shorts without compromising privacy."
               transparency="Our remapping engine utilizes a local FFmpeg WASM cluster to perform hardware-accelerated 'Padded' or 'Cropped' transformations. The entire rendering process—including libx264 encoding—happens within your browser's isolated process. No video data or transformed assets are ever uploaded, ensuring your social media content remains strictly confidential until you decide to post."
               limitations="High-definition video rendering (1080p+) in the browser is a resource-intensive operation. Depending on your hardware, processing a 1-minute clip may take several minutes as the CPU handles complex x264 compression. For 4K cinematic files, we recommend using dedicated desktop software for optimal performance."
-              accent="purple"
+              accent="blue"
             />
           </div>
         </main>

@@ -96,7 +96,7 @@ const YouTubeThumbnailHub = () => {
                 </Link>
                 <div>
                   <h1 className="text-3xl md:text-4xl font-black tracking-tighter font-display uppercase italic text-shadow-glow text-white">
-                    Thumbnail <span className="text-primary italic">Hub</span>
+                    YouTube Thumbnail <span className="text-primary italic">Hub</span>
                   </h1>
                   <p className="text-muted-foreground mt-1 font-black uppercase tracking-[0.2em] opacity-40 text-[9px]">Pixel-Perfect Platform Simulation Hub</p>
                 </div>
@@ -373,7 +373,7 @@ const YouTubeThumbnailHub = () => {
             )}
             {/* SEO & Tool Guide Section */}
             <ToolExpertSection
-              title="Professional YouTube Thumbnail Simulator"
+              title="YouTube Thumbnail Hub"
               description="The YouTube Thumbnail Hub is a high-fidelity platform simulator designed for content creators and thumbnail designers to preview their artifacts in a realistic YouTube environment."
               transparency="Our simulator uses CSS-based layout reproduction to mimic the 'Watch', 'Home', and 'Search' environments of the YouTube platform. Because the preview logic runs entirely in your browser's local DOM, your unreleased thumbnail designs and exclusive concepts never leave your local hardware. We do not store, log, or transmit your previewed images, ensuring your competitive advantage and creative privacy."
               limitations="While our simulation is highly accurate to standard desktop views, YouTube frequently updates its UI elements (e.g., button roundness, font-weights). For pixel-perfect mobile-specific testing, we recommend taking a physical screenshot on your device as a final verification."

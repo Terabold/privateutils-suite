@@ -288,7 +288,7 @@ const SvgOptimizer = () => {
 
                   <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-foreground dark:text-white text-shadow-glow">
 
-                    SVG <span className="text-primary italic">Optimizer</span>
+                    Vector SVG <span className="text-primary italic">Optimizer</span>
 
                   </h1>
 
@@ -668,7 +668,7 @@ const SvgOptimizer = () => {
 
             <ToolExpertSection
 
-              title="Professional SVG Code Optimizer"
+              title="Vector SVG Optimizer"
 
               description="The SVG Optimizer is a high-fidelity vector minification suite designed to strip metadata, hidden bloat, and redundant XML nodes from your SVG artifacts while preserving visual integrity."
 

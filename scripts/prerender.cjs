@@ -27,7 +27,6 @@ toolsMetadata.forEach(tool => {
   }
 
   // Inject Metadata
-  // We use simple string replacement for reliability in a build script context
   let content = template;
 
   // Replace Title
@@ -62,6 +61,38 @@ toolsMetadata.forEach(tool => {
     /<meta name="twitter:description" content=".*?" \/>/,
     `<meta name="twitter:description" content="${tool.seoDescription}" />`
   );
+
+  // Inject Static Canonical URL (replaces placeholder + existing fallback)
+  const canonicalUrl = `https://privateutils.com${tool.to}`;
+  const canonicalTag = `<link rel="canonical" href="${canonicalUrl}" />`;
+  content = content.replace(
+    /<!-- CANONICAL_PLACEHOLDER -->\s*<link rel="canonical" href=".*?" \/>/,
+    canonicalTag
+  );
+
+  // Inject JSON-LD Structured Data (SoftwareApplication Schema)
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": tool.seoTitle.split(' |')[0].trim(),
+    "description": tool.seoDescription,
+    "url": canonicalUrl,
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "Web",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "provider": {
+      "@type": "Organization",
+      "name": "PrivateUtils",
+      "url": "https://privateutils.com"
+    }
+  };
+
+  const jsonLdScript = `<script type="application/ld+json">\n${JSON.stringify(jsonLd, null, 2)}\n</script>`;
+  content = content.replace('<!-- JSON_LD_PLACEHOLDER -->', jsonLdScript);
 
   // Write file
   fs.writeFileSync(path.join(routePath, 'index.html'), content);

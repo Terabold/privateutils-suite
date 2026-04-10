@@ -256,7 +256,7 @@ const FrameExtractor = () => {
               </Link>
               <div>
                 <h1 className="text-3xl md:text-4xl font-black tracking-tighter font-display uppercase italic text-shadow-glow text-white leading-tight">
-                  Frame <span className="text-primary italic">Extractor</span>
+                  8K Frame <span className="text-primary italic">& Snapshot Extractor</span>
                 </h1>
                 <p className="text-muted-foreground mt-1 font-black uppercase tracking-[0.2em] opacity-40 text-[9px]">
                   High-Resolution Instance Recovery Studio • Precision Frame Export
@@ -642,7 +642,7 @@ const FrameExtractor = () => {
 
             {/* SEO & Tool Guide Section */}
             <ToolExpertSection
-              title="Global Frame Extractor"
+              title="8K Frame & Snapshot Extractor"
               description="The Frame Extractor is a high-performance temporal capture engine designed to recover high-resolution PNG artifacts from any video stream with millisecond precision."
               transparency="Using your device's hardware-accelerated canvas API, we render and capture video frames directly in your local browser sandbox. This ensures that your private video masters—whether they're family memories or unreleased professional footage—never touch a remote server."
               limitations="Capturing hundreds of high-resolution 4K frames can consume significant system memory (RAM). While the tool includes a Resource Cleanup Engine, we recommend closing other intensive browser tabs during large extraction sessions to prevent 'Out of Memory' stutters."

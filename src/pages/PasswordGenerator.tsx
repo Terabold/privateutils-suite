@@ -104,7 +104,7 @@ const PasswordGenerator = () => {
               </Link>
               <div>
                 <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow">
-                  Secure <span className="text-primary italic">Password</span>
+                  Secure Password <span className="text-primary italic">Architect</span>
                 </h1>
                 <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">
                   High-Entropy Generator · 100% Client-Side · No Logs
@@ -288,11 +288,11 @@ const PasswordGenerator = () => {
             </div>
             {/* SEO & Tool Guide Section */}
             <ToolExpertSection
-              title="High-Entropy Password Studio"
+              title="Secure Password Architect"
               description="The Secure Password Generator is a cryptographic utility designed to create high-entropy, unpredictable strings for securing your most sensitive digital accounts."
               transparency="Our generator utilizes the browser's hardware-backed 'crypto.getRandomValues()' API, ensuring true cryptographically strong randomness. Because this process happens entirely within your local machine's memory, your generated passwords never travel over the internet, protecting you from intercept-based leaks."
               limitations="While our passwords are mathematically optimized for strength, their effectiveness depends on your length and complexity settings. To maintain system stability during bulk generation, we enforce a 500-password dispatch limit and a 512-character string cap."
-              accent="indigo"
+              accent="rose"
             />
           </div>
         </main>

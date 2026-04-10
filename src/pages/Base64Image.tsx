@@ -70,7 +70,7 @@ const Base64Image = () => {
               </Link>
               <div>
                 <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow text-white">
-                  Base64 <span className="text-primary italic">Encoder</span>
+                  Base64 Image <span className="text-primary italic">Converter</span>
                 </h1>
                 <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">
                   Image to Data URL • Real-time Preview • Local Conversion
@@ -235,11 +235,11 @@ const Base64Image = () => {
 
             {/* SEO & Tool Guide Section */}
             <ToolExpertSection
-              title="Base64 Image Encoder"
+              title="Base64 Image Converter"
               description="The Base64 Image Encoder is a specialized front-end utility that allows you to instantly convert standard image files (like JPG, PNG, GIF, or WebP) into portable Base64 Data URLs without relying on a remote server."
               transparency="This encoder leverages the native HTML5 FileReader API, meaning the entire image-to-text transformation happens strictly within the private confines of your local browser session. It's 100% secure for private design assets."
               limitations="However, please understand that Base64 encoding generally increases file size by about 33%. While embedding small icons is efficient, encoding massive high-resolution photographs can severely degrade website performance and may cause your browser tab to stall."
-              accent="blue"
+              accent="orange"
             />
           </div>
         </main>

@@ -100,7 +100,7 @@ const TextCaseFormatter = () => {
                 </Link>
                 <div>
                   <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow">
-                    Text Case <span className="text-primary italic">Formatter</span>
+                    Text Case <span className="text-primary italic">Transformer</span>
                   </h1>
                   <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">Professional String Transformation Lab</p>
                 </div>
@@ -196,11 +196,11 @@ const TextCaseFormatter = () => {
             {/* SEO & Tool Guide Section */}
             <div className="max-w-[1240px] w-full mt-10">
               <ToolExpertSection
-                title="Professional Text Case Transformation Lab"
+                title="Text Case Transformer"
                 description="The Text Case Formatter is a high-speed string manipulation utility designed for developers, copywriters, and data analysts to standardize text formats across different naming conventions."
                 transparency="Our formatter executes all transformations using local JavaScript string methods (regex and mapping). Whether you are converting a list of variables to 'snake_case' for a database or formatting a paragraph to 'Sentence Case' for a blog post, the logic runs entirely in your browser's local thread. Your text inputs are never transmitted to our servers, ensuring your sensitive scripts and drafts remain private."
                 limitations="While our 'Sentence Case' and 'Title Case' engines are highly accurate, they rely on standard linguistic patterns. To ensure browser stability, we enforce a 10MB character limit per session."
-                accent="indigo"
+                accent="emerald"
               />
             </div>
           </div>

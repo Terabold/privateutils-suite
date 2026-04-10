@@ -257,7 +257,7 @@ const UniversalVolumeBooster = () => {
               </Link>
               <div>
                 <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow text-white">
-                  Universal Volume <span className="text-primary italic">Booster</span>
+                  Universal Volume <span className="text-primary italic">& Gain Booster</span>
                 </h1>
                 <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">High-Performance Bitstream Amplification • Digital Gain Master</p>
               </div>
@@ -422,11 +422,11 @@ const UniversalVolumeBooster = () => {
               </aside>
             </div>
             <ToolExpertSection
-              title="Universal High-Fidelity Volume Booster"
+              title="Universal Volume & Gain Booster"
               description="The Universal Volume Booster is a professional-grade digital gain utility designed to amplify the bitstream level of audio and video files without the need for server-side processing."
               transparency="Our booster utilizes the browser's native Web Audio API 'GainNode' and 'OfflineAudioContext' to perform mathematical sample scaling. By processing the audio data in a local 32-bit float buffer, we ensure that your private recordings and creative masters never leave your device."
               limitations="Boosting volume beyond a certain threshold (typically >200%) can cause 'Digital Clipping' if the source material is already near peak levels. For the best sound quality, start with 150% and listen for distortion before exporting at maximum gain."
-              accent="indigo"
+              accent="blue"
             />
           </div>
         </main>

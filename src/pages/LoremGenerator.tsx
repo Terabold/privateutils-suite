@@ -107,7 +107,7 @@ const LoremGenerator = () => {
               </Link>
               <div>
                 <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow text-white">
-                  Lorem <span className="text-primary italic">Generator</span>
+                  Lorem Ipsum <span className="text-primary italic">& AI Content Lab</span>
                 </h1>
                 <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">
                   Placeholder Text · 3 Styles · Instant Generate
@@ -246,7 +246,7 @@ const LoremGenerator = () => {
             </div>
             {/* SEO & Tool Guide Section */}
             <ToolExpertSection
-              title="Studio Lorem Generator"
+              title="Lorem Ipsum & AI Content Lab"
               description="The Lorem Generator is a high-speed placeholder text engine designed for UI/UX designers and developers who need instant, varied content for mocking up layouts."
               transparency="Unlike online generators that rely on server-side scripts, our algorithm uses a local JavaScript dictionary to assemble sentences and paragraphs directly in your browser. No data is fetched or logged—your generation patterns remain 100% private."
               limitations="While the tool is optimized for standard mockups, generating extremely large blocks of text (e.g., 50,000+ words) can cause the browser's DOM rendering engine to lag. For stability, we enforce a 100-paragraph hardware safety cap per generation."

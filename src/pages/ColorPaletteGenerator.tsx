@@ -155,7 +155,7 @@ const ColorPaletteGenerator = () => {
               </Link>
               <div>
                 <h1 className="text-3xl md:text-4xl font-black tracking-tighter font-display uppercase italic text-shadow-glow text-white leading-tight">
-                  Studio <span className="text-primary italic">Palette</span>
+                  HSL Color <span className="text-primary italic">Palette Generator</span>
                 </h1>
                 <p className="text-muted-foreground mt-1 font-black uppercase tracking-[0.2em] opacity-40 text-[9px]">
                   Professional Color Architect • Harmony Engine
@@ -277,11 +277,11 @@ const ColorPaletteGenerator = () => {
 
             {/* SEO & Tool Guide Section */}
             <ToolExpertSection
-              title="Studio Palette Generator"
+              title="HSL Color Palette Generator"
               description="The Studio Palette Generator is a professional-grade color architect tool engineered for front-end developers, UI/UX designers, and digital artists."
               transparency="Our Harmony Engine processes all HSL matrix calculations and image color-sampling directly within your local browser, eliminating server round-trips. You can safely drop unreleased screenshots or logos without risking leaks."
               limitations="However, uploading extraordinarily massive, unoptimized RAW photographs strictly to sample a pixel can cause temporary input lag or memory stutter. We recommend using web-optimized images for sampling to ensure lightning-fast performance."
-              accent="blue"
+              accent="emerald"
             />
           </div>
         </main>

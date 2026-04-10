@@ -199,7 +199,7 @@ const VideoToGif = () => {
               </Link>
               <div>
                 <h1 className="text-3xl md:text-4xl font-black tracking-tighter font-display uppercase italic text-shadow-glow text-white leading-tight">
-                  Video to <span className="text-primary italic">GIF</span>
+                  Video to GIF <span className="text-primary italic">Motion Studio</span>
                 </h1>
                 <p className="text-muted-foreground mt-1 font-black uppercase tracking-[0.2em] opacity-40 text-[9px]">Professional GIF Rendering Studio</p>
               </div>
@@ -371,11 +371,11 @@ const VideoToGif = () => {
             </div>
             {/* SEO & Tool Guide Section */}
             <ToolExpertSection
-              title="Professional Video to GIF Engine"
+              title="Video to GIF Motion Studio"
               description="The Video to GIF Converter is a high-performance rendering utility designed to extract specific moments from video artifacts and encode them into optimized GIF masters."
               transparency="Our rendering engine utilizes a locally-hosted FFmpeg WASM cluster. When you stage a video, it is copied into a virtual file system (VFS) within your browser's memory. The 'Palette Generation' and 'Final Encoding' threads run entirely on your local CPU. No video data or generated GIFs are ever transmitted to our servers, ensuring your private clips remain completely air-gapped."
               limitations="GIF encoding is a resource-intensive process. For videos longer than 10 seconds or at high resolutions, the browser may experience temporary frame-rate drops as the WASM engine utilizes available threads. We recommend keeping clips under 5 seconds for optimal storage efficiency and loading speed."
-              accent="purple"
+              accent="blue"
             />
           </div>
         </main>

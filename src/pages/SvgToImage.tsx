@@ -405,7 +405,7 @@ const SvgToImage = () => {
                 </Link>
                 <div>
                   <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-foreground dark:text-white text-shadow-glow">
-                    SVG to <span className="text-primary italic">Image</span>
+                    Svg to <span className="text-primary italic">Image Converter</span>
                   </h1>
                   <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-60 dark:opacity-40 text-[10px]">Client-Side Vector to Raster Conversion</p>
                 </div>
@@ -609,11 +609,11 @@ const SvgToImage = () => {
             </div>
 
             <ToolExpertSection
-              title="SVG to Raster Conversion Studio"
+              title="Svg to Image Converter"
               description="Our SVG to Image studio provides high-precision vector-to-raster rendering. It is designed for developers and designers who need to convert scalable graphics into web-optimized PNG or JPG formats without sacrificing privacy."
               transparency="The rendering process occurs entirely within your browser's local sandbox. We utilize the HTML5 Canvas API to create a hardware-accelerated drawing surface. When you provide SVG code, we generate a local Blob URL, render it to the canvas at your specified scale, and extract the pixel data directly. No image data is ever transmitted through a server."
               limitations="While most SVG features (gradients, masks, paths) are supported by standard browser canvas implementations, certain complex internal CSS animations or non-standard SVG extensions may not render identically to a vector viewer. We recommend checking the live preview before initiating the export."
-              accent="blue"
+              accent="emerald"
             />
           </div>
         </main>

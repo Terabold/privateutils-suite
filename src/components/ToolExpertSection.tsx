@@ -8,7 +8,7 @@ interface ToolExpertSectionProps {
   transparency: string;
   limitations: string;
   className?: string;
-  accent?: 'purple' | 'blue' | 'emerald' | 'orange' | 'rose' | 'amber' | 'cyan' | 'indigo' | 'violet' | 'fuchsia';
+  accent?: 'purple' | 'blue' | 'emerald' | 'orange' | 'rose' | 'amber' | 'cyan' | 'indigo' | 'violet' | 'fuchsia' | 'sky';
 }
 
 const ToolExpertSection = ({
@@ -30,6 +30,7 @@ const ToolExpertSection = ({
     indigo: 'from-indigo-500/20 to-blue-500/10 border-indigo-500/20 text-indigo-400 border-l-indigo-500',
     violet: 'from-violet-500/20 to-purple-500/10 border-violet-500/20 text-violet-400 border-l-violet-500',
     fuchsia: 'from-fuchsia-500/20 to-pink-500/10 border-fuchsia-500/20 text-fuchsia-400 border-l-fuchsia-500',
+    sky: 'from-sky-500/20 to-blue-500/10 border-sky-500/20 text-sky-400 border-l-sky-500',
   };
 
   const accentColor = accentColors[accent] || accentColors.purple;

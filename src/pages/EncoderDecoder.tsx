@@ -167,7 +167,7 @@ const EncoderDecoder = () => {
                      </Link>
                      <div>
                         <h1 className="text-3xl md:text-4xl font-black tracking-tighter font-display uppercase italic text-shadow-glow text-white">
-                           Encode / <span className="text-primary italic">Decode</span>
+                           Universal Encoder & <span className="text-primary italic">Decoder</span>
                         </h1>
                         <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">
                            Base64 • URL • HTML • Hex — Instant Local Conversion
@@ -330,11 +330,11 @@ const EncoderDecoder = () => {
                </div>
                {/* SEO & Tool Guide Section */}
                <ToolExpertSection
-                  title="Universal Encoder / Decoder"
+                  title="Universal Encoder & Decoder"
                   description="The Universal Encoder / Decoder is a Swiss-army knife for data sanitization, translation, and forensic analysis, supporting Base64, URL percent-encoding, HTML entities, and Hexadecimal formats."
                   transparency="Unlike online converters that log your queries to a central server, this tool operates exclusively within your browser's local memory. Whether you're decoding a sensitive Base64 token or encoding a URL for a secure API request, the process remains fully air-gapped from our servers."
                   limitations="While highly efficient for text-based payloads, encoding extraordinarily large files into Hex or Base64 can lead to a 33-400% increase in string size. Processing multi-megabyte blobs in a single tab may cause temporary UI freezes as the browser handles the massive string allocation."
-                  accent="blue"
+                  accent="sky"
                />
             </main>
 

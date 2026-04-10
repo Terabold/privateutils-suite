@@ -232,7 +232,7 @@ const ImageCompressor = () => {
               </Link>
               <div>
                 <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow text-white">
-                  Image <span className="text-primary italic">Compressor</span>
+                  Image <span className="text-primary italic">Compressor & Optimizer</span>
                 </h1>
                 <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">
                   Professional Image Quantization • Hardware Accelerated
@@ -504,11 +504,11 @@ const ImageCompressor = () => {
 
             {/* SEO section */}
             <ToolExpertSection
-              title="Studio Image Compressor"
+              title="Image Compressor & Optimizer"
               description="The Image Compressor is a professional-grade quantization engine designed to shrink image file sizes while maintaining maximum visual fidelity."
               transparency="Our compression pipeline utilizes both the browser's native Canvas API and an optional WASM-powered FFmpeg backend for high-efficiency PNG quantization. Note: Utilizing the FFmpeg backend requires fetching the engine artifacts from unpkg.com; however, every byte of your image is crunched locally on your machine, ensuring your private photos or proprietary assets are never uploaded to our servers."
               limitations="While the tool is hardware-accelerated, compressing exceptionally large images (e.g., 50MB+ RAW files) can temporarily lock your browser's main thread. For massive batch processing of hundreds of high-res images, a dedicated desktop CLI or server-side farm is recommended."
-              accent="blue"
+              accent="orange"
             />
           </div>
         </main>

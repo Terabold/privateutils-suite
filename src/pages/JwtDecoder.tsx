@@ -130,7 +130,7 @@ const JwtDecoder = () => {
               </Link>
               <div>
                 <h1 className="text-3xl md:text-4xl font-black tracking-tighter font-display uppercase italic text-shadow-glow text-white">
-                  JWT <span className="text-primary italic">Decoder</span>
+                  JWT <span className="text-primary italic">Decoder & Inspector</span>
                 </h1>
                 <p className="text-muted-foreground mt-1 font-black uppercase tracking-[0.2em] opacity-40 text-[9px]">
                   Inspect • Decode • Validate — 100% Local
@@ -303,11 +303,11 @@ const JwtDecoder = () => {
             </div>
             {/* SEO & Tool Guide Section */}
             <ToolExpertSection
-              title="Universal JWT Decoder"
+              title="JWT Decoder & Inspector"
               description="The Universal JWT Decoder is a specialized diagnostic utility for developers to inspect the Header, Payload, and Signature components of JSON Web Tokens without compromising security."
               transparency="Unlike online debuggers that may log your tokens (including sensitive claims or secrets) in their database, this tool decodes your JWT entirely within your browser's local sandbox. No data is sent over the network, ensuring your internal development tokens remain strictly private."
               limitations="This tool is a decoder, not a validator. While it can display the contents of a token and check its expiration status, it does not verify the cryptographic signature against a public or private key. For production-level verification, always use a trusted library in your backend environment."
-              accent="indigo"
+              accent="sky"
             />
           </div>
         </main>

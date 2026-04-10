@@ -270,7 +270,7 @@ const AudioTrimmer = () => {
               </Link>
               <div>
                 <h1 className="text-3xl md:text-4xl font-black tracking-tighter font-display uppercase italic text-shadow-glow text-white leading-tight">
-                  Audio <span className="text-primary italic">Trimmer</span>
+                  Precision <span className="text-primary italic">Audio Trimmer</span>
                 </h1>
                 <p className="text-muted-foreground mt-1 font-black uppercase tracking-[0.2em] opacity-40 text-[9px]">
                   High-Precision Local Audio Partitioning • Lossless Wave Slicing
@@ -485,11 +485,11 @@ const AudioTrimmer = () => {
               </aside>
             </div>
             <ToolExpertSection
-              title="Global Audio Trimmer"
+              title="Precision Audio Trimmer"
               description="The Audio Trimmer is a high-precision, client-side utility engineered for safe and fast audio partitioning. Unlike traditional web-based converters that require you to wait while your media uploads to a remote cloud server—compromising both speed and privacy—this tool parses and slices your audio files entirely within the secure sandbox of your local browser."
               transparency="By leveraging the Web Audio API, the trimmer decodes your MP3, WAV, or OGG files into a raw 32-bit float array. Your private data is never transmitted over the internet."
               limitations="However, processing exceptionally large audio files (such as multi-hour recordings) is not ideal for client-side tools. Browsers enforce strict RAM limits. We recommend using desktop tools for files larger than 100MB."
-              accent="purple"
+              accent="blue"
             />
           </div>
         </main>

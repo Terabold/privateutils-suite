@@ -99,7 +99,7 @@ const UnitConverter = () => {
               </Link>
               <div>
                 <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow">
-                  Unit <span className="text-primary italic">Converter</span>
+                  Universal Unit <span className="text-primary italic">Hub</span>
                 </h1>
                 <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">
                   Versatile Measurement Transformer · High Precision
@@ -236,11 +236,11 @@ const UnitConverter = () => {
             </div>
             {/* SEO & Tool Guide Section */}
             <ToolExpertSection
-              title="Professional Unit Transformation Studio"
+              title="Universal Unit Hub"
               description="The Unit Converter is a high-precision measurement utility designed to translate between Metric, Imperial, and Scientific units across various physical dimensions."
               transparency="Our converter utilizes local mathematical constants and SI-standard formulas to perform instant transformations. Whether you are calculating building materials in 'Feet' or converting temperatures for a laboratory report, all arithmetic occurs within your browser's local sandbox. Your measurement data is never transmitted to our servers, ensuring your project specifications and technical data remain entirely private."
               limitations="While our tool provides high-precision results (up to 6 decimal points), rounding errors can occur in extreme scientific conversions. For aerospace or medical-grade precision beyond standard engineering tolerances, always cross-reference with primary ISO standards."
-              accent="indigo"
+              accent="rose"
             />
           </div>
         </main>

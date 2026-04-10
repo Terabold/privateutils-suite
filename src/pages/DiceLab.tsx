@@ -209,7 +209,7 @@ const DiceLab = () => {
               </Link>
               <div>
                 <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow text-white">
-                  Studio <span className="text-primary italic">Dice Lab</span>
+                  Dice Lab & <span className="text-primary italic">Entropy Generator</span>
                 </h1>
                 <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">
                   High-Entropy Physics · Secure Randomization Studio
@@ -377,11 +377,11 @@ const DiceLab = () => {
             </div>
 
             <ToolExpertSection
-              title="Studio Dice Lab · 3D Physics Edition"
+              title="Dice Lab & Entropy Generator"
               description="The Studio Dice Lab has been re-engineered for immersive randomization. By combining the Web Crypto API's hardware-backed entropy with high-performance 3D CSS physics, we deliver a premium randomization suite that is both cryptographically secure and visually stunning."
               transparency="Randomization Protocol: Every result in Dice Lab is generated using window.crypto.getRandomValues() before the animation sequence begins. The 3D dice rotations, coin tossed momentum, and odometer digit scrolling are perfectly synced representations of the secure underlying data bits. Your privacy is maintained as all entropy calculations happen locally in your browser's hardened sandbox."
               limitations="While our 3D physics engine is designed for hardware acceleration (using GPU compositing), extremely low-end legacy devices without 'preserve-3d' support may fall back to simplified 2D representations. For maximum performance, we limit the simultaneous dice forge to 12 artifacts."
-              accent="amber"
+              accent="rose"
             />
           </div>
         </main>

@@ -315,7 +315,7 @@ const PiiMasker = () => {
                 </Link>
                 <div>
                   <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow leading-none">
-                    PII <span className="text-primary italic">Masker</span>
+                    PII <span className="text-primary italic">Masking Studio</span>
                   </h1>
                   <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[9px]">Neural-Grade Privacy Redaction</p>
                 </div>
@@ -609,11 +609,11 @@ const PiiMasker = () => {
             </div>
             {/* SEO & Tool Guide Section */}
             <ToolExpertSection
-              title="Identity & PII Masker Studio"
+              title="PII Masking Studio"
               description="The Identity Masker is a forensic-grade redaction suite designed to permanently obscure Personally Identifiable Information (PII) from images and text documents."
               transparency="Our masker operates with 'Neural-Grade' privacy by using local Gaussian blur and solid block-cipher algorithms. Unlike cloud-based redaction tools that might store a copy of your unmasked original for 'training' purposes, our tool never uploads your raw data. Every mask is applied locally in your browser's V8 thread, ensuring your sensitive credentials stay safe."
               limitations="While the Gaussian blur is mathematically complex, extraordinarily high-resolution 8K masters may experience minor frame-drops during real-time dragging of redaction regions. For the most secure redaction, we recommend using 'Blackout' mode for sensitive passwords or numeric data."
-              accent="rose"
+              accent="violet"
             />
           </div>
         </main>

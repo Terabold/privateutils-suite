@@ -1,7 +1,7 @@
 import React, { Suspense, lazy, useEffect } from "react";
 import { preloadFFmpeg } from "@/lib/ffmpegSingleton";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -81,8 +81,11 @@ const ThemeOrchestrator = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();
   
   const themeClass = React.useMemo(() => {
-    if (location.pathname === "/") return "theme-all";
-    const tool = tools.find(t => t.to === location.pathname);
+    // Normalize path: remove trailing slash for consistent matching
+    const normalizedPath = location.pathname === "/" ? "/" : location.pathname.replace(/\/$/, "");
+    
+    if (normalizedPath === "/") return "theme-all";
+    const tool = tools.find(t => t.to === normalizedPath);
     if (tool && tool.category && categoryConfig[tool.category]) {
       return categoryConfig[tool.category].themeClass;
     }
@@ -136,6 +139,7 @@ const App = () => {
                 <Route path="/image-to-pdf" element={<ImageToPdf />} />
                 <Route path="/text-diff-checker" element={<TextDiffChecker />} />
                 <Route path="/quick-clipboard" element={<QuickClipboardHub />} />
+                <Route path="/clipboard" element={<Navigate to="/quick-clipboard" replace />} />
                 <Route path="/jwt-decoder" element={<JwtDecoder />} />
                 <Route path="/encoder-decoder" element={<EncoderDecoder />} />
                 <Route path="/timestamp-converter" element={<TimestampConverter />} />

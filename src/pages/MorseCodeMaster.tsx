@@ -406,7 +406,7 @@ const MorseCodeMaster = () => {
               </Link>
               <div>
                 <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow text-white">
-                  Morse Code <span className="text-primary italic">Master</span>
+                  Morse Code <span className="text-primary italic">Studio</span>
                 </h1>
                 <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">
                   Text & Morse Translator · Web Audio Beeps · Zero Logs
@@ -582,11 +582,11 @@ const MorseCodeMaster = () => {
             </div>
 
             <ToolExpertSection
-              title="Studio Morse Translator"
+              title="Morse Code Studio"
               description="The Morse Code Master translates plaintext into standard International Morse code and back. It also leverages the Web Audio API to generate accurate sound beeps directly in your browser."
               transparency="Translation happens 100% locally using a static mapping table. No text is sent to our servers, and the audio generation is handled by your browser's native sound engine."
               limitations="Long strings of Morse code can become difficult to read or hear. We recommend translating sentence by sentence for the best experience."
-              accent="amber"
+              accent="rose"
             />
           </div>
         </main>

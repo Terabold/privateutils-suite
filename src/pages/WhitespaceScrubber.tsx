@@ -83,7 +83,7 @@ const WhitespaceScrubber = () => {
               </Link>
               <div>
                 <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow text-white">
-                  Whitespace <span className="text-primary italic">Scrubber</span>
+                  Clean Code <span className="text-primary italic">Hub</span>
                 </h1>
                 <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">
                   Text Sanitization · Ghost Space Removal · One-Line Mode
@@ -172,11 +172,11 @@ const WhitespaceScrubber = () => {
             </div>
 
             <ToolExpertSection
-              title="Studio Whitespace Scrubber"
+              title="Clean Code Hub"
               description="The Whitespace Scrubber is a high-speed sanitization tool that removes invisible 'ghost' characters, collapses multiple spaces into one, and cleans up empty vertical space."
               transparency="Cleaning logic execution occurs entirely in your browser's V8 engine. No text content is ever transmitted, ensuring that your messy confidential notes stay messy only until sanitized locally."
               limitations="Extremely large documents (100k+ lines) may experience a minor lag during real-time scrubbing. We recommend processing large datasets in chunks for optimal UI responsiveness."
-              accent="emerald"
+              accent="rose"
             />
           </div>
         </main>

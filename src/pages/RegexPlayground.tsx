@@ -205,7 +205,7 @@ const RegexPlayground = () => {
                      </Link>
                      <div>
                         <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-foreground dark:text-white text-shadow-glow">
-                           Regex <span className="text-primary italic">Playground</span>
+                           Regular Expression <span className="text-primary italic">Studio</span>
                         </h1>
                         <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-60 dark:opacity-40 text-[10px]">
                            Live Match Highlighting · Groups · Background Architecture
@@ -407,11 +407,11 @@ const RegexPlayground = () => {
                      </aside>
                   </div>
                   <ToolExpertSection
-                     title="Professional Regex Playground Studio"
+                     title="Regular Expression Studio"
                      description="The Regex Playground is a high-performance Regular Expression evaluator designed for developers and security analysts to test, debug, and optimize complex patterns in real-time."
                      transparency="Our playground utilizes a specialized Web Worker architecture, offloading the V8 RegExp engine to a background thread. This ensures your browser's main UI thread remains fluid even when executing recursive patterns. Every pattern evaluation is shielded by a 2000ms hardware watchdog that terminates execution if catastrophic backtracking is detected."
                      limitations="While our background architecture prevents browser lockups, poorly optimized patterns can still fail to return results within the security threshold. We recommend avoiding nested quantifiers on large datasets to ensure sub-second evaluation."
-                     accent="indigo"
+                     accent="sky"
                   />
                </div>
             </main>

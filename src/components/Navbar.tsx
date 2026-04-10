@@ -99,7 +99,7 @@ const Navbar = ({
   useEffect(() => {
     let title = "Client-Sided Coding & Media Tools — 100% Private, In-Browser Utility Suite (Zero Uploads)";
     let description = "A professional collection of client-side developer and media tools. Process video, images, and sensitive data entirely in your browser. No server uploads, no tracking, 100% private.";
-    let ogImage = "/favicon.svg";
+    let ogImage = "/og-image.png";
 
     if (isHomePage) {
       if (selectedCategory) {
@@ -121,6 +121,18 @@ const Navbar = ({
     // Apply Title
     document.title = title;
 
+    // Update Canonical URL
+    const canonicalUrl = `https://privateutils.com${location.pathname === '/' ? '' : location.pathname}`;
+    let canonicalLink = document.querySelector('link[rel="canonical"]');
+    if (canonicalLink) {
+      canonicalLink.setAttribute("href", canonicalUrl);
+    } else {
+      canonicalLink = document.createElement('link');
+      canonicalLink.setAttribute("rel", "canonical");
+      canonicalLink.setAttribute("href", canonicalUrl);
+      document.head.appendChild(canonicalLink);
+    }
+
     // Update Meta Tags (Standard)
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) metaDescription.setAttribute("content", description);
@@ -129,11 +141,12 @@ const Navbar = ({
     const ogTitle = document.querySelector('meta[property="og:title"]');
     if (ogTitle) ogTitle.setAttribute("content", title);
 
-    const ogDesc = document.querySelector('meta[property="og:description"]');
-    if (ogDesc) ogDesc.setAttribute("content", description);
-
+    // Update OpenGraph Image
     const ogImg = document.querySelector('meta[property="og:image"]');
     if (ogImg) ogImg.setAttribute("content", ogImage);
+
+    const ogDesc = document.querySelector('meta[property="og:description"]');
+    if (ogDesc) ogDesc.setAttribute("content", description);
 
     // Update Twitter Tags
     const twTitle = document.querySelector('meta[name="twitter:title"]');
@@ -280,7 +293,7 @@ const Navbar = ({
                     </DropdownMenuTrigger>
                     <DropdownMenuContent
                       align="center"
-                      className="w-56 bg-card/95 backdrop-blur-2xl border-white/10 rounded-2xl p-2 z-[110]"
+                      className="w-[280px] md:w-[320px] bg-card/95 backdrop-blur-2xl border-white/10 rounded-2xl p-2 z-[110]"
                     >
                       <div className="px-3 py-2 flex items-center gap-3">
                         <theme.icon className="h-4 w-4" style={{ color: `hsl(${theme.hsl})` }} />
@@ -309,7 +322,7 @@ const Navbar = ({
                               </div>
                             </div>
                             <span
-                              className="text-sm font-bold transition-colors text-foreground group-hover/item:text-[var(--hover-text)]"
+                              className="text-sm font-bold transition-colors text-foreground group-hover/item:text-[var(--hover-text)] truncate whitespace-nowrap"
                             >
                               {tool.title}
                             </span>

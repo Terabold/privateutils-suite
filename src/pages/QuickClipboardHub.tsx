@@ -101,7 +101,7 @@ const QuickClipboardHub = () => {
               {/* Master Paste Zone */}
               <div className="space-y-8 animate-in fade-in slide-in-from-left-8 duration-1000">
                 <Card
-                  className="glass-morphism border-primary/20 overflow-hidden relative bg-black shadow-[0_0_50px_-12px_rgba(139,92,246,0.3)] rounded-2xl group border-2 cursor-pointer"
+                  className="glass-morphism border-primary/20 overflow-hidden relative bg-black shadow-[0_0_50px_-12px_rgba(244,63,94,0.3)] rounded-2xl group border-2 cursor-pointer"
                   onClick={async () => {
                     try {
                       const items = await navigator.clipboard.read();
@@ -217,11 +217,11 @@ const QuickClipboardHub = () => {
             </div>
             {/* SEO & Tool Guide Section */}
             <ToolExpertSection
-              title="Instant Clipboard Extraction Hub"
+              title="Quick Clipboard Hub"
               description="The Quick Clipboard Hub is a high-speed extraction utility designed to bypass the 'Copy-Paste' middleman by directly converting your clipboard's binary contents into downloadable file artifacts."
               transparency="Our hub uses the browser's native 'Navigator.clipboard' API to read your system buffer locally. Whether you've copied an image from Slack, a snippet from a blog, or a PDF from a browser tab, our tool intercepts the raw bytes and packages them into a local file. Absolutely zero data is uploaded to our servers, keeping your copied credentials and proprietary assets completely private."
               limitations="While the tool is optimized for lightning-fast extraction, some applications (like certain older desktop software) may copy data in proprietary formats that browsers cannot natively detect. In such cases, the tool will attempt to salvage the data as a generic binary file."
-              accent="indigo"
+              accent="rose"
             />
           </div>
         </main>

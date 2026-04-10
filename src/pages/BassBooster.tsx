@@ -260,7 +260,7 @@ const BassBooster = () => {
               </Link>
               <div>
                 <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow text-white">
-                  Bass <span className="text-primary italic">Booster</span>
+                  Deep Bass <span className="text-primary italic">& EQ Studio</span>
                 </h1>
                 <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">
                   Deep Frequency Reconstruction Studio • Low-Shelf EQ Engine
@@ -436,11 +436,11 @@ const BassBooster = () => {
             </div>
 
             <ToolExpertSection
-              title="Bass Booster Engine"
+              title="Deep Bass & EQ Studio"
               description="The Bass Booster is a dedicated, real-time audio equalization utility tailored for amplifying low-tier frequencies without buffering your private music tracks to an external cloud rendering farm."
               transparency="Using your browser's native Web Audio API, we instantiate a local Low-Shelf EQ filter curve below 150Hz. No data physically leaves your computer, making it perfect for quick, private tweaks."
               limitations="However, please consider your system's resource boundaries. Rendering a bass-boosted track involves storing the entire decoded waveform in RAM. While 4-minute songs work flawlessly, 2-hour podcasts may push your browser past memory limits and cause a crash."
-              accent="purple"
+              accent="blue"
             />
           </div>
         </main>

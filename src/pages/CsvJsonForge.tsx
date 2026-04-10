@@ -253,7 +253,7 @@ const CsvJsonForge = () => {
                      </Link>
                      <div>
                         <h1 className="text-3xl md:text-4xl font-black tracking-tighter font-display uppercase italic text-foreground dark:text-white text-shadow-glow">
-                           CSV / JSON <span className="text-primary italic">Forge</span>
+                           Data <span className="text-primary italic">Transformer Hub</span>
                         </h1>
                         <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-60 dark:opacity-40 text-[10px]">
                            Data Translation Studio · Bi-directional Conversion
@@ -502,11 +502,11 @@ const CsvJsonForge = () => {
                </div>
                {/* SEO & Tool Guide Section */}
                <ToolExpertSection
-                  title="CSV / JSON Forge"
-                  description="The CSV/JSON Forge is a high-speed data translation utility that bridges the gap between spreadsheet-oriented CSV files and developer-friendly JSON structures."
+                  title="Data Transformer Hub"
+                  description="The CSV/JSON Data Transformer is a high-speed data translation utility that bridges the gap between spreadsheet-oriented CSV files and developer-friendly JSON structures."
                   transparency="Instead of uploading sensitive mailing lists or financial records to a third-party server, this tool utilizes your browser's local JavaScript engine. The entire conversion logic—whether parsing or flattening—is executed air-gapped on your own machine."
                   limitations="However, please note that rendering enormously large datasets (e.g., 500MB+ CSV files) is not ideal for the browser. A multi-gigabyte text buffer will almost always result in an Out of Memory crash. We recommend staying under 10MB for a fluid experience."
-                  accent="emerald"
+                  accent="sky"
                />
             </main>
 

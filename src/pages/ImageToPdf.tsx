@@ -277,7 +277,7 @@ const ImageToPdf = () => {
                 </Link>
                 <div>
                   <h1 className="text-3xl md:text-4xl font-black tracking-tighter uppercase italic text-shadow-glow leading-none">
-                    Image to <span className="text-primary italic">PDF</span>
+                    Image to <span className="text-primary italic">PDF Compiler</span>
                   </h1>
                   <p className="text-muted-foreground mt-1 font-black uppercase tracking-[0.35em] opacity-40 text-[8px] ml-1">
                     Secure Multi-Page Artifact Compiler
@@ -485,7 +485,7 @@ const ImageToPdf = () => {
             </div>
 
             <ToolExpertSection
-              title="Forensic PDF Synthesis"
+              title="Image to PDF Compiler"
               accent="orange"
               description="Securely compile multiple image artifacts into a single, high-fidelity PDF document entirely within your browser."
               transparency="Our engine utilizes direct client-side stream synthesis. Your private graphics never egress your local memory buffer, ensuring absolute zero-exposure document creation."

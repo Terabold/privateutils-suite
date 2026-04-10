@@ -64,7 +64,7 @@ const SlugForge = () => {
               </Link>
               <div>
                 <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow text-white">
-                  Slug <span className="text-primary italic">Forge</span>
+                  URL Slug <span className="text-primary italic">Studio</span>
                 </h1>
                 <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">
                   URL-Friendly Slugs · Regex Sanitization · Instant Export
@@ -157,11 +157,11 @@ const SlugForge = () => {
             </div>
 
             <ToolExpertSection
-              title="Studio Slug Forge"
+              title="URL Slug Studio"
               description="Slug Forge creates URL-friendly strings from arbitrary text. It handles character normalization, special character removal, and whitespace mapping to your preferred separator."
               transparency="All text normalization and regex stripping occurs strictly on your device. We use the ECMAScript String.normalize() method to ensure high-fidelity 'slugification' without external libraries or server-side calls."
               limitations="Extremely long input strings (over 5,000 characters) may result in truncated output on some mobile browsers due to memory constraints on string manipulation."
-              accent="orange"
+              accent="sky"
             />
           </div>
         </main>

@@ -17,14 +17,18 @@ const ToolCard = ({ title, description, icon, to, gradient = "from-primary to-ac
 
 
 
-        <CardHeader className="p-5 px-7">
-          <div className={`mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${gradient} text-white shadow-lg shadow-black/20 group-hover/card-link:scale-110 transition-transform duration-500`}>
-            {icon}
+        <CardHeader className="pt-10 pb-6 px-7">
+          <div className="flex items-center gap-4 mb-4">
+            <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${gradient} text-white shadow-lg shadow-black/20 group-hover/card-link:scale-110 transition-transform duration-500`}>
+              <div className="h-5 w-5 flex items-center justify-center">
+                {icon}
+              </div>
+            </div>
+            <CardTitle className="text-lg font-black uppercase tracking-tight font-display text-foreground group-hover/card-link:text-[hsl(var(--primary))] group-hover/card-link:text-shadow-glow transition-all duration-300 line-clamp-2 min-h-[2.5rem] flex items-center">
+              {title}
+            </CardTitle>
           </div>
-          <CardTitle className="text-xl font-black uppercase tracking-tight font-display mb-3 text-foreground group-hover/card-link:text-[hsl(var(--primary))] group-hover/card-link:text-shadow-glow transition-all duration-300">
-            {title}
-          </CardTitle>
-          <CardDescription className="text-sm font-medium leading-relaxed opacity-80 italic group-hover/card-link:opacity-100 transition-opacity">
+          <CardDescription className="text-sm font-medium leading-relaxed opacity-80 italic group-hover/card-link:opacity-100 transition-opacity line-clamp-2 min-h-[2.8rem]">
             {description}
           </CardDescription>
         </CardHeader>

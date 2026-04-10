@@ -5,88 +5,88 @@ import toolsMetadata from "@/data/toolsMetadata.json";
 
 const toolsData = [
   {
-    title: "Media Converter",
-    description: "The ultimate tool to convert video and image formats using Native Browser engines",
+    title: "Universal Media Converter",
+    description: "Multi-format video and audio translation engine using native browser processing",
     icon: <Video className="h-5 w-5" />,
     to: "/universal-media-converter",
     category: "Video Studio",
     tags: ["ULTIMATE", "NATIVE"]
   },
   {
-    title: "YouTube Hub",
-    description: "Preview overlays & live page simulations to ensure your thumbnails aren't covered",
+    title: "YouTube Thumbnail Studio",
+    description: "Simulate live YouTube page layouts with overlays and safe-zone validation",
     icon: <Layout className="h-5 w-5" />,
     to: "/youtube-thumbnail-hub",
     category: "Video Studio",
     tags: ["SAFE-ZONES", "SIM"]
   },
   {
-    title: "3D Perspective",
-    description: "Create angled thumbnails and cinematic perspective mockups with 1:1 export",
+    title: "Perspective Tilt Hub",
+    description: "Create angled image transformations and cinematic perspective mockups",
     icon: <Layers className="h-5 w-5" />,
     to: "/perspective-tilter",
     category: "Image Studio",
     tags: ["3D", "WYSIWYG"]
   },
   {
-    title: "Privacy Scrubber",
-    description: "Absolute metadata destruction: strip GPS, camera info, and device ID from photos",
+    title: "Metadata Scrubbing Studio",
+    description: "Absolute EXIF destruction: strip GPS, camera info, and device ID from photos",
     icon: <ShieldX className="h-5 w-5" />,
     to: "/metadata-scrubber",
     category: "Privacy Belt",
     tags: ["EXIF", "SCRUB"]
   },
   {
-    title: "Sprite Slicer",
-    description: "Interactive multi-box image splitter & sprite extractor with accurate edge logic",
+    title: "Sprite Studio & Slicer",
+    description: "Interactive multi-box image splitter and sprite sheet extractor",
     icon: <Scissors className="h-5 w-5" />,
     to: "/sprite-studio",
     category: "Image Studio",
     tags: ["SPRITES", "ZIP"]
   },
   {
-    title: "Audio Trimmer",
-    description: "Local high-fidelity waveform clipping and sample slicing for your audio assets",
+    title: "Precise Audio Studio",
+    description: "Precision waveform clipping and sample slicing for local audio assets",
     icon: <Music className="h-5 w-5" />,
     to: "/audio-trimmer",
     category: "Audio Lab",
     tags: ["TRIM", "WAV"]
   },
   {
-    title: "Volume Booster",
-    description: "Directly adjust volume levels of your audio assets and video sound streams",
+    title: "Signal Volume Engine",
+    description: "Non-destructive gain adjustment for audio files and video sound streams",
     icon: <Volume2 className="h-5 w-5" />,
     to: "/universal-volume-booster",
     category: "Audio Lab",
     tags: ["GAIN", "MP4"]
   },
   {
-    title: "Pixel Extractor",
-    description: "Extract professional color palettes and hex codes with right-click pan support",
+    title: "Color Palette Lab",
+    description: "Extract professional color palettes and hex codes with precision sampling",
     icon: <Pipette className="h-5 w-5" />,
     to: "/image-color-extractor",
     category: "Image Studio",
     tags: ["DESIGN", "PRO"]
   },
   {
-    title: "Video to GIF",
-    description: "Render high-quality, optimized GIFs from any video artifact with precise range control",
+    title: "High-Fidelity GIF Engine",
+    description: "Render optimized high-quality GIFs from any video with range control",
     icon: <RefreshCw className="h-5 w-5" />,
     to: "/video-to-gif",
     category: "Video Studio",
     tags: ["GIF", "NATIVE"]
   },
   {
-    title: "Frame Extractor",
-    description: "Capture high-resolution PNG instances and lossless frames from any video stream",
+    title: "High-Precision Frame Studio",
+    description: "Capture lossless PNG frames and high-resolution instances from video streams",
     icon: <Camera className="h-5 w-5" />,
     to: "/frame-extractor",
     category: "Video Studio",
     tags: ["PNG", "EXTRACT"]
   },
   {
-    title: "Aspect Studio",
-    description: "Professional aspect ratio remapping for social media with Pad and Crop modes",
+    title: "Aspect Ratio Hub",
+    description: "Multi-platform aspect ratio remapping with Pad and Crop scaling modes",
     icon: <Monitor className="h-5 w-5" />,
     to: "/video-aspect-studio",
     category: "Video Studio",
@@ -94,30 +94,30 @@ const toolsData = [
   },
   {
     title: "JSON Studio",
-    description: "Professional JSON architect: structural validation, deep formatting, and schema-grade architecture",
+    description: "Professional JSON architect: structural validation and schema-grade formatting",
     icon: <FileJson className="h-5 w-5" />,
     to: "/json-studio",
     category: "Dev Toolbox",
     tags: ["DEV", "JSON", "PRO"]
   },
   {
-    title: "Data Transformer",
-    description: "Universal data translation: bi-directional CSV and JSON conversion with smart header parsing",
+    title: "Data Transformer Hub",
+    description: "Bi-directional text data translation with smart column-to-object parsing",
     icon: <Database className="h-5 w-5" />,
     to: "/data-transformer",
     category: "Dev Toolbox",
     tags: ["CONVERT", "CSV", "JSON"]
   },
   {
-    title: "Secure QR Forge",
-    description: "Privacy-first local QR generator for links and sensitive data artifacts",
+    title: "Privacy QR Studio",
+    description: "Air-gapped local QR encoding for links and sensitive data artifacts",
     icon: <QrCode className="h-5 w-5" />,
     to: "/qr-forge",
     category: "Privacy Belt",
     tags: ["SECURE", "QR"]
   },
   {
-    title: "PII Masker",
+    title: "PII Masking Studio",
     description: "Forensic image redaction: physically blur and destroy sensitive information",
     icon: <ShieldX className="h-5 w-5" />,
     to: "/pii-masker",
@@ -133,16 +133,16 @@ const toolsData = [
     tags: ["SVG", "FAST"]
   },
   {
-    title: "SVG to Image",
-    description: "High-precision vector-to-raster rendering: convert SVG to high-quality PNG or JPG",
+    title: "SVG to Image Converter",
+    description: "High-precision vector-to-raster rendering for PNG and JPG formats",
     icon: <ImageIcon className="h-5 w-5" />,
     to: "/svg-to-image",
     category: "Image Studio",
     tags: ["RASTER", "PNG"]
   },
   {
-    title: "Image to PDF",
-    description: "Multi-page PDF architect: compile JPG, PNG, and WebP images into a single document with reordering support",
+    title: "Image to PDF Compiler",
+    description: "Merge multiple JPG, PNG, or WebP images into a single sorted PDF document",
     icon: <FileStack className="h-5 w-5" />,
     to: "/image-to-pdf",
     category: "Image Studio",
@@ -173,31 +173,31 @@ const toolsData = [
     tags: ["COMPARE", "PRO"]
   },
   {
-    title: "JWT Decoder",
-    description: "Instantly decode and inspect JWT tokens: header, payload, expiry, and claims — no server",
+    title: "JWT Decoder & Inspector",
+    description: "Inspect header, payload, and claims for JWT tokens on the local thread",
     icon: <KeyRound className="h-5 w-5" />,
     to: "/jwt-decoder",
     category: "Dev Toolbox",
     tags: ["DEV", "AUTH"]
   },
   {
-    title: "Encode / Decode",
-    description: "Convert between Base64, URL encoding, HTML entities, and Hex in one place",
+    title: "Universal Encoder & Decoder",
+    description: "Translate between Base64, URL encoding, HTML entities, and Hex bitstreams",
     icon: <Binary className="h-5 w-5" />,
     to: "/encoder-decoder",
     category: "Dev Toolbox",
     tags: ["BASE64", "HEX"]
   },
   {
-    title: "Timestamp Converter",
-    description: "Transform Unix timestamps, ISO 8601, and human dates across every format and timezone",
+    title: "Epoch Timestamp Engine",
+    description: "Transform Unix epoch, ISO 8601, and human dates across timezones",
     icon: <Clock className="h-5 w-5" />,
     to: "/timestamp-converter",
     category: "Dev Toolbox",
     tags: ["UNIX", "ISO"]
   },
   {
-    title: "Regex Playground",
+    title: "Regular Expression Studio",
     description: "Live regex testing with match highlighting, flag toggles, 8 presets, and a cheat sheet",
     icon: <SearchCode className="h-5 w-5" />,
     to: "/regex-playground",
@@ -205,7 +205,7 @@ const toolsData = [
     tags: ["DEV", "LIVE"]
   },
   {
-    title: "Lorem Generator",
+    title: "Lorem Ipsum Generator",
     description: "Generate professional placeholder text in Classic, Buzzword, or Hipster styles",
     icon: <FileText className="h-5 w-5" />,
     to: "/lorem-generator",
@@ -213,72 +213,72 @@ const toolsData = [
     tags: ["CONTENT", "DEV"]
   },
   {
-    title: "Password Forge",
-    description: "Hardware-backed high-entropy password generator with instant audit and local-only logic",
+    title: "Privacy Password Studio",
+    description: "High-entropy random string generation using browser-native cryptography",
     icon: <ShieldCheck className="h-5 w-5" />,
     to: "/password-generator",
     category: "Privacy Belt",
     tags: ["SECURE", "PRIVACY"]
   },
   {
-    title: "Palette Studio",
-    description: "Professional color harmony engine: generate Monochromatic, Analogous, and Triadic palettes",
+    title: "Color Palette Studio",
+    description: "Professional color harmony engine: generate Monochromatic and Triadic palettes",
     icon: <Palette className="h-5 w-5" />,
     to: "/palette-studio",
     category: "Image Studio",
     tags: ["DESIGN", "COLOR"]
   },
   {
-    title: "Hash Lab",
-    description: "Multi-algorithm cryptographic checksums: SHA-256, SHA-512, and MD5 fingerprints",
+    title: "Privacy Hash Lab",
+    description: "Local multi-algorithm hashing: SHA-256, SHA-512, and MD5 fingerprinting",
     icon: <Fingerprint className="h-5 w-5" />,
     to: "/hash-lab",
     category: "Privacy Belt",
     tags: ["CRYPTO", "SECURE"]
   },
   {
-    title: "Unit Converter",
-    description: "Fast, high-precision measurement transformation across every global standard",
+    title: "Universal Unit Hub",
+    description: "Fast high-precision measurement conversion for global engineering standards",
     icon: <Ruler className="h-5 w-5" />,
     to: "/unit-converter",
     category: "Quick Utils",
     tags: ["QUICK", "MATH"]
   },
   {
-    title: "Image Encoder",
-    description: "Direct image-to-memory-string conversion for developers and creative artifact logic",
+    title: "Image to Base64 Hub",
+    description: "Direct image-to-memory-string conversion for developers and creative assets",
     icon: <FileStack className="h-5 w-5" />,
     to: "/base64-image",
     category: "Image Studio",
     tags: ["EXTRACT", "DEV"]
   },
   {
-    title: "Reverse Audio",
-    description: "Temporal phase inversion: flip your audio buffers backward with zero-latency local processing",
+    title: "Audio Reverser",
+    description: "Temporal phase inversion: flip audio buffers backward with zero local latency",
     icon: <RefreshCw className="h-5 w-5" />,
     to: "/reverse-audio",
     category: "Audio Lab",
     tags: ["FLIP", "WAV"]
   },
   {
-    title: "Binary to Audio",
-    description: "Experimental data-bending: interpret any raw file bitstream as audio PCM data",
+    title: "Binary Bitstream to Audio",
+    description: "Experimental data-bending: interpret raw file bitstreams as audio PCM buffers",
     icon: <Binary className="h-5 w-5" />,
     to: "/binary-to-audio",
     category: "Audio Lab",
     tags: ["GLITCH", "PCM"]
   },
   {
-    title: "Mono / Stereo",
-    description: "Professional channel remapping: convert Mono to pseudo-Stereo or mix Stereo to Mono",
+    title: "Audio Channel Mapper",
+    description: "Channel remapping: convert Mono to pseudo-Stereo or mix Stereo to Mono",
     icon: <Layers className="h-5 w-5" />,
     to: "/audio-mono-stereo",
     category: "Audio Lab",
     tags: ["CHANNELS", "PRO"]
   },
   {
-    title: "Bass Booster EQ",
-    description: "Deep frequency enhancement: surgical low-end amplification using low-shelf filtering",
+    title: "Audio Bass Booster",
+    description: "Frequency enhancement: surgical low-end amplification using low-shelf filters",
     icon: <Zap className="h-5 w-5" />,
     to: "/audio-bass-booster",
     category: "Audio Lab",
@@ -293,32 +293,32 @@ const toolsData = [
     tags: ["COMPRESS", "WEB"]
   },
   {
-    title: "Morse Code Master",
-    description: "Translate text to Morse code and back with real-time web audio beep generation",
+    title: "Morse Code Studio",
+    description: "Translate text to Morse code and back with real-time web audio beeps",
     icon: <Radio className="h-5 w-5" />,
     to: "/morse-code-master",
     category: "Text Studio",
     tags: ["TRANS", "AUDIO"]
   },
   {
-    title: "Slug Forge",
-    description: "URL-friendly slug generation from article titles with high-fidelity sanitization",
+    title: "URL Slug Studio",
+    description: "URL-friendly slug generation from titles with high-fidelity sanitization",
     icon: <Hash className="h-5 w-5" />,
     to: "/slug-forge",
     category: "Dev Toolbox",
     tags: ["SEO", "URL"]
   },
   {
-    title: "Whitespace Scrubber",
-    description: "Fast ghost-character removal and text sanitization for messy documents",
+    title: "Clean Code Hub",
+    description: "Fast ghost-character removal and text sanitization for messy artifacts",
     icon: <Eraser className="h-5 w-5" />,
     to: "/whitespace-scrubber",
     category: "Text Studio",
     tags: ["CLEAN", "TEXT"]
   },
   {
-    title: "Dice Lab",
-    description: "Secure high-entropy random generation for dice rolls, coin flips, and range-based RNG",
+    title: "Dice Lab & Entropy Generator",
+    description: "Secure high-entropy random generation for dice, coins, and range-based RNG",
     icon: <Dices className="h-5 w-5" />,
     to: "/dice-lab",
     category: "Quick Utils",
@@ -394,13 +394,13 @@ const ToolsGrid = ({ searchQuery = "", selectedCategory = null, onClearFilters }
               <div key={tool.to} className="relative group/card-wrapper w-full h-full animate-in zoom-in-95 duration-500">
                 <div className={`absolute -inset-1 bg-gradient-to-tr ${categoryConfig[tool.category]?.gradient || "from-primary/20 to-accent/10"} opacity-0 group-hover/card-wrapper:opacity-50 blur-2xl transition-all duration-700 -z-10 group-hover/card-wrapper:scale-110`} />
                 <ToolCard {...tool} gradient={categoryConfig[tool.category]?.gradient} themeClass={categoryConfig[tool.category]?.themeClass} />
-                <div className="absolute top-4 right-4 flex gap-1.5 pointer-events-none z-50">
+                <div className="absolute top-3 right-3 flex gap-1.5 pointer-events-none z-50">
                   {tool.tags.map(tag => {
                     const tagColor = categoryConfig[tool.category]?.tagColor || '#a78bfa';
                     return (
                       <span
                         key={tag}
-                        className="text-[10px] font-black px-2 py-0.5 rounded-2xl shadow-xl opacity-0 translate-y-2 group-hover/card-wrapper:opacity-100 group-hover/card-wrapper:translate-y-0 transition-all duration-500 uppercase tracking-widest whitespace-nowrap backdrop-blur-md"
+                        className="text-[10px] font-black px-2 py-0.5 rounded-2xl shadow-xl opacity-0 translate-y-1 group-hover/card-wrapper:opacity-100 group-hover/card-wrapper:translate-y-0 transition-all duration-500 uppercase tracking-widest whitespace-nowrap backdrop-blur-md"
                         style={{ color: tagColor, backgroundColor: `${tagColor}15`, borderWidth: 1, borderStyle: 'solid', borderColor: `${tagColor}30` }}
                       >
                         {tag}
@@ -439,13 +439,13 @@ const ToolsGrid = ({ searchQuery = "", selectedCategory = null, onClearFilters }
                     <div key={tool.to} className="relative group/card-wrapper w-full h-full">
                       <div className={`absolute -inset-1 bg-gradient-to-tr ${config.gradient} opacity-0 group-hover/card-wrapper:opacity-50 blur-2xl transition-all duration-700 -z-10 group-hover/card-wrapper:scale-110`} />
                       <ToolCard {...tool} gradient={config.gradient} themeClass={config.themeClass} />
-                      <div className="absolute top-4 right-4 flex gap-1.5 pointer-events-none z-50">
+                      <div className="absolute top-3 right-3 flex gap-1.5 pointer-events-none z-50">
                         {tool.tags.map(tag => {
                           const tagColor = config.tagColor;
                           return (
                             <span
                               key={tag}
-                              className="text-[10px] font-black px-2 py-0.5 rounded-2xl shadow-xl opacity-0 translate-y-2 group-hover/card-wrapper:opacity-100 group-hover/card-wrapper:translate-y-0 transition-all duration-500 uppercase tracking-widest whitespace-nowrap backdrop-blur-md"
+                              className="text-[10px] font-black px-2 py-0.5 rounded-2xl shadow-xl opacity-0 translate-y-1 group-hover/card-wrapper:opacity-100 group-hover/card-wrapper:translate-y-0 transition-all duration-500 uppercase tracking-widest whitespace-nowrap backdrop-blur-md"
                               style={{ color: tagColor, backgroundColor: `${tagColor}15`, borderWidth: 1, borderStyle: 'solid', borderColor: `${tagColor}30` }}
                             >
                               {tag}
