@@ -374,7 +374,7 @@ const ToolsGrid = ({ searchQuery = "", selectedCategory = null, onClearFilters }
   }
 
   return (
-    <div className="space-y-32 relative">
+    <div className="space-y-32 relative min-h-[800px]">
       {isFiltering ? (
         <section id="search-results" className="animate-in fade-in slide-in-from-bottom-8 duration-1000">
           <div className="flex items-center gap-6 mb-16 px-2">

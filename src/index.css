@@ -167,10 +167,13 @@
   }
 
   /* Sub-Themes (Category Localization) */
-  .theme-video {
+  .theme-video, .theme-media {
     --primary: 221.2 83.2% 53.3%;
     --accent: 210 40% 96.1%;
     --ring: 221.2 83.2% 53.3%;
+  }
+  .dark .theme-video, .dark .theme-media {
+    --accent: 221.2 80% 12%;
   }
 
   .theme-image {
@@ -178,11 +181,17 @@
     --accent: 24.6 95% 90%;
     --ring: 24.6 95% 53.1%;
   }
+  .dark .theme-image {
+    --accent: 24.6 80% 12%;
+  }
 
   .theme-audio {
     --primary: 142.1 76.2% 36.3%;
     --accent: 149.1 52.2% 96.9%;
     --ring: 142.1 76.2% 36.3%;
+  }
+  .dark .theme-audio {
+    --accent: 142.1 80% 10%;
   }
 
   .theme-privacy {
@@ -190,6 +199,9 @@
     /* Violet/Magenta — distinct from Audio green */
     --accent: 280 85% 95%;
     --ring: 280 85% 60%;
+  }
+  .dark .theme-privacy {
+    --accent: 280 80% 12%;
   }
 
   .theme-utility {
@@ -199,11 +211,17 @@
     --accent: 38 90% 95%;
     --ring: 38 92% 50%;
   }
+  .dark .theme-utility {
+    --accent: 38 90% 12%;
+  }
 
   .theme-dev {
     --primary: 199 89% 48%;
     --accent: 199 89% 95%;
     --ring: 199 89% 48%;
+  }
+  .dark .theme-dev {
+    --accent: 199 89% 12%;
   }
 
   .theme-text {
@@ -211,11 +229,17 @@
     --accent: 38 90% 95%;
     --ring: 38 92% 50%;
   }
+  .dark .theme-text {
+    --accent: 38 90% 12%;
+  }
 
   .theme-quick {
     --primary: 349 89% 60%;
     --accent: 349 89% 95%;
     --ring: 349 89% 60%;
+  }
+  .dark .theme-quick {
+    --accent: 349 89% 12%;
   }
 }
 

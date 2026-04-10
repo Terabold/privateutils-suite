@@ -32,5 +32,23 @@ export default defineConfig({
     minify: 'esbuild',
     reportCompressedSize: false,
     chunkSizeWarningLimit: 2000,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('react') || id.includes('react-dom')) {
+              return 'vendor-react';
+            }
+            if (id.includes('framer-motion')) {
+              return 'vendor-framer';
+            }
+            if (id.includes('@ffmpeg')) {
+              return 'vendor-ffmpeg';
+            }
+            return 'vendor';
+          }
+        },
+      },
+    },
   },
 });

@@ -240,7 +240,7 @@ const FrameExtractor = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground transition-all duration-300 ">
+    <div className="min-h-screen bg-background text-foreground transition-all duration-300 theme-media">
       <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
 
       <div className="flex justify-center items-start w-full relative">
@@ -273,7 +273,7 @@ const FrameExtractor = () => {
               <motion.div
                 layout
                 transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                className={`glass-morphism border-primary/20 rounded-2xl bg-black/40 shadow-2xl relative overflow-hidden group/card min-h-[400px] flex flex-col w-full ${!file ? 'max-w-3xl' : 'lg:w-[55%]'}`}
+                className={`glass-morphism border-primary/20 rounded-2xl bg-black/40 shadow-2xl relative overflow-hidden group/card min-h-[300px] flex flex-col w-full ${!file ? 'max-w-3xl' : 'lg:w-[55%]'}`}
               >
                 <AnimatePresence mode="popLayout" initial={false}>
                   {!file ? (
@@ -283,7 +283,7 @@ const FrameExtractor = () => {
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.95 }}
                       transition={{ duration: 0.4 }}
-                      className="w-full h-full flex-1 flex flex-col p-6 min-h-[400px]"
+                      className="w-full h-full flex-1 flex flex-col p-6 min-h-[300px]"
                     >
                       <>
                         <div
@@ -313,7 +313,7 @@ const FrameExtractor = () => {
                     className="w-full"
                   >
                     {!isFullscreen && (
-                      <div className="bg-primary/5 p-5 border-b border-primary/10 flex items-center justify-between shrink-0">
+                      <div className="bg-primary/5 p-3 md:p-4 border-b border-primary/10 flex items-center justify-between shrink-0">
                         <div className="flex items-center gap-2">
                           <Activity className="h-3.5 w-3.5 text-primary" />
                           <h3 className="text-[9px] font-black uppercase tracking-[0.2em] text-primary italic leading-none">Video Preview</h3>
@@ -335,10 +335,10 @@ const FrameExtractor = () => {
                         </Button>
                       </div>
                     )}
-                    <CardContent className={`flex flex-col items-center w-full ${isFullscreen ? 'p-0' : 'p-6 space-y-6'}`}>
+                    <CardContent className={`flex flex-col items-center w-full ${isFullscreen ? 'p-0' : 'p-4 md:p-5 space-y-4'}`}>
                       <div ref={containerRef} className={cn(
-                        "w-full rounded-2xl overflow-x-clip shadow-2xl relative border-2 border-primary/10 bg-black aspect-video flex items-center justify-center studio-gradient focus-within:ring-2 focus-within:ring-primary/20 group/video",
-                        isFullscreen && "rounded-none border-0"
+                        "w-full rounded-2xl overflow-x-clip shadow-2xl relative border-2 border-primary/10 bg-black aspect-video max-h-[420px] mx-auto flex items-center justify-center studio-gradient focus-within:ring-2 focus-within:ring-primary/20 group/video",
+                        isFullscreen && "rounded-none border-0 max-h-none"
                       )}>
                         <video
                           ref={videoRef}
@@ -368,7 +368,7 @@ const FrameExtractor = () => {
                       </div>
 
                       {!isFullscreen && (
-                        <div className="w-full glass-morphism border-primary/10 bg-primary/5 p-4 md:p-6 rounded-2xl space-y-4 shadow-2xl studio-gradient border-border/20">
+                        <div className="w-full glass-morphism border-primary/10 bg-primary/5 p-3 md:p-4 rounded-2xl space-y-3 shadow-2xl studio-gradient border-border/20">
                           <div className="flex flex-col gap-4">
                             <div className="flex items-center justify-between gap-4">
                               <div className="flex bg-background/40 p-1.5 rounded-xl border border-white/5 backdrop-blur-md shrink-0 shadow-inner">
@@ -401,7 +401,6 @@ const FrameExtractor = () => {
                               >
                                 <Scan className={`h-4 w-4 relative z-10 ${processing ? "animate-spin" : ""}`} />
                                 <span className="relative z-10">Capture Instance</span>
-                                <span className="absolute right-3 opacity-40 text-[8px] font-black border border-white/20 px-1.5 py-0.5 rounded-md group-hover/btn:opacity-100 transition-opacity">F</span>
                               </Button>
 
                               <div className="hidden sm:flex items-center gap-2 shrink-0 bg-background/40 px-3 py-2 rounded-xl border border-white/5 shadow-inner">
@@ -440,9 +439,9 @@ const FrameExtractor = () => {
                     animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
                     exit={{ opacity: 0, x: 40, filter: "blur(10px)" }}
                     transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-                    className="w-full lg:w-[45%] space-y-6"
+                    className="w-full lg:w-[45%] space-y-4"
                   >
-                    <Card className="w-full rounded-2xl overflow-x-clip shadow-2xl relative border border-white/5 bg-card max-h-[30vh] aspect-video flex items-center justify-center group/latest">
+                    <Card className="w-full rounded-2xl overflow-x-clip shadow-2xl relative border border-white/5 bg-card max-h-[30vh] aspect-video flex items-center justify-center group/latest theme-media">
                       {frames.length > 0 ? (
                         <div className="relative w-full h-full animate-in fade-in zoom-in-95 duration-500">
                           <img
@@ -555,7 +554,7 @@ const FrameExtractor = () => {
 
             {/* GALLERY MODAL */}
             <Dialog modal={false} open={showGallery} onOpenChange={setShowGallery}>
-              <DialogContent className="max-w-6xl h-[85vh] flex flex-col p-0 glass-morphism border-primary/20 bg-card transition-all overflow-x-clip studio-gradient shadow-[0_0_100px_rgba(0,0,0,0.8)] outline-none rounded-2xl z-[200] top-[5vh] translate-y-0">
+              <DialogContent className="max-w-6xl h-[85vh] flex flex-col p-0 glass-morphism border-primary/20 bg-card transition-all overflow-x-clip studio-gradient shadow-[0_0_100px_rgba(0,0,0,0.8)] outline-none rounded-2xl z-[200] top-[5vh] translate-y-0 theme-media">
                 <DialogHeader className="p-10 border-b border-white/5 shrink-0 bg-background/40 backdrop-blur-3xl rounded-t-[40px]">
                   <div className="flex flex-col md:flex-row items-center justify-between gap-8">
                     <div className="space-y-1">

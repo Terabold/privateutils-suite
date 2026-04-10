@@ -149,18 +149,18 @@ const Navbar = ({
 
   return (
     <header className="sticky top-0 z-[100] border-b border-white/5 bg-background/80 backdrop-blur-xl py-1 w-full transition-theme shadow-lg shadow-black/20 overflow-visible">
-      <div className="container mx-auto px-4 lg:px-8 flex flex-wrap lg:flex-nowrap h-auto lg:h-[90px] items-center justify-between gap-y-4 lg:gap-x-8 max-w-[1500px] w-full transition-theme lg:py-0">
+      <div className="container mx-auto px-[clamp(8px,3vw,16px)] lg:px-8 flex flex-wrap lg:flex-nowrap h-auto lg:h-[90px] items-center justify-between gap-y-3 lg:gap-x-8 max-w-[1500px] w-full transition-theme lg:py-0">
 
         {/* 1. Logo Row - Persistent Logic */}
-        <div className="flex w-full lg:w-auto items-center justify-between gap-6 shrink-0">
+        <div className="flex w-full lg:w-auto items-center justify-between gap-[clamp(4px,2vw,16px)] shrink-0">
           <Link
             to="/"
             className="group flex items-center justify-start gap-3 cursor-pointer select-none no-underline outline-none"
           >
-            <div
-              className="h-9 w-9 md:h-10 md:w-10 rounded-lg flex items-center justify-center text-white shadow-2xl transition-theme group-hover:scale-105 shrink-0 overflow-hidden"
-              style={{ backgroundColor: `hsl(${activeTheme?.hsl || 'var(--primary)'})` }}
-            >
+          <div
+            className="h-[clamp(30px,8vw,36px)] w-[clamp(30px,8vw,36px)] md:h-10 md:w-10 rounded-lg flex items-center justify-center text-white shadow-2xl transition-theme group-hover:scale-105 shrink-0 overflow-hidden"
+            style={{ backgroundColor: `hsl(${activeTheme?.hsl || 'var(--primary)'})` }}
+          >
               <svg viewBox="0 0 512 512" fill="currentColor" className="w-[70%] h-[70%] pointer-events-none drop-shadow-lg">
                 <path d="M256,32 C172.96,62.33 93.36,65.88 48,64 C48,229.41 81.33,338.99 256,480 C430.67,338.99 464,229.41 464,64 C418.64,65.88 339.04,62.33 256,32 Z" />
                 <g stroke="white" strokeWidth="48" strokeLinecap="round" strokeLinejoin="round" fill="none">
@@ -170,11 +170,11 @@ const Navbar = ({
                 </g>
               </svg>
             </div>
-            <div className="flex h-9 md:h-10 items-center gap-2">
-              <span className="text-[20px] md:text-[24px] font-black tracking-tighter text-foreground font-display uppercase italic transition-theme group-hover:text-shadow-glow flex items-center leading-none">
+            <div className="flex h-9 md:h-10 items-center gap-[clamp(4px,1vw,8px)]">
+              <span className="text-[clamp(14px,5vw,22px)] md:text-[24px] font-black tracking-tighter text-foreground font-display uppercase italic transition-theme group-hover:text-shadow-glow flex items-center leading-none">
                 Private<span className="not-italic logo-text-transition" style={{ color: `hsl(${activeTheme?.hsl || 'var(--primary)'})` }}>Utils</span>
               </span>
-              <div className="px-2 py-0.5 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0 group/wip relative">
+              <div className="hidden min-[380px]:flex px-2 py-0.5 rounded-full bg-primary/10 border border-primary/20 items-center justify-center shrink-0 group/wip relative">
                 <span className="text-[9px] font-black text-primary uppercase tracking-widest leading-none">WIP</span>
                 <div className="absolute top-8 left-1/2 -translate-x-1/2 px-3 py-2 bg-popover text-popover-foreground text-[10px] font-black rounded-lg opacity-0 group-hover/wip:opacity-100 transition-opacity pointer-events-none whitespace-nowrap shadow-2xl border border-white/10 z-[120] uppercase tracking-wider italic">
                   Work In Progress • Deployment in progress
@@ -189,9 +189,9 @@ const Navbar = ({
               variant="ghost"
               size="icon"
               onClick={onToggleDark}
-              className="rounded-2xl hover:bg-primary/10 transition-all h-11 w-11 border border-transparent bg-primary/5 shadow-inner"
+              className="rounded-2xl hover:bg-primary/10 transition-all h-[clamp(36px,10vw,44px)] w-[clamp(36px,10vw,44px)] border border-transparent bg-primary/5 shadow-inner"
             >
-              {darkMode ? <Sun className="h-6 w-6 text-primary shadow-glow" /> : <Moon className="h-6 w-6" />}
+              {darkMode ? <Sun className="h-[clamp(18px,5vw,24px)] w-[clamp(18px,5vw,24px)] text-primary shadow-glow" /> : <Moon className="h-[clamp(18px,5vw,24px)] w-[clamp(18px,5vw,24px)]" />}
             </Button>
           </div>
         </div>
@@ -248,8 +248,8 @@ const Navbar = ({
           </div>
 
           {/* 3. Category pills - DYNAMIC Scaling (Paddings and Font size shrink with viewport) */}
-          <div className="w-full overflow-x-auto no-scrollbar scroll-smooth">
-            <div className="flex flex-nowrap items-center gap-1.5 md:gap-2 mx-auto w-max px-8 py-2">
+          <div className="w-full overflow-x-auto no-scrollbar scroll-smooth mask-fade-right">
+            <div className="flex flex-nowrap items-center gap-[clamp(2px,0.8vw,8px)] mx-auto w-max px-[clamp(2px,2vw,32px)] py-1.5">
               {Object.keys(categoryConfig).filter(k => k !== "All").map((category) => {
                 const theme = categoryConfig[category];
                 const Icon = theme.icon;

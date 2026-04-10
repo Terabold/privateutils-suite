@@ -1,31 +1,19 @@
 "use client";
 import { i as __toESM } from "./chunk-YKewjYmz.js";
 import { t as require_react } from "./react.js";
-import { a as createContextScope, o as composeEventHandlers, r as useControllableState, t as Primitive } from "./dist-D5_YqNOf.js";
 import { o as useComposedRefs } from "./dist-C0nNKhsJ.js";
 import { t as require_jsx_runtime } from "./jsx-runtime-BZEYXbvP.js";
-import { t as createCollection } from "./dist-DBz72bwJ.js";
-import { t as useDirection } from "./dist-CDsBV0u4.js";
-import { t as useSize } from "./dist-COdSIE3r.js";
+import { t as Primitive } from "./dist-C9pLscii.js";
+import { r as composeEventHandlers, t as useControllableState } from "./dist-BX2jLd5q.js";
+import { n as createContextScope } from "./dist-Dx0EvjJ8.js";
+import { t as createCollection } from "./dist-DzvT9s40.js";
+import { t as useDirection } from "./dist-DMvLmkxm.js";
+import { t as useSize } from "./dist-_TeXSasO.js";
+import { t as usePrevious } from "./dist-oO8O25OR.js";
 //#region node_modules/@radix-ui/number/dist/index.mjs
 var import_react = /* @__PURE__ */ __toESM(require_react(), 1);
 function clamp(value, [min, max]) {
 	return Math.min(max, Math.max(min, value));
-}
-//#endregion
-//#region node_modules/@radix-ui/react-use-previous/dist/index.mjs
-function usePrevious(value) {
-	const ref = import_react.useRef({
-		value,
-		previous: value
-	});
-	return import_react.useMemo(() => {
-		if (ref.current.value !== value) {
-			ref.current.previous = ref.current.value;
-			ref.current.value = value;
-		}
-		return ref.current.previous;
-	}, [value]);
 }
 //#endregion
 //#region node_modules/@radix-ui/react-slider/dist/index.mjs

@@ -1,23 +1,13 @@
 import { i as __toESM } from "./chunk-YKewjYmz.js";
 import { t as require_react } from "./react.js";
-import { a as createContextScope, i as useLayoutEffect2, t as Primitive } from "./dist-D5_YqNOf.js";
+import { t as require_react_dom } from "./react-dom-PNx-7w4U.js";
 import { o as useComposedRefs } from "./dist-C0nNKhsJ.js";
 import { t as require_jsx_runtime } from "./jsx-runtime-BZEYXbvP.js";
-import { t as require_react_dom } from "./react-dom-_oY_XGvi.js";
-import { o as useCallbackRef } from "./dist-Cf1t_F66.js";
-import { t as useSize } from "./dist-COdSIE3r.js";
-//#region node_modules/@radix-ui/react-id/dist/index.mjs
-var import_react = /* @__PURE__ */ __toESM(require_react(), 1);
-var useReactId = import_react[" useId ".trim().toString()] || (() => void 0);
-var count = 0;
-function useId(deterministicId) {
-	const [id, setId] = import_react.useState(useReactId());
-	useLayoutEffect2(() => {
-		if (!deterministicId) setId((reactId) => reactId ?? String(count++));
-	}, [deterministicId]);
-	return deterministicId || (id ? `radix-${id}` : "");
-}
-//#endregion
+import { t as Primitive } from "./dist-C9pLscii.js";
+import { n as useLayoutEffect2 } from "./dist-BX2jLd5q.js";
+import { n as createContextScope } from "./dist-Dx0EvjJ8.js";
+import { o as useCallbackRef } from "./dist-d7ldUdwW.js";
+import { t as useSize } from "./dist-_TeXSasO.js";
 //#region node_modules/@floating-ui/utils/dist/floating-ui.utils.mjs
 /**
 * Custom positioning reference element.
@@ -1377,6 +1367,7 @@ var computePosition = (reference, floating, options) => {
 };
 //#endregion
 //#region node_modules/@floating-ui/react-dom/dist/floating-ui.react-dom.mjs
+var import_react = /* @__PURE__ */ __toESM(require_react(), 1);
 var import_react_dom = /* @__PURE__ */ __toESM(require_react_dom(), 1);
 var index = typeof document !== "undefined" ? import_react.useLayoutEffect : function noop() {};
 function deepEqual(a, b) {
@@ -1923,6 +1914,6 @@ var Anchor = PopperAnchor;
 var Content = PopperContent;
 var Arrow = PopperArrow;
 //#endregion
-export { createPopperScope as a, Root2 as i, Arrow as n, useId as o, Content as r, Anchor as t };
+export { createPopperScope as a, Root2 as i, Arrow as n, Content as r, Anchor as t };
 
-//# sourceMappingURL=dist-D0PmDSjL.js.map
+//# sourceMappingURL=dist-C_B0jbRM.js.map

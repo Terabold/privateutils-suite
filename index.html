@@ -9,16 +9,14 @@
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="shortcut icon" href="/favicon.svg" />
 
-  <title>Client-Sided Coding & Media Tools — 100% Private, In-Browser Utility Suite (Zero Uploads)</title>
-  <meta name="description"
-    content="A professional collection of client-side developer and media tools. Process video, images, and sensitive data entirely in your browser. No server uploads, no tracking, 100% private." />
-  <meta name="author" content="PrivateUtils Studio" />
-  
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-  <meta http-equiv="Pragma" content="no-cache" />
-  <meta http-equiv="Expires" content="0" />
+  <link rel="preconnect" href="https://fundingchoicesmessages.google.com" crossorigin>
+  <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossorigin>
+  <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
 
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8938339685834274"
+  <link rel="preload" href="/fonts/outfit-900.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/outfit-700.woff2" as="font" type="font/woff2" crossorigin>
+
+  <script defer src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8938339685834274"
     crossorigin="anonymous"></script>
   <meta name="google-adsense-account" content="ca-pub-8938339685834274">
 
@@ -35,13 +33,25 @@
   <meta name="twitter:image" content="/favicon.svg" />
 
   <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-QSZPWLTQC2"></script>
+  <script defer src="https://www.googletagmanager.com/gtag/js?id=G-QSZPWLTQC2"></script>
   <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments); }
-    gtag('js', new Date());
-
-    gtag('config', 'G-QSZPWLTQC2');
+    window.addEventListener('load', () => {
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(() => {
+          window.dataLayer = window.dataLayer || [];
+          function gtag() { dataLayer.push(arguments); }
+          gtag('js', new Date());
+          gtag('config', 'G-QSZPWLTQC2');
+        });
+      } else {
+        setTimeout(() => {
+          window.dataLayer = window.dataLayer || [];
+          function gtag() { dataLayer.push(arguments); }
+          gtag('js', new Date());
+          gtag('config', 'G-QSZPWLTQC2');
+        }, 1000);
+      }
+    });
   </script>
 
   <script>

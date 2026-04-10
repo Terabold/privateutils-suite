@@ -124,7 +124,7 @@ const Index = () => {
           </section>
 
           {/* Mobile Inline Ad */}
-          <div className="flex min-[1600px]:hidden justify-center mb-10 w-full">
+          <div className="flex min-[1600px]:hidden justify-center mb-10 w-full min-h-[250px]">
             <AdBox adFormat="horizontal" height={250} label="300x250 AD" className="w-full max-w-[400px]" />
           </div>
 
@@ -138,7 +138,7 @@ const Index = () => {
           </div>
 
           {/* Integrated Ad Break */}
-          <div className="flex flex-col md:flex-row items-center justify-center gap-8 mb-32 opacity-60">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-8 mb-32 opacity-60 min-h-[250px]">
              <AdBox adFormat="horizontal" height={250} label="300x250 AD" className="w-full max-w-[400px]" />
              <div className="hidden md:block h-12 w-[1px] bg-border" />
              <AdBox adFormat="horizontal" height={250} label="300x250 AD" className="w-full max-w-[400px]" />

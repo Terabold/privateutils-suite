@@ -256,9 +256,11 @@ const YouTubeThumbnailHub = () => {
                                   }}
                                 />
                                 <div className="absolute bottom-1 right-1 bg-black/80 text-[9px] font-black px-1 rounded-sm text-white">10:24</div>
-                                <div className="absolute top-1.5 left-1.5 bg-primary p-0.5 rounded-full shadow-lg border border-white/10 z-20">
-                                  <Star className="h-2.5 w-2.5 text-white fill-white shrink-0" />
-                                </div>
+                                {i === 1 && (
+                                  <div className="absolute top-1.5 left-1.5 bg-primary p-0.5 rounded-full shadow-lg border border-white/10 z-20">
+                                    <Star className="h-2.5 w-2.5 text-white fill-white shrink-0" />
+                                  </div>
+                                )}
                               </div>
                               <div className="space-y-1 py-0.5 overflow-x-clip">
                                 <h4 className={`text-sm font-black leading-snug line-clamp-2 pr-4 overflow-visible transition-colors duration-300 ${ytTheme === 'dark' ? 'text-white/90 group-hover:text-primary' : 'text-zinc-900 group-hover:text-primary'}`}>{i === 1 ? title : getOtherTitle(i)}</h4>

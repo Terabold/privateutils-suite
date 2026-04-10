@@ -6712,4 +6712,4 @@ var require_html2canvas = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 //#endregion
 export default require_html2canvas();
 
-//# sourceMappingURL=html2canvas-o9bAUdWG.js.map
+//# sourceMappingURL=html2canvas-DZGfQopc.js.map

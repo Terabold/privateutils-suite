@@ -441,7 +441,7 @@ const SpriteStudio = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground transition-colors duration-500 ">
+    <div className="min-h-screen bg-background text-foreground transition-colors duration-500">
       <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
 
       <div className="flex justify-center items-start w-full relative">
@@ -491,8 +491,8 @@ const SpriteStudio = () => {
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <Button onClick={() => { if (image) URL.revokeObjectURL(image); setImage(null); setSlices([]); setActiveId(null); }} variant="outline" size="sm" className="h-8 px-4 rounded-xl font-black text-[8px] uppercase gap-2 border-primary/10 bg-primary/5 backdrop-blur-md hover:bg-destructive/20 hover:text-destructive transition-all">
-                      <Trash2 className="h-3 w-3" /> Clean Stage
+                    <Button onClick={() => { if (image) URL.revokeObjectURL(image); setImage(null); setSlices([]); setActiveId(null); }} variant="outline" size="sm" className="h-8 px-2 md:px-4 rounded-xl font-black text-[8px] uppercase gap-2 border-primary/10 bg-primary/5 backdrop-blur-md hover:bg-destructive/20 hover:text-destructive transition-all">
+                      <Trash2 className="h-3 w-3" /> <span className="hidden md:inline">Clean Stage</span>
                     </Button>
                     <div className="w-[1px] h-4 bg-white/5" />
                     <Button
@@ -500,9 +500,9 @@ const SpriteStudio = () => {
                       disabled={!image}
                       variant="outline"
                       size="sm"
-                      className={`h-8 px-4 rounded-xl font-black text-[8px] uppercase gap-2 transition-all tracking-wider ${showGrid ? "bg-primary text-white border-primary shadow-glow" : "border-primary/10 bg-primary/5 hover:bg-primary/20"}`}
+                      className={`h-8 px-2 md:px-4 rounded-xl font-black text-[8px] uppercase gap-2 transition-all tracking-wider ${showGrid ? "bg-primary text-white border-primary shadow-glow" : "border-primary/10 bg-primary/5 hover:bg-primary/20"}`}
                     >
-                      <Grid3X3 className="h-3 w-3" /> Grid {showGrid ? "ON" : "OFF"}
+                      <Grid3X3 className="h-3 w-3" /> <span className="hidden md:inline">Grid {showGrid ? "ON" : "OFF"}</span>
                     </Button>
                     <div className="w-[1px] h-4 bg-white/5" />
                     <Button
@@ -517,9 +517,9 @@ const SpriteStudio = () => {
                       disabled={!image}
                       variant="outline"
                       size="sm"
-                      className="h-8 px-4 rounded-xl font-black text-[8px] uppercase gap-2 border-primary/10 bg-primary/5 backdrop-blur-md hover:bg-primary/20 transition-all tracking-wider"
+                      className="h-8 px-2 md:px-4 rounded-xl font-black text-[8px] uppercase gap-2 border-primary/10 bg-primary/5 backdrop-blur-md hover:bg-primary/20 transition-all tracking-wider"
                     >
-                      <RotateCcw className="h-3 w-3" /> Reset Viewport
+                      <RotateCcw className="h-3 w-3" /> <span className="hidden md:inline">Reset Viewport</span>
                     </Button>
                   </div>
                 </div>
@@ -610,17 +610,17 @@ const SpriteStudio = () => {
                             const nh = Math.abs(slice.h);
                             return (
                               <g key={slice.id} className="drop-shadow-lg">
-                                <rect
-                                  x={nx} y={ny} width={nw} height={nh}
-                                  fill={activeId === slice.id ? "rgba(59, 130, 246, 0.4)" : "rgba(59, 130, 246, 0.2)"}
-                                  stroke={activeId === slice.id ? "#3b82f6" : "rgba(59, 130, 246, 0.8)"}
-                                  strokeWidth={1.2 / (scale * zoom)}
-                                  strokeDasharray={activeId === slice.id ? "none" : `${4 / (scale * zoom)} ${3 / (scale * zoom)}`}
-                                />
-                                <text
-                                  x={nx + 2 / zoom} y={ny - 4 / zoom}
-                                  fontSize={Math.max(6, 10 / zoom)}
-                                  fill={activeId === slice.id ? "#3b82f6" : "white"}
+                                  <rect
+                                    x={nx} y={ny} width={nw} height={nh}
+                                    fill={activeId === slice.id ? "hsl(var(--primary) / 0.4)" : "hsl(var(--primary) / 0.15)"}
+                                    stroke={activeId === slice.id ? "hsl(var(--primary))" : "hsl(var(--primary) / 0.6)"}
+                                    strokeWidth={1.2 / (scale * zoom)}
+                                    strokeDasharray={activeId === slice.id ? "none" : `${4 / (scale * zoom)} ${3 / (scale * zoom)}`}
+                                  />
+                                  <text
+                                    x={nx + 2 / zoom} y={ny - 4 / zoom}
+                                    fontSize={Math.max(6, 10 / zoom)}
+                                    fill={activeId === slice.id ? "hsl(var(--primary))" : "white"}
                                   className="font-mono font-black tracking-tighter select-none drop-shadow-md"
                                 >
                                   {slice.name}
@@ -708,7 +708,7 @@ const SpriteStudio = () => {
                               </div>
                             </div>
 
-                            <Button variant="secondary" className="w-full h-10 rounded-xl font-black gap-2 text-[10px] uppercase shadow-xl shadow-black/20 italic border border-white/10 hover:translate-y-[-1px] transition-all bg-card hover:bg-accent" onClick={() => generateGrid(gridConfig.rows, gridConfig.cols, gridConfig.gapX, gridConfig.gapY, gridConfig.cellW, gridConfig.cellH, gridMode)}>
+                            <Button variant="secondary" className="w-full h-10 rounded-xl font-black gap-2 text-[10px] uppercase shadow-xl shadow-black/20 italic border border-white/10 hover:translate-y-[-1px] transition-all bg-card hover:bg-accent hover:text-primary" onClick={() => generateGrid(gridConfig.rows, gridConfig.cols, gridConfig.gapX, gridConfig.gapY, gridConfig.cellW, gridConfig.cellH, gridMode)}>
                               <Grid3X3 className="h-3 w-3" /> Apply Grid Schema
                             </Button>
                           </motion.div>
@@ -786,7 +786,7 @@ const SpriteStudio = () => {
                 description="The Sprite Studio is a high-precision asset management engine designed for game developers and UI designers to slice large texture atlases and sprite sheets into individual, optimized PNG artifacts."
                 transparency="Our studio utilizes the browser's native Canvas API 2D context to perform pixel-perfect extraction. The 'Grid Schema' and 'Manual Drafting' engines run entirely within your local V8 environment—ensuring that your proprietary game assets and character designs are never uploaded to a remote server. All processing, including ZIP compression via JSZip, is handled client-side."
                 limitations="The visualizer is optimized for high-performance 'Nearest Neighbor' rendering (Pixelated), making it ideal for pixel art. However, extremely large textures (8192px+) may hit browser-specific canvas memory limits. For massive atlases, we recommend slicing in smaller logical chunks."
-                accent="blue"
+                accent="orange"
               />
             </div>
           </div>
