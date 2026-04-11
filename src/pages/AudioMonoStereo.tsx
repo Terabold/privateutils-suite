@@ -442,10 +442,17 @@ const AudioMonoStereo = () => {
 
             <ToolExpertSection
               title="Mono / Stereo Audio Lab"
-              description="The Mono/Stereo Channel Remapper is a secure, client-side utility designed to handle professional audio channel manipulation. Unlike standard converters that upload your potentially sensitive audio files to a remote server, this tool operates autonomously right in your local browser environment."
-              transparency="The entire channel remapping matrix—whether copying a single mono channel into a dual-channel stereo output, or flattening a rich stereo field down to a tight mono mix—is executed natively using the Web Audio API. Because this utility harnesses your local machine's system memory (RAM), your workflow remains fully air-gapped, guaranteeing zero data leakage."
-              limitations="However, please be aware that for massive audio files (e.g., lengthy lossless WAV masters exceeding hundreds of megabytes), your browser may struggle with RAM allocation. If you experience memory heap errors or tab crashes, we recommend utilizing a dedicated desktop DAW, as client-side memory budgets are strictly enforced by modern browsers."
               accent="blue"
+              overview="This lab provides an industrial-grade interface for professional channel remapping. I built this tool because I noticed audio engineers and podcasters compromising their proprietary source security by using insecure cloud converters for simple phase-summing tasks. This tool restores data sovereignty by keeping the entire channel matrix in your local RAM."
+              steps={[
+                "Import your source audio artifact (WAV, MP3, or OGG) to the studio workspace.",
+                "Select your mapping strategy: choose 'Mono to Stereo' for spatial doubling or 'Stereo to Mono' for phase consolidation.",
+                "Monitor the real-time visual signal to verify the integrity of the remapped channels.",
+                "Process the matrix to trigger the high-performance channel reallocation engine.",
+                "Download the remapped artifact directly from your device's volatile memory heap."
+              ]}
+              technicalImplementation="I engineered this remapped engine utilizing the Web Audio API to instantiate an OfflineAudioContext for faster-than-real-time processing. For 'Stereo to Mono' conversion, we apply a specific summing algorithm ((L+R)/2) to prevent clipping while maintaining phase alignment. The resulting PCM data is then encapsulated into a RIFF/WAVE container via high-performance buffer concatenation. By avoiding main thread blocking, the interface remains fluid even when processing massive audio buffers."
+              privacyGuarantee="Privacy at the architectural level means zero server-side round trips. Everything from decoding the source binary to generating the output Blob occurs within the secure Browser Sandbox Lifecycle. Because we avoid server-side SaaS models, the risk of a data breach is mathematically eliminated. Your audio remains in volatile RAM and is vaporized the moment the session ends."
             />
           </div>
         </main>

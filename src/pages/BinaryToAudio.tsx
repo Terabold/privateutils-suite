@@ -405,10 +405,17 @@ const BinaryToAudio = () => {
 
             <ToolExpertSection
               title="Binary Data to Audio Converter"
-              description="The Binary-to-Audio converter is an experimental data-bending laboratory built for sound designers and glitch artists to force images or documents into acoustic waveforms."
-              transparency="Our tool parses the bytes as 16-bit signed integers entirely within your local computing environment. Your data remains fully encrypted and air-gapped from the network during the synthesis process."
-              limitations="However, experimental data-bending is highly resource-intensive. If you feed a massive 3GB video file into the logic, your browser will immediately hit a memory cap and crash. We recommend staying under 50MB for fluid glitch creation."
               accent="blue"
+              overview="The Binary-to-Audio Inverter is an experimental data-bending laboratory built for sound designers, glitch artists, and forensic researchers. I built this tool to provide a method for 'hearing' the structural patterns of non-audio files—transforming images, documents, or binaries into acoustic waveforms by interpreting their raw byte streams as PCM data."
+              steps={[
+                "Stage your structural artifact (image, PDF, or EXE) in the Studio Workbench.",
+                "Configure the 'Sampling Matrix' (Hz) to determine the pitch and playback speed of the raw data.",
+                "Trigger the 'Interpret \u0026 Download' command to synthesize the acoustic waveform.",
+                "Audit the 'Phasor Registry' and waveform summary for structural anomalies.",
+                "Export the resulting high-fidelity WAV file for use in your digital audio workstation (DAW)."
+              ]}
+              technicalImplementation="I engineered this generator to perform direct byte-to-float inversion. The engine reads the artifact's raw buffer as an array of 16-bit signed integers, which are then normalized to the -1.0 to 1.0 range required for audio synthesis. By utilizing the Web Audio API's BufferSource, we can dynamically map these bitstreams to user-defined sample rates (up to 48kHz). The final output is wrapped in a Resource-Interchange File Format (RIFF) container locally to ensure compatibility."
+              privacyGuarantee="The Security \u0026 Privacy model for the Inverter is built on Air-Gapped Synthesis. Since the data-bending logic executes entirely within your browser's private application state, your source artifacts are never exposed to external networks. We do not use cloud-side 'transcoding' hubs—the entire PCM synthesis pipeline is local. Your secrets remain silent to the network and are purged from volatile memory upon session termination."
             />
           </div>
         </main>

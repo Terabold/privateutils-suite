@@ -377,11 +377,18 @@ const DiceLab = () => {
             </div>
 
             <ToolExpertSection
-              title="Dice Lab & Entropy Generator"
-              description="The Studio Dice Lab has been re-engineered for immersive randomization. By combining the Web Crypto API's hardware-backed entropy with high-performance 3D CSS physics, we deliver a premium randomization suite that is both cryptographically secure and visually stunning."
-              transparency="Randomization Protocol: Every result in Dice Lab is generated using window.crypto.getRandomValues() before the animation sequence begins. The 3D dice rotations, coin tossed momentum, and odometer digit scrolling are perfectly synced representations of the secure underlying data bits. Your privacy is maintained as all entropy calculations happen locally in your browser's hardened sandbox."
-              limitations="While our 3D physics engine is designed for hardware acceleration (using GPU compositing), extremely low-end legacy devices without 'preserve-3d' support may fall back to simplified 2D representations. For maximum performance, we limit the simultaneous dice forge to 12 artifacts."
+              title="Dice Lab \u0026 Entropy Generator"
               accent="rose"
+              overview="The Studio Dice Lab is a high-authority randomization workbench designed for tabletop gamers, developers, and cryptographic enthusiasts. I architected this lab to provide a surgical path for generating provably fair outcomes—combining the Web Crypto API's hardware-backed entropy with high-performance 3D CSS physics to deliver a premium suite that avoids the predictability of low-entropy 'online rollers'."
+              steps={[
+                "Select your target 'Randomization Vector' (Dice, Coins, or Odometer).",
+                "Configure the 'Force' and 'Material' parameters to customize your acoustic experience.",
+                "Trigger the 'Roll' sequence to instantiate a hardware-backed entropy request.",
+                "Observe the 'Acoustic 3D Simulation' to verify the physical outcome.",
+                "Utilize the 'Live Registry' to audit your roll history and verify statistical distribution."
+              ]}
+              technicalImplementation="I engineered this lab using the Web Crypto API (window.crypto.getRandomValues) to ensure that every result is derived from hardware-level entropy rather than pseudo-random mathematical approximations. The 3D physics engine utilizes high-performance CSS-3D transforms and Hardware Acceleration, ensuring that the visual representation is perfectly synced with the underlying random bitstream. This prevents 'roll manipulation' and ensures that every outcome is cryptographically unique."
+              privacyGuarantee="The Security \u0026 Privacy model for the Dice Lab is centered on Cryptographic Autonomy. Your randomization patterns and outcome histories are processed and stored strictly within your browser's volatile application state. At no point is your roll telemetry transmitted to a remote server. All physics coefficients and entropy data are permanently purged from RAM once the session is terminated. Your luck stays strictly on your device."
             />
           </div>
         </main>

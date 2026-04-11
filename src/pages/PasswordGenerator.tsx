@@ -289,10 +289,17 @@ const PasswordGenerator = () => {
             {/* SEO & Tool Guide Section */}
             <ToolExpertSection
               title="Secure Password Architect"
-              description="The Secure Password Generator is a cryptographic utility designed to create high-entropy, unpredictable strings for securing your most sensitive digital accounts."
-              transparency="Our generator utilizes the browser's hardware-backed 'crypto.getRandomValues()' API, ensuring true cryptographically strong randomness. Because this process happens entirely within your local machine's memory, your generated passwords never travel over the internet, protecting you from intercept-based leaks."
-              limitations="While our passwords are mathematically optimized for strength, their effectiveness depends on your length and complexity settings. To maintain system stability during bulk generation, we enforce a 500-password dispatch limit and a 512-character string cap."
               accent="rose"
+              overview="The Password Architect is a high-entropy cryptographic utility designed to generate unpredictable, secure strings for critical account protection. I built this tool to eliminate the dependency on 'cloud-based' password generators which often log the IP address, timestamp, and metadata of the passwords they dispense."
+              steps={[
+                "Select the character types you want to include (Uppercase, Lowercase, Numbers, Symbols).",
+                "Adjust the 'Length Optimizer' to achieve the target bits of entropy for your security model.",
+                "Choose a 'Bulk Dispatch' quantity if you are rotating secrets for multiple service accounts.",
+                "Verify the 'Security Audit' to confirm the entropy strength of your configuration.",
+                "Copy the generated results directly to your secure password manager or local vault."
+              ]}
+              technicalImplementation="I engineered the generator core using the browser's hardware-backed Web Crypto API—specifically the 'crypto.getRandomValues()' method. This ensures that the seed for your randomness is cryptographically strong and gathered from systemic noise sources. By avoiding pseudo-random functions like Math.random(), I ensure that each character in your password has an equal probability distribution across the entire selected charset."
+              privacyGuarantee="The Security & Privacy model for the Architect is founded on Zero-Log Entropy. All password generation and strength auditing occur exclusively within your machine's volatile RAM. No data is stored, transmitted, or cached. Your sensitive secrets are mathematically isolated from the network, ensuring that the generated output never touches a persistent storage medium or external server."
             />
           </div>
         </main>

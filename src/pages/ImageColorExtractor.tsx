@@ -519,10 +519,17 @@ const ImageColorExtractor = () => {
             {/* SEO & Tool Guide Section */}
             <ToolExpertSection
               title="Image Color Palette Extractor"
-              description="The Image Color Palette Extractor is a high-fidelity sampling engine designed for digital artists and front-end developers to isolate sub-pixel color values from any source image."
-              transparency="Our extraction logic utilizes the HTML5 Canvas API to sample RGBA data directly from your local hardware buffer. This process is 100% private—your source images never leave your device, ensuring total security for unreleased design assets."
-              limitations="While the tool supports zooming up to 5000% for precision sampling, loading extremely high-resolution RAW photographs (e.g., 100MB+ DSLR shots) may cause temporary memory spikes in your browser. We recommend using web-optimized JPG/PNG files for the smoothest performance."
               accent="orange"
+              overview="This extractor is a high-fidelity sampling engine designed for digital artists and UI architects. I built this tool to provide a pixel-perfect color discovery workbench that doesn't involve uploading your unreleased design assets or proprietary brand guides to insecure cloud color-pickers."
+              steps={[
+                "Deploy your high-resolution image artifact to the studio workbench via drag-and-drop.",
+                "Utilize the 'Precision Zoom' slider (up to 10,000%) to isolate sub-pixel color clusters.",
+                "Right-click and drag to pan across the bitmap master in real-time without artifacts.",
+                "Click any specific pixel to extract its unique RGBA signature into the hex console.",
+                "Review and copy your extraction history directly for use in your production CSS or design software."
+              ]}
+              technicalImplementation="I architected this sampler using an off-screen HTML5 Canvas buffer. Upon interaction, we utilize the getImageData method to retrieve the raw Uint8ClampedArray containing RGBA values directly from the browser's hardware-accelerated surface. By using GPU-composited rendering, we maintain high frame rates even on 8K bitmaps. The history state is managed locally in-memory, ensuring that your sampled palette data remains private and ephemeral."
+              privacyGuarantee="The Security & Privacy model for the Color Extractor is built on Bitmap Isolation. Since sampling occurs strictly within the browser's volatile pixel buffer, no data is ever transmitted through a network interface. Your creative master files remain within the Browser Sandbox Lifecycle and are purged from the machine's RAM immediately upon workbench closure."
             />
           </div>
         </main>

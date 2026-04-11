@@ -583,10 +583,17 @@ const UniversalMediaConverter = () => {
 
             <ToolExpertSection
               title="Universal Media Engine"
-              description="The Universal Media Converter is a flagship multimedia engine designed to process video, audio, and image artifacts directly within your browser's local sandbox."
-              transparency="Our studio utilizes a dual-engine pipeline: a native Canvas/MediaRecorder bridge for lightweight formats and a multi-threaded FFmpeg.WASM instance for professional-grade transcoding. By leveraging WebAssembly, we perform bitstream manipulation entirely on your local hardware. Your private videos, sensitive recordings, and proprietary assets never touch a remote server, ensuring absolute data sovereignty and air-gapped privacy."
-              limitations="The browser's V8 engine and WASM memory heap have a physical limit (typically ~2-4GB of RAM). While we support video files up to 500MB, extremely long or high-bitrate 4K files may exceed these boundaries. For massive production render-tasks, we recommend a dedicated CLI environment."
               accent="blue"
+              overview="When I designed the Universal Media Engine, my goal was to break the 'Upload to Transcode' cycle. This tool provides an industrial-grade interface for converting complex video and audio artifacts without relying on an external server cluster. It is built to maintain confidentiality for proprietary media workflows."
+              steps={[
+                "Upload your source media artifact (Video or Audio) to the local conversion engine.",
+                "Select your target container format and codec parameters from the rendering matrix.",
+                "The engine initializes a dedicated WebAssembly instance to handle the media stream.",
+                "Download your converted file directly from the browser's heap memory once the progress bar reaches 100%.",
+                "Your original and converted files are purged from RAM immediately upon closing the session."
+              ]}
+              technicalImplementation="The architecture of this converter is powered by ffmpeg.wasm, a direct WebAssembly port of the FFmpeg source code. I built a singleton orchestrator to manage the WASM lifecycle, preventing memory leaks and ensuring efficient resource allocation. By utilizing the SharedArrayBuffer API, the engine performs multi-threaded transcoding, bringing near-native processing speeds to the Browser Sandbox. The output is generated as a local Blob URL, bypassing the need for any backend storage."
+              privacyGuarantee="The Privacy & Security Guarantee for this tool is absolute: zero network ingress or egress for your media data. I implemented this because traditional converters often log your filenames and metadata. Here, the entire transcode happens in your volatile hardware RAM. Once you exit the tab, the heap is garbage-collected, and the temporary virtual file system is vaporized."
             />
           </div>
         </main>

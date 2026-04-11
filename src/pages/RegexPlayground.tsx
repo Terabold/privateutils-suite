@@ -408,10 +408,17 @@ const RegexPlayground = () => {
                   </div>
                   <ToolExpertSection
                      title="Regular Expression Studio"
-                     description="The Regex Playground is a high-performance Regular Expression evaluator designed for developers and security analysts to test, debug, and optimize complex patterns in real-time."
-                     transparency="Our playground utilizes a specialized Web Worker architecture, offloading the V8 RegExp engine to a background thread. This ensures your browser's main UI thread remains fluid even when executing recursive patterns. Every pattern evaluation is shielded by a 2000ms hardware watchdog that terminates execution if catastrophic backtracking is detected."
-                     limitations="While our background architecture prevents browser lockups, poorly optimized patterns can still fail to return results within the security threshold. We recommend avoiding nested quantifiers on large datasets to ensure sub-second evaluation."
                      accent="sky"
+                     overview="The Regular Expression Studio is a high-concurrency evaluation environment designed for software engineers, security auditors, and data scientists. I built this tool to provide a surgical path for debugging complex RegEx patterns—ensuring that your sensitive log extracts, proprietary code, and PII-heavy datasets are analyzed strictly within a local, air-gapped sandbox without the risk of 'telemetry leaks' found in online debuggers."
+                     steps={[
+                        "Input your 'Pattern' (the regular expression) into the Studio Workbench.",
+                        "Configure the execution 'Flags' (Global, Case Insensitive, Multiline, etc.).",
+                        "Analyze the 'Test String' and observe real-time, high-contrast match highlighting.",
+                        "Audit the 'Match List' to verify specific capture group alignments and indices.",
+                        "Copy the deterministic 'Pattern' or the extracted match artifacts for use in your production scripts."
+                     ]}
+                     technicalImplementation="I architected this studio using a non-blocking Web Worker thread model. This is a critical safety feature: by offloading the V8 RegExp engine to a background worker, we prevent 'Main Thread Lockup' during long-running evaluations. Furthermore, I implemented a 2000ms Hardware Watchdog that forcefully terminates the worker if Catastrophic Backtracking is detected, protecting your system's CPU cycles. All match calculations are performed using the browser's native C++ regex implementation for maximum throughput."
+                     privacyGuarantee="The Security \u0026 Privacy model for the Studio is defined by Sandbox Decoupling. Since evaluation happens within a localized worker thread, no part of your test data or regex pattern ever leaves your machine. We utilize the Browser Sandbox Lifecycle to ensure that once the tab is purged, all traces of your sensitive bitstreams are vaporized from the volatile RAM. Your patterns and data remain offline, under your control."
                   />
                </div>
             </main>

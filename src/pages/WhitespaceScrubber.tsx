@@ -173,10 +173,17 @@ const WhitespaceScrubber = () => {
 
             <ToolExpertSection
               title="Clean Code Hub"
-              description="The Whitespace Scrubber is a high-speed sanitization tool that removes invisible 'ghost' characters, collapses multiple spaces into one, and cleans up empty vertical space."
-              transparency="Cleaning logic execution occurs entirely in your browser's V8 engine. No text content is ever transmitted, ensuring that your messy confidential notes stay messy only until sanitized locally."
-              limitations="Extremely large documents (100k+ lines) may experience a minor lag during real-time scrubbing. We recommend processing large datasets in chunks for optimal UI responsiveness."
               accent="rose"
+              overview="The Clean Code Hub is a high-speed sanitization utility designed for developers, data engineers, and technical editors. I built this tool to provide a surgical path for removing 'ghost' whitespace, collapsing redundant vertical gaps, and normalizing indentation across messy text artifacts—without the risk of leaking internal drafts or proprietary code to online 'beautifier' services."
+              steps={[
+                "Paste your messy code, log file, or document into the 'Dirty Buffer'.",
+                "Select your sanitization parameters (Collapse Spaces, Ghost Lines, Trim Edges).",
+                "Optionally, enable 'One Line' mode to compact the entire bitstream into a single row.",
+                "Review the 'Reduction Metrics' to audit the efficiency of the scrubbing pass.",
+                "Copy the sanitized result directly for use in your production environment."
+              ]}
+              technicalImplementation="I engineered the scrubbing engine using highly optimized regular expressions and map/reduce functional patterns. The 'Ghost Lines' filter performs a non-destructive scan of the newline characters, surgically removing segments that consist purely of whitespace. By offloading these string manipulations to the browser's native V8 heap, we achieve near-instantaneous results even on multi-thousand-line log files, while maintaining a zero-network-interaction security model."
+              privacyGuarantee="The Security \u0026 Privacy model for the Scrubber is based on Client-Side Finality. No part of your 'Dirty Buffer' ever touches a network interface. All sanitization arithmetic occurs strictly within your browser's private application state. Your messy notes and unreleased scripts remain entirely offline, and all residual state is purged from volatile memory upon tab closure."
             />
           </div>
         </main>

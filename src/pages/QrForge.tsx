@@ -85,9 +85,9 @@ const QrForge = () => {
                   </Button>
                 </Link>
                 <div>
-                  <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow leading-none">
-                  QR Code Generator
-                </h1>
+                  <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow text-white leading-none">
+                    Secure QR <span className="text-primary italic">Code Generator</span>
+                  </h1>
                 <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">Create QR codes locally</p>
                 </div>
               </div>
@@ -243,11 +243,18 @@ const QrForge = () => {
             </div>
             {/* SEO & Tool Guide Section */}
             <ToolExpertSection
-              title="Privacy QR Studio"
-              description="The Secure QR Forge is a high-speed data encoding utility designed to generate ISO/IEC 18004 compliant QR codes for URLs, text, and encrypted protocols."
-              transparency="Our encoding engine runs entirely on your local device using a specialized JavaScript library. Unlike online QR generators that may track the URLs you encode or redirect your users through their servers, our 'Forge' creates direct, non-tracking artifacts. Your source payload never touches our network, ensuring absolute privacy for your digital redirects."
-              limitations="While the tool supports high-level error correction (Level H), encoding massive amounts of text (over 2,000 characters) will result in a extremely dense matrix that may be difficult for older smartphone cameras to scan reliably. For maximum compatibility, we recommend keeping payloads concise."
+              title="Secure QR Forge"
               accent="violet"
+              overview="The Secure QR Forge is a high-speed data encoding utility designed to generate ISO/IEC 18004 compliant QR codes for URLs, text, and encrypted protocols. I architected this forge to provide a surgical path for generating direct, non-tracking redirects without the security risks of 'online generators' that log your URLs, track your users, and redirect through intermediate proxy servers."
+              steps={[
+                "Stage your target 'Redirection Data' into the central input registry.",
+                "Configure your 'Level' (L, M, Q, H) to establish the necessary error correction density.",
+                "Monitor the 'Real-time Generation' to ensure your artifact is visually balanced.",
+                "Utilize the 'Print' or 'Clipboard' modules to extract your sanitized QR artifact.",
+                "Download the high-fidelity PNG or SVG asset for use in physical or digital media."
+              ]}
+              technicalImplementation="I engineered this forge using a Reed-Solomon Error Correction Engine and a local QR matrix generator. The logic calculates the optimal polynomial depth for your payload size, ensuring that even partially obscured codes (due to physical damage or low contrast) remain decodable. Because the entire bit-masking and matrix-rendering process occurs within your browser's local sandbox, your redirection strings remain strictly air-gapped from the network."
+              privacyGuarantee="The Security \u0026 Privacy model for the QR Forge is built on Redirection Sovereignty. Your source payloads—whether containing access credentials, private URLs, or plain text—exist strictly within your browser's private application state. We do not utilize any telemetry to monitor the content of the codes you generate. All session metadata is ephemeral and is permanently purged from system RAM upon tab termination. Your links stay private."
             />
           </div>
         </main>

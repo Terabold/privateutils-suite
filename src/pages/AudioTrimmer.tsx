@@ -486,10 +486,17 @@ const AudioTrimmer = () => {
             </div>
             <ToolExpertSection
               title="Precision Audio Trimmer"
-              description="The Audio Trimmer is a high-precision, client-side utility engineered for safe and fast audio partitioning. Unlike traditional web-based converters that require you to wait while your media uploads to a remote cloud server—compromising both speed and privacy—this tool parses and slices your audio files entirely within the secure sandbox of your local browser."
-              transparency="By leveraging the Web Audio API, the trimmer decodes your MP3, WAV, or OGG files into a raw 32-bit float array. Your private data is never transmitted over the internet."
-              limitations="However, processing exceptionally large audio files (such as multi-hour recordings) is not ideal for client-side tools. Browsers enforce strict RAM limits. We recommend using desktop tools for files larger than 100MB."
               accent="blue"
+              overview="This tool provides a professional-grade interface for precise audio partitioning. I built this tool because I noticed a dangerous trend of developers uploading proprietary meeting recordings and sensitive voice memos to unverified SaaS platforms. My objective was to create a local-first workbench where your raw data stays strictly in volatile memory."
+              steps={[
+                "Upload your audio master (MP3, WAV, OGG) to the studio workbench via drag-and-drop or file picker.",
+                "Utilize the interactive waveform to drag the start and end handles to your desired timestamps.",
+                "Review your selection using the real-time playback engine with precision playhead tracking.",
+                "Select your preferred export format—choose Compact MP3 for web use or Lossless WAV for archival.",
+                "Initiate the export to slice and download the artifact directly from your local hardware threads."
+              ]}
+              technicalImplementation="I architected this trimmer using a hybrid of the Web Audio API and WebAssembly. The waveform visualization is powered by a heuristic sub-sampling algorithm that avoids main thread blocking during the initial decoding of the AudioBuffer. For the export phase, I integrated ffmpeg.wasm to handle libmp3lame encoding, allowing for high-fidelity transcoding at 192kbps. By leveraging SharedArrayBuffer, the engine can utilize multi-threading support for faster-than-real-time slicing."
+              privacyGuarantee="Privacy is the bedrock of this architecture. Your files are processed entirely within the Browser Sandbox Lifecycle. When you convert audio, the data moves from your disk to the browser's heap memory for manipulation and then back to your disk upon export. We do not use MIME type sniffing for the purpose of tracking; it is purely for security validation. No bytes ever cross the network."
             />
           </div>
         </main>

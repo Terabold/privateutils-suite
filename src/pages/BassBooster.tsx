@@ -436,11 +436,18 @@ const BassBooster = () => {
             </div>
 
             <ToolExpertSection
-              title="Deep Bass & EQ Studio"
-              description="The Bass Booster is a dedicated, real-time audio equalization utility tailored for amplifying low-tier frequencies without buffering your private music tracks to an external cloud rendering farm."
-              transparency="Using your browser's native Web Audio API, we instantiate a local Low-Shelf EQ filter curve below 150Hz. No data physically leaves your computer, making it perfect for quick, private tweaks."
-              limitations="However, please consider your system's resource boundaries. Rendering a bass-boosted track involves storing the entire decoded waveform in RAM. While 4-minute songs work flawlessly, 2-hour podcasts may push your browser past memory limits and cause a crash."
+              title="Deep Bass \u0026 EQ Studio"
               accent="blue"
+              overview="The Deep Bass \u0026 EQ Studio is a specialized acoustic reconstruction workbench designed for audiophiles, sound engineers, and content creators. I built this tool to provide a surgical path for amplifying low-frequency tiers (below 150Hz) without the privacy risks associated with 'cloud-based audio enhancers' that record your listening habits and harvest your private audio artifacts."
+              steps={[
+                "Stage your audio master (MP3, WAV, or OGG) into the EQ Studio workspace.",
+                "Utilize the 'Low-Shelf EQ' slider to established your target 'Spectral Weight' (up to +30dB).",
+                "Trigger the 'Live Preview' to monitor the bass reconstruction in real-time.",
+                "Initiate the 'Deep Reconstruction' sequence to bake the enhanced waveform.",
+                "Download the high-fidelity WAV artifact directly from your device's browser sandbox."
+              ]}
+              technicalImplementation="I architected this studio using the Web Audio API and a BiquadFilterNode configured for lowshelf equalization. The engine executes a real-time signal processing chain on your local CPU. For the export phase, I implemented an OfflineAudioContext rendering pipeline that bakes the signal through the filter at hardware speed, generating a lossless WAV bitstream entirely within the browser's volatile memory heap."
+              privacyGuarantee="The Security \u0026 Privacy model for the EQ Studio is built on Acoustic Air-Gapping. Your audio artifacts are decoded and processed strictly within your browser's private application state. At no point is the raw bitstream or the modified waveform transmitted across the network. All session data is ephemeral and is permanently purged from RAM upon tab termination. Your sound stays local."
             />
           </div>
         </main>

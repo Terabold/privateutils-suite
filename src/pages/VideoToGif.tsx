@@ -180,7 +180,7 @@ const VideoToGif = () => {
               </Link>
               <div>
                 <h1 className="text-3xl md:text-4xl font-black tracking-tighter font-display uppercase italic text-shadow-glow text-white leading-tight">
-                  Video to GIF
+                  Video to <span className="text-primary italic">GIF Converter</span>
                 </h1>
                 <p className="text-muted-foreground mt-1 font-black uppercase tracking-[0.2em] opacity-40 text-[9px]">Convert video to GIF</p>
               </div>
@@ -353,10 +353,17 @@ const VideoToGif = () => {
             {/* SEO & Tool Guide Section */}
             <ToolExpertSection
               title="Video to GIF Motion Studio"
-              description="The Video to GIF Converter is a high-performance rendering utility designed to extract specific moments from video artifacts and encode them into optimized GIF masters."
-              transparency="Our rendering engine utilizes a locally-hosted FFmpeg WASM cluster. When you stage a video, it is copied into a virtual file system (VFS) within your browser's memory. The 'Palette Generation' and 'Final Encoding' threads run entirely on your local CPU. No video data or generated GIFs are ever transmitted to our servers, ensuring your private clips remain completely air-gapped."
-              limitations="GIF encoding is a resource-intensive process. For videos longer than 10 seconds or at high resolutions, the browser may experience temporary frame-rate drops as the WASM engine utilizes available threads. We recommend keeping clips under 5 seconds for optimal storage efficiency and loading speed."
               accent="blue"
+              overview="The Video to GIF Motion Studio is a high-performance rendering workbench designed for content creators, social media architects, and documentation specialists. I built this tool to provide a surgical path for extracting specific motion sequences from video artifacts—ensuring that your unreleased product demos and personal captures are encoded into GIF formats strictly within a local, air-gapped environment without the risk of 'bitstream harvesting' from online converters."
+              steps={[
+                "Stage your video artifact (MP4, MOV, or WebM) into the Motion Studio workspace.",
+                "Utilize the 'Precise Timeline' to define the exact 'Start' and 'End' coordinates for the clip.",
+                "Initiate the 'Render' sequence to trigger the local WASM-based encoding pipeline.",
+                "Observe the 'Status Terminal' as the engine generates a custom color palette and bakes the GIF.",
+                "Download the optimized GIF artifact directly for use in your production environment."
+              ]}
+              technicalImplementation="I architected this studio using a FFmpeg WASM (WebAssembly) Cluster. By porting the industry-standard C-based multimedia framework to the browser, we enable desktop-class transcoding within the Browser Sandbox. The encoding pipeline utilizes a Two-Pass Palette Generation strategy: the first pass analyzes the color density of the range, and the second pass bakes the GIF using a high-fidelity Lanczos filter. This ensures that despite the 256-color limit of the GIF format, the resulting artifact remains sharp and vibrant."
+              privacyGuarantee="The Security \u0026 Privacy model for the Motion Studio is defined by Hardware Isolation. Your video source and the resulting GIF bitstream are stored strictly within a Virtual File System (VFS) in your browser's dedicated memory heap. No external telemetry or cloud-side compute is utilized. Once the 'Transform' is complete and the tab is closed, the VFS is shredded and purged from volatile RAM. Your motion data remains 100% offline."
             />
           </div>
         </main>

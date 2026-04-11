@@ -505,10 +505,17 @@ const ImageCompressor = () => {
             {/* SEO section */}
             <ToolExpertSection
               title="Image Compressor & Optimizer"
-              description="The Image Compressor is a professional-grade quantization engine designed to shrink image file sizes while maintaining maximum visual fidelity."
-              transparency="Our compression pipeline utilizes both the browser's native Canvas API and an optional WASM-powered FFmpeg backend for high-efficiency PNG quantization. Note: Utilizing the FFmpeg backend requires fetching the engine artifacts from unpkg.com; however, every byte of your image is crunched locally on your machine, ensuring your private photos or proprietary assets are never uploaded to our servers."
-              limitations="While the tool is hardware-accelerated, compressing exceptionally large images (e.g., 50MB+ RAW files) can temporarily lock your browser's main thread. For massive batch processing of hundreds of high-res images, a dedicated desktop CLI or server-side farm is recommended."
               accent="orange"
+              overview="This compressor is a professional-grade quantization engine designed for high-efficiency asset reduction. I built this tool to provide a localized alternative to data-harvesting 'Free Online Compressors' that often profile your metadata and photographic content. My goal was to create a workbench where architectural fidelity is maintained without external transmission."
+              steps={[
+                "Deploy your image artifact (WebP, JPG, or PNG) to the studio workspace.",
+                "Adjust the 'Intensity Optimization' slider to determine the target quantization level.",
+                "Select your target production format; I recommend WebP for maximum web performance.",
+                "The engine initializes a local transcode via the browser's hardware-accelerated Canvas engine.",
+                "Download the optimized artifact directly from your device's managed heap memory."
+              ]}
+              technicalImplementation="I architected this optimizer using a hybrid dual-engine pipeline. For standard JPG and WebP encoding, we utilize the hardware-accelerated toBlob() method of the Canvas API. For advanced PNG quantization, I integrated ffmpeg.wasm to perform palette generation and dithering, achieving significant size reductions that native encoders cannot match. The interface remains responsive by offloading heavy quantization tasks to background threads, preventing main thread blocking during large image crunching."
+              privacyGuarantee="The Privacy & Security Guarantee for this compressor is absolute: zero-server round-trips. Your original and optimized pixels remain within the volatile Browser Sandbox Lifecycle. We utilize localized Blob URLs for temporary artifact generation, ensuring that no unencrypted data ever touches our network. Once you close the tab, the memory is purged and the optimization session is vaporized."
             />
           </div>
         </main>

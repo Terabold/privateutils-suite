@@ -158,10 +158,17 @@ const SlugForge = () => {
 
             <ToolExpertSection
               title="URL Slug Studio"
-              description="Slug Forge creates URL-friendly strings from arbitrary text. It handles character normalization, special character removal, and whitespace mapping to your preferred separator."
-              transparency="All text normalization and regex stripping occurs strictly on your device. We use the ECMAScript String.normalize() method to ensure high-fidelity 'slugification' without external libraries or server-side calls."
-              limitations="Extremely long input strings (over 5,000 characters) may result in truncated output on some mobile browsers due to memory constraints on string manipulation."
               accent="sky"
+              overview="The URL Slug Studio is a surgical text normalization workbench designed for SEO specialists, web developers, and content architects. I built this tool to provide a deterministic path for transforming article titles, filenames, or legacy database entries into URL-friendly bitstreams—ensuring that your internal content structures remain private and never touch a third-party 'generator' database."
+              steps={[
+                "Enter your raw article title, metadata string, or filename into the 'Source Content' field.",
+                "Configure your 'Forge' parameters by selecting a separator (Hyphen, Underscore, or Dot).",
+                "Enable character transformation modes, such as 'Force Lowercase' or automatic diacritic stripping.",
+                "Review the 'Forge Output' to verify the structural integrity of the resulting slug.",
+                "Copy the sanitized URL bitstream directly for integration into your CMS or routing engine."
+              ]}
+              technicalImplementation="I engineered the 'Slug Forge' using the ECMAScript Unicode Normalization Form D (NFD). This architectural choice allows us to decompose composite characters into their base components and diacritical marks, which are then surgically stripped using a precise RegEx pass. This ensures that 'é' or 'ñ' are correctly mapped to 'e' and 'n' without losing semantic meaning. The final pass utilizes a regex-based whitespace collapse to ensure that multi-word inputs result in a single, continuous bitstream."
+              privacyGuarantee="The Security \u0026 Privacy model for the Slug Studio is built on Local Runtime Finality. Unlike SaaS-based 'slug generators' that might log your upcoming article titles or proprietary project names for tracking, our logic executes entirely within your browser's private V8 process. Your content remains 100% offline and is instantly cleared from the heap upon session termination. Your SEO strategy stays your own."
             />
           </div>
         </main>

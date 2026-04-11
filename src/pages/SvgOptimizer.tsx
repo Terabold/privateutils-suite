@@ -667,17 +667,18 @@ const SvgOptimizer = () => {
             {/* SEO & Tool Guide Section */}
 
             <ToolExpertSection
-
               title="Vector SVG Optimizer"
-
-              description="The SVG Optimizer is a high-fidelity vector minification suite designed to strip metadata, hidden bloat, and redundant XML nodes from your SVG artifacts while preserving visual integrity."
-
-              transparency="Our optimizer utilizes a specialized browser-build of SVGO (SVG Optimizer). Every pass, from multipass path simplification to ID prefixing, happens directly in your browser's V8 thread. Because the code is processed locally, your proprietary icons and vector illustrations never leave your device. We provide a 'Source vs Optimized' diff to ensure total transparency in the reduction ratio."
-
-              limitations="While our minification engine is extremely thorough, some highly complex vector illustrations with nested filters or proprietary Adobe/Inkscape metadata may require custom SVGO plugins for maximum reduction. For most web use-cases, our default 'Preset-Default' provides the optimal balance of size and compatibility."
-
               accent="emerald"
-
+              overview="This optimizer is a high-fidelity vector minification suite designed for front-end architects and performance engineers. I built this tool to provide a surgical path for stripping metadata, editor bloat, and redundant XML nodes from your SVG artifacts—without the security vulnerability of sending proprietary vector assets to third-party optimization servers."
+              steps={[
+                "Paste your raw SVG code or drag a vector artifact into the source workbench.",
+                "Toggle the 'Multipass Optimization' engine to perform recursive path simplification.",
+                "Review the 'Reduction Metrics' to see the exact byte-savings achieved by the minification pass.",
+                "Audit the visual integrity of the optimized vector in the 'Result Preview' pane.",
+                "Copy the cleaned XML code directly to your clipboard for instant deployment."
+              ]}
+              technicalImplementation="I architected the optimization pipeline using a localized build of SVGO. The engine performs a non-destructive topological analysis of the SVG's path data, collapsing redundant commands and rounding coordinate precision to user-defined thresholds. By offloading this compute-heavy XML parsing to a separate thread, we maintain UI responsiveness even when processing complex, multi-megabyte architectural plans or intricate icon sets."
+              privacyGuarantee="The Security & Privacy guarantee for the SVG Optimizer is built on Volatile Processing. All vector transformations and XML sanitization occur strictly within your browser's private memory heap. We do not maintain any side-effect state or persistent storage for your assets. Since the optimization logic is 100% decentralized and local, your proprietary design files stay offline throughout the entire lifecycle."
             />
 
           </div>

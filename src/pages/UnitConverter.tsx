@@ -237,10 +237,17 @@ const UnitConverter = () => {
             {/* SEO & Tool Guide Section */}
             <ToolExpertSection
               title="Universal Unit Hub"
-              description="The Unit Converter is a high-precision measurement utility designed to translate between Metric, Imperial, and Scientific units across various physical dimensions."
-              transparency="Our converter utilizes local mathematical constants and SI-standard formulas to perform instant transformations. Whether you are calculating building materials in 'Feet' or converting temperatures for a laboratory report, all arithmetic occurs within your browser's local sandbox. Your measurement data is never transmitted to our servers, ensuring your project specifications and technical data remain entirely private."
-              limitations="While our tool provides high-precision results (up to 6 decimal points), rounding errors can occur in extreme scientific conversions. For aerospace or medical-grade precision beyond standard engineering tolerances, always cross-reference with primary ISO standards."
               accent="rose"
+              overview="The Universal Unit Hub is a high-precision measurement translation workbench designed for engineers, architects, and technical project managers. I built this tool to provide a surgical path for mapping between Metric, Imperial, and Scientific units without the security risks of 'on-the-fly' unit converters that scrape your project specifications and technical metadata for commercial intelligence data."
+              steps={[
+                "Select your target 'Category' (Length, Weight, or Temperature) from the workbench.",
+                "Stage your source 'Value' into the Input Registry.",
+                "Select the 'From' unit to establish the baseline measurement artifact.",
+                "Monitor the 'Results Grid' to observe the localized transformations across all alternate units.",
+                "utilize the 'Copy' interface to export the sanitized measurement data for your technical documentation."
+              ]}
+              technicalImplementation="I architected this hub using a Linear Scalar Multiplier Engine based on SI-standard constants. For temperature conversions, the tool utilizes specific Phase-Shift Algorithms (Celsius, Fahrenheit, Kelvin) to maintain accuracy across the thermal spectrum. By executing all arithmetic in the browser's local sandbox with 64-bit float precision, we ensure that your project dimensions and specifications remain strictly air-gapped from the cloud."
+              privacyGuarantee="The Security \u0026 Privacy model for the Unit Lab is built on Technical Data Sovereignty. Your measurement inputs—from site dimensions to chemical weights—are processed strictly within your browser's private application state. No telemetry is utilized to monitor your conversion patterns or project data. All session coefficients are volatile and are permanently purged from RAM upon tab termination. Your specs stay private."
             />
           </div>
         </main>

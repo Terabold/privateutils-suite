@@ -413,10 +413,17 @@ const VideoAspectStudio = () => {
             {/* SEO & Tool Guide Section */}
             <ToolExpertSection
               title="Video Aspect Ratio Studio"
-              description="The Video Aspect Studio is a specialized utility for reformatting video content for platforms like TikTik, Instagram Reels, and YouTube Shorts without compromising privacy."
-              transparency="Our remapping engine utilizes a local FFmpeg WASM cluster to perform hardware-accelerated 'Padded' or 'Cropped' transformations. The entire rendering process—including libx264 encoding—happens within your browser's isolated process. No video data or transformed assets are ever uploaded, ensuring your social media content remains strictly confidential until you decide to post."
-              limitations="High-definition video rendering (1080p+) in the browser is a resource-intensive operation. Depending on your hardware, processing a 1-minute clip may take several minutes as the CPU handles complex x264 compression. For 4K cinematic files, we recommend using dedicated desktop software for optimal performance."
               accent="blue"
+              overview="The Video Aspect Ratio Studio is a specialized social media reformatting workbench designed for influencers, content architects, and digital marketing managers. I built this tool to provide a surgical path for remapping video artifacts to vertical (9:16), square (1:1), or cinematic (16:9) formats—ensuring that your unreleased content remains private and never touches a third-party 'remixer' server that could scrape your unposted drafts."
+              steps={[
+                "Deploy your video artifact (MP4, MOV, or WebM) to the 'Mapping System' workspace.",
+                "Select your target 'Aspect Ratio' (e.g., 9:16 for TikTok/Reels or 1:1 for Instagram).",
+                "Choose your 'Remapping Mode': 'Padded' for letterboxing or 'Cropped' for full-frame isolation.",
+                "Trigger the 'Export Asset' sequence to initiate the local libx264 transcoding engine.",
+                "Download the social-ready MP4 artifact directly from the browser's secure memory heap."
+              ]}
+              technicalImplementation="I architected this studio using a FFmpeg WASM (WebAssembly) Pipeline to perform real-time video re-encoding. The engine utilizes custom FFmpeg Filtergraphs to calculate padding or cropping coordinates based on the source and target aspect ratios. By leveraging YUV420p pixel formatting and the libx264 codec inside the WASM sandbox, we ensure maximum compatibility with social media ingestion systems while maintaining high-fidelity bitrates entirely on your local CPU."
+              privacyGuarantee="The Security \u0026 Privacy model for the Aspect Studio is built on Local Transcoding Sovereignty. Unlike online 'video resizers' that may capture your unreleased footage, our engine executes all arithmetic within your browser's private application state. Your video artifacts are processed in a volatile, air-gapped Virtual File System (VFS) and are permanently purged from RAM once the workbench session is terminated. Your content drafts stay off the cloud."
             />
           </div>
         </main>

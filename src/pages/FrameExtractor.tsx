@@ -642,11 +642,18 @@ const FrameExtractor = () => {
 
             {/* SEO & Tool Guide Section */}
             <ToolExpertSection
-              title="8K Frame & Snapshot Extractor"
-              description="The Frame Extractor is a high-performance temporal capture engine designed to recover high-resolution PNG artifacts from any video stream with millisecond precision."
-              transparency="Using your device's hardware-accelerated canvas API, we render and capture video frames directly in your local browser sandbox. This ensures that your private video masters—whether they're family memories or unreleased professional footage—never touch a remote server."
-              limitations="Capturing hundreds of high-resolution 4K frames can consume significant system memory (RAM). While the tool includes a Resource Cleanup Engine, we recommend closing other intensive browser tabs during large extraction sessions to prevent 'Out of Memory' stutters."
+              title="8K Frame \u0026 Snapshot Extractor"
               accent="blue"
+              overview="The 8K Frame \u0026 Snapshot Extractor is a high-precision temporal capture engine designed for film editors, YouTube architects, and digital forensic specialists. I engineered this workbench to provide a surgical path for recovering high-resolution PNG artifacts from video streams with millisecond accuracy—ensuring that your unreleased footage and personal video masters remain strictly air-gapped within a local execution context."
+              steps={[
+                "Stage your video master (MP4, MOV, or WebM) into the High-Resolution Studio.",
+                "Utilize the 'Precision Step' modules (Arrow Keys) to navigate the timeline frame-by-frame.",
+                "Trigger the 'Capture Instance' (or use hotkey 'F') to isolate a specific temporal coordinate.",
+                "Review your 'Capture History' and 'Registry' to manage the extracted PNG artifacts.",
+                "Export the recovered snapshots individually or as a locally-compressed ZIP volume."
+              ]}
+              technicalImplementation="I architected this extractor using a Hardware-Accelerated Canvas Capture Pipeline. When a capture is triggered, the engine freezes the VGA stream and draws the current frame into an off-screen HTML5 Canvas matching the video's original bitstream dimensions (supporting up to 8K). By calling the native Canvas.toBlob method using the image/png mime-type, we ensure that the resulting artifact maintains 8-bit lossless fidelity without server-side compression artifacts."
+              privacyGuarantee="The Security \u0026 Privacy model for the Frame Lab is centered on Temporal Isolation. At no point are your video source or the recovered PNG snapshots transmitted through the network stack. All captures are stored as ephemeral Blob URLs in your browser's private application state. To manage resource integrity, the tool utilizes a Resource Cleanup Engine that revokes all Blob objects upon workbench closure, vaporizing the sensitive data from the machine's RAM."
             />
 
             <footer className="pt-20 border-t border-border/50">

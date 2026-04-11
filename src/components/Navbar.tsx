@@ -45,7 +45,8 @@ const Navbar = ({
   // Identify current category for tool pages
   const currentCategory = useMemo(() => {
     if (isHomePage) return selectedCategory;
-    const tool = tools.find(t => t.to === location.pathname);
+    const normalizedPath = location.pathname.replace(/\/$/, "");
+    const tool = tools.find(t => t.to === normalizedPath || t.to === location.pathname);
     return tool?.category || null;
   }, [location.pathname, isHomePage, selectedCategory]);
 

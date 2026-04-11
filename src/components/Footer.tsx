@@ -44,10 +44,12 @@ const Footer = () => {
           </div>
 
           <div className="flex flex-col gap-3">
-            <h3 className="font-semibold text-foreground">Privacy</h3>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              All processing happens in your browser using WebAssembly. No cookies, no tracking, no uploads.
-            </p>
+            <h3 className="font-semibold text-foreground">Privacy Architecture</h3>
+            <ul className="text-sm text-muted-foreground space-y-2">
+              <li><Link to="/security-architecture" className="hover:text-primary transition-colors font-medium">Security Deep-Dive</Link></li>
+              <li><Link to="/faq" className="hover:text-primary transition-colors font-medium">Technical FAQ</Link></li>
+              <li><Link to="/privacy" className="hover:text-primary transition-colors font-medium">Privacy Policy</Link></li>
+            </ul>
           </div>
         </div>
 

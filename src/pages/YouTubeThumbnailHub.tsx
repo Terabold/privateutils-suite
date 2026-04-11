@@ -374,10 +374,17 @@ const YouTubeThumbnailHub = () => {
             {/* SEO & Tool Guide Section */}
             <ToolExpertSection
               title="YouTube Thumbnail Hub"
-              description="The YouTube Thumbnail Hub is a high-fidelity platform simulator designed for content creators and thumbnail designers to preview their artifacts in a realistic YouTube environment."
-              transparency="Our simulator uses CSS-based layout reproduction to mimic the 'Watch', 'Home', and 'Search' environments of the YouTube platform. Because the preview logic runs entirely in your browser's local DOM, your unreleased thumbnail designs and exclusive concepts never leave your local hardware. We do not store, log, or transmit your previewed images, ensuring your competitive advantage and creative privacy."
-              limitations="While our simulation is highly accurate to standard desktop views, YouTube frequently updates its UI elements (e.g., button roundness, font-weights). For pixel-perfect mobile-specific testing, we recommend taking a physical screenshot on your device as a final verification."
               accent="blue"
+              overview="The Thumbnail Hub is a high-fidelity platform simulator designed for content creators and digital marketing architects. I built this tool to provide a 'Safe Preview' environment where you can stress-test your click-through potential against standard platform layouts—without those unreleased designs being indexed by third-party 'competitor tracking' sites."
+              steps={[
+                "Upload your thumbnail artifact (JPEG or PNG) to the simulation workbench.",
+                "Enter a test 'Video Title' to evaluate typographic hierarchy and readability.",
+                "Switch between 'Watch,' 'Home,' and 'Search' modes to verify visibility across different discovery paths.",
+                "Toggle the 'Platform Theme' (Dark/Light) to ensure contrast stability in all viewer configurations.",
+                "Visually audit your thumbnail's performance against the simulated competition."
+              ]}
+              technicalImplementation="I engineered this hub using CSS Grid & Flexbox to precisely replicate the platform's current spatial layout and typographic constraints. The engine utilizes DOM-native state management to swap between layout modes without reloading assets, ensuring a zero-latency 'Live Preview.' By using local Object URLs for the uploaded artifacts, we keep the original resolution raw and uncompressed, allowing for forensic evaluation of pixel density and artifacting."
+              privacyGuarantee="The Security & Privacy model for the Thumbnail Hub is centered on Local-Only Rendering. Unlike online 'previewers' that require an upload to a central server, this hub processes your creative assets entirely within your browser's private application state. Your high-converting secrets and unreleased video concepts never touch a network interface. All state is strictly ephemeral and is purged upon tab closure."
             />
           </div>
         </main>

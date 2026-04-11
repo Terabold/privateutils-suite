@@ -6,7 +6,7 @@ import toolsMetadata from "@/data/toolsMetadata.json";
 const toolsData = [
   {
     title: "Media Converter",
-    description: "Convert video and audio formats in your browser without uploading",
+    description: "Convert video and audio formats in your browser with zero server-side processing.",
     icon: <Video className="h-5 w-5" />,
     to: "/universal-media-converter",
     category: "Video Studio",
@@ -14,7 +14,7 @@ const toolsData = [
   },
   {
     title: "YouTube Thumbnail Preview",
-    description: "Check how your thumbnails look on a simulated YouTube page",
+    description: "Simulate and verify how your thumbnails look on a realistic YouTube interface.",
     icon: <Layout className="h-5 w-5" />,
     to: "/youtube-thumbnail-hub",
     category: "Video Studio",
@@ -22,7 +22,7 @@ const toolsData = [
   },
   {
     title: "3D Image Tilt",
-    description: "Apply 3D perspective and angled tilts to any image",
+    description: "Apply 3D perspective and professional angled tilts to any image instantly.",
     icon: <Layers className="h-5 w-5" />,
     to: "/perspective-tilter",
     category: "Image Studio",
@@ -30,7 +30,7 @@ const toolsData = [
   },
   {
     title: "Remove Photo Metadata",
-    description: "Strip EXIF data like GPS and camera info from your photos",
+    description: "Strip EXIF data like GPS and camera info from your photos locally for total security.",
     icon: <ShieldX className="h-5 w-5" />,
     to: "/metadata-scrubber",
     category: "Privacy Belt",
@@ -38,7 +38,7 @@ const toolsData = [
   },
   {
     title: "Split Image (Sprites)",
-    description: "Slice images into a grid and export them as a ZIP",
+    description: "Slice images into a precise grid and export them as a ZIP file buffer instantly.",
     icon: <Scissors className="h-5 w-5" />,
     to: "/sprite-studio",
     category: "Image Studio",
@@ -46,7 +46,7 @@ const toolsData = [
   },
   {
     title: "Trim Audio",
-    description: "Cut and clip audio files to a specific timeframe",
+    description: "Cut and clip audio files to a specific timeframe with local-first precision editing.",
     icon: <Music className="h-5 w-5" />,
     to: "/audio-trimmer",
     category: "Audio Lab",
@@ -54,7 +54,7 @@ const toolsData = [
   },
   {
     title: "Volume Booster",
-    description: "Amplify or reduce the volume of any audio or video file",
+    description: "Amplify or reduce volume for media files with high-fidelity gain control.",
     icon: <Volume2 className="h-5 w-5" />,
     to: "/universal-volume-booster",
     category: "Audio Lab",
@@ -62,7 +62,7 @@ const toolsData = [
   },
   {
     title: "Get Image Colors",
-    description: "Extract a color palette from any image and copy hex codes",
+    description: "Extract color palettes from images and copy hex codes for brand-matching design.",
     icon: <Pipette className="h-5 w-5" />,
     to: "/image-color-extractor",
     category: "Image Studio",
@@ -70,7 +70,7 @@ const toolsData = [
   },
   {
     title: "Video to GIF",
-    description: "Create an optimized GIF from any video clip",
+    description: "Create optimized GIFs from video clips. Fully client-side conversion for total privacy.",
     icon: <RefreshCw className="h-5 w-5" />,
     to: "/video-to-gif",
     category: "Video Studio",
@@ -78,7 +78,7 @@ const toolsData = [
   },
   {
     title: "Save Video Frames",
-    description: "Extract individual frames from a video as PNG images",
+    description: "Extract high-fidelity PNG snapshots from any local video file instantly.",
     icon: <Camera className="h-5 w-5" />,
     to: "/frame-extractor",
     category: "Video Studio",
@@ -94,7 +94,7 @@ const toolsData = [
   },
   {
     title: "JSON Formatter",
-    description: "Validate, format, and inspect JSON code with highlighting",
+    description: "Validate and format complex JSON structures with high-fidelity syntax highlighting.",
     icon: <FileJson className="h-5 w-5" />,
     to: "/json-studio",
     category: "Dev Toolbox",
@@ -102,7 +102,7 @@ const toolsData = [
   },
   {
     title: "CSV / JSON Converter",
-    description: "Convert between CSV and JSON formats instantly",
+    description: "Convert between CSV and JSON formats instantly. Handles complex nested data structures.",
     icon: <Database className="h-5 w-5" />,
     to: "/data-transformer",
     category: "Dev Toolbox",
@@ -110,7 +110,7 @@ const toolsData = [
   },
   {
     title: "QR Code Generator",
-    description: "Create QR codes for text or URLs fully offline",
+    description: "Create custom QR codes fully offline with high-density encoding and error correction.",
     icon: <QrCode className="h-5 w-5" />,
     to: "/qr-forge",
     category: "Privacy Belt",
@@ -118,7 +118,7 @@ const toolsData = [
   },
   {
     title: "Blur/Redact Image",
-    description: "Blur or black-out sensitive parts of an image",
+    description: "Mask sensitive PII, credentials, or faces from images before sharing for maximum privacy.",
     icon: <ShieldX className="h-5 w-5" />,
     to: "/pii-masker",
     category: "Privacy Belt",
@@ -126,7 +126,7 @@ const toolsData = [
   },
   {
     title: "Minify SVG",
-    description: "Optimize SVG files by removing unnecessary markup",
+    description: "Optimize SVG files by removing unnecessary markup for faster web rendering speeds.",
     icon: <Zap className="h-5 w-5" />,
     to: "/svg-optimizer",
     category: "Image Studio",
@@ -134,7 +134,7 @@ const toolsData = [
   },
   {
     title: "SVG to Image",
-    description: "Convert SVG files to PNG or JPG at any size",
+    description: "Convert SVG files to PNG or JPG with high-fidelity rasterization for all assets.",
     icon: <ImageIcon className="h-5 w-5" />,
     to: "/svg-to-image",
     category: "Image Studio",
@@ -142,7 +142,7 @@ const toolsData = [
   },
   {
     "title": "SVG to ICO Icon",
-    "description": "Convert SVG files into .ico icons for website favicons",
+    "description": "Convert SVG files into valid .ico icons. Perfect for high-quality website favicons.",
     "icon": <Sparkles className="h-5 w-5" />,
     "to": "/svg-to-ico",
     "category": "Image Studio",
@@ -150,7 +150,7 @@ const toolsData = [
   },
   {
     title: "Image to PDF",
-    description: "Merge multiple images into a single PDF file",
+    description: "Merge multiple images into a single PDF file with local-first secure compilation.",
     icon: <FileStack className="h-5 w-5" />,
     to: "/image-to-pdf",
     category: "Image Studio",
@@ -158,7 +158,7 @@ const toolsData = [
   },
   {
     title: "Change Text Case",
-    description: "Convert text between camelCase, snake_case, and more",
+    description: "Convert text between camelCase, snake_case, and more for technical documentation.",
     icon: <Type className="h-5 w-5" />,
     to: "/text-case-formatter",
     category: "Text Studio",
@@ -166,7 +166,7 @@ const toolsData = [
   },
   {
     title: "Clipboard to File",
-    description: "Paste and download clipboard content as a file",
+    description: "Paste and download clipboard content as a file. Extract binary assets from your buffer.",
     icon: <ClipboardCopy className="h-5 w-5" />,
     to: "/quick-clipboard",
     category: "Quick Utils",
@@ -174,7 +174,7 @@ const toolsData = [
   },
   {
     title: "Compare Text",
-    description: "Check the differences between two blocks of text",
+    description: "Check differences between text blocks with instant additions and removals highlighting.",
     icon: <Split className="h-5 w-5" />,
     to: "/text-diff-checker",
     category: "Text Studio",
@@ -182,7 +182,7 @@ const toolsData = [
   },
   {
     title: "JWT Decoder",
-    description: "Inspect JWT headers and payloads on your device",
+    description: "Inspect JWT headers and payloads securely on your device without leaking tokens.",
     icon: <KeyRound className="h-5 w-5" />,
     to: "/jwt-decoder",
     category: "Dev Toolbox",
@@ -190,7 +190,7 @@ const toolsData = [
   },
   {
     title: "Encoder / Decoder",
-    description: "Convert text to Base64, URL, HTML entities, and Hex",
+    description: "Convert text between Base64, URL, HTML, and Hex using comprehensive local tools.",
     icon: <Binary className="h-5 w-5" />,
     to: "/encoder-decoder",
     category: "Dev Toolbox",
@@ -198,7 +198,7 @@ const toolsData = [
   },
   {
     title: "Timestamp Converter",
-    description: "Change Unix timestamps to readable dates",
+    description: "Convert Unix timestamps to readable dates with support for multiple time formats.",
     icon: <Clock className="h-5 w-5" />,
     to: "/timestamp-converter",
     category: "Dev Toolbox",
@@ -206,7 +206,7 @@ const toolsData = [
   },
   {
     title: "Test Regex",
-    description: "Test regular expressions with live highlighting",
+    description: "Validate regular expressions with live highlighting against custom test strings.",
     icon: <SearchCode className="h-5 w-5" />,
     to: "/regex-playground",
     category: "Dev Toolbox",
@@ -214,7 +214,7 @@ const toolsData = [
   },
   {
     title: "Lorem Ipsum Generator",
-    description: "Generate simple placeholder text for your designs",
+    description: "Generate placeholder text for your designs with custom paragraph and sentence counts.",
     icon: <FileText className="h-5 w-5" />,
     to: "/lorem-generator",
     category: "Text Studio",
@@ -222,7 +222,7 @@ const toolsData = [
   },
   {
     title: "Password Generator",
-    description: "Create secure random passwords in your browser",
+    description: "Create secure random passwords locally. Fully offline generation for maximum privacy.",
     icon: <ShieldCheck className="h-5 w-5" />,
     to: "/password-generator",
     category: "Privacy Belt",
@@ -230,7 +230,7 @@ const toolsData = [
   },
   {
     title: "Generate Color Palettes",
-    description: "Create color schemes like Monochromatic and Triadic",
+    description: "Create brand schemes like Monochromatic and Triadic for UI designers and developers.",
     icon: <Palette className="h-5 w-5" />,
     to: "/palette-studio",
     category: "Image Studio",
@@ -238,7 +238,7 @@ const toolsData = [
   },
   {
     title: "Hash Generator",
-    description: "Create SHA-256, SHA-512, or MD5 hashes locally",
+    description: "Create SHA-256, SHA-512, or MD5 hashes locally for verified cryptographic integrity.",
     icon: <Fingerprint className="h-5 w-5" />,
     to: "/hash-lab",
     category: "Privacy Belt",
@@ -246,7 +246,7 @@ const toolsData = [
   },
   {
     title: "Unit Converter",
-    description: "Convert between measurements like weight and area",
+    description: "Convert weight, area, and speed measurements with high-precision engineering tools.",
     icon: <Ruler className="h-5 w-5" />,
     to: "/unit-converter",
     category: "Quick Utils",
@@ -254,7 +254,7 @@ const toolsData = [
   },
   {
     title: "Image to Base64",
-    description: "Convert images to Base64 strings for code or CSS",
+    description: "Convert images to Base64 strings for CSS and code without external dependencies.",
     icon: <FileStack className="h-5 w-5" />,
     to: "/base64-image",
     category: "Image Studio",
@@ -262,7 +262,7 @@ const toolsData = [
   },
   {
     title: "Reverse Audio",
-    description: "Play any audio file backwards",
+    description: "Play audio files backwards for sound design and experimental media production.",
     icon: <RefreshCw className="h-5 w-5" />,
     to: "/reverse-audio",
     category: "Audio Lab",
@@ -270,7 +270,7 @@ const toolsData = [
   },
   {
     title: "Convert Data to Audio",
-    description: "Turn any file's raw bytes into experimental audio",
+    description: "Turn raw file bytes into experimental audio and explore acoustic digital fingerprints.",
     icon: <Binary className="h-5 w-5" />,
     to: "/binary-to-audio",
     category: "Audio Lab",
@@ -278,7 +278,7 @@ const toolsData = [
   },
   {
     title: "Channel Converter",
-    description: "Change audio between Mono and Stereo layouts",
+    description: "Change audio between Mono and Stereo with surgical control over spatial fields.",
     icon: <Layers className="h-5 w-5" />,
     to: "/audio-mono-stereo",
     category: "Audio Lab",
@@ -286,7 +286,7 @@ const toolsData = [
   },
   {
     title: "Boost Bass",
-    description: "Increase low-end frequencies in any audio file",
+    description: "Increase low-end frequencies with pro-grade reconstruction for high-fidelity output.",
     icon: <Zap className="h-5 w-5" />,
     to: "/audio-bass-booster",
     category: "Audio Lab",
@@ -294,7 +294,7 @@ const toolsData = [
   },
   {
     title: "Image Compressor",
-    description: "Reduce image file size without uploading anything",
+    description: "Reduce image file size locally with secure optimization for privacy-conscious users.",
     icon: <Zap className="h-5 w-5" />,
     to: "/image-compressor",
     category: "Image Studio",
@@ -302,7 +302,7 @@ const toolsData = [
   },
   {
     title: "Morse Code Translator",
-    description: "Translate text to Morse code and play it back",
+    description: "Translate text to Morse code with live audio synthesis and visual transmission signals.",
     icon: <Radio className="h-5 w-5" />,
     to: "/morse-code-master",
     category: "Text Studio",
@@ -310,7 +310,7 @@ const toolsData = [
   },
   {
     title: "URL Slug Generator",
-    description: "Create clean, URL-friendly slugs from any text",
+    description: "Create clean, SEO-friendly slugs from text for technical content distribution.",
     icon: <Hash className="h-5 w-5" />,
     to: "/slug-forge",
     category: "Dev Toolbox",
@@ -318,7 +318,7 @@ const toolsData = [
   },
   {
     title: "Clean Text",
-    description: "Remove hidden characters and extra whitespace from text",
+    description: "Remove hidden characters and whitespace from messy documentation and code files.",
     icon: <Eraser className="h-5 w-5" />,
     to: "/whitespace-scrubber",
     category: "Text Studio",
@@ -326,7 +326,7 @@ const toolsData = [
   },
   {
     title: "Dice Roller",
-    description: "Roll dice, flip coins, and generate random numbers",
+    description: "Secure physics-based randomization for games and security with dice and coin flips.",
     icon: <Dices className="h-5 w-5" />,
     to: "/dice-lab",
     category: "Quick Utils",
@@ -383,7 +383,7 @@ const ToolsGrid = ({ searchQuery = "", selectedCategory = null, onClearFilters }
   }
 
   return (
-    <div className="space-y-32 relative min-h-[4000px]">
+    <div className="space-y-32 relative">
       {isFiltering ? (
         <section id="search-results" className="animate-in fade-in duration-700">
           <div className="flex items-center gap-6 mb-16 px-2">

@@ -1,21 +1,23 @@
 import React from 'react';
-import { ShieldCheck, Info, Zap, AlertTriangle, HelpCircle } from "lucide-react";
+import { ShieldCheck, Info, Zap, AlertTriangle, HelpCircle, Sliders } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ToolExpertSectionProps {
   title: string;
-  description: string;
-  transparency: string;
-  limitations: string;
+  overview: string;
+  steps: string[];
+  technicalImplementation: string;
+  privacyGuarantee: string;
   className?: string;
   accent?: 'purple' | 'blue' | 'emerald' | 'orange' | 'rose' | 'amber' | 'cyan' | 'indigo' | 'violet' | 'fuchsia' | 'sky';
 }
 
 const ToolExpertSection = ({
   title,
-  description,
-  transparency,
-  limitations,
+  overview,
+  steps,
+  technicalImplementation,
+  privacyGuarantee,
   className,
   accent = 'purple'
 }: ToolExpertSectionProps) => {
@@ -52,7 +54,7 @@ const ToolExpertSection = ({
           <header className="space-y-6">
             <div className="flex items-center gap-4">
               <div className="px-4 py-1.5 rounded-full bg-primary/20 border border-primary/20 text-[10px] font-black uppercase tracking-[0.3em] text-primary italic shadow-lg shadow-primary/10">
-                How it works
+                Technical Documentation
               </div>
               <ShieldCheck className="h-5 w-5 text-primary animate-pulse" />
             </div>
@@ -62,33 +64,57 @@ const ToolExpertSection = ({
             </h2>
           </header>
 
-          <div className="grid grid-cols-1 gap-10">
-            <div className="space-y-8 max-w-4xl">
-              <p className="text-xl md:text-2xl text-muted-foreground/90 font-medium leading-[1.4] tracking-tight">
-                {description}
-              </p>
+          <div className="grid grid-cols-1 gap-12">
+            <div className="space-y-10 max-w-5xl">
+              {/* Functional Overview */}
+              <div className="space-y-4">
+                <h3 className="text-xl font-black uppercase tracking-widest text-primary font-display flex items-center gap-3">
+                  <Zap className="h-5 w-5" /> Functional Overview
+                </h3>
+                <p className="text-xl md:text-2xl text-muted-foreground/90 font-medium leading-[1.4] tracking-tight">
+                  {overview}
+                </p>
+              </div>
 
+              {/* Step-by-Step Guide */}
+              <div className="space-y-6">
+                <h3 className="text-xl font-black uppercase tracking-widest text-primary font-display flex items-center gap-3">
+                  <Info className="h-5 w-5" /> Step-by-Step Guide
+                </h3>
+                <ol className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {steps.map((step, i) => (
+                    <li key={i} className="flex gap-4 p-4 rounded-2xl bg-background/40 border border-white/5 backdrop-blur-sm">
+                      <span className="flex-shrink-0 h-8 w-8 rounded-full bg-primary/20 text-primary flex items-center justify-center font-black text-xs">
+                        {i + 1}
+                      </span>
+                      <p className="text-sm text-muted-foreground font-medium flex-1">{step}</p>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+
+              {/* Technical Implementation */}
               <div className={cn(
                 "bg-background/60 backdrop-blur-xl border-l-[6px] p-8 md:p-10 rounded-r-3xl shadow-2xl relative overflow-hidden group/card transition-all hover:translate-x-1",
                 accentColor
               )}>
-                <div className="absolute top-0 right-0 p-6 opacity-10 group-hover/card:opacity-25 transition-opacity">
-                  <Zap className="h-24 w-24" />
-                </div>
-                <h3 className="text-2xl font-black uppercase tracking-widest text-foreground mb-4 font-display flex items-center gap-3">
-                  <Info className="h-6 w-6 text-primary" /> Privacy Details
+                <h3 className="text-2xl font-black uppercase tracking-widest text-foreground mb-6 font-display flex items-center gap-3">
+                  <Sliders className="h-6 w-6 text-primary" /> Technical Implementation
                 </h3>
-                <p className="text-lg md:text-xl text-muted-foreground font-medium leading-relaxed">
-                  {transparency}
-                </p>
+                <div className="space-y-4">
+                  <p className="text-lg md:text-xl text-muted-foreground font-medium leading-relaxed">
+                    {technicalImplementation}
+                  </p>
+                </div>
               </div>
 
+              {/* Privacy Guarantee */}
               <div className="space-y-6 border-t border-foreground/5 pt-10">
                 <h3 className="text-xl font-black uppercase tracking-widest text-primary font-display flex items-center gap-3">
-                  <AlertTriangle className="h-6 w-6" /> Limitations
+                  <ShieldCheck className="h-6 w-6" /> Privacy & Security Guarantee
                 </h3>
                 <p className="text-lg text-muted-foreground/80 font-medium leading-relaxed italic">
-                  {limitations}
+                  {privacyGuarantee}
                 </p>
               </div>
             </div>
@@ -103,7 +129,7 @@ const ToolExpertSection = ({
               ))}
             </div>
             <p className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">
-              Verified Secure · Client-Side Only
+              High-Authority Privacy Suite · 100% Client-Side
             </p>
           </footer>
         </div>

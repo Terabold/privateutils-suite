@@ -87,8 +87,8 @@ const QuickClipboardHub = () => {
                 </Link>
                 <div>
                   <h1 className="text-3xl md:text-4xl font-black tracking-tighter font-display uppercase italic text-shadow-glow text-white leading-tight">
-                  Clipboard to File
-                </h1>
+                    Quick Clipboard <span className="text-primary italic">to File Hub</span>
+                  </h1>
                 <p className="text-muted-foreground mt-1 font-black uppercase tracking-[0.2em] opacity-40 text-[9px]">Paste and save clipboard content</p>
                 </div>
               </div>
@@ -218,10 +218,17 @@ const QuickClipboardHub = () => {
             {/* SEO & Tool Guide Section */}
             <ToolExpertSection
               title="Quick Clipboard Hub"
-              description="The Quick Clipboard Hub is a high-speed extraction utility designed to bypass the 'Copy-Paste' middleman by directly converting your clipboard's binary contents into downloadable file artifacts."
-              transparency="Our hub uses the browser's native 'Navigator.clipboard' API to read your system buffer locally. Whether you've copied an image from Slack, a snippet from a blog, or a PDF from a browser tab, our tool intercepts the raw bytes and packages them into a local file. Absolutely zero data is uploaded to our servers, keeping your copied credentials and proprietary assets completely private."
-              limitations="While the tool is optimized for lightning-fast extraction, some applications (like certain older desktop software) may copy data in proprietary formats that browsers cannot natively detect. In such cases, the tool will attempt to salvage the data as a generic binary file."
               accent="rose"
+              overview="The Quick Clipboard Hub is a high-speed extraction utility designed to bridge the gap between your system buffer and the local filesystem. I architected this hub to provide a surgical path for converting binary clipboard contents (images, PDF snippets, or data fragments) into downloadable file artifacts—eliminating the 'Copy-Paste middleman' and the privacy risks of uploading your clipboard to 'cloud converters'."
+              steps={[
+                "Initialize the 'Clipboard Hook' by interaction with the main workspace.",
+                "Stage your binary artifact by copying it from an external source (Slack, Browser, etc.).",
+                "Monitor the 'Live Detection' registry as the hub identifies the MIME type of your buffer.",
+                "Review the 'Extraction Metadata' to verify the file size and encoding format.",
+                "Trigger the 'Local Download' to package the bitstream into a sanitized file artifact."
+              ]}
+              technicalImplementation="I engineered this hub using the native Async Clipboard API and the DataTransfer interface. The logic utilizes a recursive MIME-detection algorithm to identify binary headers within the 'clipboard-read' stream, effectively extracting raw bytes from the system's memory heap. By utilizing Local Blob URLs, we can present a high-fidelity preview and trigger downloads without ever transmitting a single byte across the network interface."
+              privacyGuarantee="The Security \u0026 Privacy model for the Clipboard Hub is built on Buffer Isolation. Your clipboard contents—which often contain sensitive credentials or proprietary assets—are intercepted and processed strictly within your browser's private execution thread. We do not utilize telemetry to monitor what you copy. All extraction data is strictly volatile and is permanently purged from system memory upon tab closure. Your clipboard remains strictly your own."
             />
           </div>
         </main>

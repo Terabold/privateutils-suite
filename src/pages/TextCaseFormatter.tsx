@@ -197,10 +197,17 @@ const TextCaseFormatter = () => {
             <div className="max-w-[1240px] w-full mt-10">
               <ToolExpertSection
                 title="Text Case Transformer"
-                description="The Text Case Formatter is a high-speed string manipulation utility designed for developers, copywriters, and data analysts to standardize text formats across different naming conventions."
-                transparency="Our formatter executes all transformations using local JavaScript string methods (regex and mapping). Whether you are converting a list of variables to 'snake_case' for a database or formatting a paragraph to 'Sentence Case' for a blog post, the logic runs entirely in your browser's local thread. Your text inputs are never transmitted to our servers, ensuring your sensitive scripts and drafts remain private."
-                limitations="While our 'Sentence Case' and 'Title Case' engines are highly accurate, they rely on standard linguistic patterns. To ensure browser stability, we enforce a 10MB character limit per session."
                 accent="emerald"
+                overview="The Case Transformer is a professional-grade string manipulation lab designed for software engineers, database architects, and technical writers. I built this tool to provide a surgical path for standardizing text across different naming conventions—ensuring that your environment variables, URL slugs, and documentation remain consistent without the privacy risk of 'cloud converters' that scrape your input data."
+                steps={[
+                  "Paste your raw string, list, or code segment into the Transformer Workspace.",
+                  "Choose a 'Standard Case' (UPPERCASE, lowercase, Title Case, or Sentence Case).",
+                  "Selecting a 'Code naming convention' (snake_case, kebab-case, or CONSTANT_CASE) for development artifacts.",
+                  "Review the 'Text Analysis' suite to audit word count and character weight.",
+                  "Extract the transformed result directly to your clipboard for instant integration into your codebase."
+                ]}
+                technicalImplementation="I architected the transformation engine using regular expression (RegEx) lookahead and lookbehind assertions. The 'Snake' and 'Kebab' modules utilize a multi-pass strategy to identify word boundaries at camelCase transitions, numbers, and symbols, ensuring accurate delimiting. To maintain system stability, I implemented a 10MB Stability Gate that prevents the browser's main thread from saturating during extremely large string allocations."
+                privacyGuarantee="The Security \u0026 Privacy model for the Transformer is defined by Zero-Telemetry Isolation. All string arithmetic and mapping occurs strictly within your browser's private V8 execution context. Your text scripts, variables, and drafts never touch a network interface. All state is strictly ephemeral and is cleared from the volatile heap once the session ends."
               />
             </div>
           </div>

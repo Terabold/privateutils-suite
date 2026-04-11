@@ -314,8 +314,8 @@ const PiiMasker = () => {
                   </Button>
                 </Link>
                 <div>
-                  <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow leading-none">
-                    Blur/Redact Image
+                  <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow text-white leading-none">
+                    Image PII <span className="text-primary italic">Masker Lab</span>
                   </h1>
                   <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[9px]">Secure Privacy Redaction</p>
                 </div>
@@ -609,11 +609,18 @@ const PiiMasker = () => {
             </div>
             {/* SEO & Tool Guide Section */}
             <ToolExpertSection
-              title="PII Masking Studio"
-              description="The Identity Masker is a forensic-grade redaction suite designed to permanently obscure Personally Identifiable Information (PII) from images and text documents."
-              transparency="Our masker operates with 'Neural-Grade' privacy by using local Gaussian blur and solid block-cipher algorithms. Unlike cloud-based redaction tools that might store a copy of your unmasked original for 'training' purposes, our tool never uploads your raw data. Every mask is applied locally in your browser's V8 thread, ensuring your sensitive credentials stay safe."
-              limitations="While the Gaussian blur is mathematically complex, extraordinarily high-resolution 8K masters may experience minor frame-drops during real-time dragging of redaction regions. For the most secure redaction, we recommend using 'Blackout' mode for sensitive passwords or numeric data."
+              title="Forensic PII Masking Studio"
               accent="violet"
+              overview="The Masking Studio is a forensic-grade redaction suite designed to permanently obscure Personally Identifiable Information (PII) from sensitive images and text documents. I built this tool to provide a 'Zero-Trust' workflow for preparing legal, medical, or financial documents for sharing—without the catastrophic risk of cloud-based redaction services that might retain unmasked versions of your originals."
+              steps={[
+                "Deploy your sensitive image master or text artifact to the secure mask workbench.",
+                "Select between the 'Gaussian Blur' or 'Blockout' redaction ciphers.",
+                "Draw precision masks over sensitive regions (passports, account numbers, or faces).",
+                "Optionally, use the 'Text Redactor' for documents to block-cipher specific strings.",
+                "Extract the sanitized artifact directly to your local file system, ensuring the original sensitive data is non-recoverable."
+              ]}
+              technicalImplementation="I architected the masking engine using an immutable Canvas composite stack. When a redaction region is defined, the engine applies a hardware-accelerated Gaussian blur filter or a solid fill to the coordinate plane. The text redact module utilizes precise string replacement with the non-transparent block character. By forcing the final export through a fresh rasterization pass, we ensure that the redacted data is not just covered but mathematically destroyed in the final output stream."
+              privacyGuarantee="The Security & Privacy model for the PII Masker is centered on Local Sandbox Destruction. All redaction arithmetic and final artifact synthesis happen entirely within your browser's private application state. Your raw, unmasked data never leaves your device's volatile memory. Once you close the session, the forensic stream is permanently purged, leaving no trace of the original information on any network or local storage."
             />
           </div>
         </main>

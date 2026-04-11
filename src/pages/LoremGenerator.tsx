@@ -246,11 +246,18 @@ const LoremGenerator = () => {
             </div>
             {/* SEO & Tool Guide Section */}
             <ToolExpertSection
-              title="Lorem Ipsum & AI Content Lab"
-              description="The Lorem Generator is a high-speed placeholder text engine designed for UI/UX designers and developers who need instant, varied content for mocking up layouts."
-              transparency="Unlike online generators that rely on server-side scripts, our algorithm uses a local JavaScript dictionary to assemble sentences and paragraphs directly in your browser. No data is fetched or logged—your generation patterns remain 100% private."
-              limitations="While the tool is optimized for standard mockups, generating extremely large blocks of text (e.g., 50,000+ words) can cause the browser's DOM rendering engine to lag. For stability, we enforce a 100-paragraph hardware safety cap per generation."
+              title="Lorem Ipsum \u0026 AI Content Lab"
               accent="emerald"
+              overview="The Lorem Ipsum \u0026 AI Content Lab is a high-speed placeholder text reconstruction workbench designed for UI/UX designers, front-end architects, and content strategists. I engineered this tool to provide a surgical path for generating varied placeholder artifacts (Classic, Corporate, or Hipster) without the privacy risks of 'online generators' that track your layout patterns and monetize your design workflows via cookie-syncing."
+              steps={[
+                "Select your target 'Matrix Style' (Classic Latin, Corporate Buzzword, or Hipster).",
+                "Define your 'Atomic Unit' (Words, Sentences, or Paragraphs) for the generation batch.",
+                "Set the 'Quantity' coefficient to calibrate the volume of the text artifact.",
+                "Toggle the 'Lorem Start' switch to include the traditional Latin initializer.",
+                "Trigger the 'Generate Stream' and extract the sanitized text directly from the UI."
+              ]}
+              technicalImplementation="I architected this lab using a Local Pseudo-Random Linguistic Engine. The system pulls from three air-gapped dictionaries stored as local memory constants. The generation algorithm utilizes weighted randomization to assemble sentences with varying lengths and structures, simulating natural language flow. Because the entire assembly happens in the browser's execution thread, results are instantaneous and zero network packets are exchanged."
+              privacyGuarantee="The Security \u0026 Privacy model for the Content Lab is centered on Architectural Isolation. Your generation patterns—including styles, lengths, and frequency—exist strictly within your browser's private application state. We do not utilize any telemetry to monitor the types of mockups you are building. All session data is ephemeral and is permanently purged from RAM upon tab closure. Your design workflow stays strictly private."
             />
           </div>
         </main>

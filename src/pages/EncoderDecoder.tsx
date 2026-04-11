@@ -331,10 +331,17 @@ const EncoderDecoder = () => {
                {/* SEO & Tool Guide Section */}
                <ToolExpertSection
                   title="Universal Encoder & Decoder"
-                  description="The Universal Encoder / Decoder is a Swiss-army knife for data sanitization, translation, and forensic analysis, supporting Base64, URL percent-encoding, HTML entities, and Hexadecimal formats."
-                  transparency="Unlike online converters that log your queries to a central server, this tool operates exclusively within your browser's local memory. Whether you're decoding a sensitive Base64 token or encoding a URL for a secure API request, the process remains fully air-gapped from our servers."
-                  limitations="While highly efficient for text-based payloads, encoding extraordinarily large files into Hex or Base64 can lead to a 33-400% increase in string size. Processing multi-megabyte blobs in a single tab may cause temporary UI freezes as the browser handles the massive string allocation."
                   accent="sky"
+                  overview="The Universal Encoder & Decoder is a multi-protocol data architect designed for developers, penetration testers, and security researchers. I built this tool to provide a surgical path for translating between Base64, URL percent-encoding, HTML entities, and Hexadecimal—all while ensuring that sensitive tokens and payloads are never leaked to third-party conversion logs."
+                  steps={[
+                     "Select your target encoding or decoding protocol (e.g., Base64, URL, Hex).",
+                     "Input the raw text or artifact artifact into the source workspace.",
+                     "Observe the real-time 'Analyzed Bitstream' as the conversion occurs in the background.",
+                     "Review the 'Size Ratio' to understand the data expansion or contraction from the original state.",
+                     "Copy the resulting bitstream directly or 'Swap' it back to the input for multi-pass encoding."
+                  ]}
+                  technicalImplementation="I architected the conversion engine using a combination of native browser APIs (like btoa, atob, and encodeURIComponent) and custom Uint8Array-based buffer logic for Hex and HTML processing. To prevent thread-lock during the processing of massive payloads, I implemented a debounced worker-simulated delay, ensuring the UI remains responsive. The Base64 module uses Unicode-safe normalization to ensure that multi-byte characters are preserved without corruption during the binary-to-string transition."
+                  privacyGuarantee="The Security & Privacy model for the Encoder/Decoder is built on Isolation by Default. Unlike 'online' decoders that might capture your JWT secrets or API keys for analysis, this tool processes every byte within your local browser sandbox. We enforce a hard 5MB security threshold to prevent browser memory exhaustion, and within that limit, your data remains 100% offline and is instantly cleared from the heap upon session termination."
                />
             </main>
 

@@ -142,7 +142,7 @@ const SvgToIco = () => {
 
       await inlineExternalImages(svgEl);
       const { w: nativeW, h: nativeH } = resolveSvgDimensions(svgEl);
-      
+
       const svgString = new XMLSerializer().serializeToString(svgEl);
       const blob = new Blob([svgString], { type: "image/svg+xml;charset=utf-8" });
       const url = URL.createObjectURL(blob);
@@ -161,7 +161,7 @@ const SvgToIco = () => {
           ctx.clearRect(0, 0, targetSize, targetSize);
           ctx.imageSmoothingEnabled = true;
           ctx.imageSmoothingQuality = "high";
-          
+
           // Maintain aspect ratio while fitting into the square ICO
           const ratio = Math.min(targetSize / nativeW, targetSize / nativeH);
           const drawW = nativeW * ratio;
@@ -277,11 +277,11 @@ const SvgToIco = () => {
                       ))}
                     </div>
                     <p className="text-[10px] text-muted-foreground italic font-black uppercase tracking-tighter opacity-70 text-center leading-relaxed">
-                       Favicons usually require multiple resolutions. Export your artifact at 32px or 48px for standard browser support.
+                      Favicons usually require multiple resolutions. Export your artifact at 32px or 48px for standard browser support.
                     </p>
                     <Button onClick={convertAndDownload} disabled={!input || isProcessing} className="w-full h-11 text-[10px] font-black rounded-xl gap-2 italic uppercase tracking-widest shadow-[0_0_20px_var(--primary)]">
-                       <Download className={`h-4 w-4 ${isProcessing ? 'animate-spin' : ''}`} />
-                       {isProcessing ? "Converting..." : "Download ICO"}
+                      <Download className={`h-4 w-4 ${isProcessing ? 'animate-spin' : ''}`} />
+                      {isProcessing ? "Converting..." : "Download ICO"}
                     </Button>
                   </CardContent>
                 </Card>
@@ -289,10 +289,17 @@ const SvgToIco = () => {
             </div>
             <ToolExpertSection
               title="SVG to ICO Icon Generator"
-              description="Convert scalable vectors into .ico files. Designed for creating clean favicons that stay sharp across different display sizes."
-              transparency="This tool wraps PNG pixel data into the ICO container format entirely in your browser. All conversion happens locally on your device."
-              limitations="To ensure compatibility with all browsers, we export ICO files containing a single high-quality PNG layer. For most websites, 32px or 48px is the standard size."
               accent="orange"
+              overview="This generator is a client-side binary packer designed to transform scalable vectors into standard ICO favicons. I built this tool to provide a fast, offline alternative to cloud converters that often add unnecessary pixel metadata to your production icons. It ensures your branding assets remain strictly confidential and sharp."
+              steps={[
+                "Paste your SVG XML code or upload a vector artifact to the generator workbench.",
+                "Select your target resolution from the standard sizing matrix (16px to 256px).",
+                "The engine renders a high-DPI raster image to an off-screen canvas surface.",
+                "Review the live preview to verify orientation and color accuracy.",
+                "Download the binary .ico container directly from your browser's managed heap."
+              ]}
+              technicalImplementation="I engineered this packer to perform two distinct operations. First, it uses the Canvas API to rasterize the SVG at the selected bit-depth. Second, I implemented a specialized ICO binary packer that manually constructs the IconDirectory and IconDirectoryEntry structures according to specification. This allows us to wrap a PNG-encoded image into an ICO container directly in-memory, bypassing the need for server-side binary processors."
+              privacyGuarantee="The Security & Privacy model for the ICO Generator is built on Deterministic Execution. Every byte of the ICO file is constructed in your local browser's volatile memory. By utilizing TypedArrays (Uint8Array) for binary construction, we bypass the need for external network calls or cloud-based image processors. Once the tab is purged, your memory is cleared and the session data is vaporized."
             />
           </div>
         </main>

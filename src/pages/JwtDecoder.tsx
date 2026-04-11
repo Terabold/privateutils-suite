@@ -304,10 +304,17 @@ const JwtDecoder = () => {
             {/* SEO & Tool Guide Section */}
             <ToolExpertSection
               title="JWT Decoder & Inspector"
-              description="The Universal JWT Decoder is a specialized diagnostic utility for developers to inspect the Header, Payload, and Signature components of JSON Web Tokens without compromising security."
-              transparency="Unlike online debuggers that may log your tokens (including sensitive claims or secrets) in their database, this tool decodes your JWT entirely within your browser's local sandbox. No data is sent over the network, ensuring your internal development tokens remain strictly private."
-              limitations="This tool is a decoder, not a validator. While it can display the contents of a token and check its expiration status, it does not verify the cryptographic signature against a public or private key. For production-level verification, always use a trusted library in your backend environment."
               accent="sky"
+              overview="The JWT Inspector is a specialized forensic utility designed for deep-packet analysis of JSON Web Tokens. I built this tool to provide a safe, air-gapped environment for developers to inspect sensitive claims, expiration timestamps, and header metadata—without the catastrophic risk of leaking production tokens to third-party 'debugger' databases."
+              steps={[
+                "Paste your raw JWT string into the Studio Workbench.",
+                "The inspector automatically segments the token into its 'Header,' 'Payload,' and 'Signature' components.",
+                "Analyze the 'Token Stats' to verify the algorithm (e.g., HS256, RS256) and token type.",
+                "Check the 'Expiry Banner' for real-time validation of the token's lifetime and remaining TTL.",
+                "Copy specific JSON blocks or claims directly for use in your development environment."
+              ]}
+              technicalImplementation="I engineered this decoder using Base64Url-to-Unicode translation logic that correctly handles padding and non-standard character offsets. The extraction engine uses lossless string partitioning to separate the three token segments. Unlike server-side decoders, this browser-native implementation performs the structural expansion of the JSON strings directly in the V8 heap, ensuring that no sensitive credential ever leaves the local environment."
+              privacyGuarantee="The Security & Privacy guarantee for the JWT Inspector is based on Non-Persistent Analysis. No part of your token—including the signature—is ever transmitted or logged. We provide a 'Delete Asset' function to immediately clear the workbench, and all decoded state is volatile, meaning it is purged from memory upon tab closure or navigation. Your production secrets stay offline and under your control."
             />
           </div>
         </main>

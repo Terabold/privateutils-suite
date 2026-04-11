@@ -327,10 +327,17 @@ const HashLab = () => {
             </div>
             <ToolExpertSection
               title="Cryptographic Hash Lab"
-              description="The Hash Lab is a cryptographic utility designed to generate one-way digital fingerprints (hashes) using NIST-compliant algorithms."
-              transparency="Every calculation is performed locally via the Streams API. This means that large files are read in small chunks (64KB at a time) and piped into a background-safe JS hashing engine. Your data never touches the network, and the browser memory heap remains stable regardless of file size."
-              limitations="Hashing is a one-way mathematical function and cannot be reversed. While our custom SHA-256 engine is memory-efficient, calculating hashes for multi-gigabyte files can be CPU-intensive. We prioritize SHA-256 for the streaming pipeline due to its balance of security and local performance."
               accent="violet"
+              overview="This lab is a high-performance cryptographic workbench designed for generating deterministic digital fingerprints. I built this tool because I noticed a dangerous trend of developers uploading sensitive binaries or proprietary code to insecure cloud check-summers, effectively leaking internal file signatures to third-party scrapers."
+              steps={[
+                "Enter raw text into the workspace or deploy a large file artifact via drag-and-drop.",
+                "Select your target hashing algorithm from the NIST-compliant matrix (SHA-256, SHA-384, or SHA-512).",
+                "The engine initiates a local worker thread to calculate the digest without impacting UI responsiveness.",
+                "Monitor real-time progress for massive files processed via the specialized Null-RAM Stream engine.",
+                "Copy the resulting hexadecimal bitstream directly for local verification and integrity auditing."
+              ]}
+              technicalImplementation="The architecture follows a dual-execution strategy. For standard text-based inputs, we utilize the native Web Crypto API (SubtleCrypto) for hardware-accelerated throughput. For large-scale binary files, I implemented a custom IncrementalSHA256 engine combined with the Streams API. This architecture pipes data in 64KB chunks directly into the cryptographic function, maintaining a near-zero heap memory footprint regardless of file density. All byte-level operations are performed on Uint8Array buffers to bypass JavaScript's string encoding limitations."
+              privacyGuarantee="Privacy is maintained through absolute client-side isolation. Our Zero-Server Persistence model means that no part of your file ever touches a network interface. We utilize the Browser Sandbox Lifecycle to ensure that once the digest is calculated and the session is closed, all traces of the raw data are purged from your machine's volatile RAM. Your security audit remains local, private, and deterministic."
             />
           </div>
         </main>

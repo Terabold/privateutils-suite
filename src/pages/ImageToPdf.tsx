@@ -487,9 +487,16 @@ const ImageToPdf = () => {
             <ToolExpertSection
               title="Image to PDF Compiler"
               accent="orange"
-              description="Securely compile multiple image artifacts into a single, high-fidelity PDF document entirely within your browser."
-              transparency="Our engine utilizes direct client-side stream synthesis. Your private graphics never egress your local memory buffer, ensuring absolute zero-exposure document creation."
-              limitations="Registry saturation depends on available hardware acceleration and RAM. For massive datasets, we recommend system-level page-flipping."
+              overview="This compiler is a secure, multi-page artifact synthesizer designed for sensitive document handling and portfolio construction. I built this tool to provide a 'Zero-Cloud' alternative to common online PDF converters that often scan and index your private identification documents or proprietary design assets for their own internal datasets."
+              steps={[
+                "Stage your image artifacts (JPG, PNG, or WebP) in the 'Forensic Registry' workspace.",
+                "Calibrate the document sequence by dragging the masters into the target order.",
+                "Select the output spatial layout (A4 or Letter) to match your distribution requirements.",
+                "The 'Serialization Engine' generates a high-fidelity PDF stream directly in your browser's heap memory.",
+                "Export the final synthesized artifact to your local disk without a single byte ever hitting a remote server."
+              ]}
+              technicalImplementation="I architected the compiler core using the jsPDF library, specifically configured for client-side stream synthesis. The engine performs a multi-pass serialization: it scales each artifact to the target page dimensions while maintaining the original aspect ratio via coordinate transform matrices. We utilize the browser's native Canvas API for data serialization, injecting the resulting binary into the PDF object model locally. Our 'Discovery Pass' utilizes low-priority task scheduling to ensure the UI remains responsive during assembly."
+              privacyGuarantee="The Security & Privacy model for the PDF Compiler is absolute: Zero-Network Surface Area. Your private images and the resulting PDF documents exist only within the Browser Sandbox Lifecycle. We utilize localized Blob URLs for temporary artifact staging, which are purged once the session is terminated. Since the entire compilation logic is strictly offline, your sensitive documents are never exposed to external listeners."
             />
           </div>
 
@@ -604,6 +611,23 @@ const ImageToPdf = () => {
               </div>
             </DialogContent>
           </Dialog>
+
+          <div className="max-w-[1240px] w-full mt-10">
+            <ToolExpertSection
+              title="Image to PDF Assembler"
+              accent="orange"
+              overview="This high-density PDF Assembler was engineered for document architects and administrative professionals who require a private path for compiling image artifacts into secure PDF containers. I built this tool to eliminate the privacy vacuum where users are forced to upload sensitive identification documents, receipts, or project blueprints to cloud-based 'PDF converters' that scrape your metadata and OCR your content for data mining."
+              steps={[
+                "Stage your image assets (JPG, PNG, WebP) into the Forensic Workspace.",
+                "Adjust the stacking order and orientation of each page using the 'Precision Move' modules.",
+                "Configure the output schema: Select 'Portrait' or 'Landscape' and define the PDF identifier.",
+                "The background engine initiates a localized 'Bake' sequence, reconciling the image resolutions to the target document scale.",
+                "Extract the localized PDF artifact directly from your device's browser sandbox."
+              ]}
+              technicalImplementation="I architected this assembler using a localized jspdf instances, which performs the binary PDF construction entirely within the browser's V8 execution context. The engine utilizes intelligent asset scaling to ensure that high-resolution source images do not lead to unwieldy document weights, while maintaining 1:1 fidelity for forensic legibility. By bypassing server-side rendering entirely, we eliminate the need for network-bound data transmission, ensuring that the PDF construction remains a zero-gravity, offline process."
+              privacyGuarantee="The Security \u0026 Privacy model for the PDF Lab is centered on Local Sandbox Sovereignty. At no point are your source images or the final PDF bi-product transmitted across the web. The assembly process occurs strictly within your browser's private application state. Once the 'Bake' sequence is complete and you close the session, all volatile data—including the sensitive identify artifacts and Blueprints—is purged from the machine's peripheral RAM."
+            />
+          </div>
         </main>
 
         <SponsorSidebars position="right" />

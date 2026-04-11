@@ -57,6 +57,8 @@ const SlugForge = lazy(() => import("./pages/SlugForge.tsx"));
 const WhitespaceScrubber = lazy(() => import("./pages/WhitespaceScrubber.tsx"));
 const SvgToIco = lazy(() => import("./pages/SvgToIco.tsx"));
 const DiceLab = lazy(() => import("./pages/DiceLab.tsx"));
+const SecurityArchitecture = lazy(() => import("./pages/SecurityArchitecture.tsx"));
+const Faq = lazy(() => import("./pages/Faq.tsx"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 // --- LOADING FALLBACK ARTIFACT ---
@@ -164,6 +166,8 @@ const App = () => {
                 <Route path="/whitespace-scrubber" element={<WhitespaceScrubber />} />
                 <Route path="/svg-to-ico" element={<SvgToIco />} />
                 <Route path="/dice-lab" element={<DiceLab />} />
+                <Route path="/security-architecture" element={<SecurityArchitecture />} />
+                <Route path="/faq" element={<Faq />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>

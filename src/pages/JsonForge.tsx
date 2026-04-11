@@ -286,9 +286,9 @@ const JsonForge = () => {
                 </Button>
               </Link>
               <div>
-                <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow text-white leading-none">
-                  JSON Formatter
-                </h1>
+                 <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow text-white leading-none">
+                   JSON Architecture <span className="text-primary italic">Forge Studio</span>
+                 </h1>
                 <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">Format and validate JSON code</p>
               </div>
             </header>
@@ -499,11 +499,18 @@ const JsonForge = () => {
             </div>
             {/* SEO & Tool Guide Section */}
             <ToolExpertSection
-              title="JSON Studio"
-              description="The JSON Studio is a high-speed data architecture utility designed to validate, prettify, and minify complex JSON structures with ECMA-404 compliance."
-              transparency="Our validation engine runs entirely on your browser's local V8 JavaScript thread. Whether you're debugging a sensitive API response or formatting a configuration file, your data environment is fully isolated from our servers, ensuring zero leakage of proprietary schemas."
-              limitations="While the Studio can handle multi-megabyte JSON payloads, attempting to 'Prettify' an extraordinarily large single-line file (e.g., 50MB+) may cause the browser's UI thread to lock as it calculates thousands of line breaks and indentations. For massive data dumps, we recommend using a CLI-based tool like jq."
+              title="JSON Architecture Forge"
               accent="sky"
+              overview="The JSON Architecture Forge is a high-speed data engineering workbench designed for full-stack developers, API architects, and data scientists. I engineered this forge to provide a surgical path for validating, prettifying, and minifying complex JSON artifacts without the security risks of 'online formatters' that scrape your internal data structures and harvest your private API schemas for commercial intelligence."
+              steps={[
+                "Stage your JSON or JSONL artifact into the 'Main Logic' registry.",
+                "Utilize the 'Auto-Prettify' switch to enforce real-time structural indentation.",
+                "Monitor the 'Refusal Console' to debug syntax errors and forensic rescue attempts.",
+                "Trigger the 'Wand' icon to instantly prettify or 'Minimize' to compress the bitstream.",
+                "Export your sanitized JSON artifact via a local binary download or direct clipboard copy."
+              ]}
+              technicalImplementation="I architected this forge using a Debounced Forensic Parser that handles both standard EcmaScript JSON and Newline-Delimited JSON (JSONL) streams. The engine utilizes a Heuristic Rescue Pipeline to attempt structural reconstruction of malformed objects (e.g., missing brackets or consecutive object streams). By executing all validation and formatting inside the browser's V8 sandbox with a 5MB hardware safety cap, we ensure that your data schemas remain strictly air-gapped from the public internet."
+              privacyGuarantee="The Security \u0026 Privacy model for the JSON Lab is centered on Architectural Isolation. Your data structures—whether containing user records, system logs, or proprietary configurations—exist strictly within your browser's private application state. No telemetry is utilized to monitor your payload sizes or key names. All session data is ephemeral and is permanently purged from system RAM upon tab termination. Your code stays private."
             />
           </div>
         </main>

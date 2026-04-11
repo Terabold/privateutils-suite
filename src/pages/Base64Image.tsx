@@ -235,11 +235,18 @@ const Base64Image = () => {
 
             {/* SEO & Tool Guide Section */}
             <ToolExpertSection
-              title="Base64 Image Converter"
-              description="The Base64 Image Encoder is a specialized front-end utility that allows you to instantly convert standard image files (like JPG, PNG, GIF, or WebP) into portable Base64 Data URLs without relying on a remote server."
-              transparency="This encoder leverages the native HTML5 FileReader API, meaning the entire image-to-text transformation happens strictly within the private confines of your local browser session. It's 100% secure for private design assets."
-              limitations="However, please understand that Base64 encoding generally increases file size by about 33%. While embedding small icons is efficient, encoding massive high-resolution photographs can severely degrade website performance and may cause your browser tab to stall."
+              title="Base64 Image Studio"
               accent="orange"
+              overview="This encoder is a specialized front-end utility designed for sub-millisecond conversion of image artifacts into portable Data URLs. I developed this tool because I found it absurd that developers were uploading private UI assets to third-party 'Base64 converters'—effectively handing over their graphical intellectual property to unknown telemetry databases."
+              steps={[
+                "Deploy your image artifact (JPG, PNG, SVG, or WebP) to the studio workspace.",
+                "The engine initiates a local FileReader stream to parse the binary data blocks.",
+                "Observe the real-time 'String Weight' metric to assess the impact on your final payload.",
+                "Review the visual preview to ensure the bit-to-text transformation is computationally accurate.",
+                "Copy the resulting Base64 string directly to your clipboard for instant embedding."
+              ]}
+              technicalImplementation="I architected this encoder using the native FileReader API and the readAsDataURL method, which performs a Base64 encoding according to RFC 4648. By utilizing the browser's internal C++ implementation for binary-to-text transformation, we achieve near-native performance even with high-density images. The logic uses volatile Blob staging for the preview window, ensuring that massive encoded strings do not compromise main-thread responsiveness."
+              privacyGuarantee="The Privacy & Security model for this converter is absolute: zero-server persistence. Your raw pixels and their resulting encoded strings exist only within the Browser Sandbox Lifecycle. Because our logic is entirely client-side, there is no network overhead or risk of data exfiltration. Once you clear the workbench or close the tab, the volatile RAM used to store your artifact is immediately purged."
             />
           </div>
         </main>

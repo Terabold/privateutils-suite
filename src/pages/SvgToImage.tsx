@@ -337,10 +337,13 @@ const SvgToImage = () => {
           canvas.width = requestedWidth;
           canvas.height = requestedHeight;
 
-          const ctx = canvas.getContext("2d", { alpha: exportFormat === "png" });
+          const ctx = canvas.getContext("2d");
           if (!ctx) throw new Error("Failed to initialize canvas context");
 
-          // White background for JPEG
+          // Clear any previous render (Essential for transparency)
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+          // White background for JPEG only
           if (exportFormat === "jpeg") {
             ctx.fillStyle = "#FFFFFF";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -610,10 +613,17 @@ const SvgToImage = () => {
 
             <ToolExpertSection
               title="Svg to Image Converter"
-              description="Our SVG to Image studio provides high-precision vector-to-raster rendering. It is designed for developers and designers who need to convert scalable graphics into web-optimized PNG or JPG formats without sacrificing privacy."
-              transparency="The rendering process occurs entirely within your browser's local sandbox. We utilize the HTML5 Canvas API to create a hardware-accelerated drawing surface. When you provide SVG code, we generate a local Blob URL, render it to the canvas at your specified scale, and extract the pixel data directly. No image data is ever transmitted through a server."
-              limitations="While most SVG features (gradients, masks, paths) are supported by standard browser canvas implementations, certain complex internal CSS animations or non-standard SVG extensions may not render identically to a vector viewer. We recommend checking the live preview before initiating the export."
               accent="orange"
+              overview="This converter is a high-precision vector-to-raster rendering studio. I built this because many online 'SVG to PNG' converters are actually data collectors that index your uploaded vector assets. This tool provides a GPU-accelerated path to convert scalable graphics into production-ready images while keeping the source code local."
+              steps={[
+                "Paste your raw SVG code or upload a vector artifact to the workbench.",
+                "Set your target dimensions; our engine supports scaling up to 4x for high-DPI assets.",
+                "The engine generates a local hardware-accelerated Canvas surface for rendering.",
+                "Select your output format (PNG for transparency, JPG for photographs).",
+                "Extract the pixel data directly from your browser's heap memory to your disk."
+              ]}
+              technicalImplementation="I architected the rendering pipeline to utilize the native CanvasRenderingContext2D. The process involves non-blocking execution: we convert the SVG XML into a Blob URL, which is then loaded into an off-screen image element. Once the image is decoded by the browser's hardware-accelerated rasterizer, we paint it to a canvas. This approach ensures that we support complex CSS transforms and masks that are native to the browser's SVG engine."
+              privacyGuarantee="The Security & Privacy model for SvgToImage is grounded in Zero-Network Surface Area. No data is ever transmitted to a server. We utilize the Browser Sandbox Lifecycle for the entire rasterization process. By using URL.createObjectURL for temporary artifact staging, we ensure that files are purgeable immediately upon task completion, leaving no forensic trace on our infrastructure."
             />
           </div>
         </main>

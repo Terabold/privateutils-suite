@@ -1,9 +1,9 @@
 import { useState, useCallback, useEffect, useMemo } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import ToolsGrid, { tools } from "@/components/ToolsGrid";
 import Footer from "@/components/Footer";
-import { ShieldCheck, Zap, Lock, Play, Pause } from "lucide-react";
+import { ShieldCheck, Zap, Lock, Play, Pause, HelpCircle, Coffee, ShieldAlert, Scale, ArrowRight, MessageSquare } from "lucide-react";
 import SponsorSidebars from "@/components/SponsorSidebars";
 import AdBox from "@/components/AdBox";
 import ToolAdBanner from "@/components/ToolAdBanner";
@@ -200,6 +200,121 @@ const Index = () => {
               </div>
               <h3 className="text-xl font-bold mb-4 tracking-tight uppercase">Encrypted Exit</h3>
               <p className="text-muted-foreground text-sm leading-relaxed italic font-medium">Memory is wiped on session end</p>
+            </div>
+          </section>
+          
+          {/* Platform Navigation Hub: Quick-Access Footer Links */}
+          <section id="platform-hub" className="mb-32 mt-16 animate-in fade-in slide-in-from-bottom-8 duration-1000">
+            <div className="flex flex-col items-center text-center gap-6 mb-12">
+               <div className="px-5 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-[10px] font-black uppercase tracking-[0.3em]">
+                  Platform Hub
+               </div>
+               <h2 className="text-4xl md:text-5xl font-black tracking-tighter uppercase italic text-shadow-glow">
+                  Quick <span className="text-primary italic">Escalation Hub</span>
+               </h2>
+               <p className="text-muted-foreground max-w-xl font-medium italic">
+                  Instant access to our technical documentation, security protocols, and community support channels.
+               </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+               <Link to="/faq" className="group">
+                  <div className="h-full p-8 rounded-[2rem] bg-muted/30 border border-primary/10 hover:border-primary/40 hover:bg-muted/50 transition-all duration-500 hover-glow relative overflow-hidden">
+                     <div className="absolute -right-4 -top-4 h-24 w-24 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-colors" />
+                     <HelpCircle className="h-10 w-10 text-primary mb-6 group-hover:scale-110 transition-transform duration-500" />
+                     <h3 className="text-xl font-black uppercase tracking-tighter mb-2 italic">Technical FAQ</h3>
+                     <p className="text-xs text-muted-foreground leading-relaxed font-medium mb-6">Expert answers to common security and usage questions.</p>
+                     <div className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-widest">
+                        Browse FAQ <ArrowRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
+                     </div>
+                  </div>
+               </Link>
+
+               <Link to="/security-architecture" className="group">
+                  <div className="h-full p-8 rounded-[2rem] bg-muted/30 border border-primary/10 hover:border-primary/40 hover:bg-muted/50 transition-all duration-500 hover-glow relative overflow-hidden">
+                     <div className="absolute -right-4 -top-4 h-24 w-24 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-colors" />
+                     <ShieldCheck className="h-10 w-10 text-primary mb-6 group-hover:scale-110 transition-transform duration-500" />
+                     <h3 className="text-xl font-black uppercase tracking-tighter mb-2 italic">Architecture</h3>
+                     <p className="text-xs text-muted-foreground leading-relaxed font-medium mb-6">Deep dive into our client-side execution model.</p>
+                     <div className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-widest">
+                        View Blueprint <ArrowRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
+                     </div>
+                  </div>
+               </Link>
+
+               <Link to="/privacy-policy" className="group">
+                  <div className="h-full p-8 rounded-[2rem] bg-muted/30 border border-primary/10 hover:border-primary/40 hover:bg-muted/50 transition-all duration-500 hover-glow relative overflow-hidden">
+                     <div className="absolute -right-4 -top-4 h-24 w-24 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-colors" />
+                     <Scale className="h-10 w-10 text-primary mb-6 group-hover:scale-110 transition-transform duration-500" />
+                     <h3 className="text-xl font-black uppercase tracking-tighter mb-2 italic">Privacy Policy</h3>
+                     <p className="text-xs text-muted-foreground leading-relaxed font-medium mb-6">Our legally binding zero-data collection guarantee.</p>
+                     <div className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-widest">
+                        Read Terms <ArrowRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
+                     </div>
+                  </div>
+               </Link>
+
+               <a href="https://ko-fi.com/privateutils" target="_blank" rel="noopener noreferrer" className="group">
+                  <div className="h-full p-8 rounded-[2rem] bg-primary/5 border border-primary/20 hover:border-primary/50 hover:bg-primary/10 transition-all duration-500 hover-glow relative overflow-hidden">
+                     <div className="absolute -right-4 -top-4 h-24 w-24 bg-primary/10 rounded-full blur-2xl group-hover:bg-primary/20 transition-colors" />
+                     <Coffee className="h-10 w-10 text-primary mb-6 group-hover:scale-110 transition-transform duration-500" />
+                     <h3 className="text-xl font-black uppercase tracking-tighter mb-2 italic">Support Suite</h3>
+                     <p className="text-xs text-muted-foreground leading-relaxed font-medium mb-6">Help keep these professional tools free and private.</p>
+                     <div className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-widest">
+                        Buy me a coffee <ArrowRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
+                     </div>
+                  </div>
+               </a>
+            </div>
+          </section>
+
+          {/* High-Authority Text Anchor: The Future of In-Browser Computing */}
+          <section id="authority-anchor" className="mt-32 pt-20 border-t border-primary/10 animate-in fade-in slide-in-from-bottom-12 duration-1000">
+            <div className="max-w-5xl mx-auto space-y-12">
+              <header className="space-y-4">
+                <h2 className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-foreground font-display leading-[0.9] italic text-shadow-glow">
+                  PrivateUtils: The Future of <span className="text-primary italic">In-Browser Computing</span>
+                </h2>
+                <div className="h-1.5 w-32 bg-primary rounded-full" />
+              </header>
+
+              <div className="prose prose-zinc dark:prose-invert max-w-none text-muted-foreground space-y-8 text-lg leading-relaxed">
+                <p className="text-xl font-medium text-foreground italic">
+                  I built this tool because the software industry has spent the last decade optimized for data extraction rather than user utility. When I designed the architecture for the PrivateUtils suite, my core objective was to prove that complex media and data processing do not require a server-side round trip. 
+                </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mt-12">
+                  <div className="space-y-6">
+                    <h3 className="text-2xl font-black uppercase tracking-widest text-primary font-display">The SaaS Latency Tax</h3>
+                    <p>
+                      Traditionally, web utilities follow a "Upload-Process-Download" lifecycle. This model introduces significant <strong>Main thread blocking</strong> risks on the server, massive egress costs, and—most importantly—unnecessary latency. By moving execution logic into the client-side <strong>Heap memory</strong>, we eliminate the network as a bottleneck. Whether you are scrubbing EXIF metadata or transcoding video, the speed is limited only by your locally available hardware threads.
+                    </p>
+                    <p>
+                      Modern browsers have evolved into sophisticated execution environments. With the maturation of APIs like <strong>SharedArrayBuffer</strong> and the <strong>Web Crypto API</strong>, the browser is no longer just a document viewer; it is a high-performance sandbox. This transition to "Local-First" computing means that your CPU—not a remote cloud instance—is the primary engine of creation.
+                    </p>
+                  </div>
+
+                  <div className="space-y-6">
+                    <h3 className="text-2xl font-black uppercase tracking-widest text-primary font-display">Zero-Trust by Design</h3>
+                    <p>
+                      The standard security model for SaaS is "Trust us with your data." We reject that premise entirely. In the PrivateUtils architecture, we utilize <strong>MIME type sniffing</strong> and client-side validation to ensure that artifacts are handled securely within the <strong>Browser Sandbox Lifecycle</strong>. Because no data is ever transmitted to a server, the risk of a data breach is mathematically reduced to 0%.
+                    </p>
+                    <p>
+                      Even when dealing with complex operations like <strong>PDF generation</strong> or <strong>Image compression</strong>, our tools avoid creating persistent <strong>Client-side artifacts</strong> that could be recovered later. Everything stays in volatile RAM. Once you close the tab, the heap is garbage-collected, and the session is vaporized. This is not just a feature; it is a fundamental architectural guarantee.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="bg-muted/30 p-10 rounded-[2rem] border border-primary/10 mt-12">
+                  <h3 className="text-2xl font-black uppercase tracking-widest text-primary font-display mb-6">Hardware Acceleration via WASM</h3>
+                  <p>
+                    A common misconception is that JavaScript is too slow for heavy media lifting. While pure JS has its limitations, <strong>WebAssembly (WASM)</strong> allows us to run C++ and Rust code at near-native speeds directly in the browser. This allows PrivateUtils to handle heavy operations—like 4K video aspect adjustment or high-fidelity audio bass boosting—without the user experiencing significant input lag.
+                  </p>
+                  <p className="mt-4">
+                    By leveraging modern instruction sets and hardware-accelerated rendering via the <strong>CanvasRenderingContext2D</strong>, we achieve performance parity with many standalone desktop applications. The future of the web is decentralized, local, and private. PrivateUtils is our contribution to that paradigm shift.
+                  </p>
+                </div>
+              </div>
             </div>
           </section>
         </main>

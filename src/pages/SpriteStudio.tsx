@@ -456,9 +456,9 @@ const SpriteStudio = () => {
                 </Button>
               </Link>
               <div>
-                <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow text-white leading-none">
-                  Split Image (Sprites)
-                </h1>
+                 <h1 className="text-4xl md:text-5xl font-black tracking-tighter font-display uppercase italic text-shadow-glow text-white leading-none">
+                   Sprite Asset <span className="text-primary italic">Studio Hub</span>
+                 </h1>
                 <p className="text-muted-foreground mt-2 font-black uppercase tracking-[0.2em] opacity-40 text-[10px]">Slice images into a grid and export ZIP</p>
               </div>
             </header>
@@ -781,10 +781,17 @@ const SpriteStudio = () => {
             <div className="max-w-[1240px] w-full mt-10">
               <ToolExpertSection
                 title="Sprite Sheet Studio"
-                description="The Sprite Studio is a high-precision asset management engine designed for game developers and UI designers to slice large texture atlases and sprite sheets into individual, optimized PNG artifacts."
-                transparency="Our studio utilizes the browser's native Canvas API 2D context to perform pixel-perfect extraction. The 'Grid Schema' and 'Manual Drafting' engines run entirely within your local V8 environment—ensuring that your proprietary game assets and character designs are never uploaded to a remote server. All processing, including ZIP compression via JSZip, is handled client-side."
-                limitations="The visualizer is optimized for high-performance 'Nearest Neighbor' rendering (Pixelated), making it ideal for pixel art. However, extremely large textures (8192px+) may hit browser-specific canvas memory limits. For massive atlases, we recommend slicing in smaller logical chunks."
                 accent="emerald"
+                overview="This studio is a high-precision asset partitioning engine designed for game developers and UI architects. I built this tool to provide a pixel-perfect workflow for slicing texture atlases and sprite sheets without the security risks of uploading unreleased game assets to cloud-based 'slicers' that might store your artistic masterworks."
+                steps={[
+                  "Upload your texture atlas or sprite sheet master to the drafting stage workspace.",
+                  "Select between 'Manual Drafting' for irregular slices or 'Grid Schema' for uniform tiles.",
+                  "Calibrate the grid coordinates using the 'Fixed Count' or 'Pixel Density' engines.",
+                  "Review your 'Partition Stack' to ensure every node is correctly bounded and named.",
+                  "Bake and download the entire asset library as a locally-compressed ZIP archive."
+                ]}
+                technicalImplementation="I engineered the studio core using an off-screen Canvas API 2D surface for bit-perfect raster extraction. The drafting interface utilizes a Virtual Coordinate System that reconciles zoom and pan offsets against the actual bitmap resolution, allowing for sub-pixel precision. The final export phase leverages JSZip to perform client-side binary compression, wrapping the individual PNG blobs into a single ZIP container without a single network call."
+                privacyGuarantee="The Security & Privacy model for Sprite Studio is centered on Zero-Upload Partitioning. All image manipulation, pixel sampling, and archive generation occur within your browser's local heap. We circumvent the entire network stack for data processing. Your proprietary master textures remain strictly offline and are obliterated from the browser's temporary storage the moment the tab is closed."
               />
             </div>
           </div>

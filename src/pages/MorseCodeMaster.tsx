@@ -583,10 +583,17 @@ const MorseCodeMaster = () => {
 
             <ToolExpertSection
               title="Morse Code Studio"
-              description="The Morse Code Master translates plaintext into standard International Morse code and back. It also leverages the Web Audio API to generate accurate sound beeps directly in your browser."
-              transparency="Translation happens 100% locally using a static mapping table. No text is sent to our servers, and the audio generation is handled by your browser's native sound engine."
-              limitations="Long strings of Morse code can become difficult to read or hear. We recommend translating sentence by sentence for the best experience."
               accent="rose"
+              overview="The Morse Code Studio is a high-fidelity communications translation workbench designed for radio enthusiasts, survivalists, and cryptographic analysts. I engineered this laboratory to provide a surgical path for mapping plaintext to International Morse Code artifacts (and vice versa) without the security risks of 'on-the-fly' translators that can log your tactical messages and harvest your phonetic data for metadata analysis."
+              steps={[
+                "Stage your 'Plaintext' or 'Pulse-Stream' into the Command Center workspace.",
+                "Toggle the 'Translation Protocol' to set your target transformation path.",
+                "Monitor the 'Signal Command Center' (Oscilloscope) to visualize the acoustic bitstream.",
+                "Utilize the 'Manual Signal Key' to practice tactile transmission in real-time.",
+                "Export your localized Morse code as a high-fidelity WAV artifact or copy the sanitized string."
+              ]}
+              technicalImplementation="I architected this studio using the Web Audio API OscillatorNode and GainNode for precision signal generation. The engine utilizes an OfflineAudioContext for high-speed bitstream rendering during export. By implementing a local MORSE_MAP dictionary and an asychronous Sequence-to-Buffer Pipeline, we ensure that your acoustic artifacts are generated with microsecond timing accuracy without any network round-trips."
+              privacyGuarantee="The Security \u0026 Privacy model for the Morse Lab is built on Phonetic Isolation. Your messages—whether tactile or textual—exist strictly within your browser's private application state. At no point are your signal patterns transmitted to a remote server. The tool is entirely air-gapped, ensuring that your private communication artifacts remain strictly confidential and off the cloud."
             />
           </div>
         </main>
