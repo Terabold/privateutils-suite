@@ -1,7 +1,1 @@
-# --- CANONICAL ENFORCEMENT ---
-# Forced redirect for non-www to keep things tidy
-https://www.privateutils.com/* https://privateutils.com/:splat 301!
-
-# --- SPA ROUTING ---
-# Ensure all routes serve index.html for client-side navigation
-/*  /index.html  200
+# Rules moved to Cloudflare Dashboard

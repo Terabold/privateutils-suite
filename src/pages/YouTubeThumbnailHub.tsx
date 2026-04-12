@@ -35,18 +35,23 @@ const RANDOM_TITLES = [
 ];
 
 const RANDOM_THUMBNAILS = [
-  "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=800&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1558494949-ef0101551d4?q=80&w=800&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=800&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=800&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=800&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=800&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=800&auto=format&fit=crop"
+  "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1280&h=720&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1558494949-ef0101551d4?q=80&w=1280&h=720&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=1280&h=720&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1280&h=720&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1280&h=720&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1280&h=720&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=1280&h=720&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=1280&h=720&auto=format&fit=crop"
 ];
 
 const YouTubeThumbnailHub = () => {
-  const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
+  const [darkMode, setDarkMode] = useState(() => {
+    if (typeof window !== "undefined") {
+      return document.documentElement.classList.contains("dark");
+    }
+    return true;
+  });
   const [image, setImage] = useState<string | null>(null);
   const [layoutMode, setLayoutMode] = useState<'watch' | 'home' | 'search'>('watch');
   const [ytTheme, setYtTheme] = useState<'dark' | 'light'>(darkMode ? 'dark' : 'light');
@@ -64,6 +69,7 @@ const YouTubeThumbnailHub = () => {
     setDarkMode(next);
     document.documentElement.classList.toggle("dark", next);
     localStorage.setItem("theme", next ? "dark" : "light");
+    setYtTheme(next ? 'dark' : 'light');
   }, [darkMode]);
 
   const handleFile = (f: File | undefined) => {
@@ -195,20 +201,20 @@ const YouTubeThumbnailHub = () => {
                     >
                       <div ref={watchRef} className={`grid grid-cols-1 xl:grid-cols-12 gap-10 p-8 rounded-2xl transition-all duration-300 shadow-2xl ${ytTheme === 'dark' ? 'bg-[#0f0f0f] border border-white/5 text-white' : 'bg-[#f9f9f9] border border-zinc-200 text-black'}`}>
                         <div className="xl:col-span-8 space-y-6">
-                          <div className="relative aspect-video w-full bg-black rounded-2xl overflow-x-clip shadow-2xl border border-white/5 group select-none">
+                          <div className="relative aspect-video w-full bg-black rounded-2xl overflow-hidden shadow-2xl border border-white/5 group select-none">
                             <img
                               crossOrigin="anonymous"
                               src={image}
                               className="w-full h-full object-cover"
                               alt="Hub Preview"
                               onError={(e) => {
-                                (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800&auto=format&fit=crop';
+                                (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1280&h=720&auto=format&fit=crop';
                               }}
                             />
                             <div className="absolute inset-x-0 bottom-0 p-6 bg-gradient-to-t from-black/80 to-transparent flex flex-col gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
                               <div className="flex items-center gap-4">
                                 <Play className="h-6 w-6 text-white fill-white shrink-0" />
-                                <div className="h-1 w-full bg-white/30 rounded-full overflow-x-clip">
+                                <div className="h-1 w-full bg-white/30 rounded-full overflow-hidden">
                                   <div className="h-full bg-red-600 w-[45%]" />
                                 </div>
                                 <span className="text-[11px] font-bold text-white font-mono">10:24 / 23:15</span>
@@ -244,13 +250,13 @@ const YouTubeThumbnailHub = () => {
                         <div className="xl:col-span-4 space-y-4 relative">
                           {[1, 2, 3, 4, 5, 6].map((i) => (
                             <div key={i} className={`flex gap-2 group cursor-pointer border-t py-3 first:border-0 first:pt-0 ${ytTheme === 'dark' ? 'border-white/5' : 'border-zinc-200'}`}>
-                              <div className={`w-[168px] aspect-video rounded-2xl overflow-x-clip shrink-0 relative border ${ytTheme === 'dark' ? 'bg-[#272727] border-white/5' : 'bg-zinc-100 border-zinc-200'}`}>
+                              <div className={`w-[168px] aspect-[16/9] rounded-2xl overflow-hidden shrink-0 relative border ${ytTheme === 'dark' ? 'bg-[#272727] border-white/5' : 'bg-zinc-100 border-zinc-200'}`}>
                                 <img
                                   crossOrigin="anonymous"
                                   src={i === 1 ? (image || "") : getOtherThumb(i)}
                                   className="w-full h-full object-cover transition-all duration-300 group-hover:scale-105"
                                   onError={(e) => {
-                                    (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800&auto=format&fit=crop';
+                                    (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1280&h=720&auto=format&fit=crop';
                                   }}
                                 />
                                 <div className="absolute bottom-1 right-1 bg-black/80 text-[9px] font-black px-1 rounded-sm text-white">10:24</div>
@@ -260,7 +266,7 @@ const YouTubeThumbnailHub = () => {
                                   </div>
                                 )}
                               </div>
-                              <div className="space-y-1 py-0.5 overflow-x-clip">
+                              <div className="space-y-1 py-0.5 overflow-hidden">
                                 <h4 className={`text-sm font-black leading-snug line-clamp-2 pr-4 overflow-visible transition-colors duration-300 ${ytTheme === 'dark' ? 'text-white/90 group-hover:text-primary' : 'text-zinc-900 group-hover:text-primary'}`}>{i === 1 ? title : getOtherTitle(i)}</h4>
                                 <p className={`text-[9px] mt-1 font-black uppercase tracking-widest ${ytTheme === 'dark' ? 'text-white/40' : 'text-zinc-500'}`}>{i === 1 ? 'PrivateUtils Labs' : `Casual YouTuber ${i}`}</p>
                               </div>
@@ -279,16 +285,16 @@ const YouTubeThumbnailHub = () => {
                       exit={{ opacity: 0 }}
                       transition={{ duration: 0.3 }}
                     >
-                      <div ref={homeRef} className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-8 rounded-2xl transition-all duration-300 shadow-2xl ${ytTheme === 'dark' ? 'bg-[#0f0f0f] border border-white/5 text-white' : 'bg-[#f9f9f9] border border-zinc-200 text-black'}`}>
+                      <div ref={homeRef} className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-5 gap-y-12 p-8 rounded-2xl transition-all duration-300 shadow-2xl ${ytTheme === 'dark' ? 'bg-[#0f0f0f] border border-white/5 text-white' : 'bg-[#f9f9f9] border border-zinc-200 text-black'}`}>
                         {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(i => (
-                          <div key={i} className={`flex flex-col gap-3 group cursor-pointer transition-all duration-300 ${i === 1 ? 'order-first' : ''}`}>
-                            <div className={`relative aspect-video w-full rounded-xl overflow-x-clip border shadow-lg transition-all duration-300 ${ytTheme === 'dark' ? 'bg-[#272727] border-white/5' : 'bg-zinc-100 border-zinc-200'}`}>
+                          <div key={i} className={`flex flex-col gap-3 group cursor-pointer transition-all duration-300 h-fit ${i === 1 ? 'order-first' : ''}`}>
+                            <div className={`relative aspect-[16/9] w-full rounded-xl overflow-hidden border shadow-lg transition-all duration-300 ${ytTheme === 'dark' ? 'bg-zinc-900 border-white/5' : 'bg-zinc-100 border-zinc-200'}`}>
                               <img
                                 crossOrigin="anonymous"
                                 src={i === 1 ? (image || "") : getOtherThumb(i)}
                                 className="w-full h-full object-cover transition-all duration-300 group-hover:scale-105"
                                 onError={(e) => {
-                                  (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800&auto=format&fit=crop';
+                                  (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1280&h=720&auto=format&fit=crop';
                                 }}
                               />
                               {i === 1 && (
@@ -300,7 +306,7 @@ const YouTubeThumbnailHub = () => {
                               <div className="absolute bottom-2 right-2 bg-black/90 text-white text-[11px] font-black px-1.5 py-0.5 rounded-sm">15:30</div>
                             </div>
                             <div className="flex gap-3 px-1 mt-1">
-                              <div className={`h-9 w-9 rounded-full shrink-0 mt-1 border ${ytTheme === 'dark' ? 'bg-[#272727] border-white/5' : 'bg-zinc-200 border-zinc-300'}`} />
+                              <div className={`h-9 w-9 rounded-full shrink-0 mt-1 border ${ytTheme === 'dark' ? 'bg-zinc-800 border-white/5' : 'bg-zinc-200 border-zinc-300'}`} />
                               <div className="space-y-1">
                                 <h3 className={`text-[15px] font-black leading-tight line-clamp-2 tracking-tighter pr-4 overflow-visible transition-colors duration-300 ${i === 1 ? 'text-primary' : (ytTheme === 'dark' ? 'text-white' : 'text-zinc-900')}`}>{i === 1 ? title : getOtherTitle(i)}</h3>
                                 <p className={`text-[9px] mt-1 uppercase font-black tracking-widest ${ytTheme === 'dark' ? 'text-white/40' : 'text-zinc-500'}`}>{i === 1 ? 'PrivateUtils Labs' : `YouTuber ${i}`}</p>
@@ -325,13 +331,13 @@ const YouTubeThumbnailHub = () => {
                         <div className="space-y-6">
                           {[1, 2, 3, 4, 5, 6].map(i => (
                             <div key={i} className={`flex flex-col sm:flex-row gap-6 group cursor-pointer transition-all duration-300 ${i === 1 ? 'order-first' : ''}`}>
-                              <div className={`w-full sm:w-[360px] aspect-video rounded-xl overflow-x-clip shrink-0 relative border shadow-xl transition-all duration-300 ${ytTheme === 'dark' ? 'bg-[#272727] border-white/5' : 'bg-zinc-100 border-zinc-200'}`}>
+                              <div className={`w-full sm:w-[360px] aspect-[16/9] rounded-xl overflow-hidden shrink-0 relative border shadow-xl transition-all duration-300 ${ytTheme === 'dark' ? 'bg-zinc-900 border-white/5' : 'bg-zinc-100 border-zinc-200'}`}>
                                 <img
                                   crossOrigin="anonymous"
                                   src={i === 1 ? (image || "") : getOtherThumb(i)}
                                   className="w-full h-full object-cover transition-all duration-300 group-hover:scale-105"
                                   onError={(e) => {
-                                    (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800&auto=format&fit=crop';
+                                    (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1280&h=720&auto=format&fit=crop';
                                   }}
                                 />
                                 {i === 1 && (
@@ -350,7 +356,7 @@ const YouTubeThumbnailHub = () => {
                                   <span>{i === 1 ? '2 hours ago' : `${i} days ago`}</span>
                                 </div>
                                 <div className="flex items-center gap-3 py-2">
-                                  <div className={`h-6 w-6 rounded-full border ${ytTheme === 'dark' ? 'bg-[#272727] border-white/5' : 'bg-zinc-200 border-zinc-300'}`} />
+                                  <div className={`h-6 w-6 rounded-full border ${ytTheme === 'dark' ? 'bg-zinc-800 border-white/5' : 'bg-zinc-200 border-zinc-300'}`} />
                                   <span className={`text-[12px] font-black uppercase tracking-tighter transition-colors duration-300 ${i === 1 ? 'text-primary' : (ytTheme === 'dark' ? 'text-white/60 group-hover:text-white' : 'text-zinc-600 group-hover:text-zinc-900')}`}>{i === 1 ? 'PrivateUtils Labs' : `Channel AI ${i}`}</span>
                                 </div>
                                 <p className={`text-[12px] line-clamp-2 italic leading-relaxed ${ytTheme === 'dark' ? 'text-white/30' : 'text-zinc-500'}`}>Learn how to use state-of-the-art encryption protocols and local-first data processing to ensure your information never leaves your hardware...</p>
@@ -371,6 +377,7 @@ const YouTubeThumbnailHub = () => {
                 </AnimatePresence>
               </div>
             )}
+
             {/* SEO & Tool Guide Section */}
             <ToolExpertSection
               title="YouTube Thumbnail Hub"

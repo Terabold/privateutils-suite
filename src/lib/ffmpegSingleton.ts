@@ -1,7 +1,8 @@
 import { FFmpeg } from "@ffmpeg/ffmpeg";
 import { toBlobURL } from "@ffmpeg/util";
 
-export const ffmpeg = new FFmpeg();
+export const ffmpeg = typeof window !== "undefined" ? new FFmpeg() : {} as FFmpeg;
+
 let loadPromise: Promise<boolean> | null = null;
 
 export const preloadFFmpeg = () => {

@@ -85,10 +85,17 @@ export default {
           },
         },
       },
+      transitionDuration: {
+        '1200': '1200ms',
+        '1500': '1500ms',
+        '1800': '1800ms',
+        '2500': '2500ms',
+      },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
+
     },
   },
   plugins: [require("tailwindcss-animate")],

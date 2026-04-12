@@ -1,6 +1,6 @@
 import { i as __toESM } from "./chunk-YKewjYmz.js";
 import { t as require_react } from "./react.js";
-import { t as require_jsx_runtime } from "./jsx-runtime-DCCSln3Q.js";
+import { t as require_jsx_runtime } from "./react_jsx-runtime.js";
 //#region node_modules/@tanstack/query-core/build/modern/subscribable.js
 var Subscribable = class {
 	constructor() {

@@ -14,12 +14,18 @@ import StickyAnchorAd from "@/components/StickyAnchorAd";
 import { toast } from "sonner";
 import { usePasteFile } from "@/hooks/usePasteFile";
 import { KbdShortcut } from "@/components/KbdShortcut";
+import { cn } from "@/lib/utils";
 import VideoTimeline from "@/components/VideoTimeline";
 import { fetchFile } from "@ffmpeg/util";
 import { getFFmpeg } from "@/lib/ffmpegSingleton";
 
 const VideoToGif = () => {
-  const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
+  const [darkMode, setDarkMode] = useState(() => {
+    if (typeof window !== "undefined") {
+      return document.documentElement.classList.contains("dark");
+    }
+    return true;
+  });
   const [file, setFile] = useState<File | null>(null);
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
   const [processing, setProcessing] = useState(false);
@@ -30,13 +36,23 @@ const VideoToGif = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [range, setRange] = useState<[number, number]>([0, 0]);
   const [logs, setLogs] = useState<string[]>([]);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   // Smooth Playhead Logic
   const [displayTime, setDisplayTime] = useState(0);
   const rAFRef = useRef<number>();
 
   const videoRef = useRef<HTMLVideoElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const handleFsChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener("fullscreenchange", handleFsChange);
+    return () => document.removeEventListener("fullscreenchange", handleFsChange);
+  }, []);
 
 
   const toggleDark = useCallback(() => {
@@ -215,20 +231,42 @@ const VideoToGif = () => {
                   </Card>
                 ) : (
                   <div className="space-y-8 animate-in fade-in slide-in-from-bottom-6 duration-300">
-                    <Card className="glass-morphism border-primary/10 rounded-2xl overflow-x-clip bg-black shadow-2xl relative border border-border/50 max-w-2xl w-full mx-auto group">
-                      <video
-                        ref={videoRef}
-                        src={videoUrl!}
-                        onLoadedMetadata={(e) => {
-                          setDuration(e.currentTarget.duration);
-                          setRange([0, e.currentTarget.duration]);
+                    <Card className="glass-morphism border-primary/10 rounded-2xl overflow-hidden bg-black shadow-2xl relative border border-border/50 max-w-2xl w-full mx-auto group">
+                      <div
+                        ref={containerRef}
+                        className={cn(
+                          "relative w-full aspect-video flex items-center justify-center bg-black group/video cursor-pointer",
+                          isFullscreen && "max-h-none h-screen bg-black"
+                        )}
+                        onClick={() => {
+                          if (videoRef.current?.paused) {
+                            videoRef.current.play();
+                            setIsPlaying(true);
+                          } else {
+                            videoRef.current?.pause();
+                            setIsPlaying(false);
+                          }
                         }}
-                        onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)}
-                        className="w-full max-h-[40vh] object-contain"
-                        crossOrigin="anonymous"
-                      />
+                      >
+                        <video
+                          ref={videoRef}
+                          src={videoUrl!}
+                          onLoadedMetadata={(e) => {
+                            setDuration(e.currentTarget.duration);
+                            setRange([0, e.currentTarget.duration]);
+                          }}
+                          onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)}
+                          className="w-full h-full object-contain relative z-10"
+                          crossOrigin="anonymous"
+                        />
 
-                      {/* Removed from video overlay */}
+                        {/* Hover Play/Pause Indicator */}
+                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
+                          <div className="h-20 w-20 rounded-full bg-black/60 backdrop-blur-xl border border-white/20 flex items-center justify-center text-white shadow-2xl opacity-0 scale-50 group-hover/video:opacity-100 group-hover/video:scale-100 transition-all duration-200 ease-out">
+                            {isPlaying ? <Pause className="h-10 w-10" /> : <Play className="h-10 w-10 fill-current ml-2" />}
+                          </div>
+                        </div>
+                      </div>
                     </Card>
 
                     <div className="space-y-6">

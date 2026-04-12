@@ -1,6 +1,6 @@
 import { i as __toESM, n as __exportAll, t as __commonJSMin } from "./chunk-YKewjYmz.js";
 import { t as require_react } from "./react.js";
-import { t as require_jsx_runtime } from "./jsx-runtime-DCCSln3Q.js";
+import { t as require_jsx_runtime } from "./react_jsx-runtime.js";
 //#region node_modules/framer-motion/dist/es/context/LayoutGroupContext.mjs
 var import_jsx_runtime = require_jsx_runtime();
 var import_react = /* @__PURE__ */ __toESM(require_react(), 1);
