@@ -8,6 +8,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { Loader2 } from "lucide-react";
 import ScrollToTop from "./components/ScrollToTop";
 import SEOHead from "./components/SEOHead";
+import RedirectHandler from "./components/RedirectHandler";
 import ErrorBoundary from "./components/ErrorBoundary";
 
 const queryClient = new QueryClient();
@@ -83,11 +84,11 @@ import { useLocation } from "react-router-dom";
 // --- THEME ORCHESTRATOR (Automatic Styling) ---
 const ThemeOrchestrator = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();
-  
+
   const themeClass = React.useMemo(() => {
     // Normalize path: remove trailing slash for consistent matching
     const normalizedPath = location.pathname === "/" ? "/" : location.pathname.replace(/\/$/, "");
-    
+
     if (normalizedPath === "/") return "theme-all";
     const tool = tools.find(t => t.to === normalizedPath);
     if (tool && tool.category && categoryConfig[tool.category]) {
@@ -116,64 +117,66 @@ const App = () => {
         <Sonner />
         <BrowserRouter>
           <ScrollToTop />
+          <RedirectHandler />
           <SEOHead />
+
           <ErrorBoundary>
             <ThemeOrchestrator>
               <Suspense fallback={<LoadingArtifact />}>
                 <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/universal-volume-booster" element={<UniversalVolumeBooster />} />
-                <Route path="/text-case-formatter" element={<TextCaseFormatter />} />
-                <Route path="/image-color-extractor" element={<ImageColorExtractor />} />
-                <Route path="/universal-media-converter" element={<UniversalMediaConverter />} />
-                <Route path="/image-compressor" element={<ImageCompressor />} />
-                <Route path="/perspective-tilter" element={<PerspectiveTilter />} />
-                <Route path="/youtube-thumbnail-hub" element={<YouTubeThumbnailHub />} />
-                <Route path="/sprite-studio" element={<SpriteStudio />} />
-                <Route path="/audio-trimmer" element={<AudioTrimmer />} />
-                <Route path="/metadata-scrubber" element={<MetadataScrubber />} />
-                <Route path="/video-to-gif" element={<VideoToGif />} />
-                <Route path="/frame-extractor" element={<FrameExtractor />} />
-                <Route path="/video-aspect-studio" element={<VideoAspectStudio />} />
-                <Route path="/json-studio" element={<JsonForge />} />
-                <Route path="/data-transformer" element={<CsvJsonForge />} />
-                <Route path="/qr-forge" element={<QrForge />} />
-                <Route path="/pii-masker" element={<PiiMasker />} />
-                <Route path="/svg-optimizer" element={<SvgOptimizer />} />
-                <Route path="/svg-to-image" element={<SvgToImage />} />
-                <Route path="/image-to-pdf" element={<ImageToPdf />} />
-                <Route path="/text-diff-checker" element={<TextDiffChecker />} />
-                <Route path="/quick-clipboard" element={<QuickClipboardHub />} />
-                <Route path="/clipboard" element={<Navigate to="/quick-clipboard" replace />} />
-                <Route path="/jwt-decoder" element={<JwtDecoder />} />
-                <Route path="/encoder-decoder" element={<EncoderDecoder />} />
-                <Route path="/timestamp-converter" element={<TimestampConverter />} />
-                <Route path="/regex-playground" element={<RegexPlayground />} />
-                <Route path="/lorem-generator" element={<LoremGenerator />} />
-                <Route path="/password-generator" element={<PasswordGenerator />} />
-                <Route path="/palette-studio" element={<ColorPaletteGenerator />} />
-                <Route path="/hash-lab" element={<HashLab />} />
-                <Route path="/unit-converter" element={<UnitConverter />} />
-                <Route path="/base64-image" element={<Base64Image />} />
-                <Route path="/reverse-audio" element={<ReverseAudio />} />
-                <Route path="/binary-to-audio" element={<BinaryToAudio />} />
-                <Route path="/audio-mono-stereo" element={<AudioMonoStereo />} />
-                <Route path="/audio-bass-booster" element={<BassBooster />} />
-                <Route path="/privacy" element={<PrivacyPolicy />} />
-                <Route path="/terms" element={<TermsOfUse />} />
-                <Route path="/morse-code-master" element={<MorseCodeMaster />} />
-                <Route path="/slug-forge" element={<SlugForge />} />
-                <Route path="/whitespace-scrubber" element={<WhitespaceScrubber />} />
-                <Route path="/svg-to-ico" element={<SvgToIco />} />
-                <Route path="/dice-lab" element={<DiceLab />} />
-                <Route path="/security-architecture" element={<SecurityArchitecture />} />
-                <Route path="/faq" element={<Faq />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </Suspense>
-          </ThemeOrchestrator>
-        </ErrorBoundary>
-      </BrowserRouter>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/universal-volume-booster" element={<UniversalVolumeBooster />} />
+                  <Route path="/text-case-formatter" element={<TextCaseFormatter />} />
+                  <Route path="/image-color-extractor" element={<ImageColorExtractor />} />
+                  <Route path="/universal-media-converter" element={<UniversalMediaConverter />} />
+                  <Route path="/image-compressor" element={<ImageCompressor />} />
+                  <Route path="/perspective-tilter" element={<PerspectiveTilter />} />
+                  <Route path="/youtube-thumbnail-hub" element={<YouTubeThumbnailHub />} />
+                  <Route path="/sprite-studio" element={<SpriteStudio />} />
+                  <Route path="/audio-trimmer" element={<AudioTrimmer />} />
+                  <Route path="/metadata-scrubber" element={<MetadataScrubber />} />
+                  <Route path="/video-to-gif" element={<VideoToGif />} />
+                  <Route path="/frame-extractor" element={<FrameExtractor />} />
+                  <Route path="/video-aspect-studio" element={<VideoAspectStudio />} />
+                  <Route path="/json-studio" element={<JsonForge />} />
+                  <Route path="/data-transformer" element={<CsvJsonForge />} />
+                  <Route path="/qr-forge" element={<QrForge />} />
+                  <Route path="/pii-masker" element={<PiiMasker />} />
+                  <Route path="/svg-optimizer" element={<SvgOptimizer />} />
+                  <Route path="/svg-to-image" element={<SvgToImage />} />
+                  <Route path="/image-to-pdf" element={<ImageToPdf />} />
+                  <Route path="/text-diff-checker" element={<TextDiffChecker />} />
+                  <Route path="/quick-clipboard" element={<QuickClipboardHub />} />
+                  <Route path="/clipboard" element={<Navigate to="/quick-clipboard" replace />} />
+                  <Route path="/jwt-decoder" element={<JwtDecoder />} />
+                  <Route path="/encoder-decoder" element={<EncoderDecoder />} />
+                  <Route path="/timestamp-converter" element={<TimestampConverter />} />
+                  <Route path="/regex-playground" element={<RegexPlayground />} />
+                  <Route path="/lorem-generator" element={<LoremGenerator />} />
+                  <Route path="/password-generator" element={<PasswordGenerator />} />
+                  <Route path="/palette-studio" element={<ColorPaletteGenerator />} />
+                  <Route path="/hash-lab" element={<HashLab />} />
+                  <Route path="/unit-converter" element={<UnitConverter />} />
+                  <Route path="/base64-image" element={<Base64Image />} />
+                  <Route path="/reverse-audio" element={<ReverseAudio />} />
+                  <Route path="/binary-to-audio" element={<BinaryToAudio />} />
+                  <Route path="/audio-mono-stereo" element={<AudioMonoStereo />} />
+                  <Route path="/audio-bass-booster" element={<BassBooster />} />
+                  <Route path="/privacy" element={<PrivacyPolicy />} />
+                  <Route path="/terms" element={<TermsOfUse />} />
+                  <Route path="/morse-code-master" element={<MorseCodeMaster />} />
+                  <Route path="/slug-forge" element={<SlugForge />} />
+                  <Route path="/whitespace-scrubber" element={<WhitespaceScrubber />} />
+                  <Route path="/svg-to-ico" element={<SvgToIco />} />
+                  <Route path="/dice-lab" element={<DiceLab />} />
+                  <Route path="/security-architecture" element={<SecurityArchitecture />} />
+                  <Route path="/faq" element={<Faq />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </Suspense>
+            </ThemeOrchestrator>
+          </ErrorBoundary>
+        </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>
   );

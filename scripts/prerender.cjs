@@ -29,53 +29,42 @@ toolsMetadata.forEach(tool => {
   // Inject Metadata
   let content = template;
 
+  const title = tool.seoTitle || tool.title;
+  const description = tool.seoDescription || tool.description;
+  const canonicalUrl = `https://privateutils.com${tool.to.replace(/\/$/, '')}`; // Enforce no-trailing-slash
+
   // Replace Title
-  content = content.replace(/<title>.*?<\/title>/, `<title>${tool.seoTitle}</title>`);
+  content = content.replace(/<title>[\s\S]*?<\/title>/g, `<title>${title}</title>`);
 
   // Replace Description Meta
   content = content.replace(
-    /<meta name="description" content=".*?" \/>/,
-    `<meta name="description" content="${tool.seoDescription}" />`
+    /<meta name="description"[\s\S]*?content="[\s\S]*?" \/>/g,
+    `<meta name="description" content="${description}" />`
   );
 
-  // Replace OG Title
-  content = content.replace(
-    /<meta property="og:title" content=".*?" \/>/,
-    `<meta property="og:title" content="${tool.seoTitle}" />`
-  );
+  // Replace OG Title & Description
+  content = content.replace(/<meta property="og:title"[\s\S]*?content="[\s\S]*?" \/>/g, `<meta property="og:title" content="${title}" />`);
+  content = content.replace(/<meta property="og:description"[\s\S]*?content="[\s\S]*?" \/>/g, `<meta property="og:description" content="${description}" />`);
+  content = content.replace(/<meta property="og:url"[\s\S]*?content="[\s\S]*?" \/>/g, `<meta property="og:url" content="${canonicalUrl}" />`);
 
-  // Replace OG Description
-  content = content.replace(
-    /<meta property="og:description" content=".*?" \/>/,
-    `<meta property="og:description" content="${tool.seoDescription}" />`
-  );
+  // Replace Twitter Title & Description
+  content = content.replace(/<meta name="twitter:title"[\s\S]*?content="[\s\S]*?" \/>/g, `<meta name="twitter:title" content="${title}" />`);
+  content = content.replace(/<meta name="twitter:description"[\s\S]*?content="[\s\S]*?" \/>/g, `<meta name="twitter:description" content="${description}" />`);
 
-  // Replace Twitter Title
-  content = content.replace(
-    /<meta name="twitter:title" content=".*?" \/>/,
-    `<meta name="twitter:title" content="${tool.seoTitle}" />`
-  );
 
-  // Replace Twitter Description
-  content = content.replace(
-    /<meta name="twitter:description" content=".*?" \/>/,
-    `<meta name="twitter:description" content="${tool.seoDescription}" />`
-  );
-
-  // Inject Static Canonical URL (replaces placeholder + existing fallback)
-  const canonicalUrl = `https://privateutils.com${tool.to}`;
-  const canonicalTag = `<link rel="canonical" href="${canonicalUrl}" />`;
+  // Inject Static Canonical URL
+  const canonicalTag = `<!-- CANONICAL_PLACEHOLDER -->\n  <link rel="canonical" href="${canonicalUrl}" />`;
   content = content.replace(
     /<!-- CANONICAL_PLACEHOLDER -->\s*<link rel="canonical" href=".*?" \/>/,
     canonicalTag
   );
 
-  // Inject JSON-LD Structured Data (SoftwareApplication Schema)
+  // Inject JSON-LD Structured Data
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    "name": tool.seoTitle.split(' |')[0].trim(),
-    "description": tool.seoDescription,
+    "name": title.split(' |')[0].trim(),
+    "description": description,
     "url": canonicalUrl,
     "applicationCategory": "UtilitiesApplication",
     "operatingSystem": "Web",
@@ -91,7 +80,7 @@ toolsMetadata.forEach(tool => {
     }
   };
 
-  const jsonLdScript = `<script type="application/ld+json">\n${JSON.stringify(jsonLd, null, 2)}\n</script>`;
+  const jsonLdScript = `<!-- JSON_LD_PLACEHOLDER -->\n  <script type="application/ld+json">\n${JSON.stringify(jsonLd, null, 2)}\n  </script>`;
   content = content.replace('<!-- JSON_LD_PLACEHOLDER -->', jsonLdScript);
 
   // Write file
@@ -99,3 +88,4 @@ toolsMetadata.forEach(tool => {
 });
 
 console.log('[PRERENDER] Static routes generated successfully.');
+
