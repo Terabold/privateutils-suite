@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# Direct links to indexing manifest
+Sitemap: https://privateutils.com/sitemap.xml

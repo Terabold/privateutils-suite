@@ -13,6 +13,24 @@ async function run() {
   const indexPath = path.join(distPath, 'index.html');
   const serverEntryPath = path.join(distPath, 'server/entry-server.js');
 
+  const manualPages = [
+    {
+      to: '/about',
+      seoTitle: "About PrivateUtils — The Mission of No-Egress Computing",
+      seoDescription: "Learn about the mission of PrivateUtils, the technical challenges of client-side computing, and why we believe your data should never leave your hardware."
+    },
+    {
+      to: '/technical-architecture',
+      seoTitle: "Technical Architecture — SSR & Hydration Pipeline",
+      seoDescription: "A deep dive into the PrivateUtils engine, exploring synchronous SSR, hydration strategies, and how we deliver professional tools with zero egress."
+    },
+    {
+      to: '/contact',
+      seoTitle: "Contact Support — PrivateUtils Project",
+      seoDescription: "Get in touch with the PrivateUtils team for support, feature requests, or collaboration opportunities."
+    }
+  ];
+
   if (!fs.existsSync(indexPath)) {
     console.error('[PRERENDER] dist/index.html not found. Run "vite build" first.');
     process.exit(1);
@@ -30,9 +48,11 @@ async function run() {
   // 4. Read template
   const template = fs.readFileSync(indexPath, 'utf8');
 
-  console.log(`[PRERENDER] Generating ${toolsMetadata.length} static routes with full HTML injection...`);
+  console.log(`[PRERENDER] Generating ${toolsMetadata.length} tools and ${manualPages.length} authority pages...`);
 
-  for (const tool of toolsMetadata) {
+  const allPages = [...toolsMetadata, ...manualPages];
+
+  for (const tool of allPages) {
     const routePath = path.join(distPath, tool.to.replace(/^\//, ''));
 
     // Ensure directory exists
