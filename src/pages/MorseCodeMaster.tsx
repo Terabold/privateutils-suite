@@ -425,6 +425,8 @@ const MorseCodeMaster = () => {
                           {direction === "text-to-morse" ? "Input Text" : "Input Morse"}
                         </p>
                         <textarea
+                          id="morse-studio-main-input"
+                          name="morse-studio-main-input"
                           value={direction === "text-to-morse" ? text : morse}
                           maxLength={CHAR_LIMIT}
                           onChange={(e) => direction === "text-to-morse" ? handleTextChange(e.target.value) : handleMorseChange(e.target.value)}

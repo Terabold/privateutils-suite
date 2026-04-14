@@ -185,6 +185,8 @@ const PasswordGenerator = () => {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-2">
                           <input
+                            id="password-length-slider"
+                            name="password-length-slider"
                             type="range"
                             min="4"
                             max="64"
@@ -196,6 +198,8 @@ const PasswordGenerator = () => {
                         </div>
                         <div className="space-y-2">
                           <input
+                            id="password-quantity-slider"
+                            name="password-quantity-slider"
                             type="range"
                             min="1"
                             max="500"

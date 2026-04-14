@@ -225,6 +225,8 @@ const RegexPlayground = () => {
                                  <div className="flex items-center gap-0 shadow-sm rounded-xl overflow-hidden">
                                     <span className="text-muted-foreground font-mono text-lg px-4 h-12 flex items-center bg-white dark:bg-[#111111] border border-r-0 border-border dark:border-white/10">/</span>
                                     <input
+                                       id="regex-pattern-input"
+                                       name="regex-pattern-input"
                                        type="text"
                                        value={pattern}
                                        onChange={(e) => setPattern(e.target.value)}
@@ -291,6 +293,8 @@ const RegexPlayground = () => {
                                  </Button>
                               </div>
                               <textarea
+                                 id="regex-test-input"
+                                 name="regex-test-input"
                                  value={testStr}
                                  onChange={(e) => setTestStr(e.target.value)}
                                  placeholder="Enter text to test your regex against…"

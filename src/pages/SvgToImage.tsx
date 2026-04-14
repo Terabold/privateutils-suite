@@ -429,14 +429,14 @@ const SvgToImage = () => {
                       </div>
                     </div>
                     <div className="flex items-center gap-2 mb-1.5 relative z-40">
-                      <Button
+                       <Button
                         asChild
                         variant="ghost"
                         className={`h-11 px-3 sm:px-4 text-[10px] font-black rounded-xl gap-2 italic uppercase tracking-widest transition-all duration-700 border border-primary/20 shadow-none hover:shadow-[0_0_20px_rgba(var(--primary),0.3)] ${!input ? 'bg-primary text-white shadow-[0_0_25px_rgba(var(--primary),0.4)] hover:bg-primary/90 hover:shadow-[0_0_35px_rgba(var(--primary),0.6)] animate-pulse duration-[time:4000ms] border-primary' : 'text-primary hover:bg-primary/10 hover:text-primary hover:border-primary/40'}`}
                       >
                         <label className="cursor-pointer">
                           <ImageIcon className="h-3.5 w-3.5" /> Upload SVG
-                          <input type="file" accept=".svg" className="hidden" onChange={(e) => { handleFile(e.target.files?.[0]); e.target.value = ""; }} />
+                          <input id="svg-image-upload-input" name="svg-image-upload-input" type="file" accept=".svg" className="hidden" onChange={(e) => { handleFile(e.target.files?.[0]); e.target.value = ""; }} />
                         </label>
                       </Button>
                       <div className="w-px h-6 bg-border dark:bg-white/10 mx-1" />
@@ -453,6 +453,8 @@ const SvgToImage = () => {
                     {/* Textarea Input */}
                     <div className="flex-1 border-b md:border-b-0 md:border-r border-border dark:border-white/5 flex flex-col">
                       <textarea
+                        id="svg-image-source-input"
+                        name="svg-image-source-input"
                         value={input}
                         onChange={(e) => {
                           if (renderError) setRenderError(null); 
@@ -581,6 +583,8 @@ const SvgToImage = () => {
                         <span className="text-[10px] font-black italic tracking-tighter text-primary">{scale}x</span>
                       </div>
                       <Slider 
+                        id="svg-image-scale-slider"
+                        name="svg-image-scale-slider"
                         value={[scale]} 
                         onValueChange={(val) => {
                           setScale(val[0]);

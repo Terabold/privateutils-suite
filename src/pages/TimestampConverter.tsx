@@ -160,6 +160,8 @@ const TimestampConverter = () => {
                       <div className="flex-1 space-y-2">
                         <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Input (Unix, ISO, or any date string)</p>
                         <input
+                          id="timestamp-main-input"
+                          name="timestamp-main-input"
                           type="text"
                           value={input}
                           onChange={(e) => setInput(e.target.value)}

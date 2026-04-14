@@ -464,7 +464,7 @@ const UniversalMediaConverter = () => {
                               <p className="text-[9px] font-black uppercase tracking-widest text-primary/60 italic pt-2">Max video size: 500MB</p>
                             </div>
                           </motion.div>
-                          <input ref={inputRef} type="file" accept="video/*,image/*,audio/*,.mov,.mkv,.ts,.m2ts" className="hidden" onChange={(e) => { handleFile(e.target.files?.[0]); e.target.value = ""; }} />
+                          <input ref={inputRef} id="media-converter-upload-input" name="media-converter-upload-input" type="file" accept="video/*,image/*,audio/*,.mov,.mkv,.ts,.m2ts" className="hidden" onChange={(e) => { handleFile(e.target.files?.[0]); e.target.value = ""; }} />
                         </>
                       ) : (
                         <motion.div

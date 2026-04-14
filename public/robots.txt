@@ -1,5 +1,11 @@
 User-agent: *
 Allow: /
 
-# Direct links to indexing manifest
+# Explicit rules for AdSense / Google Indexing
+User-agent: Googlebot
+Allow: /
+Allow: /about
+Allow: /insights
+
+# Sitemaps
 Sitemap: https://privateutils.com/sitemap.xml

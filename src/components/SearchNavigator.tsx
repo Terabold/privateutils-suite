@@ -46,6 +46,7 @@ const SearchNavigator = ({
             />
             {searchQuery && (
               <button
+                aria-label="Clear search"
                 onClick={() => setSearchQuery("")}
                 className="absolute inset-y-0 right-5 flex items-center text-muted-foreground hover:text-foreground transition-colors"
               >
@@ -57,6 +58,7 @@ const SearchNavigator = ({
           {/* Category Hub */}
           <div className="flex flex-wrap items-center justify-center gap-3">
             <Button
+              id="btn-all-tools"
               variant={selectedCategory === null ? "default" : "outline"}
               onClick={() => setSelectedCategory(null)}
               className={`h-11 px-6 rounded-2xl font-black uppercase tracking-widest text-[10px] transition-all duration-300 ${
@@ -71,6 +73,7 @@ const SearchNavigator = ({
               const isActive = selectedCategory === category;
               return (
                 <Button
+                  id={`btn-cat-${category.toLowerCase().replace(/\s+/g, '-')}`}
                   key={category}
                   variant={isActive ? "default" : "outline"}
                   onClick={() => setSelectedCategory(category)}

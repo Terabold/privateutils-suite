@@ -260,7 +260,7 @@ const BinaryToAudio = () => {
                       <div className="px-6 space-y-1">
                       </div>
                     </div>
-                    <input ref={inputRef} type="file" className="hidden" onChange={(e) => { handleFile(e.target.files?.[0]); e.target.value = ""; }} />
+                    <input ref={inputRef} type="file" id="binary-audio-upload-input" name="binary-audio-upload-input" className="hidden" onChange={(e) => { handleFile(e.target.files?.[0]); e.target.value = ""; }} />
                   </Card>
                 ) : (
                   <div className="animate-in fade-in slide-in-from-bottom-8 duration-700">
@@ -380,6 +380,8 @@ const BinaryToAudio = () => {
                         <span className="text-primary italic">{sampleRate} Hz</span>
                       </div>
                       <Slider
+                        id="binary-audio-sample-rate-slider"
+                        name="binary-audio-sample-rate-slider"
                         min={1000} max={48000} step={1000}
                         value={[sampleRate]}
                         onValueChange={([v]) => { setSampleRate(v); setAudioBuffer(null); setObjectUrl(null); }}

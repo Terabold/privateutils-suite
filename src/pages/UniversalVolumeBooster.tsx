@@ -286,7 +286,7 @@ const UniversalVolumeBooster = () => {
                         <p className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.2em] opacity-40">Drag file or click</p>
                       </div>
                     </div>
-                    <input ref={inputRef} type="file" className="hidden" accept="audio/*,video/*" onChange={(e) => { handleFile(e.target.files?.[0]); e.target.value = ""; }} />
+                    <input ref={inputRef} type="file" id="volume-upload-input" name="volume-upload-input" className="hidden" accept="audio/*,video/*" onChange={(e) => { handleFile(e.target.files?.[0]); e.target.value = ""; }} />
                   </Card>
                 ) : (
                   <div className="animate-in fade-in slide-in-from-bottom-8 duration-700">
@@ -334,6 +334,8 @@ const UniversalVolumeBooster = () => {
                           </div>
 
                           <Slider
+                            id="volume-gain-slider"
+                            name="volume-gain-slider"
                             min={0} max={500} step={1}
                             value={[volume]}
                             onValueChange={([v]) => setVolume(v)}

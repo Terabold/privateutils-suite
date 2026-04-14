@@ -230,7 +230,7 @@ const SvgToIco = () => {
                       <Button asChild variant="ghost" className={`h-11 px-4 text-[10px] font-black rounded-xl gap-2 italic uppercase tracking-widest border transition-all duration-300 ${!input ? 'bg-primary text-white border-primary shadow-[0_0_20px_rgba(var(--primary),0.3)]' : 'text-primary border-primary/20 hover:bg-primary/5 hover:border-primary/40'}`}>
                         <label className="cursor-pointer">
                           <ImageIcon className="h-3.5 w-3.5" /> Upload SVG
-                          <input type="file" accept=".svg" className="hidden" onChange={(e) => handleFile(e.target.files?.[0])} />
+                          <input id="svg-ico-upload-input" name="svg-ico-upload-input" type="file" accept=".svg" className="hidden" onChange={(e) => handleFile(e.target.files?.[0])} />
                         </label>
                       </Button>
                       <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive/70 rounded-2xl" onClick={() => setInput("")}>
@@ -239,7 +239,15 @@ const SvgToIco = () => {
                     </div>
                   </div>
                   <div className="flex-1 flex flex-col md:flex-row bg-white dark:bg-black overflow-hidden">
-                    <textarea value={input} onChange={(e) => setInput(e.target.value)} placeholder='Paste SVG code...' className="flex-1 p-6 font-mono text-xs text-blue-700 dark:text-blue-400 bg-transparent resize-none outline-none leading-relaxed" spellCheck={false} />
+                    <textarea
+                      id="svg-ico-source-input"
+                      name="svg-ico-source-input"
+                      value={input}
+                      onChange={(e) => setInput(e.target.value)}
+                      placeholder='Paste SVG code...'
+                      className="flex-1 p-6 font-mono text-xs text-blue-700 dark:text-blue-400 bg-transparent resize-none outline-none leading-relaxed"
+                      spellCheck={false}
+                    />
                     <div className="flex-1 flex flex-col items-center justify-center p-4 bg-zinc-50/50 dark:bg-zinc-950/20 relative overflow-hidden">
                       {previewUrl && !renderError ? (
                         <div className="relative w-full h-full flex items-center justify-center p-6 transition-transform overflow-hidden">
@@ -269,6 +277,7 @@ const SvgToIco = () => {
                       {ICON_SIZES.map(size => (
                         <button
                           key={size}
+                          id={`btn-ico-size-${size}`}
                           onClick={() => setTargetSize(size)}
                           className={`h-12 rounded-xl text-[10px] font-black transition-all border ${targetSize === size ? 'bg-primary text-white border-primary shadow-lg scale-105' : 'bg-background text-muted-foreground border-border hover:bg-primary/5'}`}
                         >

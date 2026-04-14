@@ -115,6 +115,8 @@ const TextCaseFormatter = () => {
                 <Card className="glass-morphism border-primary/10 rounded-2xl shadow-2xl bg-muted/5 p-8 md:p-10">
                   <CardContent className="p-0">
                     <textarea
+                      id="case-transformer-main-input"
+                      name="case-transformer-main-input"
                       value={text}
                       onChange={(e) => handleTextChange(e.target.value)}
                       placeholder="Paste your content, script, or code list here…"

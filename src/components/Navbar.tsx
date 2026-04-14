@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { categoryConfig } from "@/config/categories";
-import { tools } from "@/components/ToolsGrid";
+import { tools, Tool } from "@/components/ToolsGrid";
+import { searchTools } from "@/lib/search";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -79,11 +80,9 @@ const Navbar = ({
   const filteredSearchResults = useMemo(() => {
     const q = (isHomePage ? searchQuery : toolSearchQuery) || "";
     if (q.length < 2) return [];
-    return tools.filter(t =>
-      t.title.toLowerCase().includes(q.toLowerCase()) ||
-      t.description.toLowerCase().includes(q.toLowerCase()) ||
-      t.tags.some(tag => tag.toLowerCase().includes(q.toLowerCase()))
-    ).slice(0, 6);
+
+    // Using fuzzy search for better discovery and typo tolerance
+    return searchTools(tools as Tool[], q).slice(0, 6);
   }, [searchQuery, toolSearchQuery, isHomePage]);
 
   useEffect(() => {
@@ -118,10 +117,10 @@ const Navbar = ({
 
       <div className="bg-background/80 backdrop-blur-xl border-b border-white/5 py-1.5 w-full">
         <div className="container mx-auto px-4 lg:px-8 max-w-[1500px] flex flex-col gap-2">
-          
+
           {/* Tier 1: Brand & Absolute Center Actions */}
           <div className="flex items-center justify-between gap-4 lg:gap-12 w-full h-[50px] lg:h-[65px] relative">
-            
+
             {/* Left: Branding & Mobile Resource Trigger */}
             <div className="flex items-center gap-2 lg:gap-3 justify-start min-w-0">
               <div className="lg:hidden flex items-center gap-1.5">
@@ -130,6 +129,7 @@ const Navbar = ({
                     <Button
                       variant="ghost"
                       size="icon"
+                      aria-label="Engineering Hub Menu"
                       className="rounded-xl bg-primary/5 hover:bg-primary/10 border border-white/5 h-9 w-9 shadow-inner"
                     >
                       <BookOpen className="h-4 w-4 text-primary" />
@@ -177,15 +177,15 @@ const Navbar = ({
                   className="h-8 w-8 md:h-10 md:w-10 rounded-lg flex items-center justify-center text-white shadow-2xl transition-theme group-hover:scale-105 shrink-0 overflow-hidden"
                   style={{ backgroundColor: `hsl(${activeTheme?.hsl || 'var(--primary)'})` }}
                 >
-                    <svg viewBox="0 0 512 512" fill="currentColor" className="w-[70%] h-[70%] pointer-events-none drop-shadow-lg">
-                      <path d="M256,32 C172.96,62.33 93.36,65.88 48,64 C48,229.41 81.33,338.99 256,480 C430.67,338.99 464,229.41 464,64 C418.64,65.88 339.04,62.33 256,32 Z" />
-                      <g stroke="white" strokeWidth="48" strokeLinecap="round" strokeLinejoin="round" fill="none">
-                        <polyline points="170,186 90,256 170,326" />
-                        <polyline points="342,186 422,256 342,326" />
-                        <line x1="286" y1="160" x2="226" y2="352" />
-                      </g>
-                    </svg>
-                  </div>
+                  <svg viewBox="0 0 512 512" fill="currentColor" className="w-[70%] h-[70%] pointer-events-none drop-shadow-lg">
+                    <path d="M256,32 C172.96,62.33 93.36,65.88 48,64 C48,229.41 81.33,338.99 256,480 C430.67,338.99 464,229.41 464,64 C418.64,65.88 339.04,62.33 256,32 Z" />
+                    <g stroke="white" strokeWidth="48" strokeLinecap="round" strokeLinejoin="round" fill="none">
+                      <polyline points="170,186 90,256 170,326" />
+                      <polyline points="342,186 422,256 342,326" />
+                      <line x1="286" y1="160" x2="226" y2="352" />
+                    </g>
+                  </svg>
+                </div>
                 <div className="flex h-9 md:h-10 items-center gap-2">
                   <span className="text-[14px] md:text-[22px] font-black tracking-tighter text-foreground font-display uppercase italic transition-theme flex items-center leading-none">
                     Private<span className="not-italic logo-text-transition" style={{ color: `hsl(${activeTheme?.hsl || 'var(--primary)'})` }}>Utils</span>
@@ -205,7 +205,7 @@ const Navbar = ({
                   id="navbar-search"
                   name="navbar-search"
                   aria-label="Search tools"
-                  placeholder="Universal technical command... (Alt + S)"
+                  placeholder="Search for artifacts..."
                   value={isHomePage ? searchQuery : toolSearchQuery}
                   onFocus={() => setShowSearchOverlay(true)}
                   onChange={(e) => {
@@ -229,10 +229,9 @@ const Navbar = ({
                           className="w-full flex items-center gap-4 p-3 rounded-xl hover:bg-muted/50 transition-theme text-left group/result border border-transparent hover:border-white/5 no-underline"
                         >
                           <div
-                            className="h-9 w-9 rounded-full flex items-center justify-center group-hover/result:scale-110 transition-transform shadow-sm flex-shrink-0"
-                            style={{ backgroundColor: `hsl(${activeTheme?.hsl || 'var(--primary)'})`, color: `hsl(${activeTheme?.hsl || 'var(--primary)'})` }}
+                            className={`h-9 w-9 rounded-xl flex items-center justify-center group-hover/result:scale-110 transition-transform shadow-lg shadow-black/10 flex-shrink-0 bg-gradient-to-br ${categoryConfig[tool.category]?.gradient || "from-primary to-accent"}`}
                           >
-                            <div className="h-5 w-5 flex items-center justify-center">
+                            <div className="h-5 w-5 flex items-center justify-center text-white">
                               {tool.icon}
                             </div>
                           </div>
@@ -283,6 +282,9 @@ const Navbar = ({
               </div>
               <Input
                 type="text"
+                id="mobile-navbar-search"
+                name="mobile-navbar-search"
+                aria-label="Search tools"
                 placeholder="Search tools..."
                 value={isHomePage ? searchQuery : toolSearchQuery}
                 onFocus={() => setShowSearchOverlay(true)}
@@ -301,51 +303,51 @@ const Navbar = ({
             {/* Category Central Hub (No Clipping on Mobile) */}
             <div className="relative w-full overflow-x-auto no-scrollbar scroll-smooth flex justify-start md:justify-center">
               <div className="flex flex-nowrap items-center gap-[clamp(1px,0.8vw,8px)] px-4 py-1.5 transition-all w-max md:w-auto">
-                  {Object.keys(categoryConfig).filter(k => k !== "All").map((category) => {
-                    const theme = categoryConfig[category];
-                    const Icon = theme.icon;
-                    const isActive = (isHomePage && selectedCategory === category) || (!isHomePage && currentCategory === category);
-                    const categoryTools = tools.filter(t => t.category === category);
+                {Object.keys(categoryConfig).filter(k => k !== "All").map((category) => {
+                  const theme = categoryConfig[category];
+                  const Icon = theme.icon;
+                  const isActive = (isHomePage && selectedCategory === category) || (!isHomePage && currentCategory === category);
+                  const categoryTools = tools.filter(t => t.category === category);
 
-                    return (
-                      <DropdownMenu key={category} modal={false}>
-                        <DropdownMenuTrigger asChild>
-                          <button
-                            style={{
-                              "--glow-color": `hsl(${theme.hsl} / 0.4)`,
-                              "--border-glow": `hsl(${theme.hsl} / 0.2)`,
-                              backgroundColor: isActive ? `hsl(${theme.hsl})` : undefined
-                            } as React.CSSProperties}
-                            className={`px-[clamp(4px,1.2vw,14px)] py-1.5 rounded-xl font-black text-[clamp(7px,2vw,11px)] uppercase tracking-tighter lg:tracking-[0.05em] transition-all flex items-center gap-[clamp(1px,0.8vw,8px)] border whitespace-nowrap shrink transition-theme h-7.5 lg:h-9 ${isActive
-                              ? "text-white shadow-lg scale-105 border-white/20"
-                              : "text-muted-foreground hover:text-foreground bg-zinc-100 dark:bg-white/5 border-white/5 hover:border-[var(--border-glow)] hover:shadow-[0_0_20px_var(--glow-color)] shadow-sm"
-                              }`}
-                          >
-                            <Icon className="h-[clamp(9px,1.5vw,14px)] w-[clamp(9px,1.5vw,14px)]" style={{ color: isActive ? 'white' : `hsl(${theme.hsl})` }} />
-                            <span className="leading-none">{category.split(' ')[0]}</span>
-                          </button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="center" className="w-[280px] bg-card/95 backdrop-blur-2xl border-white/10 rounded-2xl p-2 z-[110]">
-                          <div className="px-3 py-2 flex items-center gap-3">
-                            <theme.icon className="h-4 w-4" style={{ color: `hsl(${theme.hsl})` }} />
-                            <span className="text-base font-bold font-display tracking-tight" style={{ color: `hsl(${theme.hsl})` }}>{category}</span>
-                          </div>
-                          <DropdownMenuSeparator className="bg-white/5" />
-                          {categoryTools.map(tool => (
-                            <DropdownMenuItem key={tool.to} asChild className="rounded-xl cursor-pointer p-2 focus:bg-muted/50 focus:text-foreground group/item">
-                              <Link to={tool.to} className="flex items-center gap-3 w-full no-underline">
-                                <div className="h-8 w-8 rounded-full flex items-center justify-center group-hover/item:scale-110 transition-theme shadow-sm" style={{ backgroundColor: `hsl(${theme.hsl} / 0.1)`, color: `hsl(${theme.hsl})` }}>
-                                  <div className="h-4 w-4 flex items-center justify-center">{tool.icon}</div>
-                                </div>
-                                <span className="text-[10px] font-black uppercase italic text-foreground truncate">{tool.title}</span>
-                              </Link>
-                            </DropdownMenuItem>
-                          ))}
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    );
-                  })}
-                </div>
+                  return (
+                    <DropdownMenu key={category} modal={false}>
+                      <DropdownMenuTrigger asChild>
+                        <button
+                          style={{
+                            "--glow-color": `hsl(${theme.hsl} / 0.4)`,
+                            "--border-glow": `hsl(${theme.hsl} / 0.2)`,
+                            backgroundColor: isActive ? `hsl(${theme.hsl})` : undefined
+                          } as React.CSSProperties}
+                          className={`px-[clamp(4px,1.2vw,14px)] py-1.5 rounded-xl font-black text-[clamp(7px,2vw,11px)] uppercase tracking-tighter lg:tracking-[0.05em] transition-all flex items-center gap-[clamp(1px,0.8vw,8px)] border whitespace-nowrap shrink transition-theme h-7.5 lg:h-9 ${isActive
+                            ? "text-white shadow-lg scale-105 border-white/20"
+                            : "text-muted-foreground hover:text-foreground bg-zinc-100 dark:bg-white/5 border-white/5 hover:border-[var(--border-glow)] hover:shadow-[0_0_20px_var(--glow-color)] shadow-sm"
+                            }`}
+                        >
+                          <Icon className="h-[clamp(9px,1.5vw,14px)] w-[clamp(9px,1.5vw,14px)]" style={{ color: isActive ? 'white' : `hsl(${theme.hsl})` }} />
+                          <span className="leading-none">{category.split(' ')[0]}</span>
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="center" className="w-[320px] bg-card/95 backdrop-blur-2xl border-white/10 rounded-2xl p-2 z-[110]">
+                        <div className="px-3 py-2 flex items-center gap-3">
+                          <theme.icon className="h-4 w-4" style={{ color: `hsl(${theme.hsl})` }} />
+                          <span className="text-base font-bold font-display tracking-tight" style={{ color: `hsl(${theme.hsl})` }}>{category}</span>
+                        </div>
+                        <DropdownMenuSeparator className="bg-white/5" />
+                        {categoryTools.map(tool => (
+                          <DropdownMenuItem key={tool.to} asChild className="rounded-xl cursor-pointer p-2 focus:bg-muted/50 focus:text-foreground group/item">
+                            <Link to={tool.to} className="flex items-center gap-3 w-full no-underline">
+                              <div className="h-8 w-8 rounded-full flex items-center justify-center group-hover/item:scale-110 transition-theme shadow-sm" style={{ backgroundColor: `hsl(${theme.hsl} / 0.1)`, color: `hsl(${theme.hsl})` }}>
+                                <div className="h-4 w-4 flex items-center justify-center">{tool.icon}</div>
+                              </div>
+                              <span className="text-[13px] font-bold uppercase italic text-foreground truncate pr-2">{tool.title}</span>
+                            </Link>
+                          </DropdownMenuItem>
+                        ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>

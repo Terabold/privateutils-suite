@@ -198,21 +198,21 @@ const ColorPaletteGenerator = () => {
                           <p className="text-[11px] font-black uppercase tracking-[0.25em] text-primary italic">Hue</p>
                           <p className="text-xs font-black font-mono bg-primary/10 px-2 py-0.5 rounded text-primary">{hsl.h}°</p>
                         </div>
-                        <input type="range" min="0" max="360" value={hsl.h} onChange={(e) => setHsl(prev => ({ ...prev, h: parseInt(e.target.value) }))} className="w-full accent-primary h-2 bg-background/40 rounded-full appearance-none cursor-pointer" />
+                        <input id="palette-hue-slider" name="palette-hue-slider" type="range" min="0" max="360" value={hsl.h} onChange={(e) => setHsl(prev => ({ ...prev, h: parseInt(e.target.value) }))} className="w-full accent-primary h-2 bg-background/40 rounded-full appearance-none cursor-pointer" />
                       </div>
                       <div className="space-y-6">
                         <div className="flex items-center justify-between">
                           <p className="text-[11px] font-black uppercase tracking-[0.25em] text-primary italic">Saturation</p>
                           <p className="text-xs font-black font-mono bg-primary/10 px-2 py-0.5 rounded text-primary">{hsl.s}%</p>
                         </div>
-                        <input type="range" min="0" max="100" value={hsl.s} onChange={(e) => setHsl(prev => ({ ...prev, s: parseInt(e.target.value) }))} className="w-full accent-primary h-2 bg-background/40 rounded-full appearance-none cursor-pointer" />
+                        <input id="palette-saturation-slider" name="palette-saturation-slider" type="range" min="0" max="100" value={hsl.s} onChange={(e) => setHsl(prev => ({ ...prev, s: parseInt(e.target.value) }))} className="w-full accent-primary h-2 bg-background/40 rounded-full appearance-none cursor-pointer" />
                       </div>
                       <div className="space-y-6">
                         <div className="flex items-center justify-between">
                           <p className="text-[11px] font-black uppercase tracking-[0.25em] text-primary italic">Lightness</p>
                           <p className="text-xs font-black font-mono bg-primary/10 px-2 py-0.5 rounded text-primary">{hsl.l}%</p>
                         </div>
-                        <input type="range" min="10" max="90" value={hsl.l} onChange={(e) => setHsl(prev => ({ ...prev, l: parseInt(e.target.value) }))} className="w-full accent-primary h-2 bg-background/40 rounded-full appearance-none cursor-pointer" />
+                        <input id="palette-lightness-slider" name="palette-lightness-slider" type="range" min="10" max="90" value={hsl.l} onChange={(e) => setHsl(prev => ({ ...prev, l: parseInt(e.target.value) }))} className="w-full accent-primary h-2 bg-background/40 rounded-full appearance-none cursor-pointer" />
                       </div>
                     </div>
 

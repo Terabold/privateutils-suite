@@ -187,7 +187,7 @@ const TextDiffChecker = () => {
                     <div className="flex items-center gap-3 mb-2">
                       <div className="flex items-center gap-2 text-xs font-medium">
                         <span className="text-muted-foreground">Live</span>
-                        <Switch checked={liveMode} onCheckedChange={setLiveMode} />
+                        <Switch id="diff-live-mode-switch" name="diff-live-mode-switch" checked={liveMode} onCheckedChange={setLiveMode} />
                       </div>
 
                       <Button onClick={handleRunDiff} disabled={liveMode} className="h-9 px-6 bg-primary text-white text-[10px] font-black uppercase tracking-widest italic rounded-xl">
@@ -216,6 +216,8 @@ const TextDiffChecker = () => {
                         <span className="text-[10px] text-muted-foreground font-mono">{totalOriginalLines} lines</span>
                       </div>
                       <textarea
+                        id="diff-original-input"
+                        name="diff-original-input"
                         value={original}
                         onChange={(e) => setOriginal(e.target.value)}
                         placeholder="Paste original text here..."
@@ -231,6 +233,8 @@ const TextDiffChecker = () => {
                         <span className="text-[10px] text-muted-foreground font-mono">{totalModifiedLines} lines</span>
                       </div>
                       <textarea
+                        id="diff-modified-input"
+                        name="diff-modified-input"
                         value={modified}
                         onChange={(e) => setModified(e.target.value)}
                         placeholder="Paste modified version here..."

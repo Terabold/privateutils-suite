@@ -166,6 +166,8 @@ const LoremGenerator = () => {
                       {style === "classic" && (
                         <label className="flex items-center gap-3 cursor-pointer select-none pb-2">
                           <input
+                            id="lorem-generator-start-with-check"
+                            name="lorem-generator-start-with-check"
                             type="checkbox"
                             checked={startWithLorem}
                             onChange={e => { setStartWithLorem(e.target.checked); generate(style, unit, count, e.target.checked); }}

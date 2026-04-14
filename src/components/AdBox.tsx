@@ -69,11 +69,20 @@ const AdBox = ({ width, height, label = "AD SPACE", className, isSticky, adForma
         className
       )}
       ref={containerRef}
-      style={{ minHeight: styleParams.height, width: '100%' }}
+      style={{ 
+        minHeight: styleParams.height || '100px', 
+        minWidth: width ? styleParams.width : '250px',
+        width: '100%' 
+      }}
     >
       <ins
         className="adsbygoogle"
-        style={{ display: "block", minHeight: styleParams.height, width: "100%" }}
+        style={{ 
+          display: "block", 
+          minHeight: styleParams.height || '100px', 
+          minWidth: width ? styleParams.width : '250px',
+          width: "100%" 
+        }}
         data-ad-client="ca-pub-8938339685834274" 
         data-ad-slot="3087709280"               /* PrivacySuite_Sidebars Ad Unit */
         data-ad-format={finalAdFormat}

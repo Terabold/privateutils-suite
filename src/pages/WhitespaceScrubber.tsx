@@ -104,6 +104,8 @@ const WhitespaceScrubber = () => {
                       </Button>
                     </div>
                     <textarea
+                      id="scrub-main-input"
+                      name="scrub-main-input"
                       value={input}
                       onChange={(e) => setInput(e.target.value)}
                       placeholder="Paste text with messy spaces or extra lines here..."
@@ -139,19 +141,19 @@ const WhitespaceScrubber = () => {
                   </div>
                   <CardContent className="p-6 space-y-4">
                     <label className="flex items-center gap-3 cursor-pointer group">
-                      <input type="checkbox" checked={optExtraSpaces} onChange={e => setOptExtraSpaces(e.target.checked)} className="w-4 h-4 rounded bg-background border-primary/20 accent-primary" />
+                      <input id="scrub-extra-spaces-check" name="scrub-extra-spaces-check" type="checkbox" checked={optExtraSpaces} onChange={e => setOptExtraSpaces(e.target.checked)} className="w-4 h-4 rounded bg-background border-primary/20 accent-primary" />
                       <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground group-hover:text-primary transition-colors">Collapse Spaces</span>
                     </label>
                     <label className="flex items-center gap-3 cursor-pointer group">
-                      <input type="checkbox" checked={optEmptyLines} onChange={e => setOptEmptyLines(e.target.checked)} className="w-4 h-4 rounded bg-background border-primary/20 accent-primary" />
+                      <input id="scrub-empty-lines-check" name="scrub-empty-lines-check" type="checkbox" checked={optEmptyLines} onChange={e => setOptEmptyLines(e.target.checked)} className="w-4 h-4 rounded bg-background border-primary/20 accent-primary" />
                       <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground group-hover:text-primary transition-colors">Ghost Lines</span>
                     </label>
                     <label className="flex items-center gap-3 cursor-pointer group">
-                      <input type="checkbox" checked={optTrimEachLine} onChange={e => setOptTrimEachLine(e.target.checked)} className="w-4 h-4 rounded bg-background border-primary/20 accent-primary" />
+                      <input id="scrub-trim-lines-check" name="scrub-trim-lines-check" type="checkbox" checked={optTrimEachLine} onChange={e => setOptTrimEachLine(e.target.checked)} className="w-4 h-4 rounded bg-background border-primary/20 accent-primary" />
                       <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground group-hover:text-primary transition-colors">Trim Edges</span>
                     </label>
                     <label className="flex items-center gap-3 cursor-pointer group pt-2 border-t border-primary/5">
-                      <input type="checkbox" checked={optOneLine} onChange={e => setOptOneLine(e.target.checked)} className="w-4 h-4 rounded bg-background border-primary/20 accent-primary" />
+                      <input id="scrub-one-line-check" name="scrub-one-line-check" type="checkbox" checked={optOneLine} onChange={e => setOptOneLine(e.target.checked)} className="w-4 h-4 rounded bg-background border-primary/20 accent-primary" />
                       <span className="text-[10px] font-black uppercase tracking-widest text-primary italic">Join All (One line)</span>
                     </label>
 

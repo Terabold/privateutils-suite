@@ -9,6 +9,8 @@ import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
 import ToolAdBanner from "@/components/ToolAdBanner";
 import StickyAnchorAd from "@/components/StickyAnchorAd";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 
 type Mode = "base64-encode" | "base64-decode" | "url-encode" | "url-decode" | "html-encode" | "html-decode" | "hex-encode" | "hex-decode";
@@ -161,7 +163,7 @@ const EncoderDecoder = () => {
                <div className="flex flex-col gap-6">
                   <header className="flex items-center gap-6 animate-in fade-in slide-in-from-top-4 duration-500">
                      <Link to="/">
-                        <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border border-white/20 hover:bg-primary/20 transition-all group/back bg-black/60 shadow-2xl">
+                        <Button aria-label="Go back to home" variant="outline" size="icon" className="h-10 w-10 rounded-xl border border-white/20 hover:bg-primary/20 transition-all group/back bg-black/60 shadow-2xl">
                            <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
                         </Button>
                      </Link>
@@ -205,8 +207,9 @@ const EncoderDecoder = () => {
                            <Card className="glass-morphism border-primary/10 rounded-2xl shadow-2xl bg-card p-6">
                               <CardContent className="p-0 space-y-3 relative">
                                  <div className="flex items-center justify-between">
-                                    <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Input</p>
+                                    <Label htmlFor="universal-codec-main-input" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 cursor-pointer">Input</Label>
                                     <Button
+                                       aria-label="Clear input artifact"
                                        variant="ghost"
                                        size="sm"
                                        onClick={() => setInput("")}
@@ -217,6 +220,8 @@ const EncoderDecoder = () => {
                                     </Button>
                                  </div>
                                  <textarea
+                                    id="universal-codec-main-input"
+                                    name="universal-codec-main-input"
                                     value={input}
                                     onChange={(e) => {
                                        let val = e.target.value;

@@ -451,7 +451,7 @@ const SpriteStudio = () => {
           <div className="flex flex-col gap-6">
             <header className="flex items-center gap-4 animate-in fade-in slide-in-from-top-4 duration-500">
               <Link to="/">
-                <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border border-white/20 hover:bg-primary/20 transition-all group/back bg-black/60 shadow-2xl">
+                <Button aria-label="Go back to home" variant="outline" size="icon" className="h-10 w-10 rounded-xl border border-white/20 hover:bg-primary/20 transition-all group/back bg-black/60 shadow-2xl">
                   <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
                 </Button>
               </Link>
@@ -489,11 +489,12 @@ const SpriteStudio = () => {
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <Button onClick={() => { if (image) URL.revokeObjectURL(image); setImage(null); setSlices([]); setActiveId(null); }} variant="outline" size="sm" className="h-8 px-2 md:px-4 rounded-xl font-black text-[8px] uppercase gap-2 border-primary/10 bg-primary/5 backdrop-blur-md hover:bg-destructive/20 hover:text-destructive transition-all">
+                    <Button aria-label="Clean stage" onClick={() => { if (image) URL.revokeObjectURL(image); setImage(null); setSlices([]); setActiveId(null); }} variant="outline" size="sm" className="h-8 px-2 md:px-4 rounded-xl font-black text-[8px] uppercase gap-2 border-primary/10 bg-primary/5 backdrop-blur-md hover:bg-destructive/20 hover:text-destructive transition-all">
                       <Trash2 className="h-3 w-3" /> <span className="hidden md:inline">Clean Stage</span>
                     </Button>
                     <div className="w-[1px] h-4 bg-white/5" />
                     <Button
+                      aria-label="Toggle grid visibility"
                       onClick={() => setShowGrid(!showGrid)}
                       disabled={!image}
                       variant="outline"
@@ -504,6 +505,7 @@ const SpriteStudio = () => {
                     </Button>
                     <div className="w-[1px] h-4 bg-white/5" />
                     <Button
+                      aria-label="Reset viewport"
                       onClick={() => {
                         const viewportW = containerRef.current?.clientWidth || 800;
                         const viewportH = containerRef.current?.clientHeight || 800;
@@ -641,6 +643,8 @@ const SpriteStudio = () => {
                 <input
                   ref={inputRef}
                   type="file"
+                  id="sprite-upload-input"
+                  name="sprite-upload-input"
                   className="hidden"
                   accept="image/*"
                   onChange={(e) => {
@@ -671,10 +675,20 @@ const SpriteStudio = () => {
                       <div className="space-y-6">
                         <div className="space-y-2.5">
                           <div className="flex justify-between items-center px-1">
-                            <Label className="text-[8px] font-black uppercase tracking-widest text-muted-foreground italic">Zoom</Label>
+                            <Label htmlFor="sprite-zoom-slider" className="text-[8px] font-black uppercase tracking-widest text-muted-foreground italic">Zoom</Label>
                             <span className="text-sm font-black text-primary italic tracking-tighter">{Math.round(zoom * 100)}%</span>
                           </div>
-                          <input type="range" min="0.01" max="100" step="0.01" value={zoom} onChange={(e) => setZoom(parseFloat(e.target.value))} className="w-full h-1 bg-primary/20 rounded-2xl appearance-none cursor-pointer accent-primary shadow-inner" />
+                          <input
+                            type="range"
+                            id="sprite-zoom-slider"
+                            name="sprite-zoom-slider"
+                            min="0.01"
+                            max="100"
+                            step="0.01"
+                            value={zoom}
+                            onChange={(e) => setZoom(parseFloat(e.target.value))}
+                            className="w-full h-1 bg-primary/20 rounded-2xl appearance-none cursor-pointer accent-primary shadow-inner"
+                          />
                         </div>
 
                         {mode === "grid" && (
@@ -686,23 +700,51 @@ const SpriteStudio = () => {
 
                             <div className="grid grid-cols-2 gap-3">
                               <div className="space-y-1.5">
-                                <Label className="text-[8px] font-black uppercase tracking-widest text-muted-foreground italic">{gridMode === 'count' ? 'Rows' : 'Width'}</Label>
-                                <Input type="number" value={gridMode === 'count' ? gridConfig.rows : gridConfig.cellW} onChange={(e) => setGridConfig({ ...gridConfig, [gridMode === 'count' ? 'rows' : 'cellW']: parseInt(e.target.value) || 1 })} className="h-7 text-[10px] font-black rounded-2xl bg-background/40 border-white/10" />
+                                <Label htmlFor={`sprite-grid-${gridMode === 'count' ? 'rows' : 'cell-w'}-input`} className="text-[8px] font-black uppercase tracking-widest text-muted-foreground italic">{gridMode === 'count' ? 'Rows' : 'Width'}</Label>
+                                <Input
+                                  type="number"
+                                  id={`sprite-grid-${gridMode === 'count' ? 'rows' : 'cell-w'}-input`}
+                                  name={`sprite-grid-${gridMode === 'count' ? 'rows' : 'cell-w'}-input`}
+                                  value={gridMode === 'count' ? gridConfig.rows : gridConfig.cellW}
+                                  onChange={(e) => setGridConfig({ ...gridConfig, [gridMode === 'count' ? 'rows' : 'cellW']: parseInt(e.target.value) || 1 })}
+                                  className="h-7 text-[10px] font-black rounded-2xl bg-background/40 border-white/10"
+                                />
                               </div>
                               <div className="space-y-1.5">
-                                <Label className="text-[8px] font-black uppercase tracking-widest text-muted-foreground italic">{gridMode === 'count' ? 'Cols' : 'Height'}</Label>
-                                <Input type="number" value={gridMode === 'count' ? gridConfig.cols : gridConfig.cellH} onChange={(e) => setGridConfig({ ...gridConfig, [gridMode === 'count' ? 'cols' : 'cellH']: parseInt(e.target.value) || 1 })} className="h-7 text-[10px] font-black rounded-2xl bg-background/40 border-white/10" />
+                                <Label htmlFor={`sprite-grid-${gridMode === 'count' ? 'cols' : 'cell-h'}-input`} className="text-[8px] font-black uppercase tracking-widest text-muted-foreground italic">{gridMode === 'count' ? 'Cols' : 'Height'}</Label>
+                                <Input
+                                  type="number"
+                                  id={`sprite-grid-${gridMode === 'count' ? 'cols' : 'cell-h'}-input`}
+                                  name={`sprite-grid-${gridMode === 'count' ? 'cols' : 'cell-h'}-input`}
+                                  value={gridMode === 'count' ? gridConfig.cols : gridConfig.cellH}
+                                  onChange={(e) => setGridConfig({ ...gridConfig, [gridMode === 'count' ? 'cols' : 'cellH']: parseInt(e.target.value) || 1 })}
+                                  className="h-7 text-[10px] font-black rounded-2xl bg-background/40 border-white/10"
+                                />
                               </div>
                             </div>
 
                             <div className="grid grid-cols-2 gap-3">
                               <div className="space-y-1.5">
-                                <Label className="text-[8px] font-black uppercase tracking-widest text-muted-foreground italic">Gap X</Label>
-                                <Input type="number" value={gridConfig.gapX} onChange={(e) => setGridConfig({ ...gridConfig, gapX: parseInt(e.target.value) || 0 })} className="h-7 text-[10px] font-black rounded-2xl bg-background/40 border-white/10" />
+                                <Label htmlFor="sprite-grid-gap-x-input" className="text-[8px] font-black uppercase tracking-widest text-muted-foreground italic">Gap X</Label>
+                                <Input
+                                  type="number"
+                                  id="sprite-grid-gap-x-input"
+                                  name="sprite-grid-gap-x-input"
+                                  value={gridConfig.gapX}
+                                  onChange={(e) => setGridConfig({ ...gridConfig, gapX: parseInt(e.target.value) || 0 })}
+                                  className="h-7 text-[10px] font-black rounded-2xl bg-background/40 border-white/10"
+                                />
                               </div>
                               <div className="space-y-1.5">
-                                <Label className="text-[8px] font-black uppercase tracking-widest text-muted-foreground italic">Gap Y</Label>
-                                <Input type="number" value={gridConfig.gapY} onChange={(e) => setGridConfig({ ...gridConfig, gapY: parseInt(e.target.value) || 0 })} className="h-7 text-[10px] font-black rounded-2xl bg-background/40 border-white/10" />
+                                <Label htmlFor="sprite-grid-gap-y-input" className="text-[8px] font-black uppercase tracking-widest text-muted-foreground italic">Gap Y</Label>
+                                <Input
+                                  type="number"
+                                  id="sprite-grid-gap-y-input"
+                                  name="sprite-grid-gap-y-input"
+                                  value={gridConfig.gapY}
+                                  onChange={(e) => setGridConfig({ ...gridConfig, gapY: parseInt(e.target.value) || 0 })}
+                                  className="h-7 text-[10px] font-black rounded-2xl bg-background/40 border-white/10"
+                                />
                               </div>
                             </div>
 
@@ -742,7 +784,7 @@ const SpriteStudio = () => {
                       <h3 className="text-[9px] font-black uppercase tracking-[0.2em] text-primary italic leading-none">Partition Stack</h3>
                     </div>
                     {slices.length > 0 && (
-                      <Button onClick={() => setSlices([])} variant="ghost" size="sm" className="h-6 px-2.5 text-[7px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-2xl transition-all">Purge</Button>
+                      <Button aria-label="Purge partition stack" onClick={() => setSlices([])} variant="ghost" size="sm" className="h-6 px-2.5 text-[7px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/10 border border-destructive/10 rounded-2xl transition-all">Purge</Button>
                     )}
                   </div>
                   <CardContent className="p-0 overflow-y-auto grow custom-scrollbar">

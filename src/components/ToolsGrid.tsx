@@ -1,7 +1,9 @@
+import { useMemo } from "react";
 import { Volume2, Type, Pipette, Video, Layers, Layout, Scissors, Music, ShieldX, ImageIcon, ShieldCheck, Wrench, Sparkles, Camera, Code, QrCode, Zap, ClipboardCopy, KeyRound, Binary, Clock, SearchCode, FileText, Palette, Fingerprint, Ruler, FileJson, FileStack, Monitor, RefreshCw, Database, Split, Radio, Hash, Eraser, Dices, Terminal, Dices as DiceIcon } from "lucide-react";
 import ToolCard from "./ToolCard";
 import { Button } from "@/components/ui/button";
 import toolsMetadata from "@/data/toolsMetadata.json";
+import { searchTools } from "@/lib/search";
 
 const toolsData = [
   {
@@ -335,13 +337,16 @@ const toolsData = [
 ];
 
 
+export type { Tool } from "@/types/tool";
+import { Tool } from "@/types/tool";
+
 export const tools = toolsData.map(tool => {
   const meta = toolsMetadata.find(m => m.to === tool.to);
   return {
     ...tool,
     seoTitle: meta?.seoTitle || `${tool.title} | Client-Sided Coding & Media Tools`,
     seoDescription: meta?.seoDescription || tool.description
-  };
+  } as Tool;
 });
 
 import { categoryConfig } from "@/config/categories";
@@ -353,19 +358,20 @@ interface ToolsGridProps {
 }
 
 const ToolsGrid = ({ searchQuery = "", selectedCategory = null, onClearFilters }: ToolsGridProps) => {
-  const filteredTools = tools.filter(tool => {
-    const matchesQuery =
-      tool.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      tool.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      tool.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+  const filteredTools = useMemo(() => {
+    // 1. Filter by category first if selected
+    const categoryMatched = selectedCategory 
+      ? tools.filter(t => t.category === selectedCategory)
+      : tools;
 
-    const matchesCategory = selectedCategory ? tool.category === selectedCategory : true;
-
-    return matchesQuery && matchesCategory;
-  });
+    // 2. Apply Fuzzy Search to the remaining toolset
+    if (!searchQuery.trim()) return categoryMatched;
+    
+    return searchTools(categoryMatched, searchQuery);
+  }, [searchQuery, selectedCategory]);
 
   const isFiltering = searchQuery.length > 0 || selectedCategory !== null;
-  const categories = Array.from(new Set(filteredTools.map(t => t.category)));
+  const categories = Array.from(new Set(filteredTools.map(t => t.category))) as string[];
 
   if (filteredTools.length === 0) {
     return (

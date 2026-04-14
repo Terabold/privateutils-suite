@@ -2,7 +2,7 @@
 import { i as __toESM } from "./chunk-YKewjYmz.js";
 import { t as require_react } from "./react.js";
 import { t as require_jsx_runtime } from "./react_jsx-runtime.js";
-import { t as Primitive } from "./dist-BFsGwbmW.js";
+import { t as Primitive } from "./dist-5YE8yP5N.js";
 //#region node_modules/@radix-ui/react-label/dist/index.mjs
 var import_react = /* @__PURE__ */ __toESM(require_react(), 1);
 var import_jsx_runtime = require_jsx_runtime();

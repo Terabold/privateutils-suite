@@ -36,7 +36,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import jsPDF from "jspdf";
+// Dynamic import for jspdf to reduce initial bundle size
+const loadJsPDF = async () => {
+  const { default: jsPDF } = await import("jspdf");
+  return jsPDF;
+};
 import { motion, AnimatePresence, Reorder } from "framer-motion";
 
 interface ImageFile {
@@ -114,6 +118,7 @@ const ImageToPdf = () => {
 
     const timer = setTimeout(async () => {
       try {
+        const jsPDF = await loadJsPDF();
         const pdf = new jsPDF({
           orientation: "p",
           unit: "mm",
@@ -171,6 +176,7 @@ const ImageToPdf = () => {
     const pdfToast = toast.loading("Synthesizing final high-fidelity artifact...");
 
     try {
+      const jsPDF = await loadJsPDF();
       const pdf = new jsPDF({
         orientation: "p",
         unit: "mm",
@@ -271,7 +277,7 @@ const ImageToPdf = () => {
             <header className="flex items-center justify-between flex-wrap gap-4 mb-1 animate-in fade-in slide-in-from-top-4 duration-500">
               <div className="flex items-center gap-6">
                 <Link to="/">
-                  <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border-border hover:bg-primary/20 transition-all group/back bg-background/80 shadow-xl border-2">
+                  <Button aria-label="Go back to home" variant="outline" size="icon" className="h-10 w-10 rounded-xl border-border hover:bg-primary/20 transition-all group/back bg-background/80 shadow-xl border-2">
                     <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
                   </Button>
                 </Link>
@@ -292,11 +298,13 @@ const ImageToPdf = () => {
                 {/* 1. PDF Filename (Namespace) */}
                 <div className="flex items-center gap-4 min-w-0 flex-grow max-w-[450px]">
                   <div className="shrink-0 pl-2 lg:block hidden">
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-primary italic leading-none">Namespace</p>
+                    <Label htmlFor="pdf-namespace-input" className="text-[10px] font-black uppercase tracking-[0.2em] text-primary italic leading-none cursor-pointer">Namespace</Label>
                     <p className="text-[8px] font-black text-muted-foreground uppercase opacity-40 leading-none mt-1.5 whitespace-nowrap">Output Identity</p>
                   </div>
                   <div className="relative flex-1 min-w-[120px]">
                     <Input
+                      id="pdf-namespace-input"
+                      name="pdf-namespace-input"
                       value={pdfName}
                       onChange={(e) => setPdfName(e.target.value)}
                       className="bg-black/40 h-11 pr-14 font-black uppercase tracking-tighter border-primary/20 focus:border-primary/50 transition-all rounded-xl text-[clamp(10px,1vw,13px)]"
@@ -326,6 +334,7 @@ const ImageToPdf = () => {
                             ? 'bg-primary text-white shadow-glow shadow-primary/20'
                             : 'bg-transparent text-muted-foreground hover:bg-white/5 hover:text-white'}`}
                         onClick={() => setPageSize(page.id as any)}
+                        id={`btn-pdf-size-${page.id}`}
                       >
                         {page.label}
                       </Button>
@@ -342,7 +351,7 @@ const ImageToPdf = () => {
                     <p className="text-[9px] font-black text-muted-foreground uppercase opacity-60 leading-none mt-1.5">Registry</p>
                   </div>
                   <div className="flex gap-2">
-                    <Button variant="outline" size="icon" onClick={() => setImages([])} disabled={images.length === 0} className="h-10 w-10 rounded-xl border-border/50 text-destructive hover:bg-destructive/10 transition-all shadow-sm">
+                    <Button aria-label="Clear all artifacts" variant="outline" size="icon" onClick={() => setImages([])} disabled={images.length === 0} className="h-10 w-10 rounded-xl border-border/50 text-destructive hover:bg-destructive/10 transition-all shadow-sm">
                       <Trash2 className="h-4.5 w-4.5" />
                     </Button>
                   </div>
@@ -378,6 +387,8 @@ const ImageToPdf = () => {
                 <Card className="glass-morphism border-dashed border-2 border-primary/20 bg-primary/5 hover:bg-primary/10 hover:border-primary/40 hover:scale-[1.05] transition-all duration-300 cursor-pointer relative group overflow-hidden h-[80px] flex items-center justify-center rounded-2xl shrink-0">
                   <input
                     type="file"
+                    id="pdf-upload-input"
+                    name="pdf-upload-input"
                     multiple
                     accept="image/jpeg,image/png,image/webp"
                     onChange={handleUpload}

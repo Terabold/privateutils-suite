@@ -80,6 +80,8 @@ const SlugForge = () => {
                     <div className="space-y-2">
                         <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 px-1 opacity-60 italic">Source Content</p>
                         <textarea
+                            id="slug-forge-main-input"
+                            name="slug-forge-main-input"
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                             placeholder="Enter article title or text here..."
@@ -136,6 +138,8 @@ const SlugForge = () => {
                         <p className="text-[9px] font-black uppercase tracking-widest opacity-40 italic">Transform</p>
                         <label className="flex items-center gap-3 cursor-pointer group">
                              <input
+                                id="slug-forge-lowercase-check"
+                                name="slug-forge-lowercase-check"
                                 type="checkbox"
                                 checked={lowercase}
                                 onChange={e => setLowercase(e.target.checked)}

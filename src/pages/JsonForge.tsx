@@ -358,6 +358,8 @@ const JsonForge = () => {
                     <div className="flex-1 overflow-auto custom-scrollbar" onScroll={handleScroll}>
                       <textarea
                         ref={textareaRef}
+                        id="json-forge-main-input"
+                        name="json-forge-main-input"
                         value={input}
                         onChange={(e) => {
                           let val = e.target.value;
@@ -471,11 +473,13 @@ const JsonForge = () => {
                           <Label className="text-xs font-black uppercase tracking-widest flex items-center gap-2 text-foreground dark:text-white italic"><Wand2 className="h-3.5 w-3.5" /> Auto-Prettify</Label>
                           <p className="text-[9px] text-muted-foreground uppercase font-black dark:opacity-30">Format while typing</p>
                         </div>
-                        <Switch checked={autoPrettify} onCheckedChange={setAutoPrettify} />
+                        <Switch id="json-forge-auto-prettify-switch" name="json-forge-auto-prettify-switch" checked={autoPrettify} onCheckedChange={setAutoPrettify} />
                       </div>
 
                       <input
                         type="file"
+                        id="json-forge-upload-input"
+                        name="json-forge-upload-input"
                         ref={fileInputRef}
                         className="hidden"
                         accept=".json"

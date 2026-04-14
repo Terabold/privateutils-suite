@@ -124,6 +124,8 @@ const YouTubeThumbnailHub = () => {
                 <div className="relative group">
                   <Type className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/40 group-focus-within:text-primary transition-colors" />
                   <input
+                    id="youtube-title-input"
+                    name="youtube-title-input"
                     type="text"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
@@ -400,7 +402,7 @@ const YouTubeThumbnailHub = () => {
       </div>
       <Footer />
       <StickyAnchorAd />
-      <input ref={inputRef} type="file" className="hidden" accept="image/*" onChange={(e) => { handleFile(e.target.files?.[0]); e.target.value = ""; }} />
+      <input ref={inputRef} id="youtube-local-upload-input" name="youtube-local-upload-input" type="file" className="hidden" accept="image/*" onChange={(e) => { handleFile(e.target.files?.[0]); e.target.value = ""; }} />
     </div>
   );
 };

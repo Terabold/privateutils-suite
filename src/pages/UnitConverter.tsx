@@ -134,6 +134,8 @@ const UnitConverter = () => {
                     <div className="flex-1 space-y-3">
                       <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Value</p>
                       <input
+                        id="unit-converter-value-input"
+                        name="unit-converter-value-input"
                         type="number"
                         value={val}
                         onChange={(e) => setVal(e.target.value)}

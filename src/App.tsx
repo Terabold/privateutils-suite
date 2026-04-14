@@ -114,13 +114,7 @@ const ThemeOrchestrator = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-const App = () => {
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const t = setTimeout(preloadFFmpeg, 2000);
-      return () => clearTimeout(t);
-    }
-  }, []);
+  const App = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -135,50 +129,50 @@ const App = () => {
             <Suspense fallback={<LoadingArtifact />}>
               <Routes>
                 <Route path="/" element={<Index />} />
-                <Route path="/universal-volume-booster" element={<UniversalVolumeBooster />} />
-                <Route path="/text-case-formatter" element={<TextCaseFormatter />} />
-                <Route path="/image-color-extractor" element={<ImageColorExtractor />} />
-                <Route path="/universal-media-converter" element={<UniversalMediaConverter />} />
-                <Route path="/image-compressor" element={<ImageCompressor />} />
-                <Route path="/perspective-tilter" element={<PerspectiveTilter />} />
-                <Route path="/youtube-thumbnail-hub" element={<YouTubeThumbnailHub />} />
-                <Route path="/sprite-studio" element={<SpriteStudio />} />
-                <Route path="/audio-trimmer" element={<AudioTrimmer />} />
-                <Route path="/metadata-scrubber" element={<MetadataScrubber />} />
-                <Route path="/video-to-gif" element={<VideoToGif />} />
-                <Route path="/frame-extractor" element={<FrameExtractor />} />
-                <Route path="/video-aspect-studio" element={<VideoAspectStudio />} />
-                <Route path="/json-studio" element={<JsonForge />} />
-                <Route path="/data-transformer" element={<CsvJsonForge />} />
-                <Route path="/qr-forge" element={<QrForge />} />
-                <Route path="/pii-masker" element={<PiiMasker />} />
-                <Route path="/svg-optimizer" element={<SvgOptimizer />} />
-                <Route path="/svg-to-image" element={<SvgToImage />} />
-                <Route path="/image-to-pdf" element={<ImageToPdf />} />
-                <Route path="/text-diff-checker" element={<TextDiffChecker />} />
-                <Route path="/quick-clipboard" element={<QuickClipboardHub />} />
+                <Route path="/universal-volume-booster" element={<ErrorBoundary toolName="Volume Booster"><UniversalVolumeBooster /></ErrorBoundary>} />
+                <Route path="/text-case-formatter" element={<ErrorBoundary toolName="Text Case Formatter"><TextCaseFormatter /></ErrorBoundary>} />
+                <Route path="/image-color-extractor" element={<ErrorBoundary toolName="Image Color Extractor"><ImageColorExtractor /></ErrorBoundary>} />
+                <Route path="/universal-media-converter" element={<ErrorBoundary toolName="Media Converter"><UniversalMediaConverter /></ErrorBoundary>} />
+                <Route path="/image-compressor" element={<ErrorBoundary toolName="Image Compressor"><ImageCompressor /></ErrorBoundary>} />
+                <Route path="/perspective-tilter" element={<ErrorBoundary toolName="3D Image Tilt"><PerspectiveTilter /></ErrorBoundary>} />
+                <Route path="/youtube-thumbnail-hub" element={<ErrorBoundary toolName="YouTube Thumbnail Hub"><YouTubeThumbnailHub /></ErrorBoundary>} />
+                <Route path="/sprite-studio" element={<ErrorBoundary toolName="Sprite Studio"><SpriteStudio /></ErrorBoundary>} />
+                <Route path="/audio-trimmer" element={<ErrorBoundary toolName="Audio Trimmer"><AudioTrimmer /></ErrorBoundary>} />
+                <Route path="/metadata-scrubber" element={<ErrorBoundary toolName="Metadata Scrubber"><MetadataScrubber /></ErrorBoundary>} />
+                <Route path="/video-to-gif" element={<ErrorBoundary toolName="Video to GIF"><VideoToGif /></ErrorBoundary>} />
+                <Route path="/frame-extractor" element={<ErrorBoundary toolName="Frame Extractor"><FrameExtractor /></ErrorBoundary>} />
+                <Route path="/video-aspect-studio" element={<ErrorBoundary toolName="Video Aspect Studio"><VideoAspectStudio /></ErrorBoundary>} />
+                <Route path="/json-studio" element={<ErrorBoundary toolName="JSON Formatter"><JsonForge /></ErrorBoundary>} />
+                <Route path="/data-transformer" element={<ErrorBoundary toolName="Data Transformer"><CsvJsonForge /></ErrorBoundary>} />
+                <Route path="/qr-forge" element={<ErrorBoundary toolName="QR Forge"><QrForge /></ErrorBoundary>} />
+                <Route path="/pii-masker" element={<ErrorBoundary toolName="PII Masker"><PiiMasker /></ErrorBoundary>} />
+                <Route path="/svg-optimizer" element={<ErrorBoundary toolName="SVG Optimizer"><SvgOptimizer /></ErrorBoundary>} />
+                <Route path="/svg-to-image" element={<ErrorBoundary toolName="SVG to Image"><SvgToImage /></ErrorBoundary>} />
+                <Route path="/image-to-pdf" element={<ErrorBoundary toolName="Image to PDF"><ImageToPdf /></ErrorBoundary>} />
+                <Route path="/text-diff-checker" element={<ErrorBoundary toolName="Text Diff Checker"><TextDiffChecker /></ErrorBoundary>} />
+                <Route path="/quick-clipboard" element={<ErrorBoundary toolName="Quick Clipboard"><QuickClipboardHub /></ErrorBoundary>} />
                 <Route path="/clipboard" element={<Navigate to="/quick-clipboard" replace />} />
-                <Route path="/jwt-decoder" element={<JwtDecoder />} />
-                <Route path="/encoder-decoder" element={<EncoderDecoder />} />
-                <Route path="/timestamp-converter" element={<TimestampConverter />} />
-                <Route path="/regex-playground" element={<RegexPlayground />} />
-                <Route path="/lorem-generator" element={<LoremGenerator />} />
-                <Route path="/password-generator" element={<PasswordGenerator />} />
-                <Route path="/palette-studio" element={<ColorPaletteGenerator />} />
-                <Route path="/hash-lab" element={<HashLab />} />
-                <Route path="/unit-converter" element={<UnitConverter />} />
-                <Route path="/base64-image" element={<Base64Image />} />
-                <Route path="/reverse-audio" element={<ReverseAudio />} />
-                <Route path="/binary-to-audio" element={<BinaryToAudio />} />
-                <Route path="/audio-mono-stereo" element={<AudioMonoStereo />} />
-                <Route path="/audio-bass-booster" element={<BassBooster />} />
+                <Route path="/jwt-decoder" element={<ErrorBoundary toolName="JWT Decoder"><JwtDecoder /></ErrorBoundary>} />
+                <Route path="/encoder-decoder" element={<ErrorBoundary toolName="Encoder / Decoder"><EncoderDecoder /></ErrorBoundary>} />
+                <Route path="/timestamp-converter" element={<ErrorBoundary toolName="Timestamp Converter"><TimestampConverter /></ErrorBoundary>} />
+                <Route path="/regex-playground" element={<ErrorBoundary toolName="Regex Playground"><RegexPlayground /></ErrorBoundary>} />
+                <Route path="/lorem-generator" element={<ErrorBoundary toolName="Lorem Generator"><LoremGenerator /></ErrorBoundary>} />
+                <Route path="/password-generator" element={<ErrorBoundary toolName="Password Generator"><PasswordGenerator /></ErrorBoundary>} />
+                <Route path="/palette-studio" element={<ErrorBoundary toolName="Palette Studio"><ColorPaletteGenerator /></ErrorBoundary>} />
+                <Route path="/hash-lab" element={<ErrorBoundary toolName="Hash Lab"><HashLab /></ErrorBoundary>} />
+                <Route path="/unit-converter" element={<ErrorBoundary toolName="Unit Converter"><UnitConverter /></ErrorBoundary>} />
+                <Route path="/base64-image" element={<ErrorBoundary toolName="Image to Base64"><Base64Image /></ErrorBoundary>} />
+                <Route path="/reverse-audio" element={<ErrorBoundary toolName="Reverse Audio"><ReverseAudio /></ErrorBoundary>} />
+                <Route path="/binary-to-audio" element={<ErrorBoundary toolName="Binary to Audio"><BinaryToAudio /></ErrorBoundary>} />
+                <Route path="/audio-mono-stereo" element={<ErrorBoundary toolName="Audio Mono / Stereo"><AudioMonoStereo /></ErrorBoundary>} />
+                <Route path="/audio-bass-booster" element={<ErrorBoundary toolName="Audio Bass Booster"><BassBooster /></ErrorBoundary>} />
                 <Route path="/privacy" element={<PrivacyPolicy />} />
                 <Route path="/terms" element={<TermsOfUse />} />
-                <Route path="/morse-code-master" element={<MorseCodeMaster />} />
-                <Route path="/slug-forge" element={<SlugForge />} />
-                <Route path="/whitespace-scrubber" element={<WhitespaceScrubber />} />
-                <Route path="/svg-to-ico" element={<SvgToIco />} />
-                <Route path="/dice-lab" element={<DiceLab />} />
+                <Route path="/morse-code-master" element={<ErrorBoundary toolName="Morse Code Master"><MorseCodeMaster /></ErrorBoundary>} />
+                <Route path="/slug-forge" element={<ErrorBoundary toolName="Slug Forge"><SlugForge /></ErrorBoundary>} />
+                <Route path="/whitespace-scrubber" element={<ErrorBoundary toolName="Whitespace Scrubber"><WhitespaceScrubber /></ErrorBoundary>} />
+                <Route path="/svg-to-ico" element={<ErrorBoundary toolName="SVG to ICO"><SvgToIco /></ErrorBoundary>} />
+                <Route path="/dice-lab" element={<ErrorBoundary toolName="Dice Lab"><DiceLab /></ErrorBoundary>} />
                 <Route path="/security-architecture" element={<SecurityArchitecture />} />
                 <Route path="/technical-architecture" element={<TechnicalArchitecture />} />
                 <Route path="/about" element={<AboutProject />} />

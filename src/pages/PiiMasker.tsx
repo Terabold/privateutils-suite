@@ -12,6 +12,7 @@ import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
 import AdBox from "@/components/AdBox";
 import ToolAdBanner from "@/components/ToolAdBanner";
+import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { usePasteFile } from "@/hooks/usePasteFile";
 import { KbdShortcut } from "@/components/KbdShortcut";
@@ -309,7 +310,7 @@ const PiiMasker = () => {
             <header className="flex items-center justify-between flex-wrap gap-8">
               <div className="flex items-center gap-6">
                 <Link to="/">
-                  <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-border/50 hover:bg-primary/5 transition-all group/back">
+                  <Button aria-label="Go back to home" variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-border/50 hover:bg-primary/5 transition-all group/back">
                     <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
                   </Button>
                 </Link>
@@ -343,11 +344,13 @@ const PiiMasker = () => {
                                 <Activity className="h-4 w-4 lg:h-5 lg:w-5 text-primary" />
                               </div>
                               <div className="shrink-0">
-                                <p className="text-[10px] lg:text-xs font-black uppercase tracking-[0.2em] text-primary italic leading-none hidden sm:block">Intensity</p>
+                                <Label htmlFor="pii-blur-strength-slider" className="text-[10px] lg:text-xs font-black uppercase tracking-[0.2em] text-primary italic leading-none hidden sm:block cursor-pointer">Intensity</Label>
                                 <p className="text-[8px] lg:text-[9px] font-black text-muted-foreground uppercase opacity-40 leading-none mt-1.5 lg:mt-2">Redaction</p>
                               </div>
                               <div className="w-24 sm:w-32 lg:w-48 shrink-0">
                                 <Slider
+                                  id="pii-blur-strength-slider"
+                                  name="pii-blur-strength-slider"
                                   min={0} max={100} step={1}
                                   disabled={redactionStyle === "black"}
                                   value={[blurStrength]}
@@ -389,6 +392,7 @@ const PiiMasker = () => {
                         {/* Zoom Group */}
                         <div className="flex items-center gap-1 lg:gap-2 shrink-0 bg-background/40 p-1 rounded-2xl border border-white/5 mr-auto">
                           <Button
+                            aria-label="Zoom out"
                             size="icon"
                             variant="ghost"
                             onClick={() => { setZoom(z => Math.max(0.1, z * 0.9)); }}
@@ -400,6 +404,7 @@ const PiiMasker = () => {
                             {Math.round((zoom / fitZoom) * 100)}%
                           </span>
                           <Button
+                            aria-label="Zoom in"
                             size="icon"
                             variant="ghost"
                             onClick={() => { setZoom(z => Math.min(50, z * 1.1)); }}
@@ -409,6 +414,7 @@ const PiiMasker = () => {
                           </Button>
                           <div className="w-px h-6 bg-white/10 mx-1" />
                           <Button
+                            aria-label="Reset zoom and fit"
                             size="icon"
                             variant="ghost"
                             onClick={() => { setZoom(fitZoom); setOffset({ x: 0, y: 0 }); }}
@@ -418,6 +424,7 @@ const PiiMasker = () => {
                             <Maximize2 className="h-3 w-3 lg:h-4 lg:w-4" />
                           </Button>
                           <Button
+                            aria-label="Toggle grid visibility"
                             size="icon"
                             variant="ghost"
                             onClick={() => setShowGrid(!showGrid)}
@@ -433,6 +440,7 @@ const PiiMasker = () => {
                         {/* Terminal Actions Segment (Reset / Export) */}
                         <div className="flex items-center gap-1 lg:gap-3 shrink-0">
                           <Button
+                            aria-label="Clear all redactions"
                             onClick={() => { setImage(null); setTextContent(null); setRegions([]); }}
                             variant="ghost"
                             size="sm"
@@ -443,6 +451,7 @@ const PiiMasker = () => {
                             <span className="sm:hidden inline">Reset</span>
                           </Button>
                           <Button
+                            aria-label="Download redacted file"
                             onClick={() => {
                               if (textContent) {
                                 const blob = new Blob([textContent], { type: "text/plain" });
@@ -485,7 +494,7 @@ const PiiMasker = () => {
                         <p className="text-[11px] text-muted-foreground font-black uppercase tracking-[0.3em] opacity-40">Drag or click to browse</p>
                         <KbdShortcut />
                       </div>
-                      <input ref={inputRef} type="file" className="hidden" accept="image/*,text/plain,.md,.log" onChange={(e) => { handleFile(e.target.files?.[0]); e.target.value = ""; }} />
+                      <input ref={inputRef} type="file" id="pii-upload-input" name="pii-upload-input" className="hidden" accept="image/*,text/plain,.md,.log" onChange={(e) => { handleFile(e.target.files?.[0]); e.target.value = ""; }} />
                     </div>
                   </Card>
                 </motion.div>
@@ -500,6 +509,8 @@ const PiiMasker = () => {
                       <p className="text-[9px] font-black opacity-30 uppercase tracking-widest italic">Select text to redact from forensic stream</p>
                     </div>
                     <textarea
+                      id="pii-text-input"
+                      name="pii-text-input"
                       value={textContent}
                       onChange={(e) => setTextContent(e.target.value)}
                       className="flex-1 bg-transparent p-12 px-16 font-mono text-base leading-relaxed focus:outline-none custom-scrollbar min-h-[400px] text-foreground/80 selection:bg-primary/40 resize-none"

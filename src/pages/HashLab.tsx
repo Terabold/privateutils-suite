@@ -10,6 +10,7 @@ import SponsorSidebars from "@/components/SponsorSidebars";
 import ToolAdBanner from "@/components/ToolAdBanner";
 import StickyAnchorAd from "@/components/StickyAnchorAd";
 import { usePasteFile } from "@/hooks/usePasteFile";
+import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 
 // High-Performance Incremental SHA-256 implementation for Streams API
@@ -218,7 +219,7 @@ const HashLab = () => {
           <div className="flex flex-col gap-6">
             <header className="flex items-center gap-6 animate-in fade-in slide-in-from-top-4 duration-500">
               <Link to="/">
-                <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border border-white/20 hover:bg-primary/20 transition-all group/back bg-black/60 shadow-2xl">
+                <Button aria-label="Go back to home" variant="outline" size="icon" className="h-10 w-10 rounded-xl border border-white/20 hover:bg-primary/20 transition-all group/back bg-black/60 shadow-2xl">
                   <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
                 </Button>
               </Link>
@@ -238,10 +239,12 @@ const HashLab = () => {
                 <Card className="glass-morphism border-primary/10 rounded-2xl shadow-2xl bg-card p-8 overflow-hidden">
                   <CardContent className="p-0 space-y-4">
                     <div className="flex flex-col gap-1">
-                      <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 px-1 opacity-60 italic">Input Data</p>
+                      <Label htmlFor="hash-generator-main-input" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 px-1 opacity-60 italic cursor-pointer">Input Data</Label>
                     </div>
                     <div className="relative">
                       <textarea
+                        id="hash-generator-main-input"
+                        name="hash-generator-main-input"
                         value={input}
                         onChange={(e) => computeHashes(e.target.value)}
                         placeholder="Enter string to hash or deploy a large file artifact..."
@@ -258,7 +261,7 @@ const HashLab = () => {
                       )}
                     </div>
                     <div className="flex gap-2">
-                      <Button variant="outline" size="sm" onClick={() => computeHashes("")} className="text-[9px] font-black uppercase tracking-widest h-8 rounded-xl border-border/30 hover:bg-destructive/10 hover:text-destructive transition-all">Clear</Button>
+                      <Button aria-label="Clear all input" variant="outline" size="sm" onClick={() => computeHashes("")} className="text-[9px] font-black uppercase tracking-widest h-8 rounded-xl border-border/30 hover:bg-destructive/10 hover:text-destructive transition-all">Clear</Button>
                     </div>
                   </CardContent>
                 </Card>
@@ -274,6 +277,7 @@ const HashLab = () => {
                           <h3 className="text-[9px] font-black uppercase tracking-widest text-primary leading-none">{algo.label}</h3>
                         </div>
                         <Button
+                          aria-label={`Copy ${algo.label} hash`}
                           variant="ghost"
                           size="sm"
                           disabled={!hashes[algo.id] || isProcessing}

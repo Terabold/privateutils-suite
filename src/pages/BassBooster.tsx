@@ -291,7 +291,7 @@ const BassBooster = () => {
                         <p className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.2em] opacity-40">Drag master or click</p>
                       </div>
                     </div>
-                    <input ref={inputRef} type="file" className="hidden" accept="audio/*" onChange={(e) => { handleFile(e.target.files?.[0]); e.target.value = ""; }} />
+                    <input ref={inputRef} type="file" id="bass-upload-input" name="bass-upload-input" className="hidden" accept="audio/*" onChange={(e) => { handleFile(e.target.files?.[0]); e.target.value = ""; }} />
                   </Card>
                 ) : (
                   <div className="animate-in fade-in slide-in-from-bottom-8 duration-700">
@@ -340,6 +340,8 @@ const BassBooster = () => {
                           </div>
 
                           <Slider
+                            id="bass-gain-slider"
+                            name="bass-gain-slider"
                             min={0} max={30} step={1}
                             value={[gain]}
                             onValueChange={([v]) => {

@@ -13,6 +13,7 @@ import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
 import ToolAdBanner from "@/components/ToolAdBanner";
 import StickyAnchorAd from "@/components/StickyAnchorAd";
+import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { usePasteFile } from "@/hooks/usePasteFile";
 import { KbdShortcut } from "@/components/KbdShortcut";
@@ -160,7 +161,7 @@ const PerspectiveTilter = () => {
             <header className="flex items-center justify-between flex-wrap gap-4">
               <div className="flex items-center gap-4">
                 <Link to="/">
-                  <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-border/50 hover:bg-primary/5 transition-all group/back">
+                  <Button aria-label="Go back to home" variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-border/50 hover:bg-primary/5 transition-all group/back">
                     <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
                   </Button>
                 </Link>
@@ -267,6 +268,8 @@ const PerspectiveTilter = () => {
                   <input
                     ref={inputRef}
                     type="file"
+                    id="tilter-upload-input"
+                    name="tilter-upload-input"
                     className="hidden"
                     accept="image/*"
                     onChange={(e) => {
@@ -341,28 +344,28 @@ const PerspectiveTilter = () => {
                         <div className="space-y-3 border-t border-primary/5 pt-1.5">
                           <label className="text-[10px] font-black uppercase tracking-widest text-primary/60 leading-none block">Pitch & Yaw</label>
                           <div>
-                            <div className="flex justify-between items-end w-full mb-0.5 gap-4">
-                              <label className="text-[10px] uppercase font-black tracking-widest text-muted-foreground/60 whitespace-nowrap">Pitch (X)</label>
+                            <div className="flex justify-between items-end w-full mb-1 gap-4">
+                              <label htmlFor="tilter-pitch-slider" className="text-[10px] uppercase font-black tracking-widest text-muted-foreground/60 whitespace-nowrap cursor-pointer">Pitch (X)</label>
                               <span className="text-primary text-[10px] font-black">{rotateX}°</span>
                             </div>
-                            <Slider min={-90} max={90} step={1} value={[rotateX]} onValueChange={([v]) => setRotateX(v)} className="py-1" />
+                            <Slider id="tilter-pitch-slider" name="tilter-pitch-slider" min={-90} max={90} step={1} value={[rotateX]} onValueChange={([v]) => setRotateX(v)} className="py-1" />
                           </div>
 
                           <div>
-                            <div className="flex justify-between items-end w-full mb-0.5 gap-4">
-                              <label className="text-[10px] uppercase font-black tracking-widest text-muted-foreground/60 whitespace-nowrap">Yaw (Y)</label>
+                            <div className="flex justify-between items-end w-full mb-1 gap-4">
+                              <label htmlFor="tilter-yaw-slider" className="text-[10px] uppercase font-black tracking-widest text-muted-foreground/60 whitespace-nowrap cursor-pointer">Yaw (Y)</label>
                               <span className="text-primary text-[10px] font-black">{rotateY}°</span>
                             </div>
-                            <Slider min={-90} max={90} step={1} value={[rotateY]} onValueChange={([v]) => setRotateY(v)} className="py-1" />
+                            <Slider id="tilter-yaw-slider" name="tilter-yaw-slider" min={-90} max={90} step={1} value={[rotateY]} onValueChange={([v]) => setRotateY(v)} className="py-1" />
                           </div>
                         </div>
 
                         <div className="space-y-3 border-t border-primary/5 pt-1.5">
                           <div className="flex justify-between items-end w-full mb-1 gap-4">
-                            <label className="text-[10px] uppercase font-black tracking-widest text-muted-foreground/60 whitespace-nowrap text-primary/60">Border Radius</label>
+                            <label htmlFor="tilter-radius-slider" className="text-[10px] uppercase font-black tracking-widest text-muted-foreground/60 whitespace-nowrap text-primary/60 cursor-pointer">Border Radius</label>
                             <span className="text-primary text-[10px] font-black">{borderRadius}px</span>
                           </div>
-                          <Slider min={0} max={200} step={1} value={[borderRadius]} onValueChange={([v]) => setBorderRadius(v)} className="py-1" />
+                          <Slider id="tilter-radius-slider" name="tilter-radius-slider" min={0} max={200} step={1} value={[borderRadius]} onValueChange={([v]) => setBorderRadius(v)} className="py-1" />
                         </div>
                       </div>
 
@@ -371,19 +374,19 @@ const PerspectiveTilter = () => {
                         <div className="space-y-3">
                           <label className="text-[10px] font-black uppercase tracking-widest text-primary leading-none block italic">Perspective & Fit</label>
                           <div>
-                            <div className="flex justify-between items-end w-full mb-0.5 gap-4">
-                              <label className="text-[10px] uppercase font-black tracking-widest text-muted-foreground/60 whitespace-nowrap">Zoom</label>
+                            <div className="flex justify-between items-end w-full mb-1 gap-4">
+                              <label htmlFor="tilter-zoom-slider" className="text-[10px] uppercase font-black tracking-widest text-muted-foreground/60 whitespace-nowrap cursor-pointer">Zoom</label>
                               <span className="text-primary text-[10px] font-black">{scale.toFixed(2)}x</span>
                             </div>
-                            <Slider min={0.1} max={3} step={0.01} value={[scale]} onValueChange={([v]) => setScale(v)} className="py-1" />
+                            <Slider id="tilter-zoom-slider" name="tilter-zoom-slider" min={0.1} max={3} step={0.01} value={[scale]} onValueChange={([v]) => setScale(v)} className="py-1" />
                           </div>
 
                           <div>
-                            <div className="flex justify-between items-end w-full mb-0.5 gap-4">
-                              <label className="text-[10px] uppercase font-black tracking-widest text-muted-foreground/60 whitespace-nowrap">Depth</label>
+                            <div className="flex justify-between items-end w-full mb-1 gap-4">
+                              <label htmlFor="tilter-depth-slider" className="text-[10px] uppercase font-black tracking-widest text-muted-foreground/60 whitespace-nowrap cursor-pointer">Depth</label>
                               <span className="text-primary text-[10px] font-black">{perspective}px</span>
                             </div>
-                            <Slider min={200} max={2000} step={1} value={[perspective]} onValueChange={([v]) => setPerspective(v)} className="py-1" />
+                            <Slider id="tilter-depth-slider" name="tilter-depth-slider" min={200} max={2000} step={1} value={[perspective]} onValueChange={([v]) => setPerspective(v)} className="py-1" />
                           </div>
                         </div>
 
@@ -410,6 +413,8 @@ const PerspectiveTilter = () => {
                               <p className="text-[8px] text-muted-foreground font-black uppercase opacity-40">Shadow Engine</p>
                             </div>
                             <Switch
+                              id="tilter-shadow-toggle"
+                              name="tilter-shadow-toggle"
                               checked={enableShadow}
                               onCheckedChange={setEnableShadow}
                               className="data-[state=checked]:bg-primary scale-90"
@@ -421,14 +426,14 @@ const PerspectiveTilter = () => {
                               <label className="text-[10px] uppercase font-black tracking-widest text-muted-foreground/60 whitespace-nowrap">Shadow Blur</label>
                               <span className="text-primary text-[10px] font-black">{shadowBlur}px</span>
                             </div>
-                            <Slider min={0} max={300} step={1} value={[shadowBlur]} onValueChange={([v]) => setShadowBlur(v)} disabled={!enableShadow} className="py-1" />
+                            <Slider id="tilter-blur-slider" name="tilter-blur-slider" min={0} max={300} step={1} value={[shadowBlur]} onValueChange={([v]) => setShadowBlur(v)} disabled={!enableShadow} className="py-1" />
                           </div>
                         </div>
                       </div>
 
                       {/* Custom Stage Color Picker */}
                       <div className="col-span-1 md:col-span-2 pt-2 mt-0.5 border-t border-border/10">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 italic block mb-2">Stage Canvas Color</label>
+                        <label htmlFor="tilter-color-input" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 italic block mb-2 cursor-pointer">Stage Canvas Color</label>
                         <div className="flex gap-4">
                           <div className="grid grid-cols-5 md:grid-cols-10 gap-2 flex-1">
                             {["#00000000", "#18181b", "#ffffff", "#f97316", "#ef4444", "#3b82f6", "#10b981", "#8b5cf6", "#f43f5e", "#14b8a6"].map(c => (
@@ -443,6 +448,8 @@ const PerspectiveTilter = () => {
                           </div>
                           <div className="flex flex-col gap-2 w-32 justify-center pl-4 border-l border-border/10">
                             <Input
+                              id="tilter-color-input"
+                              name="tilter-color-input"
                               value={stageColor === "#00000000" ? "Alpha" : stageColor}
                               onChange={(e) => setStageColor(e.target.value)}
                               placeholder="#HEX"

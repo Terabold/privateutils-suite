@@ -339,6 +339,8 @@ const CsvJsonForge = () => {
                                        ))}
                                     </div>
                                     <textarea
+                                       id="data-transformer-main-input"
+                                       name="data-transformer-main-input"
                                        value={input}
                                        onChange={(e) => {
                                           let val = e.target.value;

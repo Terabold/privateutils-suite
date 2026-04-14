@@ -263,7 +263,9 @@ const ImageCompressor = () => {
 
                     {/* The slider itself */}
                     <div className="w-24 sm:w-32 md:w-48 lg:w-64 shrink-0">
-                      <Slider
+                     <Slider
+                        id="image-quality-slider"
+                        name="image-quality-slider"
                         defaultValue={[0.7]}
                         max={1}
                         min={0.01}
@@ -524,7 +526,7 @@ const ImageCompressor = () => {
       </div>
       <Footer />
 
-      <input ref={inputRef} type="file" className="hidden" accept="image/*" onChange={(e) => { handleFile(e.target.files?.[0]); e.target.value = ""; }} />
+      <input ref={inputRef} type="file" id="image-compressor-upload-input" name="image-compressor-upload-input" className="hidden" accept="image/*" onChange={(e) => { handleFile(e.target.files?.[0]); e.target.value = ""; }} />
 
       {/* Mobile Sticky Anchor Ad */}
       <div className="fixed bottom-0 left-0 right-0 z-50 flex min-[1600px]:hidden justify-center bg-black/80 backdrop-blur-sm border-t border-white/10 py-2 h-[66px] overflow-x-clip">

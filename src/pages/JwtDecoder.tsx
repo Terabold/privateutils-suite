@@ -173,6 +173,8 @@ const JwtDecoder = () => {
                       </Button>
                     </div>
                     <textarea
+                      id="jwt-decoder-main-input"
+                      name="jwt-decoder-main-input"
                       value={token}
                       onChange={(e) => decode(e.target.value)}
                       placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.signature"

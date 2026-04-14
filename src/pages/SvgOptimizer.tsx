@@ -32,7 +32,11 @@ import { KbdShortcut } from "@/components/KbdShortcut";
 
 // @ts-ignore
 
-import { optimize } from "svgo/browser";
+// Dynamic import for svgo to reduce initial bundle size
+const loadSVGO = async () => {
+  const { optimize } = await import("svgo/browser");
+  return optimize;
+};
 
 
 
@@ -122,13 +126,15 @@ const SvgOptimizer = () => {
 
 
 
-  const optimizeSvg = () => {
+  const optimizeSvg = async () => {
 
     try {
 
       if (!input.trim()) return;
 
 
+
+      const optimize = await loadSVGO();
 
       let result;
 
@@ -375,6 +381,8 @@ const SvgOptimizer = () => {
                     <div className="relative flex-1 w-full h-full min-h-[500px]">
 
                       <textarea
+                        id="svg-optimizer-main-input"
+                        name="svg-optimizer-main-input"
 
                         value={input}
 

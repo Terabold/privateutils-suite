@@ -373,6 +373,8 @@ const ImageColorExtractor = () => {
                   <input 
                     ref={inputRef} 
                     type="file" 
+                    id="color-extractor-upload-input"
+                    name="color-extractor-upload-input"
                     className="hidden" 
                     accept="image/*" 
                     onChange={(e) => {
@@ -500,6 +502,8 @@ const ImageColorExtractor = () => {
                           <Maximize2 className="h-3 w-3" />
                         </Button>
                         <Slider
+                          id="color-extractor-zoom-slider"
+                          name="color-extractor-zoom-slider"
                           defaultValue={[1]}
                           value={[zoom]}
                           min={0.01}

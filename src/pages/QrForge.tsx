@@ -118,6 +118,8 @@ const QrForge = () => {
                         )}
                       </div>
                       <input
+                        id="qr-forge-main-input"
+                        name="qr-forge-main-input"
                         type="text"
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
@@ -178,11 +180,11 @@ const QrForge = () => {
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <span className="text-[8px] font-black uppercase opacity-40">Foreground</span>
-                          <input type="color" value={fgColor} onChange={(e) => setFgColor(e.target.value)} className="w-full h-10 rounded-xl bg-zinc-950/40 border-white/5 cursor-pointer block" />
+                          <input id="qr-forge-foreground-color" name="qr-forge-foreground-color" type="color" value={fgColor} onChange={(e) => setFgColor(e.target.value)} className="w-full h-10 rounded-xl bg-zinc-950/40 border-white/5 cursor-pointer block" />
                         </div>
                         <div className="space-y-2">
                           <span className="text-[8px] font-black uppercase opacity-40">Background</span>
-                          <input type="color" value={bgColor} onChange={(e) => setBgColor(e.target.value)} className="w-full h-10 rounded-xl bg-zinc-950/40 border-white/5 cursor-pointer block" />
+                          <input id="qr-forge-background-color" name="qr-forge-background-color" type="color" value={bgColor} onChange={(e) => setBgColor(e.target.value)} className="w-full h-10 rounded-xl bg-zinc-950/40 border-white/5 cursor-pointer block" />
                         </div>
                       </div>
                     </div>
