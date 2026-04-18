@@ -1,1 +1,2 @@
-# Rules moved to Cloudflare Dashboard
+https://www.privateutils.com/* https://privateutils.com/:splat 301!
+/* /index.html 200
