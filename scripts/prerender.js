@@ -58,15 +58,16 @@ async function run() {
   const allPages = [...toolsMetadata, ...manualPages];
 
   for (const tool of allPages) {
-    const routePath = path.join(distPath, tool.to.replace(/^\//, ''));
+    const relativePath = tool.to.replace(/^\//, ''); 
+    const filePath = path.join(distPath, `${relativePath}.html`);
+    const fileDir = path.dirname(filePath);
 
-    // Ensure directory exists
-    if (!fs.existsSync(routePath)) {
-      fs.mkdirSync(routePath, { recursive: true });
+    // Ensure parent directory exists (for nested paths)
+    if (!fs.existsSync(fileDir)) {
+      fs.mkdirSync(fileDir, { recursive: true });
     }
 
     // A. Render React App to HTML string
-    // We pass the URL to the StaticRouter inside the render function
     const { html: appHtml } = render(tool.to);
 
     let content = template;
@@ -74,9 +75,9 @@ async function run() {
     // B. Inject HTML into root
     content = content.replace('<div id="root"></div>', `<div id="root">${appHtml}</div>`);
 
-    // C. Inject Metadata (Keep existing logic as requested)
-    const title = tool.seoTitle || tool.title;
-    const description = tool.seoDescription || tool.description;
+    // C. Inject Metadata
+    const title = tool.seoTitle || tool.title || 'PrivateTools';
+    const description = tool.seoDescription || tool.description || 'Private, client-side utility tools.';
     const canonicalUrl = `https://privateutils.com${tool.to.replace(/\/$/, '')}`; 
 
     // Replace Title
@@ -98,11 +99,13 @@ async function run() {
     content = content.replace(/<meta name="twitter:description"[\s\S]*?content="[\s\S]*?" \/>/g, `<meta name="twitter:description" content="${description}" />`);
 
     // Inject Static Canonical URL
-    const canonicalTag = `<!-- CANONICAL_PLACEHOLDER -->\n  <link rel="canonical" href="${canonicalUrl}" />`;
-    content = content.replace(
-      /<!-- CANONICAL_PLACEHOLDER -->\s*<link rel="canonical" href=".*?" \/>/,
-      canonicalTag
-    );
+    const canonicalTag = `\n  <link rel="canonical" href="${canonicalUrl}" />`;
+    // We try to replace the existing canonical tag or the placeholder
+    if (content.includes('<!-- CANONICAL_PLACEHOLDER -->')) {
+      content = content.replace(/<!-- CANONICAL_PLACEHOLDER -->\s*<link rel="canonical" href=".*?" \/>/, `<!-- CANONICAL_PLACEHOLDER -->${canonicalTag}`);
+    } else {
+      content = content.replace(/\s*<link rel="canonical" href=".*?" \/>/, canonicalTag);
+    }
 
     // Inject JSON-LD
     const jsonLd = {
@@ -125,11 +128,16 @@ async function run() {
       }
     };
 
-    const jsonLdScript = `<!-- JSON_LD_PLACEHOLDER -->\n  <script type="application/ld+json">\n${JSON.stringify(jsonLd, null, 2)}\n  </script>`;
-    content = content.replace('<!-- JSON_LD_PLACEHOLDER -->', jsonLdScript);
+    const jsonLdScript = `\n  <script type="application/ld+json">\n${JSON.stringify(jsonLd, null, 2)}\n  </script>`;
+    if (content.includes('<!-- JSON_LD_PLACEHOLDER -->')) {
+      content = content.replace('<!-- JSON_LD_PLACEHOLDER -->', `<!-- JSON_LD_PLACEHOLDER -->${jsonLdScript}`);
+    } else {
+      // Fallback: inject before </body>
+      content = content.replace('</body>', `${jsonLdScript}\n</body>`);
+    }
 
     // Write file
-    fs.writeFileSync(path.join(routePath, 'index.html'), content);
+    fs.writeFileSync(filePath, content);
   }
 
   // Handle Home page rendering correctly
