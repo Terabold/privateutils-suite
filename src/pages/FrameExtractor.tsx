@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Camera, Download, Trash2, CloudUpload, Play, Pause, ChevronLeft, ChevronRight, Maximize2, Undo2, Activity } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ToolExpertSection from "@/components/ToolExpertSection";
 
@@ -241,7 +240,7 @@ const FrameExtractor = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground transition-all duration-300 theme-media">
-      <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
+      
 
       <div className="flex justify-center items-start w-full relative">
         <SponsorSidebars position="left" />
@@ -250,7 +249,7 @@ const FrameExtractor = () => {
           <div className="flex flex-col gap-6">
             <header className="flex items-center gap-4 animate-in fade-in slide-in-from-top-4 duration-500">
               <Link to="/">
-                <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border border-white/20 hover:bg-primary/20 transition-all group/back bg-black/60 shadow-2xl">
+                <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border border-primary/20 hover:bg-primary/20 transition-all group/back bg-background/50 backdrop-blur-md shadow-xl">
                   <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
                 </Button>
               </Link>
@@ -288,7 +287,7 @@ const FrameExtractor = () => {
                           onDragOver={(e) => e.preventDefault()}
                           onDrop={(e) => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); }}
                           onClick={() => inputRef.current?.click()}
-                          className="relative w-full h-full flex-1 flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/20 text-center transition-all duration-300 cursor-pointer bg-primary/5 hover:border-primary/40 hover:bg-primary/10 hover:scale-[1.02] shadow-inner"
+                          className="relative w-full h-full flex-1 flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-primary/20 text-center transition-all duration-300 cursor-pointer bg-primary/5 hover:border-primary/40 hover:bg-primary/10 hover:scale-[1.02] shadow-inner"
                         >
                           <div className="h-16 w-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-6 shadow-inner group-hover:scale-110 transition-transform">
                             <CloudUpload className="h-8 w-8 text-primary" />
@@ -358,7 +357,7 @@ const FrameExtractor = () => {
 
                         {/* Hover Play/Pause Indicator */}
                         <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
-                          <div className="h-20 w-20 rounded-full bg-black/60 backdrop-blur-xl border border-white/20 flex items-center justify-center text-white shadow-2xl opacity-0 scale-50 group-hover/video:opacity-100 group-hover/video:scale-100 transition-all duration-200 ease-out">
+                          <div className="h-20 w-20 rounded-full bg-black/60 backdrop-blur-xl border border-primary/20 flex items-center justify-center text-white shadow-2xl opacity-0 scale-50 group-hover/video:opacity-100 group-hover/video:scale-100 transition-all duration-200 ease-out">
                             {isPlaying ? <Pause className="h-10 w-10" /> : <Play className="h-10 w-10 fill-current ml-2" />}
                           </div>
                         </div>
@@ -468,7 +467,7 @@ const FrameExtractor = () => {
                                   a.click();
                                 }}
                                 variant="outline"
-                                className="h-12 px-6 rounded-xl border-white/20 bg-background/40 text-foreground hover:bg-card font-bold gap-2 transition-all shadow-xl"
+                                className="h-12 px-6 rounded-xl border-primary/20 bg-background/40 text-foreground hover:bg-card font-bold gap-2 transition-all shadow-xl"
                               >
                                 <Download className="h-4 w-4" />
                                 Download
@@ -489,7 +488,7 @@ const FrameExtractor = () => {
                         <Button
                           onClick={() => copyToClipboard(frames[0])}
                           variant="outline"
-                          className="h-14 rounded-2xl border-primary/20 bg-primary/5 hover:bg-primary/10 text-primary font-bold uppercase italic tracking-tighter gap-3"
+                          className="h-14 rounded-xl border-primary/20 bg-primary/5 hover:bg-primary/10 text-primary font-bold uppercase italic tracking-tighter gap-3"
                         >
                           {copiedId === frames[0].id ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                           Capture to Clipboard
@@ -511,7 +510,7 @@ const FrameExtractor = () => {
 
                     <div
                       onClick={() => setShowGallery(true)}
-                      className="bg-background/40 rounded-2xl border border-border/50 p-4 min-h-[160px] relative overflow-x-clip group studio-gradient shadow-2xl cursor-pointer hover:border-primary/40 transition-all flex flex-col"
+                      className="bg-background/40 rounded-xl border border-border/50 p-4 min-h-[160px] relative overflow-x-clip group studio-gradient shadow-2xl cursor-pointer hover:border-primary/40 transition-all flex flex-col"
                     >
                       <header className="mb-3 flex items-center justify-between px-1">
                         <div className="flex items-center gap-3">
@@ -600,7 +599,7 @@ const FrameExtractor = () => {
                             <img src={frame.url} className="w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-110" alt={`Capture at ${frame.time}s`} />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover/card:opacity-100 transition-opacity pointer-events-none" />
 
-                            <div className="absolute top-4 left-4 px-3 py-1 bg-background/60 rounded-2xl border border-white/10 backdrop-blur-md">
+                            <div className="absolute top-4 left-4 px-3 py-1 bg-background/60 rounded-xl border border-white/10 backdrop-blur-md">
                               <span className="text-[10px] font-bold text-primary italic tracking-widest">{frame.time.toFixed(3)}s</span>
                             </div>
                           </div>

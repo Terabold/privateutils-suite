@@ -7,7 +7,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
@@ -151,7 +150,7 @@ const PerspectiveTilter = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground transition-all duration-500">
-      <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
+      
 
       <div className="flex justify-center items-start w-full relative">
         <SponsorSidebars position="left" />
@@ -161,7 +160,7 @@ const PerspectiveTilter = () => {
             <header className="flex items-center justify-between flex-wrap gap-4">
               <div className="flex items-center gap-4">
                 <Link to="/">
-                  <Button aria-label="Go back to home" variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-border/50 hover:bg-primary/5 transition-all group/back">
+                  <Button aria-label="Go back to home" variant="outline" size="icon" className="h-12 w-12 rounded-xl border border-border/50 hover:bg-primary/5 transition-all group/back">
                     <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
                   </Button>
                 </Link>
@@ -186,7 +185,7 @@ const PerspectiveTilter = () => {
                       onClick={() => inputRef.current?.click()}
                       onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}
                       onDrop={(e) => { e.preventDefault(); e.stopPropagation(); handleFile(e.dataTransfer.files[0]); }}
-                      className="relative w-full aspect-video flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/20 text-center transition-all duration-300 cursor-pointer bg-primary/5 hover:border-primary/40 hover:bg-primary/10 hover:scale-[1.02] shadow-inner group"
+                      className="relative w-full aspect-video flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-primary/20 text-center transition-all duration-300 cursor-pointer bg-primary/5 hover:border-primary/40 hover:bg-primary/10 hover:scale-[1.02] shadow-inner group"
                     >
                       <div className="h-20 w-20 bg-primary/10 rounded-2xl flex items-center justify-center mb-8 shadow-inner group-hover:scale-110 transition-transform">
                         <CloudUpload className="h-10 w-10 text-primary" />
@@ -201,7 +200,7 @@ const PerspectiveTilter = () => {
                   ) : (
                     <div
                       ref={stageRef}
-                      className="w-full aspect-video relative flex items-center justify-center select-none bg-muted/5 rounded-2xl border-2 border-border/20 overflow-visible transition-all hover:bg-muted/10 studio-gradient-dark shadow-2xl"
+                      className="w-full aspect-video relative flex items-center justify-center select-none bg-muted/5 rounded-xl border-2 border-border/20 overflow-visible transition-all hover:bg-muted/10 studio-gradient-dark shadow-2xl"
                       style={{
                         background: stageColor,
                         padding: '10%', // Internal "Safe Zone" improved
@@ -397,7 +396,7 @@ const PerspectiveTilter = () => {
                               <button
                                 key={m}
                                 onClick={() => setScalingMode(m as any)}
-                                className={`py-1 rounded-2xl border text-[9px] font-black uppercase tracking-widest transition-all ${scalingMode === m ? "bg-primary border-primary text-white shadow-lg" : "border-border/50 hover:bg-primary/5 text-muted-foreground"}`}
+                                className={`py-1 rounded-xl border text-[9px] font-black uppercase tracking-widest transition-all ${scalingMode === m ? "bg-primary border-primary text-white shadow-lg" : "border-border/50 hover:bg-primary/5 text-muted-foreground"}`}
                               >
                                 {m}
                               </button>

@@ -6,7 +6,6 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ToolExpertSection from "@/components/ToolExpertSection";
 
@@ -86,7 +85,7 @@ const YouTubeThumbnailHub = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground transition-all duration-300 ">
-      <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
+      
 
       <div className="flex justify-center items-start w-full relative">
         <SponsorSidebars position="left" />
@@ -96,7 +95,7 @@ const YouTubeThumbnailHub = () => {
             <header className="flex items-center justify-between flex-wrap gap-6 animate-in fade-in slide-in-from-top-4 duration-500">
               <div className="flex items-center gap-6">
                 <Link to="/">
-                  <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border border-white/20 hover:bg-primary/20 transition-all group/back bg-black/60 shadow-2xl">
+                  <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border border-primary/20 hover:bg-primary/20 transition-all group/back bg-background/50 backdrop-blur-md shadow-xl">
                     <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
                   </Button>
                 </Link>
@@ -111,7 +110,7 @@ const YouTubeThumbnailHub = () => {
               <Button
                 onClick={() => inputRef.current?.click()}
                 variant="outline"
-                className="h-12 px-6 rounded-xl border border-white/20 bg-background text-foreground font-black uppercase italic shadow-2xl gap-3 hover:bg-primary hover:text-white transition-all duration-300"
+                className="h-12 px-6 rounded-xl border border-primary/20 bg-background text-foreground font-black uppercase italic shadow-2xl gap-3 hover:bg-primary hover:text-white transition-all duration-300"
               >
                 <CloudUpload className="h-5 w-5" />
                 {image ? "Swap Artifact" : "Load Artifact"}
@@ -178,7 +177,7 @@ const YouTubeThumbnailHub = () => {
                   onClick={() => inputRef.current?.click()}
                   onDragOver={(e) => e.preventDefault()}
                   onDrop={(e) => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); }}
-                  className="relative w-full max-w-4xl aspect-video flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/20 text-center transition-all duration-300 cursor-pointer bg-primary/5 hover:bg-primary/10 hover:border-primary/40 hover:scale-[1.02] shadow-inner group/upload"
+                  className="relative w-full max-w-4xl aspect-video flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-primary/20 text-center transition-all duration-300 cursor-pointer bg-primary/5 hover:bg-primary/10 hover:border-primary/40 hover:scale-[1.02] shadow-inner group/upload"
                 >
                   <div className="h-20 w-20 bg-primary/10 rounded-2xl flex items-center justify-center mb-8 shadow-inner group-hover/upload:scale-110 transition-transform duration-300">
                     <CloudUpload className="h-10 w-10 text-primary" />

@@ -1,38 +1,32 @@
 import { useState, useCallback, useEffect, useMemo } from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
-import Navbar from "@/components/Navbar";
+import { useDarkMode } from "@/hooks/useDarkMode";
 import ToolsGrid, { tools } from "@/components/ToolsGrid";
 import Footer from "@/components/Footer";
-import { ShieldCheck, Zap, Lock, Play, Pause, HelpCircle, Coffee, ShieldAlert, Scale, ArrowRight, MessageSquare, BookOpen } from "lucide-react";
+import { ShieldCheck, Zap, Lock, Play, Pause, HelpCircle, Coffee, ShieldAlert, Scale, ArrowRight, MessageSquare, BookOpen, Video, Music, ImageIcon, Shield, Code, Type, LayoutGrid, Layout } from "lucide-react";
 import SponsorSidebars from "@/components/SponsorSidebars";
 import AdBox from "@/components/AdBox";
 import ToolAdBanner from "@/components/ToolAdBanner";
 import StickyAnchorAd from "@/components/StickyAnchorAd";
 
 
-const Index = () => {
+interface IndexProps {
+  searchQuery: string;
+  setSearchQuery: (q: string) => void;
+  selectedCategory: string | null;
+  setSelectedCategory: (cat: string | null) => void;
+}
+
+const Index = ({ 
+  searchQuery, 
+  setSearchQuery, 
+  selectedCategory, 
+  setSelectedCategory 
+}: IndexProps) => {
+  const { darkMode, toggleDark } = useDarkMode();
   const location = useLocation();
   const navigate = useNavigate();
 
-  const [darkMode, setDarkMode] = useState(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("theme");
-      if (saved) return saved === "dark";
-      return window.matchMedia("(prefers-color-scheme: dark)").matches;
-    }
-    return false;
-  });
-
-  // Read query params from URL (set by Navbar when navigating from a tool page)
-  const params = useMemo(() => new URLSearchParams(location.search), [location.search]);
-  const [searchQuery, setSearchQuery] = useState(() => params.get("search") ?? "");
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(() => params.get("category") ?? null);
-
-  // Sync state when URL params change (e.g. browser back/forward)
-  useEffect(() => {
-    setSearchQuery(params.get("search") ?? "");
-    setSelectedCategory(params.get("category") ?? null);
-  }, [params]);
 
   const categories = useMemo(() => {
     return Array.from(new Set(tools.map(t => t.category)));
@@ -62,12 +56,6 @@ const Index = () => {
     return () => sections.forEach((section) => observer.unobserve(section));
   }, []);
 
-  const toggleDark = useCallback(() => {
-    const next = !darkMode;
-    setDarkMode(next);
-    document.documentElement.classList.toggle("dark", next);
-    localStorage.setItem("theme", next ? "dark" : "light");
-  }, [darkMode]);
 
   const clearFilters = useCallback(() => {
     setSearchQuery("");
@@ -75,65 +63,72 @@ const Index = () => {
     navigate("/", { replace: true });
   }, [navigate]);
 
-  // Keep URL in sync when user interacts with filters on the homepage
-  const handleSetSearchQuery = useCallback((q: string) => {
-    setSearchQuery(q);
-    const p = new URLSearchParams(location.search);
-    if (q) p.set("search", q); else p.delete("search");
-    navigate(`/?${p.toString()}`, { replace: true });
-  }, [navigate, location.search]);
-
-  const handleSetCategory = useCallback((cat: string | null) => {
-    setSelectedCategory(cat);
-    const p = new URLSearchParams(location.search);
-    if (cat) p.set("category", cat); else p.delete("category");
-    navigate(`/?${p.toString()}`, { replace: true });
-  }, [navigate, location.search]);
 
   const isFiltering = searchQuery.length > 0 || selectedCategory !== null;
 
   return (
-    <div className="min-h-screen bg-background font-sans selection:bg-primary/20 relative ">
-      <Navbar 
-        darkMode={darkMode} 
-        onToggleDark={toggleDark}
-        searchQuery={searchQuery}
-        setSearchQuery={handleSetSearchQuery}
-        selectedCategory={selectedCategory}
-        setSelectedCategory={handleSetCategory}
-        categories={categories}
-        activeSection={activeSection}
-      />
+    <div className="w-full font-sans selection:bg-primary/20 relative">
       
       {/* Sidebar Layout Wrapper */}
       <div className="flex justify-center items-start w-full relative">
         
         {/* Left Sponsor Sidebar */}
         <SponsorSidebars position="left" />
-
-        <main className="container mx-auto max-w-[1240px] px-6 py-10 lg:py-16 grow overflow-visible">
-          {/* Static Branding Section (Improved Vertical Density) */}
-          <section id="hero" className="text-center mb-10 relative animate-in fade-in duration-1000">
+        <main className="container mx-auto max-w-[1240px] px-6 pt-6 pb-10 lg:pt-8 lg:pb-16 grow overflow-visible">
+          {/* Compact Hero Section */}
+          <section id="hero" className="text-center mb-8 relative animate-in fade-in duration-1000">
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-primary/5 blur-[120px] rounded-full -z-10" />
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tighter text-foreground font-display mb-6 leading-[0.9]">
-              Private<span className="text-primary italic">Utils</span> <br className="hidden sm:block" /> <span className="text-2xl md:text-4xl opacity-40 uppercase tracking-widest font-sans not-italic">Coding & Media Tools</span>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tighter text-foreground font-display mb-4 leading-[0.9]">
+              Private<span className="text-primary italic">Utils</span> <br className="hidden sm:block" /> 
+              <span className="text-xl md:text-3xl opacity-30 uppercase tracking-[0.3em] font-sans not-italic">Universal Engineering Suite</span>
             </h1>
-            <p className="mx-auto max-w-2xl text-base md:text-lg text-muted-foreground leading-relaxed font-medium">
-              <span className="font-bold text-foreground">PrivateUtils</span>: {tools.length} private tools running 100% in your browser. 
-              No accounts, no tracking, and zero data leakage—your data never reaches a server.
+            <p className="mx-auto max-w-xl text-xs md:text-sm text-muted-foreground leading-relaxed font-medium">
+               Hardware-accelerated tools running 100% locally. No servers. No logs.
             </p>
           </section>
 
-          {/* Mobile Inline Ad */}
-          <ToolAdBanner />
+          {/* Dashboard Category Filters (Compact & Responsive) */}
+          <div className="sticky top-[80px] z-[40] bg-background/80 backdrop-blur-2xl border-y border-primary/10 -mx-6 px-6 py-2 mb-10 shadow-2xl shadow-black/5">
+            <div className="max-w-[1240px] mx-auto flex flex-wrap items-center justify-center gap-1.5 md:gap-2">
+              <button
+                onClick={() => setSelectedCategory(null)}
+                className={`whitespace-nowrap px-3 md:px-4 py-1.5 rounded-xl text-[8px] md:text-[9px] font-black uppercase tracking-[0.15em] border transition-all flex items-center gap-1.5 md:gap-2 ${
+                  !selectedCategory 
+                  ? "bg-primary text-white border-primary shadow-lg shadow-primary/20 ring-1 ring-primary/20" 
+                  : "bg-primary/5 border-primary/10 text-primary/60 hover:bg-primary/10 hover:text-primary"
+                }`}
+              >
+                <LayoutGrid className="h-3 w-3 md:h-3.5 md:w-3.5 opacity-70" />
+                All Artifacts
+              </button>
+              {categories.map(cat => (
+                <button
+                  key={cat}
+                  onClick={() => setSelectedCategory(cat)}
+                  className={`whitespace-nowrap px-3 md:px-4 py-1.5 rounded-xl text-[8px] md:text-[9px] font-black uppercase tracking-[0.15em] border transition-all flex items-center gap-1.5 md:gap-2 ${
+                    selectedCategory === cat
+                    ? "bg-primary text-white border-primary shadow-lg shadow-primary/20 ring-1 ring-primary/20"
+                    : "bg-primary/5 border-primary/10 text-primary/60 hover:bg-primary/10 hover:text-primary"
+                  }`}
+                >
+                  <span className="opacity-70">{getCategoryIcon(cat)}</span>
+                  {cat}
+                </button>
+              ))}
+            </div>
+          </div>
 
-          {/* Tools Section */}
-          <div className="mb-32">
-            <ToolsGrid 
-              searchQuery={searchQuery}
-              selectedCategory={selectedCategory}
-              onClearFilters={clearFilters}
-            />
+          {/* Main Content Area */}
+          <div className="grow min-w-0 w-full">
+             <ToolAdBanner />
+             
+             <div className="mb-32">
+              <ToolsGrid 
+                searchQuery={searchQuery}
+                selectedCategory={selectedCategory}
+                onClearFilters={clearFilters}
+              />
+             </div>
           </div>
 
           {/* Integrated Ad Break */}
@@ -340,6 +335,19 @@ const Index = () => {
       <StickyAnchorAd />
     </div>
   );
+};
+
+const getCategoryIcon = (category: string) => {
+  switch (category) {
+    case "Video": return <Video className="h-3 w-3" />;
+    case "Audio": return <Music className="h-3 w-3" />;
+    case "Graphics": return <ImageIcon className="h-3 w-3" />;
+    case "Security": return <Shield className="h-3 w-3" />;
+    case "Engineering": return <Code className="h-3 w-3" />;
+    case "Editor": return <Type className="h-3 w-3" />;
+    case "Utilities": return <Zap className="h-3 w-3" />;
+    default: return <LayoutGrid className="h-3 w-3" />;
+  }
 };
 
 export default Index;

@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { ArrowLeft, Copy, Check, RefreshCw, ShieldCheck, ShieldAlert, Eye, EyeOff, Hash, Type } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
@@ -89,7 +88,7 @@ const PasswordGenerator = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground transition-colors duration-500">
-      <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
+      
 
       <div className="flex justify-center items-start w-full relative">
         <SponsorSidebars position="left" />
@@ -98,7 +97,7 @@ const PasswordGenerator = () => {
           <div className="flex flex-col gap-6">
             <header className="flex items-center gap-6">
               <Link to="/">
-                <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-border/50 hover:bg-primary/5 transition-all group/back">
+                <Button variant="outline" size="icon" className="h-12 w-12 rounded-xl border border-border/50 hover:bg-primary/5 transition-all group/back">
                   <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
                 </Button>
               </Link>
@@ -222,7 +221,7 @@ const PasswordGenerator = () => {
                         <button
                           key={opt.key}
                           onClick={() => setOptions(prev => ({ ...prev, [opt.key]: !(prev as any)[opt.key] }))}
-                          className={`flex items-center justify-between p-4 rounded-2xl border transition-all ${(options as any)[opt.key]
+                          className={`flex items-center justify-between p-4 rounded-xl border transition-all ${(options as any)[opt.key]
                             ? 'bg-primary/10 border-primary/30 text-primary'
                             : 'bg-muted/5 border-border/30 text-muted-foreground opacity-50 grayscale'
                             }`}
@@ -257,7 +256,7 @@ const PasswordGenerator = () => {
                     <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Security Audit</h3>
                   </div>
                   <CardContent className="p-8 space-y-6">
-                    <div className="bg-muted/5 p-4 rounded-2xl border border-border/50">
+                    <div className="bg-muted/5 p-4 rounded-xl border border-border/50">
                       <p className="text-[9px] font-black uppercase tracking-widest opacity-40 mb-1">Entropy</p>
                       <p className="text-2xl font-black italic tracking-tighter">~{Math.round(length * Math.log2(Object.values(options).filter(Boolean).length * 20))} bits</p>
                     </div>

@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { ArrowLeft, Copy, Check, Play, AlertTriangle, Search, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
@@ -190,7 +189,7 @@ const RegexPlayground = () => {
 
    return (
       <div className="min-h-screen bg-background text-foreground transition-colors duration-500">
-         <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
+         
 
          <div className="flex justify-center items-start w-full relative">
             <SponsorSidebars position="left" />
@@ -199,7 +198,7 @@ const RegexPlayground = () => {
                <div className="flex flex-col gap-10">
                   <header className="flex items-center gap-6">
                      <Link to="/">
-                        <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-border dark:border-white/20 hover:bg-primary/10 dark:hover:bg-primary/20 transition-all group/back bg-background/80 dark:bg-black/60 shadow-xl dark:shadow-2xl">
+                        <Button variant="outline" size="icon" className="h-12 w-12 rounded-xl border border-border dark:border-primary/20 hover:bg-primary/10 dark:hover:bg-primary/20 transition-all group/back bg-background/80 dark:bg-black/60 shadow-xl dark:shadow-2xl">
                            <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
                         </Button>
                      </Link>
@@ -255,7 +254,7 @@ const RegexPlayground = () => {
                                        key={f.flag}
                                        onClick={() => toggleFlag(f.flag)}
                                        title={f.desc}
-                                       className={`text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-2xl border transition-all shadow-sm ${flags.includes(f.flag) ? "bg-primary text-primary-foreground border-primary" : "text-muted-foreground bg-white dark:bg-transparent border-border dark:border-white/10 hover:bg-primary/10 hover:text-primary hover:border-primary/20"}`}
+                                       className={`text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-xl border transition-all shadow-sm ${flags.includes(f.flag) ? "bg-primary text-primary-foreground border-primary" : "text-muted-foreground bg-white dark:bg-transparent border-border dark:border-white/10 hover:bg-primary/10 hover:text-primary hover:border-primary/20"}`}
                                     >
                                        <span className="font-mono mr-1">{f.flag}</span> {f.label}
                                     </button>
@@ -373,16 +372,16 @@ const RegexPlayground = () => {
                            </div>
                            <CardContent className="p-8 space-y-6">
                               <div className="grid grid-cols-2 gap-4">
-                                 <div className="bg-muted/50 dark:bg-black/40 p-4 rounded-2xl border border-border dark:border-white/5 shadow-inner">
+                                 <div className="bg-muted/50 dark:bg-black/40 p-4 rounded-xl border border-border dark:border-white/5 shadow-inner">
                                     <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground dark:opacity-40 mb-1">Matches</p>
                                     <p className={`text-2xl font-black italic tracking-tighter ${matches.length > 0 ? "text-primary" : "text-foreground dark:text-white"}`}>{matches.length}</p>
                                  </div>
-                                 <div className="bg-muted/50 dark:bg-black/40 p-4 rounded-2xl border border-border dark:border-white/5 shadow-inner">
+                                 <div className="bg-muted/50 dark:bg-black/40 p-4 rounded-xl border border-border dark:border-white/5 shadow-inner">
                                     <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground dark:opacity-40 mb-1">Groups</p>
                                     <p className="text-2xl font-black italic tracking-tighter text-foreground dark:text-white">{(pattern.match(/\(/g) || []).length}</p>
                                  </div>
                               </div>
-                              <div className="bg-muted/50 dark:bg-black/40 p-4 rounded-2xl border border-border dark:border-white/5 shadow-inner">
+                              <div className="bg-muted/50 dark:bg-black/40 p-4 rounded-xl border border-border dark:border-white/5 shadow-inner">
                                  <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground dark:opacity-40 mb-1">Coverage</p>
                                  <p className="text-2xl font-black italic tracking-tighter text-foreground dark:text-white">
                                     {testStr.length > 0 ? Math.round((matches.reduce((s, m) => s + m.value.length, 0) / testStr.length) * 100) : 0}%

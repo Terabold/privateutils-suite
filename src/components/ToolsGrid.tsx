@@ -1,9 +1,10 @@
 import { useMemo } from "react";
-import { Volume2, Type, Pipette, Video, Layers, Layout, Scissors, Music, ShieldX, ImageIcon, ShieldCheck, Wrench, Sparkles, Camera, Code, QrCode, Zap, ClipboardCopy, KeyRound, Binary, Clock, SearchCode, FileText, Palette, Fingerprint, Ruler, FileJson, FileStack, Monitor, RefreshCw, Database, Split, Radio, Hash, Eraser, Dices, Terminal, Dices as DiceIcon } from "lucide-react";
+import { Volume2, Type, Pipette, Video, Layers, Layout, LayoutGrid, Scissors, Music, ShieldX, ImageIcon, ShieldCheck, Wrench, Sparkles, Camera, Code, QrCode, Zap, ClipboardCopy, KeyRound, Binary, Clock, SearchCode, FileText, Palette, Fingerprint, Ruler, FileJson, FileStack, Monitor, RefreshCw, Database, Split, Radio, Hash, Eraser, Dices, Terminal, Dices as DiceIcon } from "lucide-react";
 import ToolCard from "./ToolCard";
 import { Button } from "@/components/ui/button";
 import toolsMetadata from "@/data/toolsMetadata.json";
 import { searchTools } from "@/lib/search";
+import { motion, Variants } from "framer-motion";
 
 const toolsData = [
   {
@@ -11,7 +12,7 @@ const toolsData = [
     description: "Convert video and audio formats in your browser with zero server-side processing.",
     icon: <Video className="h-5 w-5" />,
     to: "/universal-media-converter",
-    category: "Video Studio",
+    category: "Video",
     tags: ["ULTIMATE", "NATIVE"]
   },
   {
@@ -19,7 +20,7 @@ const toolsData = [
     description: "Simulate and verify how your thumbnails look on a realistic YouTube interface.",
     icon: <Layout className="h-5 w-5" />,
     to: "/youtube-thumbnail-hub",
-    category: "Video Studio",
+    category: "Video",
     tags: ["SAFE-ZONES", "SIM"]
   },
   {
@@ -27,7 +28,7 @@ const toolsData = [
     description: "Apply 3D perspective and professional angled tilts to any image instantly.",
     icon: <Layers className="h-5 w-5" />,
     to: "/perspective-tilter",
-    category: "Image Studio",
+    category: "Graphics",
     tags: ["3D", "WYSIWYG"]
   },
   {
@@ -35,7 +36,7 @@ const toolsData = [
     description: "Strip EXIF data like GPS and camera info from your photos locally for total security.",
     icon: <ShieldX className="h-5 w-5" />,
     to: "/metadata-scrubber",
-    category: "Privacy Belt",
+    category: "Security",
     tags: ["EXIF", "SCRUB"]
   },
   {
@@ -43,7 +44,7 @@ const toolsData = [
     description: "Slice images into a precise grid and export them as a ZIP file buffer instantly.",
     icon: <Scissors className="h-5 w-5" />,
     to: "/sprite-studio",
-    category: "Image Studio",
+    category: "Graphics",
     tags: ["SPRITES", "ZIP"]
   },
   {
@@ -51,7 +52,7 @@ const toolsData = [
     description: "Cut and clip audio files to a specific timeframe with local-first precision editing.",
     icon: <Music className="h-5 w-5" />,
     to: "/audio-trimmer",
-    category: "Audio Lab",
+    category: "Audio",
     tags: ["TRIM", "WAV"]
   },
   {
@@ -59,7 +60,7 @@ const toolsData = [
     description: "Amplify or reduce volume for media files with high-fidelity gain control.",
     icon: <Volume2 className="h-5 w-5" />,
     to: "/universal-volume-booster",
-    category: "Audio Lab",
+    category: "Audio",
     tags: ["GAIN", "MP4"]
   },
   {
@@ -67,7 +68,7 @@ const toolsData = [
     description: "Extract color palettes from images and copy hex codes for brand-matching design.",
     icon: <Pipette className="h-5 w-5" />,
     to: "/image-color-extractor",
-    category: "Image Studio",
+    category: "Graphics",
     tags: ["DESIGN", "PRO"]
   },
   {
@@ -75,7 +76,7 @@ const toolsData = [
     description: "Create optimized GIFs from video clips. Fully client-side conversion for total privacy.",
     icon: <RefreshCw className="h-5 w-5" />,
     to: "/video-to-gif",
-    category: "Video Studio",
+    category: "Video",
     tags: ["GIF", "NATIVE"]
   },
   {
@@ -83,7 +84,7 @@ const toolsData = [
     description: "Extract high-fidelity PNG snapshots from any local video file instantly.",
     icon: <Camera className="h-5 w-5" />,
     to: "/frame-extractor",
-    category: "Video Studio",
+    category: "Video",
     tags: ["PNG", "EXTRACT"]
   },
   {
@@ -91,7 +92,7 @@ const toolsData = [
     description: "Resize videos to any aspect ratio with padding or cropping",
     icon: <Monitor className="h-5 w-5" />,
     to: "/video-aspect-studio",
-    category: "Video Studio",
+    category: "Video",
     tags: ["RESIZE", "PRO"]
   },
   {
@@ -99,7 +100,7 @@ const toolsData = [
     description: "Validate and format complex JSON structures with high-fidelity syntax highlighting.",
     icon: <FileJson className="h-5 w-5" />,
     to: "/json-studio",
-    category: "Dev Toolbox",
+    category: "Engineering",
     tags: ["DEV", "JSON", "PRO"]
   },
   {
@@ -107,7 +108,7 @@ const toolsData = [
     description: "Convert between CSV and JSON formats instantly. Handles complex nested data structures.",
     icon: <Database className="h-5 w-5" />,
     to: "/data-transformer",
-    category: "Dev Toolbox",
+    category: "Engineering",
     tags: ["CONVERT", "CSV", "JSON"]
   },
   {
@@ -115,7 +116,7 @@ const toolsData = [
     description: "Create custom QR codes fully offline with high-density encoding and error correction.",
     icon: <QrCode className="h-5 w-5" />,
     to: "/qr-forge",
-    category: "Privacy Belt",
+    category: "Security",
     tags: ["SECURE", "QR"]
   },
   {
@@ -123,7 +124,7 @@ const toolsData = [
     description: "Mask sensitive PII, credentials, or faces from images before sharing for maximum privacy.",
     icon: <ShieldX className="h-5 w-5" />,
     to: "/pii-masker",
-    category: "Privacy Belt",
+    category: "Security",
     tags: ["REDACT", "BLUR"]
   },
   {
@@ -131,7 +132,7 @@ const toolsData = [
     description: "Optimize SVG files by removing unnecessary markup for faster web rendering speeds.",
     icon: <Zap className="h-5 w-5" />,
     to: "/svg-optimizer",
-    category: "Image Studio",
+    category: "Graphics",
     tags: ["SVG", "FAST"]
   },
   {
@@ -139,7 +140,7 @@ const toolsData = [
     description: "Convert SVG files to PNG or JPG with high-fidelity rasterization for all assets.",
     icon: <ImageIcon className="h-5 w-5" />,
     to: "/svg-to-image",
-    category: "Image Studio",
+    category: "Graphics",
     tags: ["RASTER", "PNG"]
   },
   {
@@ -147,7 +148,7 @@ const toolsData = [
     "description": "Convert SVG files into valid .ico icons. Perfect for high-quality website favicons.",
     "icon": <Sparkles className="h-5 w-5" />,
     "to": "/svg-to-ico",
-    "category": "Image Studio",
+    "category": "Graphics",
     "tags": ["FAVICON", "ICO"]
   },
   {
@@ -155,7 +156,7 @@ const toolsData = [
     description: "Merge multiple images into a single PDF file with local-first secure compilation.",
     icon: <FileStack className="h-5 w-5" />,
     to: "/image-to-pdf",
-    category: "Image Studio",
+    category: "Graphics",
     tags: ["PDF", "COMPILE"]
   },
   {
@@ -163,7 +164,7 @@ const toolsData = [
     description: "Convert text between camelCase, snake_case, and more for technical documentation.",
     icon: <Type className="h-5 w-5" />,
     to: "/text-case-formatter",
-    category: "Text Studio",
+    category: "Editor",
     tags: ["QUICK"]
   },
   {
@@ -171,7 +172,7 @@ const toolsData = [
     description: "Paste and download clipboard content as a file. Extract binary assets from your buffer.",
     icon: <ClipboardCopy className="h-5 w-5" />,
     to: "/quick-clipboard",
-    category: "Quick Utils",
+    category: "Utilities",
     tags: ["EXTRACT", "ZAP"]
   },
   {
@@ -179,7 +180,7 @@ const toolsData = [
     description: "Check differences between text blocks with instant additions and removals highlighting.",
     icon: <Split className="h-5 w-5" />,
     to: "/text-diff-checker",
-    category: "Text Studio",
+    category: "Editor",
     tags: ["COMPARE", "PRO"]
   },
   {
@@ -187,7 +188,7 @@ const toolsData = [
     description: "Inspect JWT headers and payloads securely on your device without leaking tokens.",
     icon: <KeyRound className="h-5 w-5" />,
     to: "/jwt-decoder",
-    category: "Dev Toolbox",
+    category: "Engineering",
     tags: ["DEV", "AUTH"]
   },
   {
@@ -195,7 +196,7 @@ const toolsData = [
     description: "Convert text between Base64, URL, HTML, and Hex using comprehensive local tools.",
     icon: <Binary className="h-5 w-5" />,
     to: "/encoder-decoder",
-    category: "Dev Toolbox",
+    category: "Engineering",
     tags: ["BASE64", "HEX"]
   },
   {
@@ -203,7 +204,7 @@ const toolsData = [
     description: "Convert Unix timestamps to readable dates with support for multiple time formats.",
     icon: <Clock className="h-5 w-5" />,
     to: "/timestamp-converter",
-    category: "Dev Toolbox",
+    category: "Engineering",
     tags: ["UNIX", "ISO"]
   },
   {
@@ -211,7 +212,7 @@ const toolsData = [
     description: "Validate regular expressions with live highlighting against custom test strings.",
     icon: <SearchCode className="h-5 w-5" />,
     to: "/regex-playground",
-    category: "Dev Toolbox",
+    category: "Engineering",
     tags: ["DEV", "LIVE"]
   },
   {
@@ -219,7 +220,7 @@ const toolsData = [
     description: "Generate placeholder text for your designs with custom paragraph and sentence counts.",
     icon: <FileText className="h-5 w-5" />,
     to: "/lorem-generator",
-    category: "Text Studio",
+    category: "Editor",
     tags: ["CONTENT", "DEV"]
   },
   {
@@ -227,7 +228,7 @@ const toolsData = [
     description: "Create secure random passwords locally. Fully offline generation for maximum privacy.",
     icon: <ShieldCheck className="h-5 w-5" />,
     to: "/password-generator",
-    category: "Privacy Belt",
+    category: "Security",
     tags: ["SECURE", "PRIVACY"]
   },
   {
@@ -235,7 +236,7 @@ const toolsData = [
     description: "Create brand schemes like Monochromatic and Triadic for UI designers and developers.",
     icon: <Palette className="h-5 w-5" />,
     to: "/palette-studio",
-    category: "Image Studio",
+    category: "Graphics",
     tags: ["DESIGN", "COLOR"]
   },
   {
@@ -243,7 +244,7 @@ const toolsData = [
     description: "Create SHA-256, SHA-512, or MD5 hashes locally for verified cryptographic integrity.",
     icon: <Fingerprint className="h-5 w-5" />,
     to: "/hash-lab",
-    category: "Privacy Belt",
+    category: "Security",
     tags: ["CRYPTO", "SECURE"]
   },
   {
@@ -251,7 +252,7 @@ const toolsData = [
     description: "Convert weight, area, and speed measurements with high-precision engineering tools.",
     icon: <Ruler className="h-5 w-5" />,
     to: "/unit-converter",
-    category: "Quick Utils",
+    category: "Utilities",
     tags: ["QUICK", "MATH"]
   },
   {
@@ -259,7 +260,7 @@ const toolsData = [
     description: "Convert images to Base64 strings for CSS and code without external dependencies.",
     icon: <FileStack className="h-5 w-5" />,
     to: "/base64-image",
-    category: "Image Studio",
+    category: "Graphics",
     tags: ["EXTRACT", "DEV"]
   },
   {
@@ -267,7 +268,7 @@ const toolsData = [
     description: "Play audio files backwards for sound design and experimental media production.",
     icon: <RefreshCw className="h-5 w-5" />,
     to: "/reverse-audio",
-    category: "Audio Lab",
+    category: "Audio",
     tags: ["FLIP", "WAV"]
   },
   {
@@ -275,7 +276,7 @@ const toolsData = [
     description: "Turn raw file bytes into experimental audio and explore acoustic digital fingerprints.",
     icon: <Binary className="h-5 w-5" />,
     to: "/binary-to-audio",
-    category: "Audio Lab",
+    category: "Audio",
     tags: ["GLITCH", "PCM"]
   },
   {
@@ -283,7 +284,7 @@ const toolsData = [
     description: "Change audio between Mono and Stereo with surgical control over spatial fields.",
     icon: <Layers className="h-5 w-5" />,
     to: "/audio-mono-stereo",
-    category: "Audio Lab",
+    category: "Audio",
     tags: ["CHANNELS", "PRO"]
   },
   {
@@ -291,7 +292,7 @@ const toolsData = [
     description: "Increase low-end frequencies with pro-grade reconstruction for high-fidelity output.",
     icon: <Zap className="h-5 w-5" />,
     to: "/audio-bass-booster",
-    category: "Audio Lab",
+    category: "Audio",
     tags: ["EQ", "BASS"]
   },
   {
@@ -299,7 +300,7 @@ const toolsData = [
     description: "Reduce image file size locally with secure optimization for privacy-conscious users.",
     icon: <Zap className="h-5 w-5" />,
     to: "/image-compressor",
-    category: "Image Studio",
+    category: "Graphics",
     tags: ["COMPRESS", "WEB"]
   },
   {
@@ -307,7 +308,7 @@ const toolsData = [
     description: "Translate text to Morse code with live audio synthesis and visual transmission signals.",
     icon: <Radio className="h-5 w-5" />,
     to: "/morse-code-master",
-    category: "Text Studio",
+    category: "Editor",
     tags: ["TRANS", "AUDIO"]
   },
   {
@@ -315,7 +316,7 @@ const toolsData = [
     description: "Create clean, SEO-friendly slugs from text for technical content distribution.",
     icon: <Hash className="h-5 w-5" />,
     to: "/slug-forge",
-    category: "Dev Toolbox",
+    category: "Engineering",
     tags: ["SEO", "URL"]
   },
   {
@@ -323,7 +324,7 @@ const toolsData = [
     description: "Remove hidden characters and whitespace from messy documentation and code files.",
     icon: <Eraser className="h-5 w-5" />,
     to: "/whitespace-scrubber",
-    category: "Text Studio",
+    category: "Editor",
     tags: ["CLEAN", "TEXT"]
   },
   {
@@ -331,8 +332,16 @@ const toolsData = [
     description: "Secure physics-based randomization for games and security with dice and coin flips.",
     icon: <Dices className="h-5 w-5" />,
     to: "/dice-lab",
-    category: "Quick Utils",
+    category: "Utilities",
     tags: ["SECURE", "ROLL"]
+  },
+  {
+    title: "Word Counter Engine",
+    description: "Analyze character density, word count, and reading time entirely in your browser.",
+    icon: <FileText className="h-5 w-5" />,
+    to: "/word-counter",
+    category: "Editor",
+    tags: ["ANALYSIS", "SEO"]
   },
 ];
 
@@ -357,10 +366,34 @@ interface ToolsGridProps {
   onClearFilters?: () => void;
 }
 
+const containerVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.05
+    }
+  }
+};
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 20, scale: 0.95 },
+  visible: { 
+    opacity: 1, 
+    y: 0, 
+    scale: 1,
+    transition: {
+      type: "spring",
+      stiffness: 100,
+      damping: 15
+    }
+  }
+};
+
 const ToolsGrid = ({ searchQuery = "", selectedCategory = null, onClearFilters }: ToolsGridProps) => {
   const filteredTools = useMemo(() => {
-    // 1. Filter by category first if selected
-    const categoryMatched = selectedCategory 
+    // 1. Filter by category first if selected (treat "All" as no filter)
+    const categoryMatched = (selectedCategory && selectedCategory !== "All") 
       ? tools.filter(t => t.category === selectedCategory)
       : tools;
 
@@ -392,24 +425,33 @@ const ToolsGrid = ({ searchQuery = "", selectedCategory = null, onClearFilters }
     <div className="space-y-32 relative">
       {isFiltering ? (
         <section id="search-results" className="animate-in fade-in duration-700">
-          <div className="flex items-center gap-6 mb-16 px-2">
+          <div className="flex items-center gap-6 mb-16 px-4">
             <div className={`p-4 rounded-2xl bg-gradient-to-br from-primary to-accent shadow-lg shadow-black/20`}>
-              <Sparkles className="h-8 w-8 text-white" />
+              {(!selectedCategory && !searchQuery) ? <LayoutGrid className="h-8 w-8 text-white" /> : <Sparkles className="h-8 w-8 text-white" />}
             </div>
             <div className="flex flex-col">
-              <h2 className={`text-4xl md:text-5xl font-black tracking-tighter uppercase italic bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent`}>
-                Search <span className="opacity-80 font-display">Results</span>
+              <h2 className={`text-4xl md:text-5xl font-black tracking-tighter uppercase italic bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent pb-4 pr-12 leading-tight`}>
+                {searchQuery ? "Search" : (selectedCategory || "All")} <span className="opacity-80 font-display">{searchQuery ? "Results" : (selectedCategory ? "Tools" : "Artifacts")}</span>
               </h2>
-              <div className="h-1 w-24 bg-gradient-to-r from-primary/50 to-transparent rounded-full mt-2" />
+              <div className="h-1 w-24 bg-gradient-to-r from-primary/50 to-transparent rounded-full mt-1" />
             </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
+          <motion.div 
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3"
+          >
             {filteredTools.map((tool) => (
-              <div key={tool.to} className="relative group/card-wrapper w-full h-full animate-in zoom-in-95 duration-500">
-                <div className={`absolute -inset-1 bg-gradient-to-tr ${categoryConfig[tool.category]?.gradient || "from-primary/20 to-accent/10"} opacity-0 group-hover/card-wrapper:opacity-50 blur-2xl transition-all duration-700 -z-10 group-hover/card-wrapper:scale-110`} />
+              <motion.div 
+                key={tool.to} 
+                variants={itemVariants}
+                className="relative group/card-wrapper w-full h-full"
+              >
+                <div className={`absolute -inset-1 bg-gradient-to-tr ${categoryConfig[tool.category]?.gradient || "from-primary to-accent"} opacity-0 group-hover/card-wrapper:opacity-50 blur-2xl transition-all duration-700 -z-10 group-hover/card-wrapper:scale-110`} />
                 <ToolCard {...tool} gradient={categoryConfig[tool.category]?.gradient} themeClass={categoryConfig[tool.category]?.themeClass} />
-                <div className="absolute top-3 right-3 flex gap-1.5 pointer-events-none z-50">
+                <div className="absolute top-2 right-2 flex gap-1.5 pointer-events-none z-50">
                   {tool.tags.map(tag => {
                     const tagColor = categoryConfig[tool.category]?.tagColor || '#a78bfa';
                     return (
@@ -423,9 +465,9 @@ const ToolsGrid = ({ searchQuery = "", selectedCategory = null, onClearFilters }
                     );
                   })}
                 </div>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </section>
       ) : (
         categories.map(category => {
@@ -439,7 +481,7 @@ const ToolsGrid = ({ searchQuery = "", selectedCategory = null, onClearFilters }
                   <Icon className="h-8 w-8 text-white" />
                 </div>
                 <div className="flex flex-col">
-                  <h2 className={`text-4xl md:text-5xl font-black tracking-tighter uppercase italic bg-gradient-to-r ${config.gradient} bg-clip-text text-transparent`}>
+                  <h2 className={`text-4xl md:text-5xl font-black tracking-tighter uppercase italic bg-gradient-to-r ${config.gradient} bg-clip-text text-transparent pb-4 pr-12 leading-tight`}>
                     {category.split(' ')[0]} <span className="opacity-80 font-display">{category.split(' ')[1]}</span>
                   </h2>
                   <div className={`h-1 w-24 bg-gradient-to-r ${config.gradient} opacity-50 rounded-full mt-2`} />
@@ -447,14 +489,24 @@ const ToolsGrid = ({ searchQuery = "", selectedCategory = null, onClearFilters }
                 <div className="h-[1px] grow bg-border/40 opacity-20" />
               </div>
 
-              <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
+              <motion.div 
+                variants={containerVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-50px" }}
+                className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3"
+              >
                 {tools
                   .filter(t => t.category === category)
                   .map((tool) => (
-                    <div key={tool.to} className="relative group/card-wrapper w-full h-full">
+                    <motion.div 
+                      key={tool.to} 
+                      variants={itemVariants}
+                      className="relative group/card-wrapper w-full h-full"
+                    >
                       <div className={`absolute -inset-1 bg-gradient-to-tr ${config.gradient} opacity-0 group-hover/card-wrapper:opacity-50 blur-2xl transition-all duration-700 -z-10 group-hover/card-wrapper:scale-110`} />
                       <ToolCard {...tool} gradient={config.gradient} themeClass={config.themeClass} />
-                      <div className="absolute top-3 right-3 flex gap-1.5 pointer-events-none z-50">
+                      <div className="absolute top-1 right-1 flex gap-1.5 pointer-events-none z-50">
                         {tool.tags.map(tag => {
                           const tagColor = config.tagColor;
                           return (
@@ -468,9 +520,9 @@ const ToolsGrid = ({ searchQuery = "", selectedCategory = null, onClearFilters }
                           );
                         })}
                       </div>
-                    </div>
+                    </motion.div>
                   ))}
-              </div>
+              </motion.div>
             </section>
           );
         })

@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
@@ -390,7 +389,7 @@ const UniversalMediaConverter = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground transition-all duration-300 ">
-      <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
+      
 
       <div className="flex justify-center items-start w-full relative">
         <SponsorSidebars position="left" />
@@ -399,7 +398,7 @@ const UniversalMediaConverter = () => {
           <div className="flex flex-col gap-6">
             <header className="flex items-center gap-6 animate-in fade-in slide-in-from-top-4 duration-500">
               <Link to="/">
-                <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border border-white/20 hover:bg-primary/20 transition-all group/back bg-black/60 shadow-2xl">
+                <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border border-primary/20 hover:bg-primary/20 transition-all group/back bg-background/50 backdrop-blur-md shadow-xl">
                   <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
                 </Button>
               </Link>
@@ -453,7 +452,7 @@ const UniversalMediaConverter = () => {
                             onDragOver={(e) => e.preventDefault()}
                             onDrop={(e) => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); }}
                             onClick={() => !processing && inputRef.current?.click()}
-                            className="relative w-full h-[450px] flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/20 text-center cursor-pointer bg-primary/5 hover:bg-primary/10 hover:border-primary/40 hover:scale-[1.02] shadow-inner transition-all duration-300 group/upload"
+                            className="relative w-full h-[450px] flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-primary/20 text-center cursor-pointer bg-primary/5 hover:bg-primary/10 hover:border-primary/40 hover:scale-[1.02] shadow-inner transition-all duration-300 group/upload"
                           >
                             <div className="h-20 w-20 bg-primary/10 rounded-2xl flex items-center justify-center mb-8 shadow-inner group-hover/upload:scale-110 transition-all">
                               <CloudUpload className="h-10 w-10 text-primary" />
@@ -473,7 +472,7 @@ const UniversalMediaConverter = () => {
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -20 }}
                           transition={{ duration: 0.4 }}
-                          className="relative group w-full bg-background/40 p-10 rounded-2xl border border-primary/10 shadow-inner overflow-x-clip min-h-[450px] flex flex-col items-center justify-center studio-gradient backdrop-blur-3xl"
+                          className="relative group w-full bg-background/40 p-10 rounded-xl border border-primary/10 shadow-inner overflow-x-clip min-h-[450px] flex flex-col items-center justify-center studio-gradient backdrop-blur-3xl"
                         >
                           {processing ? (
                             <div className="flex flex-col items-center justify-center text-center animate-in fade-in zoom-in-95 duration-500">

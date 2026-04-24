@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ToolExpertSection from "@/components/ToolExpertSection";
 
@@ -165,7 +164,7 @@ const VideoAspectStudio = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground transition-all duration-300 ">
-      <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
+      
 
       <div className="flex justify-center items-start w-full relative">
         <SponsorSidebars position="left" />
@@ -174,7 +173,7 @@ const VideoAspectStudio = () => {
           <div className="flex flex-col gap-6">
             <header className="flex items-center gap-4 animate-in fade-in slide-in-from-top-4 duration-500">
               <Link to="/">
-                <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border border-white/20 hover:bg-primary/20 transition-all group/back bg-black/60 shadow-2xl">
+                <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border border-primary/20 hover:bg-primary/20 transition-all group/back bg-background/50 backdrop-blur-md shadow-xl">
                   <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
                 </Button>
               </Link>
@@ -197,7 +196,7 @@ const VideoAspectStudio = () => {
                       onDragOver={(e) => e.preventDefault()}
                       onDrop={(e) => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); }}
                       onClick={() => inputRef.current?.click()}
-                      className="relative w-full h-[450px] flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/20 text-center transition-all cursor-pointer bg-primary/5 hover:bg-primary/10 hover:border-primary/40 hover:scale-[1.02] shadow-inner duration-300 group/upload"
+                      className="relative w-full h-[450px] flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-primary/20 text-center transition-all cursor-pointer bg-primary/5 hover:bg-primary/10 hover:border-primary/40 hover:scale-[1.02] shadow-inner duration-300 group/upload"
                     >
                       <div className="h-16 w-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-6 shadow-inner group-hover:scale-110 transition-transform">
                         <CloudUpload className="h-10 w-10 text-primary" />
@@ -215,7 +214,7 @@ const VideoAspectStudio = () => {
                     <Card className="glass-morphism border-primary/10 rounded-2xl overflow-x-clip bg-black shadow-2xl relative border-border/50 w-full max-w-4xl flex items-center justify-center p-3 min-h-[40vh]">
                       <div className="relative w-full h-full flex items-center justify-center cursor-crosshair active:cursor-grabbing">
                         {/* Reset Stage Button - Integrated with Frame Container */}
-                        <div className="absolute top-8 right-8 z-20 flex gap-2 p-2 bg-background/40 backdrop-blur-md rounded-2xl border border-white/10 shadow-2xl animate-in fade-in slide-in-from-top-4 duration-500">
+                        <div className="absolute top-8 right-8 z-20 flex gap-2 p-2 bg-background/40 backdrop-blur-md rounded-xl border border-white/10 shadow-2xl animate-in fade-in slide-in-from-top-4 duration-500">
                           <Button
                             onClick={() => { setFile(null); setVideoUrl(null); }}
                             variant="ghost"
@@ -320,7 +319,7 @@ const VideoAspectStudio = () => {
                             disabled={processing}
                             onClick={() => setRatioId(r.id)}
                             className={cn(
-                              "p-3 rounded-2xl border-2 transition-all text-left group scale-active",
+                              "p-3 rounded-xl border-2 transition-all text-left group scale-active",
                               ratioId === r.id ? 'bg-primary/10 border-primary shadow-xl shadow-primary/10' : 'bg-background/40 border-border/20 text-muted-foreground hover:bg-muted/10',
                               processing && "opacity-50 cursor-not-allowed"
                             )}
@@ -339,7 +338,7 @@ const VideoAspectStudio = () => {
                           disabled={processing}
                           onClick={() => setMode("pad")}
                           className={cn(
-                            "flex-1 p-3 rounded-2xl border-2 transition-all flex flex-col items-center gap-2 group scale-active",
+                            "flex-1 p-3 rounded-xl border-2 transition-all flex flex-col items-center gap-2 group scale-active",
                             mode === "pad" ? 'bg-primary/10 border-primary text-primary shadow-xl shadow-primary/10' : 'bg-background/40 border-border/20 text-muted-foreground hover:bg-muted/10',
                             processing && "opacity-50 cursor-not-allowed"
                           )}
@@ -351,7 +350,7 @@ const VideoAspectStudio = () => {
                           disabled={processing}
                           onClick={() => setMode("crop")}
                           className={cn(
-                            "flex-1 p-3 rounded-2xl border-2 transition-all flex flex-col items-center gap-2 group scale-active",
+                            "flex-1 p-3 rounded-xl border-2 transition-all flex flex-col items-center gap-2 group scale-active",
                             mode === "crop" ? 'bg-primary/10 border-primary text-primary shadow-xl shadow-primary/10' : 'bg-background/40 border-border/20 text-muted-foreground hover:bg-muted/10',
                             processing && "opacity-50 cursor-not-allowed"
                           )}
@@ -370,7 +369,7 @@ const VideoAspectStudio = () => {
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 1.05 }}
-                            className="bg-background/50 p-6 rounded-2xl border border-primary/20 backdrop-blur-xl shadow-2xl"
+                            className="bg-background/50 p-6 rounded-xl border border-primary/20 backdrop-blur-xl shadow-2xl"
                           >
                             <div className="flex flex-col items-center gap-6 text-center">
                               <div className="h-14 w-14 bg-primary/20 rounded-2xl flex items-center justify-center animate-pulse shadow-glow">

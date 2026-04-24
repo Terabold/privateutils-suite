@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ToolExpertSection from "@/components/ToolExpertSection";
 
@@ -300,7 +299,7 @@ const PiiMasker = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground theme-privacy transition-all duration-500 overflow-x-clip">
-      <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
+      
 
       <div className="flex justify-center items-start w-full relative overflow-x-clip px-4">
         <SponsorSidebars position="left" className="shrink-0" />
@@ -310,7 +309,7 @@ const PiiMasker = () => {
             <header className="flex items-center justify-between flex-wrap gap-8">
               <div className="flex items-center gap-6">
                 <Link to="/">
-                  <Button aria-label="Go back to home" variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-border/50 hover:bg-primary/5 transition-all group/back">
+                  <Button aria-label="Go back to home" variant="outline" size="icon" className="h-12 w-12 rounded-xl border border-border/50 hover:bg-primary/5 transition-all group/back">
                     <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
                   </Button>
                 </Link>
@@ -372,7 +371,7 @@ const PiiMasker = () => {
                         </div>
 
                         {/* Mode Toggles (Blur / Blackout) */}
-                        <div className="flex bg-black/40 p-1 lg:p-1.5 rounded-2xl border border-white/10 shrink-0 shadow-inner group/mode">
+                        <div className="flex bg-black/40 p-1 lg:p-1.5 rounded-xl border border-white/10 shrink-0 shadow-inner group/mode">
                           {(["blur", "black"] as const).map(s => (
                             <Button
                               key={s}
@@ -390,7 +389,7 @@ const PiiMasker = () => {
                       {/* Internal Row 2: Spatial Navigation & Actions */}
                       <div className="flex flex-col sm:flex-row items-center gap-4 lg:gap-8 flex-wrap sm:flex-nowrap w-full lg:w-auto justify-center lg:justify-end shrink-0 pt-2 border-t sm:border-t-0 border-white/10">
                         {/* Zoom Group */}
-                        <div className="flex items-center gap-1 lg:gap-2 shrink-0 bg-background/40 p-1 rounded-2xl border border-white/5 mr-auto">
+                        <div className="flex items-center gap-1 lg:gap-2 shrink-0 bg-background/40 p-1 rounded-xl border border-white/5 mr-auto">
                           <Button
                             aria-label="Zoom out"
                             size="icon"
@@ -484,7 +483,7 @@ const PiiMasker = () => {
                       onDragOver={(e) => e.preventDefault()}
                       onDrop={(e) => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); }}
                       onClick={() => !processing && inputRef.current?.click()}
-                      className="relative w-full flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/20 text-center transition-all cursor-pointer py-40 bg-background/50 hover:border-primary/40 hover:bg-primary/5 shadow-inner group/dropzone"
+                      className="relative w-full flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-primary/20 text-center transition-all cursor-pointer py-40 bg-background/50 hover:border-primary/40 hover:bg-primary/5 shadow-inner group/dropzone"
                     >
                       <div className="h-24 w-24 bg-primary/10 rounded-3xl flex items-center justify-center mb-10 shadow-inner group-hover/dropzone:scale-110 transition-transform">
                         <CloudUpload className="h-12 w-12 text-primary" />

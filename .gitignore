@@ -31,3 +31,4 @@ dist-ssr
 dev.bat
 
 package-lock.json
+verify.js

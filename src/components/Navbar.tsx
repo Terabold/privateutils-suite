@@ -1,5 +1,7 @@
 import { useState, useEffect, useMemo, useRef } from "react";
+import { useDarkMode } from "@/hooks/useDarkMode";
 import { Moon, Sun, Search, X, Video, ImageIcon, Music, ShieldCheck, Wrench, Sparkles, Command, ChevronRight, Terminal, Type, Zap, Coffee, BookOpen, HelpCircle, MessageSquare } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -27,8 +29,8 @@ interface NavbarProps {
 }
 
 const Navbar = ({
-  darkMode,
-  onToggleDark,
+  darkMode: propDarkMode,
+  onToggleDark: propOnToggleDark,
   searchQuery,
   setSearchQuery,
   selectedCategory,
@@ -36,9 +38,14 @@ const Navbar = ({
   categories = [],
   activeSection
 }: NavbarProps) => {
-  const isHomePage = !!setSearchQuery;
   const navigate = useNavigate();
   const location = useLocation();
+  const { darkMode: hookDarkMode, toggleDark: hookToggleDark } = useDarkMode();
+
+  const darkMode = propDarkMode !== undefined ? propDarkMode : hookDarkMode;
+  const onToggleDark = propOnToggleDark || hookToggleDark;
+
+  const isHomePage = location.pathname === "/" || !!setSearchQuery;
   const [toolSearchQuery, setToolSearchQuery] = useState("");
   const [showSearchOverlay, setShowSearchOverlay] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
@@ -99,9 +106,9 @@ const Navbar = ({
   // Removed redundant SEO logic - now handled by SEOHead.tsx component
 
   return (
-    <header className="sticky top-0 z-[100] w-full transition-theme shadow-lg shadow-black/20 overflow-visible">
+    <header className="global-navbar sticky top-0 z-[100] w-full transition-theme shadow-lg shadow-black/20 overflow-visible">
       {/* 0. Authority Ribbon - Professional SaaS Tier (Desktop Only) */}
-      <div className="hidden lg:flex w-full bg-zinc-950 border-b border-white/5 py-1.5 px-8">
+      <div className="hidden lg:flex w-full bg-zinc-950/80 backdrop-blur-md border-b border-white/5 py-1.5 px-8">
         <div className="container mx-auto max-w-[1500px] flex items-center justify-between">
           <div className="flex items-center gap-6">
             <Link to="/about" className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground hover:text-primary transition-colors no-underline">The Mission</Link>
@@ -218,33 +225,41 @@ const Navbar = ({
                   }}
                   className="h-11 w-full pl-11 pr-10 text-sm font-semibold bg-zinc-100 dark:bg-white/5 border-zinc-200/50 dark:border-white/5 text-muted-foreground placeholder:text-muted-foreground/40 rounded-xl focus-visible:ring-primary/20 transition-theme shadow-sm"
                 />
-                {showSearchOverlay && filteredSearchResults.length > 0 && (
-                  <div className="absolute top-12 left-0 right-0 bg-card/95 backdrop-blur-2xl border border-white/10 rounded-2xl overflow-hidden shadow-2xl animate-in fade-in slide-in-from-top-2 duration-300 z-[110]">
-                    <div className="p-2 max-h-[400px] overflow-y-auto custom-scrollbar">
-                      {filteredSearchResults.map(tool => (
-                        <Link
-                          key={tool.to}
-                          to={tool.to}
-                          onClick={() => setShowSearchOverlay(false)}
-                          className="w-full flex items-center gap-4 p-3 rounded-xl hover:bg-muted/50 transition-theme text-left group/result border border-transparent hover:border-white/5 no-underline"
-                        >
-                          <div
-                            className={`h-9 w-9 rounded-xl flex items-center justify-center group-hover/result:scale-110 transition-transform shadow-lg shadow-black/10 flex-shrink-0 bg-gradient-to-br ${categoryConfig[tool.category]?.gradient || "from-primary to-accent"}`}
+                <AnimatePresence>
+                  {showSearchOverlay && filteredSearchResults.length > 0 && (
+                    <motion.div 
+                      initial={{ opacity: 0, y: 10, scale: 0.98 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.98 }}
+                      transition={{ duration: 0.2 }}
+                      className="absolute top-12 left-0 right-0 bg-card/95 backdrop-blur-2xl border border-white/10 rounded-2xl overflow-hidden shadow-2xl z-[110]"
+                    >
+                      <div className="p-2 max-h-[400px] overflow-y-auto custom-scrollbar">
+                        {filteredSearchResults.map(tool => (
+                          <Link
+                            key={tool.to}
+                            to={tool.to}
+                            onClick={() => setShowSearchOverlay(false)}
+                            className="w-full flex items-center gap-4 p-3 rounded-xl hover:bg-muted/50 transition-theme text-left group/result border border-transparent hover:border-white/5 no-underline"
                           >
-                            <div className="h-5 w-5 flex items-center justify-center text-white">
-                              {tool.icon}
+                            <div
+                              className={`h-9 w-9 rounded-xl flex items-center justify-center group-hover/result:scale-110 transition-transform shadow-lg shadow-black/10 flex-shrink-0 bg-gradient-to-br ${categoryConfig[tool.category]?.gradient || "from-primary to-accent"}`}
+                            >
+                              <div className="h-5 w-5 flex items-center justify-center text-white">
+                                {tool.icon}
+                              </div>
                             </div>
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm font-bold text-foreground tracking-tight">{tool.title}</p>
-                            <p className="text-xs text-muted-foreground truncate font-medium italic">{tool.description}</p>
-                          </div>
-                          <ChevronRight className="h-4 w-4 text-muted-foreground group-hover/result:text-foreground transition-theme" />
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-bold text-foreground tracking-tight">{tool.title}</p>
+                              <p className="text-xs text-muted-foreground truncate font-medium italic">{tool.description}</p>
+                            </div>
+                            <ChevronRight className="h-4 w-4 text-muted-foreground group-hover/result:text-foreground transition-theme" />
+                          </Link>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             </div>
 
@@ -273,7 +288,7 @@ const Navbar = ({
             </div>
           </div>
 
-          {/* Tier 2: Utility Row (Correct Category Visibility) */}
+          {/* Tier 2: Utility Row (Category Visibility for Tool Pages) */}
           <div className="flex flex-col gap-2 pb-1.5 transition-all overflow-visible">
             {/* Mobile-Only Search Bar */}
             <div className="lg:hidden relative group w-full max-w-sm mx-auto">
@@ -300,9 +315,9 @@ const Navbar = ({
               />
             </div>
 
-            {/* Category Central Hub (No Clipping on Mobile) */}
-            <div className="relative w-full overflow-x-auto no-scrollbar scroll-smooth flex justify-start md:justify-center">
-              <div className="flex flex-nowrap items-center gap-[clamp(1px,0.8vw,8px)] px-4 py-1.5 transition-all w-max md:w-auto">
+            {/* Category Central Hub (Optimized for Mobile Visibility) */}
+            <div className="relative w-full flex justify-center">
+              <div className="flex flex-wrap items-center justify-center gap-1 lg:gap-1.5 px-2 py-1 transition-all max-w-[95vw]">
                 {Object.keys(categoryConfig).filter(k => k !== "All").map((category) => {
                   const theme = categoryConfig[category];
                   const Icon = theme.icon;
@@ -318,13 +333,18 @@ const Navbar = ({
                             "--border-glow": `hsl(${theme.hsl} / 0.2)`,
                             backgroundColor: isActive ? `hsl(${theme.hsl})` : undefined
                           } as React.CSSProperties}
-                          className={`px-[clamp(4px,1.2vw,14px)] py-1.5 rounded-xl font-black text-[clamp(7px,2vw,11px)] uppercase tracking-tighter lg:tracking-[0.05em] transition-all flex items-center gap-[clamp(1px,0.8vw,8px)] border whitespace-nowrap shrink transition-theme h-7.5 lg:h-9 ${isActive
-                            ? "text-white shadow-lg scale-105 border-white/20"
-                            : "text-muted-foreground hover:text-foreground bg-zinc-100 dark:bg-white/5 border-white/5 hover:border-[var(--border-glow)] hover:shadow-[0_0_20px_var(--glow-color)] shadow-sm"
+                          className={`px-2 lg:px-3 py-1 rounded-lg font-black text-[8px] lg:text-[10px] uppercase tracking-tighter transition-all flex items-center gap-1 border whitespace-nowrap transition-theme h-6.5 lg:h-8 ${isActive
+                            ? "text-white shadow-md scale-105 border-white/20"
+                            : "text-muted-foreground hover:text-foreground bg-zinc-100 dark:bg-white/5 border-white/5 hover:border-[var(--border-glow)] hover:shadow-[0_0_15px_var(--glow-color)] shadow-sm"
                             }`}
+                          onClick={() => {
+                            if (isHomePage && setSelectedCategory) {
+                              setSelectedCategory(category);
+                            }
+                          }}
                         >
                           <Icon className="h-[clamp(9px,1.5vw,14px)] w-[clamp(9px,1.5vw,14px)]" style={{ color: isActive ? 'white' : `hsl(${theme.hsl})` }} />
-                          <span className="leading-none">{category.split(' ')[0]}</span>
+                          <span className="leading-none">{category}</span>
                         </button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="center" className="w-[320px] bg-card/95 backdrop-blur-2xl border-white/10 rounded-2xl p-2 z-[110]">

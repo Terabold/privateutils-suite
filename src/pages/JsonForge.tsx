@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
@@ -272,7 +271,7 @@ const JsonForge = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground transition-all duration-500 ">
-      <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
+      
 
       <div className="flex justify-center items-start w-full relative">
         <SponsorSidebars position="left" />
@@ -281,7 +280,7 @@ const JsonForge = () => {
           <div className="flex flex-col gap-6">
             <header className="flex items-center gap-6 animate-in fade-in slide-in-from-top-4 duration-500">
               <Link to="/">
-                <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border border-border dark:border-white/20 hover:bg-primary/10 dark:hover:bg-primary/20 transition-all group/back bg-background/80 dark:bg-black/60 shadow-xl dark:shadow-2xl">
+                <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border border-border dark:border-primary/20 hover:bg-primary/10 dark:hover:bg-primary/20 transition-all group/back bg-background/80 dark:bg-black/60 shadow-xl dark:shadow-2xl">
                   <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
                 </Button>
               </Link>
@@ -457,18 +456,18 @@ const JsonForge = () => {
                   </div>
                   <CardContent className="p-8 space-y-10">
                     <div className="grid grid-cols-2 gap-4">
-                      <div className="bg-muted/50 dark:bg-black/40 p-5 rounded-2xl border border-border dark:border-white/5 shadow-inner">
+                      <div className="bg-muted/50 dark:bg-black/40 p-5 rounded-xl border border-border dark:border-white/5 shadow-inner">
                         <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground dark:opacity-40 mb-1 leading-none">Characters</p>
                         <p className="text-2xl font-black italic tracking-tighter text-foreground dark:text-white">{input.length}</p>
                       </div>
-                      <div className="bg-muted/50 dark:bg-black/40 p-5 rounded-2xl border border-border dark:border-white/5 shadow-inner">
+                      <div className="bg-muted/50 dark:bg-black/40 p-5 rounded-xl border border-border dark:border-white/5 shadow-inner">
                         <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground dark:opacity-40 mb-1 leading-none">Lines</p>
                         <p className="text-2xl font-black italic tracking-tighter text-foreground dark:text-white">{input.split('\n').length}</p>
                       </div>
                     </div>
 
                     <div className="space-y-4">
-                      <div className="flex items-center justify-between p-4 bg-muted/30 dark:bg-background/20 rounded-2xl border border-border dark:border-white/5 shadow-sm">
+                      <div className="flex items-center justify-between p-4 bg-muted/30 dark:bg-background/20 rounded-xl border border-border dark:border-white/5 shadow-sm">
                         <div className="space-y-0.5">
                           <Label className="text-xs font-black uppercase tracking-widest flex items-center gap-2 text-foreground dark:text-white italic"><Wand2 className="h-3.5 w-3.5" /> Auto-Prettify</Label>
                           <p className="text-[9px] text-muted-foreground uppercase font-black dark:opacity-30">Format while typing</p>

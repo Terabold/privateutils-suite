@@ -4,7 +4,6 @@ import { ArrowLeft, RefreshCw, Download, Play, Pause, Zap, CloudUpload, Speaker,
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
@@ -245,7 +244,7 @@ const BassBooster = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground transition-all duration-500 ">
-      <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
+      
 
       <div className="flex justify-center items-start w-full relative">
         <SponsorSidebars position="left" />
@@ -254,7 +253,7 @@ const BassBooster = () => {
           <div className="flex flex-col gap-10">
             <header className="flex items-center gap-6 animate-in fade-in slide-in-from-top-4 duration-500">
               <Link to="/">
-                <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-white/20 hover:bg-primary/20 transition-all group/back bg-black/60 shadow-2xl">
+                <Button variant="outline" size="icon" className="h-12 w-12 rounded-xl border border-primary/20 hover:bg-primary/20 transition-all group/back bg-background/50 backdrop-blur-md shadow-xl">
                   <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
                 </Button>
               </Link>
@@ -281,7 +280,7 @@ const BassBooster = () => {
                       onDragOver={(e) => e.preventDefault()}
                       onDrop={(e) => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); }}
                       onClick={() => !processing && inputRef.current?.click()}
-                      className="relative w-full flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/20 text-center transition-all cursor-pointer py-32 bg-primary/5 hover:bg-primary/10 hover:border-primary/40 hover:scale-[1.02] shadow-inner duration-300"
+                      className="relative w-full flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-primary/20 text-center transition-all cursor-pointer py-32 bg-primary/5 hover:bg-primary/10 hover:border-primary/40 hover:scale-[1.02] shadow-inner duration-300"
                     >
                       <div className="h-24 w-24 bg-primary/10 rounded-2xl flex items-center justify-center mb-8 shadow-inner group-hover:scale-110 transition-transform">
                         <Speaker className="h-12 w-12 text-primary" />
@@ -362,7 +361,7 @@ const BassBooster = () => {
 
                           <div className="pt-6 border-t border-primary/10 flex flex-col items-center gap-6">
                             <div
-                              className="w-full h-32 bg-background/40 rounded-2xl border border-border/50 shadow-inner flex items-center justify-center overflow-x-clip relative group/waveform cursor-pointer"
+                              className="w-full h-32 bg-background/40 rounded-xl border border-border/50 shadow-inner flex items-center justify-center overflow-x-clip relative group/waveform cursor-pointer"
                               onClick={(e) => {
                                 if (!audioBuffer) return;
                                 const rect = e.currentTarget.getBoundingClientRect();

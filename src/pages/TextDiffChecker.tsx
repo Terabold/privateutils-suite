@@ -11,7 +11,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Switch } from "@/components/ui/switch"; // assuming you have this from shadcn
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
@@ -146,7 +145,7 @@ const TextDiffChecker = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground transition-all duration-500">
-      <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
+      
 
       <div className="flex justify-center items-start w-full relative">
         <SponsorSidebars position="left" />
@@ -156,7 +155,7 @@ const TextDiffChecker = () => {
             <header className="flex items-center justify-between flex-wrap gap-8">
               <div className="flex items-center gap-6">
                 <Link to="/">
-                  <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-border dark:border-white/20 hover:bg-primary/10 dark:hover:bg-primary/20 transition-all group/back bg-background/80 dark:bg-black/60 shadow-xl dark:shadow-2xl">
+                  <Button variant="outline" size="icon" className="h-12 w-12 rounded-xl border border-border dark:border-primary/20 hover:bg-primary/10 dark:hover:bg-primary/20 transition-all group/back bg-background/80 dark:bg-black/60 shadow-xl dark:shadow-2xl">
                     <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
                   </Button>
                 </Link>

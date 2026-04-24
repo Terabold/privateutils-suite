@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { ArrowLeft, Zap, ClipboardCopy, Download, FileCheck, ShieldCheck, History } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
@@ -71,7 +70,7 @@ const QuickClipboardHub = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground transition-all duration-500">
-      <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
+      
 
       <div className="flex justify-center items-start w-full relative">
         <SponsorSidebars position="left" />
@@ -81,7 +80,7 @@ const QuickClipboardHub = () => {
             <header className="flex items-center justify-between flex-wrap gap-8">
               <div className="flex items-center gap-6">
                 <Link to="/">
-                  <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-border/50 hover:bg-primary/5 transition-all group/back">
+                  <Button variant="outline" size="icon" className="h-12 w-12 rounded-xl border border-border/50 hover:bg-primary/5 transition-all group/back">
                     <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
                   </Button>
                 </Link>
@@ -152,7 +151,7 @@ const QuickClipboardHub = () => {
                       </p>
                     </div>
 
-                    <div className="mt-12 flex items-center gap-3 bg-primary/5 px-6 py-3 rounded-2xl border border-primary/10 animate-pulse">
+                    <div className="mt-12 flex items-center gap-3 bg-primary/5 px-6 py-3 rounded-xl border border-primary/10 animate-pulse">
                       <Zap className="h-4 w-4 text-primary" />
                       <span className="text-[10px] font-black uppercase tracking-widest text-primary">Live Listener Active</span>
                     </div>
@@ -210,7 +209,7 @@ const QuickClipboardHub = () => {
                   </CardContent>
                 </Card>
 
-                <div className="px-6 py-4 bg-muted/5 rounded-2xl border border-border/50">
+                <div className="px-6 py-4 bg-muted/5 rounded-xl border border-border/50">
 
                 </div>
               </div>

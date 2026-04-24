@@ -4,7 +4,6 @@ import { ArrowLeft, Copy, Check, Ruler, Weight, Thermometer, Zap, ChevronDown } 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
@@ -84,7 +83,7 @@ const UnitConverter = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground transition-colors duration-500 ">
-      <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
+      
 
       <div className="flex justify-center items-start w-full relative">
         <SponsorSidebars position="left" />
@@ -93,7 +92,7 @@ const UnitConverter = () => {
           <div className="flex flex-col gap-10">
             <header className="flex items-center gap-6">
               <Link to="/">
-                <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-border/50 hover:bg-primary/5 transition-all group/back">
+                <Button variant="outline" size="icon" className="h-12 w-12 rounded-xl border border-border/50 hover:bg-primary/5 transition-all group/back">
                   <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
                 </Button>
               </Link>
@@ -119,7 +118,7 @@ const UnitConverter = () => {
                     <button
                       key={c.id}
                       onClick={() => { setCat(c.id); setFromUnit(c.units[0].id); }}
-                      className={`flex items-center gap-3 px-6 py-3 rounded-2xl border transition-all font-black uppercase tracking-widest text-[10px] ${cat === c.id ? 'bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/20 scale-[1.05]' : 'bg-muted/5 border-border/30 text-muted-foreground hover:bg-primary/5 hover:text-foreground'
+                      className={`flex items-center gap-3 px-6 py-3 rounded-xl border transition-all font-black uppercase tracking-widest text-[10px] ${cat === c.id ? 'bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/20 scale-[1.05]' : 'bg-muted/5 border-border/30 text-muted-foreground hover:bg-primary/5 hover:text-foreground'
                         }`}
                     >
                       {c.icon}
@@ -187,7 +186,7 @@ const UnitConverter = () => {
                           </div>
                           <button
                             onClick={() => copy(String(result), u.id)}
-                            className={`h-11 w-11 flex items-center justify-center shrink-0 rounded-2xl border transition-all duration-300 shadow-xl relative z-10 ${copied === u.id ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-500 shadow-emerald-500/20' : 'border-primary/40 bg-zinc-950/60 text-white hover:bg-primary hover:text-white shadow-primary/5 hover:scale-110'}`}
+                            className={`h-11 w-11 flex items-center justify-center shrink-0 rounded-xl border transition-all duration-300 shadow-xl relative z-10 ${copied === u.id ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-500 shadow-emerald-500/20' : 'border-primary/40 bg-zinc-950/60 text-white hover:bg-primary hover:text-white shadow-primary/5 hover:scale-110'}`}
                           >
                             {copied === u.id ? <Check className="h-5 w-5" /> : <Copy className="h-5 w-5" />}
                           </button>

@@ -23,7 +23,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
@@ -266,7 +265,7 @@ const ImageToPdf = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground transition-all duration-500 overflow-x-clip">
-      <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
+      
 
       <div className="flex justify-center items-start w-full relative px-4 overflow-x-clip">
         <SponsorSidebars position="left" className="shrink-0" />
@@ -525,7 +524,7 @@ const ImageToPdf = () => {
                   </div>
                 </div>
                 <div className="flex items-center gap-6">
-                  <div className="flex bg-background/60 p-2 rounded-2xl border border-primary/20 shadow-inner">
+                  <div className="flex bg-background/60 p-2 rounded-xl border border-primary/20 shadow-inner">
                     <Button variant="ghost" onClick={handleSwap} disabled={images.length < 2} className="rounded-xl h-14 px-10 text-[11px] font-black uppercase tracking-widest text-primary hover:bg-primary/20 transition-all italic">
                       Invert Chain
                     </Button>

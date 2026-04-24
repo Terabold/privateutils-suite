@@ -8,7 +8,6 @@ import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ToolExpertSection from "@/components/ToolExpertSection";
 
@@ -442,7 +441,7 @@ const SpriteStudio = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground transition-colors duration-500">
-      <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
+      
 
       <div className="flex justify-center items-start w-full relative">
         <SponsorSidebars position="left" />
@@ -451,7 +450,7 @@ const SpriteStudio = () => {
           <div className="flex flex-col gap-6">
             <header className="flex items-center gap-4 animate-in fade-in slide-in-from-top-4 duration-500">
               <Link to="/">
-                <Button aria-label="Go back to home" variant="outline" size="icon" className="h-10 w-10 rounded-xl border border-white/20 hover:bg-primary/20 transition-all group/back bg-black/60 shadow-2xl">
+                <Button aria-label="Go back to home" variant="outline" size="icon" className="h-10 w-10 rounded-xl border border-primary/20 hover:bg-primary/20 transition-all group/back bg-background/50 backdrop-blur-md shadow-xl">
                   <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
                 </Button>
               </Link>
@@ -546,7 +545,7 @@ const SpriteStudio = () => {
                       onDragOver={(e) => e.preventDefault()}
                       onDrop={(e) => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); }}
                       onClick={() => inputRef.current?.click()}
-                      className="absolute inset-8 flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/20 text-center transition-all cursor-pointer bg-primary/5 hover:bg-primary/10 hover:border-primary/40 hover:scale-[1.02] shadow-inner duration-300 group/upload"
+                      className="absolute inset-8 flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-primary/20 text-center transition-all cursor-pointer bg-primary/5 hover:bg-primary/10 hover:border-primary/40 hover:scale-[1.02] shadow-inner duration-300 group/upload"
                     >
                       <div className="flex flex-col items-center justify-center space-y-6">
                         <div className="h-20 w-20 bg-primary/10 rounded-2xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">

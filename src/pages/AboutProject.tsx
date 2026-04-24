@@ -1,7 +1,6 @@
 import { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, ShieldCheck, Zap, Lock, Cpu, Database, Network, ServerOff, Globe, Blocks, Code2 } from "lucide-react";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SponsorSidebars from "@/components/SponsorSidebars";
 import StickyAnchorAd from "@/components/StickyAnchorAd";
@@ -20,7 +19,7 @@ const AboutProject = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground transition-all duration-500">
-      <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
+      
 
       <div className="flex justify-center items-start w-full relative">
         <SponsorSidebars position="left" />

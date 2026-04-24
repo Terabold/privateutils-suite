@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
@@ -223,7 +222,7 @@ const ImageColorExtractor = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground transition-all duration-500 ">
-      <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
+      
 
       <div className="flex justify-center items-start w-full relative">
         <SponsorSidebars position="left" />
@@ -232,7 +231,7 @@ const ImageColorExtractor = () => {
           <div className="flex flex-col gap-10">
             <header className="flex items-center gap-6 animate-in fade-in slide-in-from-top-4 duration-500">
               <Link to="/">
-                <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-white/20 hover:bg-primary/20 transition-all group/back bg-black/60 shadow-2xl">
+                <Button variant="outline" size="icon" className="h-12 w-12 rounded-xl border border-primary/20 hover:bg-primary/20 transition-all group/back bg-background/50 backdrop-blur-md shadow-xl">
                   <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
                 </Button>
               </Link>
@@ -303,7 +302,7 @@ const ImageColorExtractor = () => {
                                {/* Animated Warning Icon */}
                                <div className="relative">
                                  <div className="absolute inset-0 bg-primary/20 rounded-full animate-ping opacity-75"></div>
-                                 <div className="relative h-16 w-16 rounded-2xl border-2 border-primary/50 flex items-center justify-center bg-primary/10 text-primary shadow-[0_0_30px_rgba(var(--primary-rgb),0.15)]">
+                                 <div className="relative h-16 w-16 rounded-xl border-2 border-primary/50 flex items-center justify-center bg-primary/10 text-primary shadow-[0_0_30px_rgba(var(--primary-rgb),0.15)]">
                                    <ShieldAlert className="h-8 w-8 animate-[pulse_2s_ease-in-out_infinite]" />
                                  </div>
                                </div>
@@ -436,7 +435,7 @@ const ImageColorExtractor = () => {
                           <button
                             key={i}
                             onClick={() => { setColor(c); navigator.clipboard.writeText(c.hex); toast.success("Copied!"); }}
-                            className="group relative aspect-square rounded-2xl border border-white/5 shadow-md overflow-x-clip transition-transform hover:scale-110 active:scale-95"
+                            className="group relative aspect-square rounded-xl border border-white/5 shadow-md overflow-x-clip transition-transform hover:scale-110 active:scale-95"
                             style={{ backgroundColor: c.hex }}
                           >
                             <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center">

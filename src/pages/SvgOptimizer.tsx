@@ -12,7 +12,6 @@ import { Card, CardContent } from "@/components/ui/card";
 
 import { Progress } from "@/components/ui/progress";
 
-import Navbar from "@/components/Navbar";
 
 import Footer from "@/components/Footer";
 
@@ -262,7 +261,7 @@ const SvgOptimizer = () => {
 
     <div className="min-h-screen bg-background text-foreground transition-all duration-500 ">
 
-      <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
+      
 
 
 
@@ -282,7 +281,7 @@ const SvgOptimizer = () => {
 
                 <Link to="/">
 
-                  <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-border dark:border-white/20 hover:bg-primary/10 dark:hover:bg-primary/20 transition-all group/back bg-background/80 dark:bg-black/60 shadow-xl dark:shadow-2xl">
+                  <Button variant="outline" size="icon" className="h-12 w-12 rounded-xl border border-border dark:border-primary/20 hover:bg-primary/10 dark:hover:bg-primary/20 transition-all group/back bg-background/80 dark:bg-black/60 shadow-xl dark:shadow-2xl">
 
                     <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
 
@@ -428,7 +427,7 @@ const SvgOptimizer = () => {
 
                                 <div className="absolute inset-0 bg-primary/20 rounded-full animate-ping opacity-75"></div>
 
-                                <div className="relative h-16 w-16 rounded-2xl border-2 border-primary/50 flex items-center justify-center bg-primary/10 text-primary shadow-[0_0_30px_rgba(var(--primary-rgb),0.15)]">
+                                <div className="relative h-16 w-16 rounded-xl border-2 border-primary/50 flex items-center justify-center bg-primary/10 text-primary shadow-[0_0_30px_rgba(var(--primary-rgb),0.15)]">
 
                                   <ShieldAlert className="h-8 w-8 animate-[pulse_2s_ease-in-out_infinite]" />
 

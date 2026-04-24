@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { ArrowLeft, Copy, Check, Image as ImageIcon, FileCode, Zap, Trash2, ShieldCheck, FileStack, Activity } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
@@ -55,7 +54,7 @@ const Base64Image = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground transition-all duration-500 ">
-      <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
+      
 
       <div className="flex justify-center items-start w-full relative">
         <SponsorSidebars position="left" />
@@ -64,7 +63,7 @@ const Base64Image = () => {
           <div className="flex flex-col gap-6">
             <header className="flex items-center gap-6 animate-in fade-in slide-in-from-top-4 duration-500">
               <Link to="/">
-                <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border border-white/20 hover:bg-primary/20 transition-all group/back bg-black/60 shadow-2xl">
+                <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border border-primary/20 hover:bg-primary/20 transition-all group/back bg-background/50 backdrop-blur-md shadow-xl">
                   <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
                 </Button>
               </Link>
@@ -197,12 +196,12 @@ const Base64Image = () => {
                   </div>
                   <CardContent className="p-8 space-y-8">
                     {fileName && (
-                      <div className="bg-background/20 p-5 rounded-2xl border border-primary/10">
+                      <div className="bg-background/20 p-5 rounded-xl border border-primary/10">
                         <p className="text-[10px] font-black uppercase tracking-widest opacity-40 mb-2 leading-none">Source Label</p>
                         <p className="text-xs font-bold truncate text-primary">{fileName}</p>
                       </div>
                     )}
-                    <div className="bg-background/20 p-5 rounded-2xl border border-primary/10">
+                    <div className="bg-background/20 p-5 rounded-xl border border-primary/10">
                       <p className="text-[10px] font-black uppercase tracking-widest opacity-40 mb-2 leading-none">String Weight</p>
                       <p className="text-3xl font-black italic tracking-tighter text-primary">{(base64.length / 1024).toFixed(1)} KB</p>
                     </div>

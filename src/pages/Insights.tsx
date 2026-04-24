@@ -1,5 +1,4 @@
 import { BookOpen, Cpu, MessageSquare, ShieldCheck, Zap, Lock, Terminal, Globe, Code2 } from "lucide-react";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SponsorSidebars from "@/components/SponsorSidebars";
 import StickyAnchorAd from "@/components/StickyAnchorAd";

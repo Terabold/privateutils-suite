@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
@@ -392,7 +391,7 @@ const SvgToImage = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground transition-all duration-500">
-      <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
+      
 
       <div className="flex justify-center items-start w-full relative">
         <SponsorSidebars position="left" />
@@ -402,7 +401,7 @@ const SvgToImage = () => {
             <header className="flex items-center justify-between flex-wrap gap-8">
               <div className="flex items-center gap-6">
                 <Link to="/">
-                  <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-border dark:border-white/20 hover:bg-primary/10 dark:hover:bg-primary/20 transition-all group/back bg-background/80 dark:bg-black/60 shadow-xl dark:shadow-2xl">
+                  <Button variant="outline" size="icon" className="h-12 w-12 rounded-xl border border-border dark:border-primary/20 hover:bg-primary/10 dark:hover:bg-primary/20 transition-all group/back bg-background/80 dark:bg-black/60 shadow-xl dark:shadow-2xl">
                     <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
                   </Button>
                 </Link>
@@ -491,7 +490,7 @@ const SvgToImage = () => {
                           {/* Animated Warning Icon */}
                           <div className="relative">
                             <div className="absolute inset-0 bg-primary/20 rounded-full animate-ping opacity-75"></div>
-                            <div className="relative h-16 w-16 rounded-2xl border-2 border-primary/50 flex items-center justify-center bg-primary/10 text-primary shadow-[0_0_30px_rgba(var(--primary-rgb),0.15)]">
+                            <div className="relative h-16 w-16 rounded-xl border-2 border-primary/50 flex items-center justify-center bg-primary/10 text-primary shadow-[0_0_30px_rgba(var(--primary-rgb),0.15)]">
                               <ShieldAlert className="h-8 w-8 animate-[pulse_2s_ease-in-out_infinite]" />
                             </div>
                           </div>
@@ -521,7 +520,7 @@ const SvgToImage = () => {
                         </div>
                       ) : renderError === "INVALID_XML" ? (
                         <div className="flex flex-col items-center gap-4 text-destructive/50 text-center animate-in fade-in zoom-in duration-300">
-                          <div className="h-16 w-16 rounded-2xl border-2 border-dashed border-current flex items-center justify-center bg-destructive/5">
+                          <div className="h-16 w-16 rounded-xl border-2 border-dashed border-current flex items-center justify-center bg-destructive/5">
                             <Trash2 className="h-8 w-8" />
                           </div>
                           <div>
@@ -531,7 +530,7 @@ const SvgToImage = () => {
                         </div>
                       ) : (
                         <div className="flex flex-col items-center gap-4 text-muted-foreground/30 text-center">
-                          <div className="h-16 w-16 rounded-2xl border-2 border-dashed border-current flex items-center justify-center opacity-40">
+                          <div className="h-16 w-16 rounded-xl border-2 border-dashed border-current flex items-center justify-center opacity-40">
                              {input.trim() ? <AlertCircle className="h-8 w-8 text-primary" /> : <FileCode className="h-8 w-8" />}
                           </div>
                           <div className="max-w-[200px]">

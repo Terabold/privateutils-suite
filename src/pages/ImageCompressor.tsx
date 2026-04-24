@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
@@ -215,7 +214,7 @@ const ImageCompressor = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground transition-all duration-300 theme-image flex flex-col font-sans">
-      <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
+      
 
       <div className="flex justify-center items-start w-full relative">
         <SponsorSidebars position="left" />
@@ -226,7 +225,7 @@ const ImageCompressor = () => {
             {/* ── HEADER ── */}
             <header className="flex items-center gap-6 animate-in fade-in slide-in-from-top-4 duration-500">
               <Link to="/">
-                <Button variant="outline" size="icon" aria-label="Back to home" className="h-12 w-12 rounded-2xl border border-white/20 hover:bg-primary/20 transition-all group/back bg-black/60 shadow-2xl">
+                <Button variant="outline" size="icon" aria-label="Back to home" className="h-12 w-12 rounded-xl border border-primary/20 hover:bg-primary/20 transition-all group/back bg-background/50 backdrop-blur-md shadow-xl">
                   <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
                 </Button>
               </Link>
@@ -295,7 +294,7 @@ const ImageCompressor = () => {
                             <ChevronDown className="h-3.5 w-3.5 lg:h-4 lg:w-4 opacity-50" />
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent className="glass-morphism border-white/20 bg-background backdrop-blur-3xl font-sans min-w-[var(--radix-dropdown-menu-trigger-width)]">
+                        <DropdownMenuContent className="glass-morphism border-primary/20 bg-background backdrop-blur-3xl font-sans min-w-[var(--radix-dropdown-menu-trigger-width)]">
                           {["webp", "jpg", "png"].map(fmt => (
                             <DropdownMenuItem
                               key={fmt}
@@ -485,7 +484,7 @@ const ImageCompressor = () => {
                       variant="outline"
                       size="sm"
                       aria-label="Reset fit"
-                      className="h-8 px-3 text-[10px] font-black uppercase tracking-widest rounded-xl bg-black/70 border-white/20 text-white shadow-xl hover:scale-105 hover:bg-black/90 transition-all backdrop-blur-sm gap-1.5"
+                      className="h-8 px-3 text-[10px] font-black uppercase tracking-widest rounded-xl bg-black/70 border-primary/20 text-white shadow-xl hover:scale-105 hover:bg-black/90 transition-all backdrop-blur-sm gap-1.5"
                     >
                       <Maximize2 className="h-3 w-3" />
                       Reset Fit

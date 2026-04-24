@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { ArrowLeft, Copy, Check, RefreshCw, Hash, Play, Download, Radio } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
@@ -391,7 +390,7 @@ const MorseCodeMaster = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground transition-colors duration-500 ">
-      <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
+      
 
       <div className="flex justify-center items-start w-full relative">
         <SponsorSidebars position="left" />
@@ -400,7 +399,7 @@ const MorseCodeMaster = () => {
           <div className="flex flex-col gap-6">
             <header className="flex items-center gap-6 animate-in fade-in slide-in-from-top-4 duration-500">
               <Link to="/">
-                <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-white/20 hover:bg-primary/20 transition-all group/back bg-black/60 shadow-2xl">
+                <Button variant="outline" size="icon" className="h-12 w-12 rounded-xl border border-primary/20 hover:bg-primary/20 transition-all group/back bg-background/50 backdrop-blur-md shadow-xl">
                   <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
                 </Button>
               </Link>
@@ -442,7 +441,7 @@ const MorseCodeMaster = () => {
                       <Button
                         variant="outline"
                         onClick={swapDirection}
-                        className="h-12 w-12 rounded-2xl border-primary/20 hover:bg-primary/20 shrink-0"
+                        className="h-12 w-12 rounded-xl border-primary/20 hover:bg-primary/20 shrink-0"
                       >
                         <RefreshCw className="h-5 w-5" />
                       </Button>
@@ -484,7 +483,7 @@ const MorseCodeMaster = () => {
                         <Button
                           onClick={stopPlayback}
                           variant="outline"
-                          className="h-12 w-12 rounded-2xl border-primary/20 hover:bg-primary/5 shadow-xl animate-in zoom-in-95"
+                          className="h-12 w-12 rounded-xl border-primary/20 hover:bg-primary/5 shadow-xl animate-in zoom-in-95"
                         >
                           <RefreshCw className="h-4 w-4" />
                         </Button>

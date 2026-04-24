@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { ArrowLeft, Copy, Check, RefreshCw, Palette, Zap, Database, Code, FileJson, Layers, Square, Repeat, Triangle, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
@@ -140,7 +139,7 @@ const ColorPaletteGenerator = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground transition-all duration-500 overflow-x-clip">
-      <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
+      
 
       <div className="flex justify-center items-start w-full relative px-4 overflow-x-clip">
         <SponsorSidebars position="left" />
@@ -149,7 +148,7 @@ const ColorPaletteGenerator = () => {
           <div className="flex flex-col gap-6">
             <header className="flex items-center gap-4 animate-in fade-in slide-in-from-top-4 duration-500">
               <Link to="/">
-                <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border border-white/20 hover:bg-primary/20 transition-all group/back bg-black/60 shadow-2xl">
+                <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border border-primary/20 hover:bg-primary/20 transition-all group/back bg-background/50 backdrop-blur-md shadow-xl">
                   <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
                 </Button>
               </Link>
@@ -180,7 +179,7 @@ const ColorPaletteGenerator = () => {
                       onClick={() => copyColor(hex)}
                     >
                       <span className="font-mono font-black text-white text-xl drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)] select-none uppercase tracking-tighter">{hex}</span>
-                      <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl bg-white/20 backdrop-blur-md border border-white/20 text-white opacity-0 group-hover/color:opacity-100 transition-all">
+                      <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl bg-white/20 backdrop-blur-md border border-primary/20 text-white opacity-0 group-hover/color:opacity-100 transition-all">
                         {copiedColor === hex ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                       </Button>
                     </div>
@@ -237,7 +236,7 @@ const ColorPaletteGenerator = () => {
                           </button>
                         ))}
                       </div>
-                      <Button onClick={refresh} variant="ghost" className="h-14 px-8 font-black rounded-2xl border border-white/10 hover:bg-primary/10 transition-all text-xs uppercase italic gap-3 group">
+                      <Button onClick={refresh} variant="ghost" className="h-14 px-8 font-black rounded-xl border border-white/10 hover:bg-primary/10 transition-all text-xs uppercase italic gap-3 group">
                         <RefreshCw className="h-4 w-4 group-hover:rotate-180 transition-transform duration-700" /> Randomize
                       </Button>
                     </div>

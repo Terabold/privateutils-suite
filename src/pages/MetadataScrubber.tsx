@@ -4,7 +4,6 @@ import { ArrowLeft, Upload, FileCheck, Download, ShieldX, MapPin, Camera, Smartp
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
@@ -120,7 +119,7 @@ const MetadataScrubber = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground theme-privacy transition-all duration-500 ">
-      <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
+      
 
       <div className="flex justify-center items-start w-full relative">
         <SponsorSidebars position="left" />
@@ -129,7 +128,7 @@ const MetadataScrubber = () => {
           <div className="flex flex-col gap-10">
             <header className="flex items-center gap-6 animate-in fade-in slide-in-from-top-4 duration-500">
               <Link to="/">
-                <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-white/20 hover:bg-primary/20 transition-all group/back bg-black/60 shadow-2xl">
+                <Button variant="outline" size="icon" className="h-12 w-12 rounded-xl border border-primary/20 hover:bg-primary/20 transition-all group/back bg-background/50 backdrop-blur-md shadow-xl">
                   <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
                 </Button>
               </Link>
@@ -165,7 +164,7 @@ const MetadataScrubber = () => {
                             onDragOver={(e) => e.preventDefault()}
                             onDrop={(e) => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); }}
                             onClick={() => !processing && inputRef.current?.click()}
-                            className="relative w-full h-full flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/20 text-center transition-all cursor-pointer bg-background/40 hover:border-primary/40 hover:bg-primary/5 shadow-inner"
+                            className="relative w-full h-full flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-primary/20 text-center transition-all cursor-pointer bg-background/40 hover:border-primary/40 hover:bg-primary/5 shadow-inner"
                           >
                             <div className="h-20 w-20 bg-primary/10 rounded-2xl flex items-center justify-center mb-6 shadow-inner group-hover/drop:scale-110 transition-transform">
                               <CloudUpload className="h-10 w-10 text-primary" />
@@ -220,7 +219,7 @@ const MetadataScrubber = () => {
 
                           {!scrubbed && (
                             <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/40 group-hover:bg-transparent transition-all duration-700 rounded-xl pointer-events-none group-hover:opacity-0">
-                              <div className="p-8 bg-background/80 backdrop-blur-2xl rounded-2xl border border-primary/20 shadow-2xl scale-100 group-hover:scale-110 transition-all duration-500 flex flex-col items-center gap-4">
+                              <div className="p-8 bg-background/80 backdrop-blur-2xl rounded-xl border border-primary/20 shadow-2xl scale-100 group-hover:scale-110 transition-all duration-500 flex flex-col items-center gap-4">
                                 <ShieldX className="h-12 w-12 text-primary animate-pulse" />
                                 <div className="text-center">
                                   <p className="text-[10px] font-black uppercase tracking-[0.3em] text-primary">Privacy Blur</p>
@@ -232,7 +231,7 @@ const MetadataScrubber = () => {
 
                           {scrubbed && (
                             <div className="absolute inset-0 bg-primary/5 backdrop-blur-[1px] flex flex-col items-center justify-center animate-in fade-in duration-500">
-                              <div className="bg-background/90 p-8 rounded-2xl border border-primary/20 shadow-2xl scale-110 flex flex-col items-center gap-4">
+                              <div className="bg-background/90 p-8 rounded-xl border border-primary/20 shadow-2xl scale-110 flex flex-col items-center gap-4">
                                 <FileCheck className="h-12 w-12 text-primary" />
                                 <p className="text-xl font-black uppercase italic tracking-tighter text-primary">Sanitized</p>
                                 <Button onClick={downloadCleared} size="lg" className="h-14 px-8 rounded-2xl gap-3 font-black uppercase italic tracking-widest shadow-xl">
@@ -258,9 +257,9 @@ const MetadataScrubber = () => {
                         </div>
                         {!scrubbed && report && (
                           <div className="flex gap-2">
-                            {report.gps ? <span className="px-3 py-1 bg-destructive/10 text-destructive text-[9px] font-black rounded-2xl border border-destructive/20 animate-pulse uppercase tracking-widest">GPS FOUND</span> : <span className="px-3 py-1 bg-muted/10 text-muted-foreground text-[9px] font-black rounded-2xl border border-muted/20 uppercase tracking-widest opacity-20">GPS CLEAN</span>}
-                            {report.camera ? <span className="px-3 py-1 bg-destructive/10 text-destructive text-[9px] font-black rounded-2xl border border-destructive/20 animate-pulse uppercase tracking-widest">CAMERA DATA</span> : <span className="px-3 py-1 bg-muted/10 text-muted-foreground text-[9px] font-black rounded-2xl border border-muted/20 uppercase tracking-widest opacity-20">CAMERA CLEAN</span>}
-                            {report.software ? <span className="px-3 py-1 bg-destructive/10 text-destructive text-[9px] font-black rounded-2xl border border-destructive/20 animate-pulse uppercase tracking-widest">SOFTWARE DATA</span> : <span className="px-3 py-1 bg-muted/10 text-muted-foreground text-[9px] font-black rounded-2xl border border-muted/20 uppercase tracking-widest opacity-20">SOFTWARE CLEAN</span>}
+                            {report.gps ? <span className="px-3 py-1 bg-destructive/10 text-destructive text-[9px] font-black rounded-xl border border-destructive/20 animate-pulse uppercase tracking-widest">GPS FOUND</span> : <span className="px-3 py-1 bg-muted/10 text-muted-foreground text-[9px] font-black rounded-xl border border-muted/20 uppercase tracking-widest opacity-20">GPS CLEAN</span>}
+                            {report.camera ? <span className="px-3 py-1 bg-destructive/10 text-destructive text-[9px] font-black rounded-xl border border-destructive/20 animate-pulse uppercase tracking-widest">CAMERA DATA</span> : <span className="px-3 py-1 bg-muted/10 text-muted-foreground text-[9px] font-black rounded-xl border border-muted/20 uppercase tracking-widest opacity-20">CAMERA CLEAN</span>}
+                            {report.software ? <span className="px-3 py-1 bg-destructive/10 text-destructive text-[9px] font-black rounded-xl border border-destructive/20 animate-pulse uppercase tracking-widest">SOFTWARE DATA</span> : <span className="px-3 py-1 bg-muted/10 text-muted-foreground text-[9px] font-black rounded-xl border border-muted/20 uppercase tracking-widest opacity-20">SOFTWARE CLEAN</span>}
                           </div>
                         )}
                       </div>
@@ -279,7 +278,7 @@ const MetadataScrubber = () => {
                     {image ? (
                       <div className="space-y-6">
                         <div className="grid grid-cols-1 gap-3">
-                          <div className={`w-full p-4 rounded-2xl border flex items-center justify-between transition-all ${report?.gps ? 'border-destructive/40 bg-destructive/5' : 'border-border/30 bg-background/20 opacity-20'}`}>
+                          <div className={`w-full p-4 rounded-xl border flex items-center justify-between transition-all ${report?.gps ? 'border-destructive/40 bg-destructive/5' : 'border-border/30 bg-background/20 opacity-20'}`}>
                             <div className="flex items-center gap-4">
                               <MapPin className={`h-5 w-5 ${report?.gps ? 'text-destructive' : 'text-muted-foreground'}`} />
                               <div className="text-left">
@@ -289,7 +288,7 @@ const MetadataScrubber = () => {
                             </div>
                           </div>
 
-                          <div className={`w-full p-4 rounded-2xl border flex items-center justify-between transition-all ${report?.camera ? 'border-destructive/40 bg-destructive/5' : 'border-border/30 bg-background/20 opacity-20'}`}>
+                          <div className={`w-full p-4 rounded-xl border flex items-center justify-between transition-all ${report?.camera ? 'border-destructive/40 bg-destructive/5' : 'border-border/30 bg-background/20 opacity-20'}`}>
                             <div className="flex items-center gap-4">
                               <Camera className={`h-5 w-5 ${report?.camera ? 'text-destructive' : 'text-muted-foreground'}`} />
                               <div className="text-left">
@@ -299,7 +298,7 @@ const MetadataScrubber = () => {
                             </div>
                           </div>
 
-                          <div className={`w-full p-4 rounded-2xl border flex items-center justify-between transition-all ${report?.software ? 'border-destructive/40 bg-destructive/5' : 'border-border/30 bg-background/20 opacity-20'}`}>
+                          <div className={`w-full p-4 rounded-xl border flex items-center justify-between transition-all ${report?.software ? 'border-destructive/40 bg-destructive/5' : 'border-border/30 bg-background/20 opacity-20'}`}>
                             <div className="flex items-center gap-4">
                               <Smartphone className={`h-5 w-5 ${report?.software ? 'text-destructive' : 'text-muted-foreground'}`} />
                               <div className="text-left">
@@ -325,7 +324,7 @@ const MetadataScrubber = () => {
                         </div>
                       </div>
                     ) : (
-                      <div className="flex flex-col items-center justify-center py-20 text-center bg-background/20 rounded-2xl border border-dashed border-primary/10 shadow-inner">
+                      <div className="flex flex-col items-center justify-center py-20 text-center bg-background/20 rounded-xl border border-dashed border-primary/10 shadow-inner">
                         <Smartphone className="h-10 w-10 text-primary mb-6 opacity-20" />
                         <p className="text-[10px] font-black uppercase tracking-widest opacity-40 px-6">Load Photo</p>
                         <p className="text-[9px] mt-4 max-w-[200px] leading-relaxed opacity-30 uppercase font-black tracking-tighter italic px-6">Bit-draw bypasses EXIF/XMP/IPTC headers entirely.</p>

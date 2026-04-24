@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { ArrowLeft, Copy, Check, RefreshCw, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
@@ -92,7 +91,7 @@ const LoremGenerator = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground transition-colors duration-500 ">
-      <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
+      
 
       <div className="flex justify-center items-start w-full relative">
         <SponsorSidebars position="left" />
@@ -101,7 +100,7 @@ const LoremGenerator = () => {
           <div className="flex flex-col gap-6">
             <header className="flex items-center gap-6 animate-in fade-in slide-in-from-top-4 duration-500">
               <Link to="/">
-                <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-white/20 hover:bg-primary/20 transition-all group/back bg-black/60 shadow-2xl">
+                <Button variant="outline" size="icon" className="h-12 w-12 rounded-xl border border-primary/20 hover:bg-primary/20 transition-all group/back bg-background/50 backdrop-blur-md shadow-xl">
                   <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
                 </Button>
               </Link>
@@ -131,7 +130,7 @@ const LoremGenerator = () => {
                           <button
                             key={s.key}
                             onClick={() => { setStyle(s.key); generate(s.key, unit, count, startWithLorem); }}
-                            className={`text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-2xl border transition-all ${style === s.key ? "bg-primary text-primary-foreground border-primary shadow-lg scale-105" : "text-muted-foreground border-primary/10 bg-background/20 hover:bg-primary/10 hover:text-primary"}`}
+                            className={`text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-xl border transition-all ${style === s.key ? "bg-primary text-primary-foreground border-primary shadow-lg scale-105" : "text-muted-foreground border-primary/10 bg-background/20 hover:bg-primary/10 hover:text-primary"}`}
                           >
                             {s.emoji} {s.label}
                           </button>
@@ -148,7 +147,7 @@ const LoremGenerator = () => {
                             <button
                               key={u.key}
                               onClick={() => { setUnit(u.key); generate(style, u.key, count, startWithLorem); }}
-                              className={`text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-2xl border transition-all ${unit === u.key ? "bg-primary text-primary-foreground border-primary shadow-lg scale-105" : "text-muted-foreground border-primary/10 bg-background/20 hover:bg-primary/10 hover:text-primary"}`}
+                              className={`text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-xl border transition-all ${unit === u.key ? "bg-primary text-primary-foreground border-primary shadow-lg scale-105" : "text-muted-foreground border-primary/10 bg-background/20 hover:bg-primary/10 hover:text-primary"}`}
                             >
                               {u.label}
                             </button>
@@ -157,7 +156,7 @@ const LoremGenerator = () => {
                       </div>
                       <div className="space-y-2">
                         <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 px-1 opacity-60 italic">Quantity</p>
-                        <div className="flex items-center gap-3 bg-background/20 p-1.5 rounded-2xl border border-primary/10">
+                        <div className="flex items-center gap-3 bg-background/20 p-1.5 rounded-xl border border-primary/10">
                           <button onClick={() => { const c = Math.max(1, count - 1); setCount(c); generate(style, unit, c, startWithLorem); }} className="h-7 w-7 rounded-xl border border-primary/10 font-black hover:bg-primary/10 transition-all flex items-center justify-center text-base shadow-inner">−</button>
                           <span className="text-lg font-black w-6 text-center text-primary italic">{count}</span>
                           <button onClick={() => { const c = Math.min(100, count + 1); setCount(c); generate(style, unit, c, startWithLorem); }} className="h-7 w-7 rounded-xl border border-primary/10 font-black hover:bg-primary/10 transition-all flex items-center justify-center text-base shadow-inner">+</button>
@@ -218,24 +217,24 @@ const LoremGenerator = () => {
                   </div>
                   <CardContent className="p-6 space-y-6">
                     <div className="grid grid-cols-2 gap-4">
-                      <div className="bg-background/20 p-4 rounded-2xl border border-primary/10 shadow-inner">
+                      <div className="bg-background/20 p-4 rounded-xl border border-primary/10 shadow-inner">
                         <p className="text-[9px] font-black uppercase tracking-widest opacity-40 mb-1 leading-none italic">Words</p>
                         <p className="text-2xl font-black italic tracking-tighter text-primary">{wordCount}</p>
                       </div>
-                      <div className="bg-background/20 p-4 rounded-2xl border border-primary/10 shadow-inner">
+                      <div className="bg-background/20 p-4 rounded-xl border border-primary/10 shadow-inner">
                         <p className="text-[9px] font-black uppercase tracking-widest opacity-40 mb-1 leading-none italic">Chars</p>
                         <p className="text-2xl font-black italic tracking-tighter text-primary">{output.length}</p>
                       </div>
-                      <div className="bg-background/20 p-4 rounded-2xl border border-primary/10 shadow-inner">
+                      <div className="bg-background/20 p-4 rounded-xl border border-primary/10 shadow-inner">
                         <p className="text-[9px] font-black uppercase tracking-widest opacity-40 mb-1 leading-none italic">Sentences</p>
                         <p className="text-2xl font-black italic tracking-tighter text-primary">{sentenceCount}</p>
                       </div>
-                      <div className="bg-background/20 p-4 rounded-2xl border border-primary/10 shadow-inner">
+                      <div className="bg-background/20 p-4 rounded-xl border border-primary/10 shadow-inner">
                         <p className="text-[9px] font-black uppercase tracking-widest opacity-40 mb-1 leading-none italic">Paragraphs</p>
                         <p className="text-2xl font-black italic tracking-tighter text-primary">{paraCount}</p>
                       </div>
                     </div>
-                    <div className="bg-background/20 p-4 rounded-2xl border border-primary/10 shadow-inner">
+                    <div className="bg-background/20 p-4 rounded-xl border border-primary/10 shadow-inner">
                       <p className="text-[9px] font-black uppercase tracking-widest opacity-40 mb-1 leading-none italic text-center">Reading Time</p>
                       <p className="text-xl font-black italic tracking-tighter text-primary text-center">~{Math.max(1, Math.ceil(wordCount / 200))} MIN</p>
                     </div>

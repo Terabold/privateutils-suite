@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { ArrowLeft, Hash, Disc } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
@@ -194,7 +193,7 @@ const DiceLab = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground transition-colors duration-500 ">
-      <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
+      
       
       <div className="flex justify-center items-start w-full relative">
         <SponsorSidebars position="left" />
@@ -203,7 +202,7 @@ const DiceLab = () => {
           <div className="flex flex-col gap-10">
             <header className="flex items-center gap-6 animate-in fade-in slide-in-from-top-4 duration-500">
               <Link to="/">
-                <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-white/20 hover:bg-primary/20 transition-all group/back bg-black/60 shadow-2xl">
+                <Button variant="outline" size="icon" className="h-12 w-12 rounded-xl border border-primary/20 hover:bg-primary/20 transition-all group/back bg-background/50 backdrop-blur-md shadow-xl">
                   <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
                 </Button>
               </Link>
@@ -227,7 +226,7 @@ const DiceLab = () => {
                      <p className="text-[9px] font-bold text-primary opacity-40 px-2 py-0.5 rounded-full border border-primary/20 bg-background/50">CASINO ODOMETER</p>
                   </div>
                   <div className="p-6 space-y-8 flex-1 flex flex-col">
-                    <div className="flex-1 flex justify-center items-center min-h-[220px] bg-black/20 rounded-2xl border border-primary/5 shadow-inner overflow-hidden relative">
+                    <div className="flex-1 flex justify-center items-center min-h-[220px] bg-black/20 rounded-xl border border-primary/5 shadow-inner overflow-hidden relative">
                          <div className="absolute inset-0 bg-primary/5 animate-pulse opacity-20" />
                          <div 
                            className="flex gap-1 md:gap-1.5 relative z-10 transition-transform duration-500 origin-center"
@@ -289,7 +288,7 @@ const DiceLab = () => {
                      <p className="text-[9px] font-bold text-primary opacity-40 px-2 py-0.5 rounded-full border border-primary/20 bg-background/50">3D PHYSICS</p>
                   </div>
                   <div className="p-6 space-y-8 flex-1 flex flex-col">
-                    <div className="flex-1 flex justify-center items-center min-h-[220px] bg-black/20 rounded-2xl border border-primary/5 shadow-inner relative overflow-hidden">
+                    <div className="flex-1 flex justify-center items-center min-h-[220px] bg-black/20 rounded-xl border border-primary/5 shadow-inner relative overflow-hidden">
                         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(var(--primary-rgb),0.1)_0%,transparent_70%)] opacity-50" />
                         <div className="flex flex-wrap gap-4 md:gap-6 p-4 justify-center relative z-10 transition-all duration-500">
                             {rolls.length > 0 || rolling ? (
@@ -320,7 +319,7 @@ const DiceLab = () => {
 
                      <div className="space-y-6">
                           <div className="grid grid-cols-2 gap-4">
-                            <div className="flex justify-between items-center bg-background/40 p-3 rounded-2xl border border-primary/10">
+                            <div className="flex justify-between items-center bg-background/40 p-3 rounded-xl border border-primary/10">
                                 <span className="text-[10px] font-black uppercase tracking-widest opacity-40 italic ml-1">Type</span>
                                 <Button 
                                     variant="ghost" 
@@ -331,7 +330,7 @@ const DiceLab = () => {
                                     D{diceSides}
                                 </Button>
                             </div>
-                            <div className="flex justify-between items-center bg-background/40 p-3 rounded-2xl border border-primary/10">
+                            <div className="flex justify-between items-center bg-background/40 p-3 rounded-xl border border-primary/10">
                                 <span className="text-[10px] font-black uppercase tracking-widest opacity-40 italic ml-1">Qty</span>
                                 <div className="flex items-center gap-4">
                                     <button onClick={() => setDiceCount(Math.max(1, diceCount - 1))} className="text-primary font-black opacity-60 hover:opacity-100 transition-opacity font-mono">-</button>
@@ -355,14 +354,14 @@ const DiceLab = () => {
                   </div>
                   <div className="p-6 space-y-8 flex-1 flex flex-col">
                     <div 
-                      className={`flex-1 flex justify-center items-center min-h-[220px] bg-black/20 rounded-2xl border border-primary/5 shadow-inner cursor-pointer transition-all duration-700 ${!flipping && coinResult ? 'shadow-[0_0_40px_rgba(var(--primary-rgb),0.15)] ring-1 ring-primary/20' : ''}`} 
+                      className={`flex-1 flex justify-center items-center min-h-[220px] bg-black/20 rounded-xl border border-primary/5 shadow-inner cursor-pointer transition-all duration-700 ${!flipping && coinResult ? 'shadow-[0_0_40px_rgba(var(--primary-rgb),0.15)] ring-1 ring-primary/20' : ''}`} 
                       onClick={!flipping ? flipCoin : undefined}
                     >
                         <Coin3D result={coinResult} flipping={flipping} />
                     </div>
 
                     <div className="space-y-6">
-                        <div className={`bg-background/40 p-4 rounded-2xl border border-primary/5 text-center transition-all ${!flipping && coinResult ? 'border-primary/40 bg-primary/5' : ''}`}>
+                        <div className={`bg-background/40 p-4 rounded-xl border border-primary/5 text-center transition-all ${!flipping && coinResult ? 'border-primary/40 bg-primary/5' : ''}`}>
                             <span className={`text-[10px] font-black uppercase tracking-[0.3em] transition-all italic ${!flipping && coinResult ? 'text-primary' : 'opacity-30'}`}>
                                 {flipping ? "Gravity Working..." : (coinResult ? `Result: ${coinResult}` : "Waiting for force")}
                             </span>

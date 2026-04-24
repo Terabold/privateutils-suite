@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { ArrowLeft, Copy, Check, FileJson, Table, RefreshCw, Zap, Table as TableIcon, Sparkles, Upload, Download, AlertCircle, Layers } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
@@ -238,7 +237,7 @@ const CsvJsonForge = () => {
 
    return (
       <div className="min-h-screen bg-background text-foreground transition-colors duration-500 font-sans ">
-         <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
+         
 
          <div className="flex justify-center items-start w-full relative">
             <SponsorSidebars position="left" />
@@ -247,7 +246,7 @@ const CsvJsonForge = () => {
                <div className="flex flex-col gap-6">
                   <header className="flex items-center gap-6 animate-in fade-in slide-in-from-top-4 duration-500">
                      <Link to="/">
-                        <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border border-border dark:border-white/20 hover:bg-primary/10 dark:hover:bg-primary/20 transition-all group/back bg-background/80 dark:bg-black/60 shadow-xl dark:shadow-2xl">
+                        <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border border-border dark:border-primary/20 hover:bg-primary/10 dark:hover:bg-primary/20 transition-all group/back bg-background/80 dark:bg-black/60 shadow-xl dark:shadow-2xl">
                            <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
                         </Button>
                      </Link>
@@ -271,14 +270,14 @@ const CsvJsonForge = () => {
                            <div className="flex gap-2.5">
                               <button
                                  onClick={() => setMode('csv2json')}
-                                 className={`px-8 py-4 rounded-2xl border transition-all font-black uppercase tracking-widest text-[10px] flex items-center gap-2.5 ${mode === 'csv2json' ? 'bg-primary text-primary-foreground border-primary shadow-xl dark:shadow-2xl shadow-primary/20 dark:shadow-primary/30 scale-105' : 'bg-muted dark:bg-black/40 border-transparent dark:border-white/5 text-muted-foreground hover:bg-muted/80 dark:hover:bg-white/5'
+                                 className={`px-8 py-4 rounded-xl border transition-all font-black uppercase tracking-widest text-[10px] flex items-center gap-2.5 ${mode === 'csv2json' ? 'bg-primary text-primary-foreground border-primary shadow-xl dark:shadow-2xl shadow-primary/20 dark:shadow-primary/30 scale-105' : 'bg-muted dark:bg-black/40 border-transparent dark:border-white/5 text-muted-foreground hover:bg-muted/80 dark:hover:bg-white/5'
                                     }`}
                               >
                                  <Table className="h-4 w-4" /> CSV to JSON
                               </button>
                               <button
                                  onClick={() => setMode('json2csv')}
-                                 className={`px-8 py-4 rounded-2xl border transition-all font-black uppercase tracking-widest text-[10px] flex items-center gap-2.5 ${mode === 'json2csv' ? 'bg-primary text-primary-foreground border-primary shadow-xl dark:shadow-2xl shadow-primary/20 dark:shadow-primary/30 scale-105' : 'bg-muted dark:bg-black/40 border-transparent dark:border-white/5 text-muted-foreground hover:bg-muted/80 dark:hover:bg-white/5'
+                                 className={`px-8 py-4 rounded-xl border transition-all font-black uppercase tracking-widest text-[10px] flex items-center gap-2.5 ${mode === 'json2csv' ? 'bg-primary text-primary-foreground border-primary shadow-xl dark:shadow-2xl shadow-primary/20 dark:shadow-primary/30 scale-105' : 'bg-muted dark:bg-black/40 border-transparent dark:border-white/5 text-muted-foreground hover:bg-muted/80 dark:hover:bg-white/5'
                                     }`}
                               >
                                  <FileJson className="h-4 w-4" /> JSON to CSV
@@ -468,7 +467,7 @@ const CsvJsonForge = () => {
                               <Sparkles className="h-4 w-4 text-primary animate-pulse" />
                            </div>
                            <CardContent className="p-8 space-y-8">
-                              <div className="bg-muted/50 dark:bg-black/40 p-6 rounded-2xl border border-border dark:border-white/5 shadow-inner">
+                              <div className="bg-muted/50 dark:bg-black/40 p-6 rounded-xl border border-border dark:border-white/5 shadow-inner">
                                  <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground dark:opacity-40 mb-2">Stage Status</p>
                                  <p className={`text-2xl font-black italic tracking-tighter ${output ? 'text-emerald-600 dark:text-emerald-500' : 'text-primary'}`}>{output ? 'Baked' : 'Idle'}</p>
                               </div>

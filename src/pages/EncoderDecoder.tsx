@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { ArrowLeft, Copy, Check, Code2, RefreshCw, AlertTriangle, Trash2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
@@ -154,7 +153,7 @@ const EncoderDecoder = () => {
 
    return (
       <div className="min-h-screen bg-background text-foreground transition-colors duration-500 ">
-         <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
+         
 
          <div className="flex justify-center items-start w-full relative">
             <SponsorSidebars position="left" />
@@ -163,7 +162,7 @@ const EncoderDecoder = () => {
                <div className="flex flex-col gap-6">
                   <header className="flex items-center gap-6 animate-in fade-in slide-in-from-top-4 duration-500">
                      <Link to="/">
-                        <Button aria-label="Go back to home" variant="outline" size="icon" className="h-10 w-10 rounded-xl border border-white/20 hover:bg-primary/20 transition-all group/back bg-black/60 shadow-2xl">
+                        <Button aria-label="Go back to home" variant="outline" size="icon" className="h-10 w-10 rounded-xl border border-primary/20 hover:bg-primary/20 transition-all group/back bg-background/50 backdrop-blur-md shadow-xl">
                            <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
                         </Button>
                      </Link>
@@ -192,7 +191,7 @@ const EncoderDecoder = () => {
                                        <button
                                           key={m.key}
                                           onClick={() => setMode(m.key)}
-                                          className={`text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-2xl border transition-all ${mode === m.key ? activeGroupColors[group] : groupColors[group]}`}
+                                          className={`text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-xl border transition-all ${mode === m.key ? activeGroupColors[group] : groupColors[group]}`}
                                        >
                                           {m.label}
                                        </button>
@@ -308,17 +307,17 @@ const EncoderDecoder = () => {
                            </div>
                            <CardContent className="p-8 space-y-6">
                               <div className="grid grid-cols-2 gap-4">
-                                 <div className="bg-background/20 p-4 rounded-2xl border border-border/50">
+                                 <div className="bg-background/20 p-4 rounded-xl border border-border/50">
                                     <p className="text-[9px] font-black uppercase tracking-widest opacity-40 mb-1">Input Len</p>
                                     <p className="text-2xl font-black italic tracking-tighter">{input.length}</p>
                                  </div>
-                                 <div className="bg-background/20 p-4 rounded-2xl border border-border/50">
+                                 <div className="bg-background/20 p-4 rounded-xl border border-border/50">
                                     <p className="text-[9px] font-black uppercase tracking-widest opacity-40 mb-1">Output Len</p>
                                     <p className="text-2xl font-black italic tracking-tighter">{output.length}</p>
                                  </div>
                               </div>
                               {input && output && !error && (
-                                 <div className="bg-background/20 p-4 rounded-2xl border border-border/50">
+                                 <div className="bg-background/20 p-4 rounded-xl border border-border/50">
                                     <p className="text-[9px] font-black uppercase tracking-widest opacity-40 mb-1">Size Ratio</p>
                                     <p className="text-2xl font-black italic tracking-tighter">
                                        {input.length > 0 ? ((output.length / input.length) * 100).toFixed(0) + "%" : "—"}

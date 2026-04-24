@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ToolExpertSection from "@/components/ToolExpertSection";
 import SponsorSidebars from "@/components/SponsorSidebars";
@@ -70,7 +69,7 @@ const QrForge = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground transition-all duration-500 ">
-      <Navbar darkMode={darkMode} onToggleDark={toggleDark} />
+      
 
       <div className="flex justify-center items-start w-full relative">
         <SponsorSidebars position="left" />
@@ -80,7 +79,7 @@ const QrForge = () => {
             <header className="flex items-center justify-between flex-wrap gap-8">
               <div className="flex items-center gap-6">
                 <Link to="/">
-                  <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border border-border/50 hover:bg-primary/5 transition-all group/back">
+                  <Button variant="outline" size="icon" className="h-12 w-12 rounded-xl border border-border/50 hover:bg-primary/5 transition-all group/back">
                     <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
                   </Button>
                 </Link>
@@ -195,7 +194,7 @@ const QrForge = () => {
                         <DropdownMenuTrigger asChild>
                           <Button
                             variant="outline"
-                            className="w-full h-12 bg-zinc-950/40 rounded-2xl border-white/5 text-[10px] font-black px-4 flex items-center justify-between hover:bg-zinc-900/60 shadow-inner"
+                            className="w-full h-12 bg-zinc-950/40 rounded-xl border-white/5 text-[10px] font-black px-4 flex items-center justify-between hover:bg-zinc-900/60 shadow-inner"
                           >
                             <span className="truncate">
                               {size === 128 ? "Small (128x128 artifact)" :
