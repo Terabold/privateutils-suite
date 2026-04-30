@@ -43,7 +43,7 @@ const toConstantCase = (s: string) =>
     .join('_') || "";
 
 const TextCaseFormatter = () => {
-  const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
+  const [darkMode, setDarkMode] = useState(() => (typeof document !== "undefined" && document.documentElement.classList.contains("dark")));
   const [text, setText] = useState("");
   const [copied, setCopied] = useState(false);
 

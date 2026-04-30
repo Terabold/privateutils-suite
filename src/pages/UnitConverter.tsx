@@ -43,7 +43,7 @@ const CATEGORIES = [
 ];
 
 const UnitConverter = () => {
-  const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
+  const [darkMode, setDarkMode] = useState(() => (typeof document !== "undefined" && document.documentElement.classList.contains("dark")));
   const [cat, setCat] = useState('length');
   const [val, setVal] = useState('1');
   const [fromUnit, setFromUnit] = useState('m');

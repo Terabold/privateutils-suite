@@ -38,7 +38,7 @@ const fitModes = [
 ] as const;
 
 const PerspectiveTilter = () => {
-  const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
+  const [darkMode, setDarkMode] = useState(() => (typeof document !== "undefined" && document.documentElement.classList.contains("dark")));
   const [image, setImage] = useState<string | null>(null);
   const [rotateY, setRotateY] = useState(-15);
   const [rotateX, setRotateX] = useState(20);

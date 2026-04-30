@@ -66,7 +66,7 @@ const SliceItem = ({ slice, idx, active, onClick, onDelete }: {
 };
 
 const SpriteStudio = () => {
-  const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
+  const [darkMode, setDarkMode] = useState(() => (typeof document !== "undefined" && document.documentElement.classList.contains("dark")));
   const [image, setImage] = useState<string | null>(null);
   const [imgSize, setImgSize] = useState({ w: 0, h: 0 });
   const [slices, setSlices] = useState<Slice[]>([]);

@@ -53,7 +53,7 @@ const JsonBlock = ({ data }: { data: object }) => (
 );
 
 const JwtDecoder = () => {
-  const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
+  const [darkMode, setDarkMode] = useState(() => (typeof document !== "undefined" && document.documentElement.classList.contains("dark")));
   const [token, setToken] = useState("");
   const [result, setResult] = useState<ReturnType<typeof parseJwt> | null>(null);
   const [error, setError] = useState("");

@@ -55,7 +55,7 @@ function generatePalette(h: number, s: number, l: number, mode: string) {
 }
 
 const ColorPaletteGenerator = () => {
-  const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
+  const [darkMode, setDarkMode] = useState(() => (typeof document !== "undefined" && document.documentElement.classList.contains("dark")));
   const [hsl, setHsl] = useState({ h: 210, s: 70, l: 50 });
   const [mode, setMode] = useState('monochromatic');
   const [palette, setPalette] = useState<string[]>([]);

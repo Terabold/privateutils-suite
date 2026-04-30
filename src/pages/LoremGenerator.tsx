@@ -54,7 +54,7 @@ const UNITS: { key: "words" | "sentences" | "paragraphs"; label: string }[] = [
 ];
 
 const LoremGenerator = () => {
-  const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
+  const [darkMode, setDarkMode] = useState(() => (typeof document !== "undefined" && document.documentElement.classList.contains("dark")));
   const [style, setStyle] = useState<Style>("classic");
   const [unit, setUnit] = useState<"words" | "sentences" | "paragraphs">("paragraphs");
   const [count, setCount] = useState(3);

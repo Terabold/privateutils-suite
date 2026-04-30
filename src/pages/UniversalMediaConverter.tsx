@@ -20,7 +20,7 @@ import { getFFmpeg, resetFFmpeg, ffmpeg as ffmpegInstance } from "@/lib/ffmpegSi
 const FFMPEG_SIZE_LIMIT = 100 * 1024 * 1024; // 100MB
 
 const UniversalMediaConverter = () => {
-  const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
+  const [darkMode, setDarkMode] = useState(() => (typeof document !== "undefined" && document.documentElement.classList.contains("dark")));
   const [isLargeFile, setIsLargeFile] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [targetFormat, setTargetFormat] = useState<string>("");

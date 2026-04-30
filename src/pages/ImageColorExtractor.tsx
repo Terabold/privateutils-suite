@@ -15,7 +15,7 @@ import { usePasteFile } from "@/hooks/usePasteFile";
 import { KbdShortcut } from "@/components/KbdShortcut";
 
 const ImageColorExtractor = () => {
-  const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
+  const [darkMode, setDarkMode] = useState(() => (typeof document !== "undefined" && document.documentElement.classList.contains("dark")));
   const [imgSrc, setImgSrc] = useState<string | null>(null);
   const [color, setColor] = useState<{ hex: string; rgb: string } | null>(null);
   const [history, setHistory] = useState<{ hex: string; rgb: string }[]>(() => {

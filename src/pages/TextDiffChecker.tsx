@@ -21,7 +21,7 @@ import { toast } from "sonner";
 import * as Diff from "diff";
 
 const TextDiffChecker = () => {
-  const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
+  const [darkMode, setDarkMode] = useState(() => (typeof document !== "undefined" && document.documentElement.classList.contains("dark")));
   const [original, setOriginal] = useState("");
   const [modified, setModified] = useState("");
   const [diffMode, setDiffMode] = useState<"lines" | "words" | "chars">("lines");

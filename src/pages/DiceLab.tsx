@@ -140,7 +140,7 @@ const OdometerDigit = ({ value, animating }: { value: string; animating: boolean
 };
 
 const DiceLab = () => {
-  const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
+  const [darkMode, setDarkMode] = useState(() => (typeof document !== "undefined" && document.documentElement.classList.contains("dark")));
   const [diceCount, setDiceCount] = useState(1);
   const [diceSides, _setDiceSides] = useState(6);
   const [rolls, setRolls] = useState<number[]>([]);

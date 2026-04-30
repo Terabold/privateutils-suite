@@ -129,7 +129,7 @@ function jsonToCsv(json: string) {
 }
 
 const CsvJsonForge = () => {
-   const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
+   const [darkMode, setDarkMode] = useState(() => (typeof document !== "undefined" && document.documentElement.classList.contains("dark")));
    const [input, setInput] = useState("");
    const [output, setOutput] = useState("");
    const [mode, setMode] = useState<'csv2json' | 'json2csv'>('csv2json');

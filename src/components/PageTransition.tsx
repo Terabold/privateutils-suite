@@ -6,10 +6,16 @@ interface PageTransitionProps {
   children: ReactNode;
 }
 
+// SSR guard: framer-motion's motion.div accesses `document` during renderToString,
+// which throws "document is not defined". React 18 catches this at the nearest Suspense
+// boundary and shows the fallback instead of the real page content, causing AdSense rejection.
+// On the server, we render a plain passthrough div instead.
+const isServer = typeof window === "undefined";
+
 const PageTransition = ({ children }: PageTransitionProps) => {
   const prefersReducedMotion = useReducedMotion();
 
-  if (prefersReducedMotion) {
+  if (isServer || prefersReducedMotion) {
     return <div className="page-motion-wrapper">{children}</div>;
   }
 

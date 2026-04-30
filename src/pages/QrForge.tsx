@@ -16,7 +16,7 @@ import { toast } from "sonner";
 import { KbdShortcut } from "@/components/KbdShortcut";
 
 const QrForge = () => {
-  const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
+  const [darkMode, setDarkMode] = useState(() => (typeof document !== "undefined" && document.documentElement.classList.contains("dark")));
   const [input, setInput] = useState("");
   const [errorCorrectionLevel, setErrorCorrectionLevel] = useState<'L' | 'M' | 'Q' | 'H'>('M');
   const [fgColor, setFgColor] = useState("#000000");

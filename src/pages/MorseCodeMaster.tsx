@@ -33,7 +33,7 @@ const REVERSE_MORSE: Record<string, string> = Object.fromEntries(
 );
 
 const MorseCodeMaster = () => {
-  const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
+  const [darkMode, setDarkMode] = useState(() => (typeof document !== "undefined" && document.documentElement.classList.contains("dark")));
   const [text, setText] = useState("");
   const [morse, setMorse] = useState("");
   const [direction, setDirection] = useState<"text-to-morse" | "morse-to-text">("text-to-morse");

@@ -41,7 +41,7 @@ const loadSVGO = async () => {
 
 const SvgOptimizer = () => {
 
-  const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
+  const [darkMode, setDarkMode] = useState(() => (typeof document !== "undefined" && document.documentElement.classList.contains("dark")));
 
   const [input, setInput] = useState("");
 

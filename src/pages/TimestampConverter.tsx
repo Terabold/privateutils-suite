@@ -79,7 +79,7 @@ function relativeTime(date: Date) {
 }
 
 const TimestampConverter = () => {
-  const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
+  const [darkMode, setDarkMode] = useState(() => (typeof document !== "undefined" && document.documentElement.classList.contains("dark")));
   const [input, setInput] = useState("");
   const [timezone, setTimezone] = useState("UTC");
   const [copiedKey, setCopiedKey] = useState<string | null>(null);

@@ -21,7 +21,7 @@ import { getFFmpeg } from "@/lib/ffmpegSingleton";
 const VideoToGif = () => {
   const [darkMode, setDarkMode] = useState(() => {
     if (typeof window !== "undefined") {
-      return document.documentElement.classList.contains("dark");
+      return (typeof document !== "undefined" && document.documentElement.classList.contains("dark"));
     }
     return true;
   });

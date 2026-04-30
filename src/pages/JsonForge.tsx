@@ -14,7 +14,7 @@ import { toast } from "sonner";
 import { usePasteFile } from "@/hooks/usePasteFile";
 
 const JsonForge = () => {
-  const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
+  const [darkMode, setDarkMode] = useState(() => (typeof document !== "undefined" && document.documentElement.classList.contains("dark")));
   const [input, setInput] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isValid, setIsValid] = useState(false);

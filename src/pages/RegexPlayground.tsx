@@ -110,7 +110,7 @@ Token: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIn0.signature123
 Brand color: #FF5733, alt: #abc`;
 
 const RegexPlayground = () => {
-   const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
+   const [darkMode, setDarkMode] = useState(() => (typeof document !== "undefined" && document.documentElement.classList.contains("dark")));
    const [pattern, setPattern] = useState("");
    const [flags, setFlags] = useState("gi");
    const [testStr, setTestStr] = useState(EXAMPLE_TEXT);

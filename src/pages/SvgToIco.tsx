@@ -60,7 +60,7 @@ const resolveSvgDimensions = (svgEl: Element): { w: number; h: number } => {
 };
 
 const SvgToIco = () => {
-  const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
+  const [darkMode, setDarkMode] = useState(() => (typeof document !== "undefined" && document.documentElement.classList.contains("dark")));
   const [input, setInput] = useState("");
   const [targetSize, setTargetSize] = useState(32);
   const [isProcessing, setIsProcessing] = useState(false);

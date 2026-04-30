@@ -104,7 +104,7 @@ const ALGORITHMS = [
 ];
 
 const HashLab = () => {
-  const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
+  const [darkMode, setDarkMode] = useState(() => (typeof document !== "undefined" && document.documentElement.classList.contains("dark")));
   const [input, setInput] = useState("");
   const [hashes, setHashes] = useState<Record<string, string>>({});
   const [copiedKey, setCopiedKey] = useState<string | null>(null);

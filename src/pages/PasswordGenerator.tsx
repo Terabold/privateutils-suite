@@ -49,7 +49,7 @@ function calculateStrength(password: string) {
 }
 
 const PasswordGenerator = () => {
-  const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
+  const [darkMode, setDarkMode] = useState(() => (typeof document !== "undefined" && document.documentElement.classList.contains("dark")));
   const [length, setLength] = useState(16);
   const [quantity, setQuantity] = useState(1);
   const [options, setOptions] = useState({ upper: true, lower: true, numbers: true, symbols: true });

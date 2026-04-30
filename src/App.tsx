@@ -19,6 +19,13 @@ import GlobalControlHelp from "./components/GlobalControlHelp";
 
 const queryClient = new QueryClient();
 
+// SSR-safe AnimatePresence: framer-motion's AnimatePresence with mode="wait" returns null
+// during renderToString because useLayoutEffect is a no-op in SSR, causing the entire Routes
+// tree to be skipped. This wrapper bypasses animation on the server so pages render correctly.
+const SSRAnimatePresence = import.meta.env.SSR
+  ? ({ children }: { children: React.ReactNode }) => <>{children}</>
+  : ({ children }: { children: React.ReactNode }) => <AnimatePresence mode="wait">{children}</AnimatePresence>;
+
 // --- SSR-AWARE LAZY HELPER ---
 const eagerPages = import.meta.env.SSR ? import.meta.glob('./pages/*.tsx', { eager: true }) : {};
 
@@ -180,7 +187,7 @@ const App = () => {
             />
             <main id="app-main-scroll" className="flex-grow overflow-y-auto overflow-x-hidden relative scroll-smooth">
               <Suspense fallback={<LoadingArtifact />}>
-                <AnimatePresence mode="wait">
+                <SSRAnimatePresence>
                   <Routes location={location} key={location.pathname}>
                     <Route path="/" element={
                       <PageTransition>
@@ -250,7 +257,7 @@ const App = () => {
                     <Route path="/404" element={<NotFound />} />
                     <Route path="*" element={<Navigate to="/404" replace />} />
                   </Routes>
-                </AnimatePresence>
+                </SSRAnimatePresence>
               </Suspense>
             </main>
           </ThemeOrchestrator>

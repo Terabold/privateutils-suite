@@ -13,7 +13,7 @@ import { usePasteFile } from "@/hooks/usePasteFile";
 import { KbdShortcut } from "@/components/KbdShortcut";
 
 const QuickClipboardHub = () => {
-  const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
+  const [darkMode, setDarkMode] = useState(() => (typeof document !== "undefined" && document.documentElement.classList.contains("dark")));
   const [file, setFile] = useState<File | null>(null);
   const [history, setHistory] = useState<{ name: string; size: string; time: string; url: string }[]>([]);
 

@@ -138,7 +138,7 @@ const resolveSvgDimensions = (svgEl: Element, fast = false): { w: number; h: num
 
 const SvgToImage = () => {
   const [darkMode, setDarkMode] = useState(() =>
-    document.documentElement.classList.contains("dark")
+    (typeof document !== "undefined" && document.documentElement.classList.contains("dark"))
   );
   const [input, setInput] = useState("");
   const [exportFormat, setExportFormat] = useState<"png" | "jpeg">("png");

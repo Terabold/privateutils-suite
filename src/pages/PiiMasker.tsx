@@ -28,7 +28,7 @@ interface RedactionRegion {
 }
 
 const PiiMasker = () => {
-  const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
+  const [darkMode, setDarkMode] = useState(() => (typeof document !== "undefined" && document.documentElement.classList.contains("dark")));
   const [image, setImage] = useState<HTMLImageElement | null>(null);
   const [textContent, setTextContent] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);

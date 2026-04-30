@@ -15,7 +15,7 @@ import { KbdShortcut } from "@/components/KbdShortcut";
 import exifr from "exifr";
 
 const MetadataScrubber = () => {
-  const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
+  const [darkMode, setDarkMode] = useState(() => (typeof document !== "undefined" && document.documentElement.classList.contains("dark")));
   const [image, setImage] = useState<string | null>(null);
   const [processing, setProcessing] = useState(false);
   const [scrubbed, setScrubbed] = useState(false);

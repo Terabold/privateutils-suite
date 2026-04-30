@@ -13,7 +13,7 @@ import { usePasteFile } from "@/hooks/usePasteFile";
 import { KbdShortcut } from "@/components/KbdShortcut";
 
 const Base64Image = () => {
-  const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
+  const [darkMode, setDarkMode] = useState(() => (typeof document !== "undefined" && document.documentElement.classList.contains("dark")));
   const [base64, setBase64] = useState("");
   const [preview, setPreview] = useState("");
   const [copied, setCopied] = useState(false);

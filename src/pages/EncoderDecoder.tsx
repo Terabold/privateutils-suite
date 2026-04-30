@@ -86,7 +86,7 @@ const activeGroupColors: Record<string, string> = {
 };
 
 const EncoderDecoder = () => {
-   const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
+   const [darkMode, setDarkMode] = useState(() => (typeof document !== "undefined" && document.documentElement.classList.contains("dark")));
    const [mode, setMode] = useState<Mode>("base64-encode");
    const [input, setInput] = useState("");
    const [output, setOutput] = useState("");

@@ -17,7 +17,7 @@ import { FFmpeg } from "@ffmpeg/ffmpeg";
 import { fetchFile, toBlobURL } from "@ffmpeg/util";
 
 const ImageCompressor = () => {
-  const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
+  const [darkMode, setDarkMode] = useState(() => (typeof document !== "undefined" && document.documentElement.classList.contains("dark")));
   const [file, setFile] = useState<File | null>(null);
   const [originalImage, setOriginalImage] = useState<HTMLImageElement | null>(null);
   const [quality, setQuality] = useState<number>(0.8);
