@@ -149,7 +149,7 @@ const TextDiffChecker = () => {
       
 
       <div className="flex justify-center items-start w-full relative">
-        <SponsorSidebars position="left" />
+        {/* SponsorSidebars position="left" removed */}
 
         <main className="container mx-auto max-w-[1600px] px-4 py-8 grow">
           <div className="flex flex-col gap-10">

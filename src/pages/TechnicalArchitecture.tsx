@@ -22,7 +22,7 @@ const TechnicalArchitecture = () => {
       
 
       <div className="flex justify-center items-start w-full relative">
-        <SponsorSidebars position="left" />
+        {/* SponsorSidebars position="left" removed */}
 
         <main className="container mx-auto max-w-[1000px] px-6 py-12 grow">
           <article className="flex flex-col gap-12 animate-in fade-in slide-in-from-bottom-6 duration-700">

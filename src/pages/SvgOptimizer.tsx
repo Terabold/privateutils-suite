@@ -267,7 +267,7 @@ const SvgOptimizer = () => {
 
       <div className="flex justify-center items-start w-full relative">
 
-        <SponsorSidebars position="left" />
+        {/* SponsorSidebars position="left" removed */}
 
 
 

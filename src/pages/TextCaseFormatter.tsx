@@ -86,7 +86,7 @@ const TextCaseFormatter = () => {
       
 
       <div className="flex justify-center items-start w-full relative">
-        <SponsorSidebars position="left" />
+        {/* SponsorSidebars position="left" removed */}
 
         <main className="w-full max-w-[1800px] mx-auto px-6 py-12 grow overflow-visible">
           <div className="flex flex-col gap-10">

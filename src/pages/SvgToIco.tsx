@@ -198,7 +198,7 @@ const SvgToIco = () => {
     <div className="min-h-screen bg-background text-foreground transition-all duration-500">
       
       <div className="flex justify-center items-start w-full relative">
-        <SponsorSidebars position="left" />
+        {/* SponsorSidebars position="left" removed */}
         <main className="container mx-auto max-w-[1800px] px-4 py-8 grow">
           <div className="flex flex-col gap-10">
             <header className="flex items-center justify-between flex-wrap gap-8">

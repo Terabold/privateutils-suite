@@ -8,10 +8,8 @@ import { Search, ShieldCheck, History, Star, Zap, Lock, Play, Pause, HelpCircle,
 import ToolCard from "@/components/ToolCard";
 import ToolsGrid, { tools } from "@/components/ToolsGrid";
 import Footer from "@/components/Footer";
-import AdBox from "@/components/AdBox";
-import ToolAdBanner from "@/components/ToolAdBanner";
 import StickyAnchorAd from "@/components/StickyAnchorAd";
-import TableOfContents from "../components/TableOfContents";
+// import TableOfContents from "../components/TableOfContents";
 import { motion } from "framer-motion";
 import { revealContainer, revealItem } from "@/lib/motion";
 
@@ -131,12 +129,7 @@ const Index = ({
 
   return (
     <div className="w-full font-sans selection:bg-primary/20 relative">
-      <div className="flex justify-center items-start w-full relative">
-        <TableOfContents
-          selectedCategory={activeNavId}
-          setSelectedCategory={handleNavClick}
-        />
-        
+      <div className="w-full relative">
         <main className="flex-grow grow min-w-0 transition-all duration-300">
           <div className="container mx-auto max-w-[1240px] px-6 pt-2 pb-6 lg:pt-4 lg:pb-10 overflow-visible">
 
@@ -167,7 +160,6 @@ const Index = ({
           </motion.section>
 
           <div className="grow min-w-0 w-full">
-            <ToolAdBanner />
 
             <div className="mb-20">
             </div>

@@ -82,7 +82,7 @@ const TableOfContents = ({
 
   return (
     <aside className={cn(
-      "hidden xl:flex flex-col sticky top-0 h-[calc(100vh-115px)] w-72 shrink-0 px-4 py-8 select-none border-r border-border/5 bg-zinc-50/10 dark:bg-zinc-950/10 backdrop-blur-3xl z-[30] scrollbar-hide",
+      "hidden xl:flex flex-col sticky top-0 h-screen w-72 shrink-0 px-4 py-8 select-none border-r border-border/5 bg-zinc-50/10 dark:bg-zinc-950/10 backdrop-blur-3xl z-[30] scrollbar-hide",
       className
     )}>
       <style dangerouslySetInnerHTML={{ __html: `

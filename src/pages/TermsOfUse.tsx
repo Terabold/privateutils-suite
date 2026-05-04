@@ -20,7 +20,6 @@ const TermsOfUse = () => {
 
   return (
     <div className="min-h-screen bg-background font-sans selection:bg-primary/30">
-      <Navbar darkMode={darkMode} onToggleDark={() => setDarkMode(!darkMode)} />
       
       <main className="container mx-auto max-w-4xl px-6 py-24">
         <motion.div 

@@ -268,7 +268,7 @@ const ImageToPdf = () => {
       
 
       <div className="flex justify-center items-start w-full relative px-4 overflow-x-clip">
-        <SponsorSidebars position="left" className="shrink-0" />
+        {/* SponsorSidebars position="left" removed */}
 
         <main className="container mx-auto max-w-[1300px] px-6 py-10 grow overflow-visible min-w-0">
           <div className="w-full flex flex-col gap-6">

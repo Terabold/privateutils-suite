@@ -7,11 +7,7 @@ import { Link } from "react-router-dom";
 const Insights = () => {
   return (
     <div className="min-h-screen bg-background font-sans selection:bg-primary/20 relative">
-      <Navbar darkMode={true} onToggleDark={() => {}} />
-
       <div className="flex justify-center items-start w-full relative">
-        <SponsorSidebars position="left" />
-
         <main className="container mx-auto max-w-[1240px] px-6 py-10 lg:py-20 grow overflow-visible">
           <div className="max-w-4xl mx-auto">
             {/* Header section */}

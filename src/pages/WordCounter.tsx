@@ -33,7 +33,7 @@ const WordCounter = () => {
   return (
     <div className="w-full font-sans selection:bg-primary/20 relative">
       <div className="flex justify-center items-start w-full relative">
-        <SponsorSidebars position="left" />
+        {/* SponsorSidebars position="left" removed */}
         <main className="container mx-auto max-w-[1240px] px-6 py-12 grow">
           <div className="flex flex-col gap-10">
             <header className="flex items-center gap-6 animate-in fade-in slide-in-from-top-4 duration-500">

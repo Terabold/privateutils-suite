@@ -51,7 +51,7 @@ const SlugForge = () => {
       
       
       <div className="flex justify-center items-start w-full relative">
-        <SponsorSidebars position="left" />
+        {/* SponsorSidebars position="left" removed */}
 
         <main className="container mx-auto max-w-[1240px] px-6 py-6 grow overflow-visible">
           <div className="flex flex-col gap-6">

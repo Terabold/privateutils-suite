@@ -207,16 +207,11 @@ const UniversalMediaConverter = () => {
       const ffmpeg = await getFFmpeg();
       if (!ffmpeg) throw new Error("Failed to load processing engine.");
       inputName = `input_${file.name.replace(/\s+/g, '_')}`;
-      // Switch 'aac' to 'm4a' container (still using AAC codec) to provide a seekable index for browsers
       const actualOutputFormat = targetFormat === 'aac' ? 'm4a' : targetFormat;
       outputName = `output.${actualOutputFormat}`;
-
-      // Use deep probing to ensure source headers are perfectly understood by the WASM engine
       let args = ['-analyzeduration', '100M', '-probesize', '100M', '-i', inputName];
-
       const isVideoFile = file.type.startsWith('video/');
       const srcExt = file.name.split('.').pop()?.toLowerCase();
-      // TS conversion is sensitive to timestamps; disabling stream copy for TS to force a clean re-encode with generated PTS
       const canStreamCopy =
         (srcExt === 'mp4' && ['mkv', 'mov'].includes(targetFormat)) ||
         (srcExt === 'mkv' && ['mp4', 'mov'].includes(targetFormat)) ||
@@ -239,7 +234,6 @@ const UniversalMediaConverter = () => {
             args.push('-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-f', 'mov');
             break;
           case 'ts':
-            // High sync flags: genpts, global headers, and eliminate B-frames (-bf 0) for stable duration
             args.push('-fflags', '+genpts', '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-copyts', '-avoid_negative_ts', 'make_zero', '-flags', '+global_header', '-bf', '0', '-f', 'mpegts');
             break;
           case 'mp3':
@@ -256,15 +250,12 @@ const UniversalMediaConverter = () => {
             break;
           case 'aac':
           case 'm4a':
-            // Added -fflags +genpts and explicit sample rate to prevent duration drift
             args.splice(0, 0, '-fflags', '+genpts');
             args.push('-c:a', 'aac', '-b:a', '192k', '-ar', '44100', '-movflags', '+faststart', '-write_id3v1', '1');
             break;
         }
       }
-
       args.push(outputName);
-
       let requiresPadding = false;
       const logHandler = ({ message }: { message: string }) => {
         console.log('[FFmpeg]', message);
@@ -272,18 +263,14 @@ const UniversalMediaConverter = () => {
           requiresPadding = true;
         }
       };
-
       const progressHandler = ({ progress }: { progress: number }) => {
         if (progress >= 0 && progress <= 1) {
           setProgress(Math.round(progress * 100));
         }
       };
-
       ffmpeg.on('log', logHandler);
       ffmpeg.on('progress', progressHandler);
-
       await ffmpeg.writeFile(inputName, await fetchFile(file));
-
       let code = 0;
       try {
         code = await ffmpeg.exec(args);
@@ -291,7 +278,6 @@ const UniversalMediaConverter = () => {
         const isAbort = execErr?.message?.includes("Aborted") || execErr?.message?.includes("abort");
         if (!isAbort) throw execErr;
       }
-
       if (code !== 0) {
         if (requiresPadding && isVideoFile) {
           const padFilter = "pad=ceil(iw/2)*2:ceil(ih/2)*2";
@@ -306,36 +292,30 @@ const UniversalMediaConverter = () => {
           }
         }
       }
-
       let data: any;
       try {
         data = await ffmpeg.readFile(outputName);
       } catch {
         throw new Error("Output file could not be read. Conversion may have failed silently.");
       }
-
       const mimeMap: Record<string, string> = {
         'mp4': 'video/mp4', 'webm': 'video/webm', 'mkv': 'video/x-matroska',
         'ts': 'video/mp2t', 'mov': 'video/quicktime',
         'mp3': 'audio/mpeg', 'wav': 'audio/wav', 'flac': 'audio/flac',
         'm4a': 'audio/mp4', 'aac': 'audio/aac', 'ogg': 'audio/ogg'
       };
-
       const blob = new Blob([data as any], { type: mimeMap[targetFormat] || 'application/octet-stream' });
       if (resultUrl) URL.revokeObjectURL(resultUrl);
       setResultUrl(URL.createObjectURL(blob));
       setResultSize(blob.size);
       setDetectedMime(blob.type);
       setProgress(100);
-
       setTimeout(() => {
         setProcessing(false);
         toast.success("Artifact Generated via FFmpeg Pipeline");
       }, 500);
-
       ffmpeg.off('log', logHandler);
       ffmpeg.off('progress', progressHandler);
-
     } catch (err: any) {
       console.error("[Conversion Error]", err);
       if (err?.message?.includes("memory") || err?.message?.includes("bounds")) {
@@ -378,23 +358,11 @@ const UniversalMediaConverter = () => {
       isImage ? ["png", "jpg", "webp", "bmp"] : [];
 
   const filteredFormats = formats.filter(f => f !== srcExt && f !== 'gif');
-
   const isWebmNative = targetFormat === 'webm' && file?.type.startsWith('video/');
-  const willStreamCopy = !isWebmNative && (
-    (srcExt === 'mp4' && ['mkv', 'mov', 'ts'].includes(targetFormat)) ||
-    (srcExt === 'mkv' && ['mp4', 'mov'].includes(targetFormat)) ||
-    (srcExt === 'mov' && ['mp4', 'mkv'].includes(targetFormat)) ||
-    (srcExt === 'ts' && ['mp4', 'mkv'].includes(targetFormat)) ||
-    (srcExt === 'm2ts' && ['mp4', 'mkv'].includes(targetFormat))
-  );
 
   return (
-    <div className="min-h-screen bg-background text-foreground transition-all duration-300 ">
-      
-
+    <div className="min-h-screen bg-background text-foreground transition-all duration-300">
       <div className="flex justify-center items-start w-full relative">
-        <SponsorSidebars position="left" />
-
         <main className="container mx-auto max-w-[1240px] px-6 py-6 grow overflow-visible">
           <div className="flex flex-col gap-6">
             <header className="flex items-center gap-6 animate-in fade-in slide-in-from-top-4 duration-500">
@@ -410,8 +378,6 @@ const UniversalMediaConverter = () => {
                 <p className="text-muted-foreground mt-1 font-black uppercase tracking-[0.2em] opacity-40 text-[9px]">High-Efficiency Browser-Native Conversion Engine</p>
               </div>
             </header>
-
-            {/* Mobile Inline Ad removed for brevity as it is part of StickyAnchorAd below or separate logic */}
 
             <div className="flex flex-col lg:flex-row gap-12 items-start animate-in fade-in slide-in-from-bottom-8 duration-700">
               <div className={`w-full transition-all duration-700 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] space-y-8 ${file ? 'lg:w-[58.333%]' : 'lg:w-[66.666%]'}`}>

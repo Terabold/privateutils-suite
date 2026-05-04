@@ -118,8 +118,10 @@ const ThemeOrchestrator = ({ children }: { children: React.ReactNode }) => {
     return "theme-all";
   }, [location.pathname]);
 
+  const isArticlePage = ["/privacy-policy", "/terms-of-use", "/insights", "/faq", "/contact", "/about", "/technical-architecture", "/security-architecture", "/privacy", "/terms"].includes(location.pathname);
+
   return (
-    <div className={`h-[100dvh] w-full flex flex-col bg-background transition-theme duration-700 overflow-hidden ${themeClass}`}>
+    <div className={`h-[100dvh] w-full flex flex-col ${isArticlePage ? "" : "lg:flex-row"} bg-background transition-theme duration-700 overflow-hidden ${themeClass}`}>
       {children}
     </div>
   );
@@ -166,6 +168,8 @@ const App = () => {
     }
   }, [navigate, location.pathname, location.search]);
 
+  const isArticlePage = ["/privacy-policy", "/terms-of-use", "/insights", "/faq", "/contact", "/about", "/technical-architecture", "/security-architecture", "/privacy", "/terms"].includes(location.pathname);
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
@@ -184,8 +188,12 @@ const App = () => {
               setSearchQuery={handleSetSearchQuery}
               selectedCategory={selectedCategory}
               setSelectedCategory={handleSetCategory}
+              className={isArticlePage ? "lg:absolute lg:left-0 lg:top-0 lg:z-[100]" : ""}
             />
-            <main id="app-main-scroll" className="flex-grow overflow-y-auto overflow-x-hidden relative scroll-smooth">
+            <main 
+              id="app-main-scroll" 
+              className={`flex-grow overflow-y-auto overflow-x-hidden relative scroll-smooth ${isArticlePage ? "w-full flex justify-center" : ""}`}
+            >
               <Suspense fallback={<LoadingArtifact />}>
                 <SSRAnimatePresence>
                   <Routes location={location} key={location.pathname}>
