@@ -145,6 +145,48 @@ async function run() {
   let homeContent = template.replace('<div id="root"></div>', `<div id="root">${homeHtml}</div>`);
   fs.writeFileSync(path.join(distPath, 'index.html'), homeContent);
 
+  // --- Generate Sitemap ---
+  console.log('[PRERENDER] Generating sitemap.xml...');
+  const today = new Date().toISOString().split('T')[0];
+  let sitemapContent = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`;
+
+  // Home Page
+  sitemapContent += `
+  <url>
+    <loc>https://privateutils.com/</loc>
+    <lastmod>${today}</lastmod>
+    <priority>1.0</priority>
+    <changefreq>daily</changefreq>
+  </url>`;
+
+  // Tools Pages
+  for (const tool of toolsMetadata) {
+    const url = `https://privateutils.com${tool.to.replace(/\/$/, '')}`;
+    sitemapContent += `
+  <url>
+    <loc>${url}</loc>
+    <lastmod>${today}</lastmod>
+    <priority>0.8</priority>
+    <changefreq>weekly</changefreq>
+  </url>`;
+  }
+
+  // Manual & Info Pages
+  for (const page of manualPages) {
+    const url = `https://privateutils.com${page.to}`;
+    sitemapContent += `
+  <url>
+    <loc>${url}</loc>
+    <lastmod>${today}</lastmod>
+    <priority>0.5</priority>
+    <changefreq>monthly</changefreq>
+  </url>`;
+  }
+
+  sitemapContent += `\n</urlset>`;
+  fs.writeFileSync(path.join(distPath, 'sitemap.xml'), sitemapContent);
+
+
   console.log('[PRERENDER] Full HTML static routes generated successfully.');
 }
 

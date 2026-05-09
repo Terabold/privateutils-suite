@@ -1,7 +1,8 @@
 import React from 'react';
 import toolsMetadata from '@/data/toolsMetadata.json';
+import toolContentData from '@/data/toolContent.json';
 import AdBox from '@/components/AdBox';
-import { HelpCircle } from 'lucide-react';
+import { HelpCircle, Shield, Cog, FileText } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 
 interface ToolBottomDescriptionProps {
@@ -10,6 +11,7 @@ interface ToolBottomDescriptionProps {
 
 const ToolBottomDescription: React.FC<ToolBottomDescriptionProps> = ({ toolId }) => {
   const meta = toolsMetadata.find(m => m.to === toolId);
+  const contentData = toolContentData[toolId as keyof typeof toolContentData];
   
   if (!meta) return null;
 
@@ -90,9 +92,44 @@ const ToolBottomDescription: React.FC<ToolBottomDescriptionProps> = ({ toolId })
           <div className="h-1.5 w-24 bg-primary rounded-full" />
         </header>
 
-        <p className="text-xl font-medium text-foreground">
+        <p className="text-xl font-medium text-foreground mb-8">
           {description}
         </p>
+
+        {contentData && (
+          <div className="space-y-12 mt-12 pt-8 border-t border-primary/10">
+            {/* How It Works Section */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <Cog className="h-7 w-7 text-primary" />
+                <h2 className="text-2xl font-bold text-foreground">How It Works</h2>
+              </div>
+              <p className="text-muted-foreground/90 leading-relaxed text-base">{contentData.howItWorks}</p>
+            </div>
+
+            {/* Why Privacy Matters Section */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <Shield className="h-7 w-7 text-primary" />
+                <h2 className="text-2xl font-bold text-foreground">Why Privacy Matters</h2>
+              </div>
+              <p className="text-muted-foreground/90 leading-relaxed text-base">{contentData.whyPrivacyMatters}</p>
+            </div>
+
+            {/* Usage Instructions Section */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <FileText className="h-7 w-7 text-primary" />
+                <h2 className="text-2xl font-bold text-foreground">Usage Guide</h2>
+              </div>
+              <div className="text-muted-foreground/90 leading-relaxed text-base space-y-2">
+                {contentData.usageInstructions.split('\n').map((line, i) => (
+                  <p key={i}>{line}</p>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
       </section>
 
       {/* FAQ Section */}
